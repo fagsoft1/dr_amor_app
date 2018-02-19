@@ -25,18 +25,29 @@ class IndexApp extends Component {
     constructor(props) {
         super(props);
         this.cargarDatos = this.cargarDatos.bind(this);
+        this.error_callback = this.error_callback.bind(this);
     }
 
     componentDidMount() {
         this.cargarDatos()
     }
 
+    error_callback(error) {
+        this.props.notificarErrorAjaxAction(error);
+    }
+
+    notificar(mensaje) {
+        this.props.notificarAction(mensaje);
+    }
+
+
     cargarDatos() {
         this.props.cargando();
-        this.props.fetchMisPermisos(() => this.props.noCargando());
+        this.props.fetchMiCuenta(() => this.props.noCargando(), this.error_callback);
     }
 
     render() {
+        const {mi_cuenta: {is_staff, is_superuser}} = this.props;
         return <Loading>
             <div className="mt-3">
                 <div className="container text-center">
@@ -44,11 +55,14 @@ class IndexApp extends Component {
                         <div className="col-12 p-5">
                             <img className='img-fluid' src={`${img_static_url}/logo.png`} alt=""/>
                         </div>
-                        <Boton
-                            nombre='Admin'
-                            link='/app/admin/'
-                            icono='fa-cogs'
-                        />
+                        {
+                            (is_staff || is_superuser) &&
+                            <Boton
+                                nombre='Admin'
+                                link='/app/admin/'
+                                icono='fa-cogs'
+                            />
+                        }
                         <Boton
                             nombre='Tienda'
                             link='/app/tienda/'
@@ -81,7 +95,8 @@ class IndexApp extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos
+        mis_permisos: state.mis_permisos,
+        mi_cuenta: state.mi_cuenta
     }
 }
 
