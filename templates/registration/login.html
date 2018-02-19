@@ -1,0 +1,27 @@
+{% extends "registration/registration_base.html" %}
+{% load i18n static crispy_forms_tags %}
+
+{% block title %}{% trans "Log in" %}{% endblock %}
+
+{% block content %}
+    <div class="mt-3">
+        <div class="text-center mb-3">
+            <img height="200px" src="{% static "img/logo.png" %}" alt="logo"/>
+            <h3>Intranet</h3>
+        </div>
+
+        <div class="container form-signin">
+            <form method="post" action="">
+                <div class="m-3 text-center">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                </div>
+                <input class="btn btn-lg btn-primary btn-block" type="submit" value="{% trans 'Log in' %}"/>
+                <input type="hidden" name="next" value="{{ next }}"/>
+            </form>
+            <p>Olvidaste tu contraseña? <a
+                    href="{% url 'auth_password_reset' %}">Restaurar</a>.
+            </p>
+        </div>
+    </div>
+{% endblock %}

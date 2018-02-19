@@ -1,0 +1,42 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/ReactReduxNotify.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/react-widget.min.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/react-table@latest/react-table.css">
+
+
+</head>
+<body>
+
+<script type="text/javascript">
+    const img_static_url = '{% static 'img' %}';
+</script>
+{% block scripts_packages %}
+
+
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+<script src="{% static 'js/jquery-3.3.1.slim.min.js' %}"></script>
+<script src="{% static 'js/tether.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script defer src="{% static 'js/fontawesome-all.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script>
+    FontAwesomeConfig = {autoReplaceSvg: 'nest'}
+</script>
+
+</body>
+</html>
