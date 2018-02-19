@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import {tengoPermiso} from '../../00_utilities/common';
+import {Link} from 'react-router-dom'
+import FontIcon from 'material-ui/FontIcon';
 import {
     PERMISO_LIST_USER,
     PERMISO_LIST_PERMISSION,
@@ -36,6 +38,9 @@ class Menu extends Component {
         return (
             <Toolbar>
                 <ToolbarGroup firstChild={true}>
+                    <Link to='/app/'>
+                        <FontIcon className="fas fa-home pl-2"/>
+                    </Link>
                     {
                         menu_terceros &&
                         <MenuTerceros listar_usuarios={listar_usuarios}/>

@@ -17,6 +17,9 @@ def get_secret(setting, variable, secrets=secrets):
         raise ImproperlyConfigured(error_msg)
 
 
+if get_secret("EMAIL_SERVER", "EMAIL_IS_LOCAL"):
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 THIRD_PART_APPS = [
     'debug_toolbar',
 ]
