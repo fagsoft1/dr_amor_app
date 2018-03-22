@@ -7,33 +7,30 @@ const ItemTabla = (props) => {
     const {
         item,
         item: {name},
-        can_delete,
-        can_see,
-        can_change,
-        onSelectItem,
+        permisos,
+        onSelectItemEdit,
         onDelete,
-        handleOpen
+        onSelectItemDetail,
     } = props;
     return (
         <tr>
             <td>{name}</td>
-            {can_change && <td>
+            {permisos.change && <td>
                 <IconButtonTableEdit
                     onClick={() => {
-                        onSelectItem(item);
-                        handleOpen()
+                        onSelectItemEdit(item);
                     }}/>
             </td>}
-            {can_delete && <td>
+            {permisos.delete && <td>
                 <MyDialogButtonDelete
                     element_name={item.name}
                     element_type='Grupo Permisos'
                     onDelete={() => onDelete(item)}/>
             </td>}
-            {can_see && <td>
+            {permisos.detail && <td>
                 <IconButtonTableSee
                     onClick={() => {
-                        onSelectItem(item)
+                        onSelectItemDetail(item)
                     }}
                 />
             </td>}
@@ -50,19 +47,19 @@ const buscarBusqueda = (lista, busqueda) => {
 };
 
 const Tabla = (props) => {
-    const {grupo_permisos, can_see, can_delete, can_change} = props;
+    const {data, permisos} = props;
     return (
         <ListaBusqueda>
             {busqueda => {
-                const grupos_lista = buscarBusqueda(grupo_permisos, busqueda);
+                const grupos_lista = buscarBusqueda(data, busqueda);
                 return (
                     <table className='table tabla-maestra table-responsive'>
                         <thead>
                         <tr>
                             <th>Nombre</th>
-                            {can_change && <th>Editar</th>}
-                            {can_delete && <th>Eliminar</th>}
-                            {can_see && <th>Ver Permisos</th>}
+                            {permisos.change && <th>Editar</th>}
+                            {permisos.delete && <th>Eliminar</th>}
+                            {permisos.detail && <th>Ver Permisos</th>}
                         </tr>
                         </thead>
                         <tbody>

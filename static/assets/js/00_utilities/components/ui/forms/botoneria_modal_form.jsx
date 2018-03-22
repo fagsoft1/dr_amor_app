@@ -8,8 +8,7 @@ const BotoneriaModalForm = (props) => {
         submitting,
         reset,
         initialValues = null,
-        onCancel,
-        handleClose
+        onCancel
     } = props;
     return (
         <div>
@@ -26,11 +25,10 @@ const BotoneriaModalForm = (props) => {
                 onClick={reset}
             />
             <FlatIconModal
-                text="Cancelar"
+                text={submitting || pristine ? 'Cerrar' : 'Cancelar'}
                 primary={false}
                 onClick={
                     () => {
-                        handleClose();
                         onCancel();
                     }
                 }
@@ -45,7 +43,6 @@ BotoneriaModalForm.propTypes = {
     submitting: PropTypes.bool,
     reset: PropTypes.func,
     initialValues: PropTypes.any,
-    onCancel: PropTypes.func,
-    handleClose: PropTypes.func
+    onCancel: PropTypes.func
 };
 export default BotoneriaModalForm;

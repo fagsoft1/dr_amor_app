@@ -10,7 +10,20 @@ import loadingReducer from './generales/loadingReducer';
 import miCuentaReducer from './generales/miCuentaReducer';
 
 
-import tercerosReducer from './especificas/tercerosReducer';
+import colaboradoresReducer from './especificas/terceros/colaboradoresReducer';
+import acompanantesReducer from './especificas/terceros/acompanantesReducer';
+import categoriasAcompanantesReducer from './especificas/terceros/categoriasAcompanantesReducer';
+import empresasReducer from './especificas/empresasReducer';
+import habitacionesReducer from './especificas/habitaciones/habitacionesReducer';
+import habitacionesTiposReducer from './especificas/habitaciones/habitacionesTipoReducer';
+import productosReducer from './especificas/productos/productosReducer';
+import unidadesProductoReducer from './especificas/productos/unidadesReducer';
+import categoriasProductoReducer from './especificas/productos/categoriasReducer';
+import categoriasDosProductoReducer from './especificas/productos/categoriasDosReducer';
+import proveedoresReducer from './especificas/terceros/proveedoresReducer';
+import bodegasReducer from './especificas/inventarios/bodegasReducer';
+import movimientosInventariosReducer from './especificas/inventarios/movimientosInventariosReducer';
+import movimientosInventariosDetallesReducer from './especificas/inventarios/movimientosInventariosDetallesReducer';
 
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
@@ -22,7 +35,20 @@ const rootReducer = combineReducers({
     esta_cargando: loadingReducer,
     notifications: NotifyReducer,
     form: formReducer,
-    terceros: tercerosReducer
+    colaboradores: colaboradoresReducer,
+    acompanantes: acompanantesReducer,
+    categorias_acompanantes: categoriasAcompanantesReducer,
+    empresas: empresasReducer,
+    habitaciones: habitacionesReducer,
+    habitaciones_tipos: habitacionesTiposReducer,
+    productos: productosReducer,
+    productos_unidades: unidadesProductoReducer,
+    productos_categorias: categoriasProductoReducer,
+    productos_categorias_dos: categoriasDosProductoReducer,
+    proveedores: proveedoresReducer,
+    bodegas: bodegasReducer,
+    movimientos_inventarios: movimientosInventariosReducer,
+    movimientos_inventarios_detalles: movimientosInventariosDetallesReducer,
 });
 
 export default rootReducer;

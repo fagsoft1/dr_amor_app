@@ -1,10 +1,7 @@
 import {
+    PERMISO_TYPES as TYPES,
     FETCH_MIS_PERMISOS,
-    FETCH_PERMISOS,
-    FETCH_PERMISO,
-    CLEAR_PERMISOS,
     FETCH_OTRO_USUARIO_PERMISOS,
-    UPDATE_PERMISO
 } from '../../00_types';
 
 import {
@@ -32,7 +29,7 @@ export function fetchPermisosActivos(callback = null, callback_error = null) {
         const SUB_URL = '/permisos_activos';
         const FULL_URL = `${current_url_api}${SUB_URL}`;
         const dispatches = (response) => {
-            dispatch({type: FETCH_PERMISOS, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: response})
         };
         fetchList(FULL_URL, dispatches, callback, callback_error);
     }
@@ -52,7 +49,7 @@ export function fetchOtroUsuarioPermisos(id, callback = null, callback_error = n
 export const fetchPermisos = (callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: FETCH_PERMISOS, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: response})
         };
         fetchList(current_url_api, dispatches, callback, callback_error);
     }
@@ -61,7 +58,7 @@ export const fetchPermisos = (callback = null, callback_error = null) => {
 export const updatePermiso = (id, values, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: UPDATE_PERMISO, payload: response})
+            dispatch({type: TYPES.update, payload: response})
         };
         updateObject(current_url_api, id, values, dispatches, callback, callback_error)
     }
@@ -70,7 +67,7 @@ export const updatePermiso = (id, values, callback = null, callback_error = null
 export const fetchPermiso = (id, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: FETCH_PERMISO, payload: response})
+            dispatch({type: TYPES.fetch, payload: response})
         };
         fetchObject(current_url_api, id, dispatches, callback, callback_error);
     }
@@ -78,7 +75,7 @@ export const fetchPermiso = (id, callback = null, callback_error = null) => {
 
 export const clearPermisos = () => {
     return (dispatch) => {
-        dispatch({type: CLEAR_PERMISOS});
+        dispatch({type: TYPES.clear});
 
     }
 };

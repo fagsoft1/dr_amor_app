@@ -43,6 +43,12 @@ DJANGO_APPS = [
 MY_APPS = [
     'index.apps.IndexConfig',
     'permisos.apps.PermisosConfig',
+    'terceros.apps.TercerosConfig',
+    'terceros_acompanantes.apps.TercerosAcompanantesConfig',
+    'empresas.apps.EmpresasConfig',
+    'habitaciones.apps.HabitacionesConfig',
+    'productos.apps.ProductosConfig',
+    'inventarios.apps.InventariosConfig',
 ]
 
 THIRD_PART_APPS = [
@@ -50,6 +56,7 @@ THIRD_PART_APPS = [
     'crispy_forms',
     'rest_framework',
     'webpack_loader',
+    'imagekit',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

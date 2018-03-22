@@ -14,14 +14,8 @@ class Tabla extends React.Component {
             updateItem,
             mi_cuenta,
             onDelete,
-            onSelectItem,
-            handleOpen,
-            can_detail,
-            can_make_superuser,
-            can_make_staff,
-            can_make_active,
-            can_delete,
-            can_change
+            onSelectItemEdit,
+            permisos
         } = this.props;
 
 
@@ -44,21 +38,18 @@ class Tabla extends React.Component {
                                 },
                                 {
                                     Header: "Nombres",
-                                    accessor: "first_name",
-                                    maxWidth: 200,
+                                    maxWidth: 300,
                                     filterable: true,
                                     filterMethod: (filter, row) => {
-                                        return row[filter.id].includes(filter.value.toUpperCase())
-                                    }
-                                },
-                                {
-                                    Header: "Apellidos",
-                                    id: "last_name",
-                                    accessor: "last_name",
-                                    maxWidth: 200,
-                                    filterable: true,
-                                    filterMethod: (filter, row) => {
-                                        return row[filter.id].includes(filter.value.toUpperCase())
+                                        return (
+                                            row._original.first_name.includes(filter.value.toUpperCase()) |
+                                            row._original.last_name.includes(filter.value.toUpperCase())
+                                        )
+                                    },
+                                    Cell: row => {
+                                        return (
+                                            `${row.original.first_name} ${row.original.last_name}`
+                                        )
                                     }
                                 },
                                 {
@@ -77,7 +68,7 @@ class Tabla extends React.Component {
                                 {
                                     Header: "Activo",
                                     accessor: "is_active",
-                                    show: can_make_active,
+                                    show: permisos.make_user_active,
                                     maxWidth: 60,
                                     Cell: row => (
                                         mi_cuenta.id !== row.original.id &&
@@ -90,7 +81,7 @@ class Tabla extends React.Component {
                                 {
                                     Header: "Admin",
                                     accessor: "is_superuser",
-                                    show: can_make_superuser,
+                                    show: permisos.make_user_superuser,
                                     maxWidth: 60,
                                     Cell: row => (
                                         mi_cuenta.id !== row.original.id &&
@@ -103,7 +94,7 @@ class Tabla extends React.Component {
                                 {
                                     Header: "Staff",
                                     accessor: "is_staff",
-                                    show: can_make_staff,
+                                    show: permisos.make_user_staff,
                                     maxWidth: 60,
                                     Cell: row => (
                                         mi_cuenta.id !== row.original.id &&
@@ -115,10 +106,15 @@ class Tabla extends React.Component {
                                 },
                                 {
                                     Header: "Elimi.",
-                                    show: can_delete,
+                                    show: permisos.delete,
                                     maxWidth: 60,
                                     Cell: row =>
                                         mi_cuenta.id !== row.original.id &&
+                                        (
+                                            (mi_cuenta.is_superuser && row.original.is_superuser) ||
+                                            (!row.original.is_superuser)
+                                        )
+                                        &&
                                         <MyDialogButtonDelete
                                             onDelete={() => {
                                                 onDelete(row.original)
@@ -130,19 +126,18 @@ class Tabla extends React.Component {
                                 },
                                 {
                                     Header: "Editar",
-                                    show: can_change,
+                                    show: permisos.change,
                                     maxWidth: 60,
                                     Cell: row =>
                                         <IconButtonTableEdit
                                             onClick={() => {
-                                                onSelectItem(row.original);
-                                                handleOpen()
+                                                onSelectItemEdit(row.original);
                                             }}/>
 
                                 },
                                 {
                                     Header: "Ver",
-                                    show: can_detail,
+                                    show: permisos.detail,
                                     maxWidth: 60,
                                     Cell: row =>
                                         <Link to={`/app/admin/usuarios/detail/${row.original.id}`}>

@@ -4,9 +4,9 @@ import * as actions from "../../../../01_actions/01_index";
 import CargarDatos from "../../../../00_utilities/components/system/cargar_datos";
 import {Titulo} from "../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
-import {tengoPermiso} from "../../../../00_utilities/common";
+import {tengoPermiso, permisosAdapter} from "../../../../00_utilities/common";
 import {
-    PERMISO_LIST_PERMISSION as can_list_permiso,
+    PERMISSION as permisos_view,
     PERMISO_CHANGE_PERMISSION_PLUS as can_change_permiso_plus
 } from '../../../../00_utilities/permisos/types';
 
@@ -61,11 +61,12 @@ class PermisosList extends Component {
 
     render() {
         const {mis_permisos, permisos} = this.props;
-        const can_list = tengoPermiso(mis_permisos, can_list_permiso);
         const can_change_permiso = tengoPermiso(mis_permisos, can_change_permiso_plus);
 
+        const permisos_this_view = permisosAdapter(mis_permisos, permisos_view);
+
         return (
-            <ValidarPermisos can_see={can_list}
+            <ValidarPermisos can_see={permisos_this_view.list}
                              nombre='listas de permisos'>
                 <Titulo>Lista de Permisos</Titulo>
                 <Tabla

@@ -25,25 +25,16 @@ class IndexApp extends Component {
     constructor(props) {
         super(props);
         this.cargarDatos = this.cargarDatos.bind(this);
-        this.error_callback = this.error_callback.bind(this);
     }
 
     componentDidMount() {
         this.cargarDatos()
     }
 
-    error_callback(error) {
-        this.props.notificarErrorAjaxAction(error);
-    }
-
-    notificar(mensaje) {
-        this.props.notificarAction(mensaje);
-    }
-
-
     cargarDatos() {
-        this.props.cargando();
-        this.props.fetchMiCuenta(() => this.props.noCargando(), this.error_callback);
+        const {notificarErrorAjaxAction, cargando, noCargando} = this.props;
+        cargando();
+        this.props.fetchMiCuenta(() => noCargando(), notificarErrorAjaxAction);
     }
 
     render() {

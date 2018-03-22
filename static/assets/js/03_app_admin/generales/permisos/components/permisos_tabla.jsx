@@ -51,21 +51,25 @@ class ItemTabla extends Component {
     }
 };
 
+const buscarBusqueda = (lista, busqueda) => {
+    return _.pickBy(lista, (permiso) => {
+        return (
+            permiso.codename.toString().toLowerCase().includes(busqueda) ||
+            permiso.name.toString().toLowerCase().includes(busqueda) ||
+            (
+                permiso.nombre ? permiso.nombre.toString().toLowerCase().includes(busqueda) : false
+            )
+        )
+    });
+};
+
 export const Tabla = (props) => {
     const {permisos, can_change} = props;
     return (
         <ListaBusqueda>
             {
                 busqueda => {
-                    const permisos_lista = _.pickBy(permisos, (permiso) => {
-                        return (
-                            permiso.codename.toString().toLowerCase().includes(busqueda) ||
-                            permiso.name.toString().toLowerCase().includes(busqueda) ||
-                            (
-                                permiso.nombre ? permiso.nombre.toString().toLowerCase().includes(busqueda) : false
-                            )
-                        )
-                    });
+                    const permisos_lista = buscarBusqueda(permisos, busqueda);
                     return (
                         <table className='table tabla-maestra table-responsive'>
                             <thead>

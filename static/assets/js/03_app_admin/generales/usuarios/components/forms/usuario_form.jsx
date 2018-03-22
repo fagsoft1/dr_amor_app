@@ -20,7 +20,6 @@ class Form extends Component {
             onSubmit,
             onCancel,
             handleSubmit,
-            handleClose,
             modal_open,
         } = this.props;
         return (
@@ -30,7 +29,6 @@ class Form extends Component {
                     reset()
                 }}
                 onSubmit={handleSubmit(onSubmit)}
-                handleClose={handleClose}
                 reset={reset}
                 initialValues={initialValues}
                 submitting={submitting}
@@ -38,46 +36,42 @@ class Form extends Component {
                 pristine={pristine}
                 element_type='Usuario'
             >
-                <div className="m-2">
-                    <div className="row">
-                        <MyTextFieldSimple
-                            className="col-12"
-                            nombre='Nombre de Usuario'
-                            name='username'
-                            case='L'/>
-                        <MyTextFieldSimple
-                            className="col-12"
-                            nombre='Correo Electrónico'
-                            name='email'
-                            case='U'/>
-                        <MyTextFieldSimple
-                            className="col-12"
-                            nombre='Nombres'
-                            name='first_name'
-                            case='U'/>
-                        <MyTextFieldSimple
-                            className="col-12"
-                            nombre='Apellidos'
-                            name='last_name'
-                            case='U'/>
-                        {!initialValues &&
-                        <Fragment>
-                            <MyTextFieldSimple
-                                type='password'
-                                className="col-12"
-                                nombre='Contraseña'
-                                name='password'
-                            />
-                            <MyTextFieldSimple
-                                type='password'
-                                className="col-12"
-                                nombre='Comprobación de contraseña'
-                                name='password2'
-                            />
-                        </Fragment>
-                        }
-                    </div>
-                </div>
+                <MyTextFieldSimple
+                    className="col-12 col-md-4"
+                    nombre='Nombre de Usuario'
+                    name='username'
+                    case='L'/>
+                <MyTextFieldSimple
+                    className="col-12 col-md-8"
+                    nombre='Correo Electrónico'
+                    name='email'
+                    case='U'/>
+                <MyTextFieldSimple
+                    className="col-12 col-md-6"
+                    nombre='Nombres'
+                    name='first_name'
+                    case='U'/>
+                <MyTextFieldSimple
+                    className="col-12 col-md-6"
+                    nombre='Apellidos'
+                    name='last_name'
+                    case='U'/>
+                {!initialValues &&
+                <Fragment>
+                    <MyTextFieldSimple
+                        type='password'
+                        className="col-12 col-md-6"
+                        nombre='Contraseña'
+                        name='password'
+                    />
+                    <MyTextFieldSimple
+                        type='password'
+                        className="col-12 col-md-6"
+                        nombre='Comprobación de contraseña'
+                        name='password2'
+                    />
+                </Fragment>
+                }
             </MyFormTagModal>
         )
     }

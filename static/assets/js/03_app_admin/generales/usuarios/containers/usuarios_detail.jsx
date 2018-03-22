@@ -4,17 +4,10 @@ import * as actions from "../../../../01_actions/01_index";
 import CargarDatos from "../../../../00_utilities/components/system/cargar_datos";
 import {Titulo, SinObjeto, AtributoTexto, AtributoBooleano} from "../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
-import {tengoPermiso} from "../../../../00_utilities/common";
+import {permisosAdapter} from "../../../../00_utilities/common";
 import {
-    PERMISO_LIST_USER as can_list_permiso,
-    PERMISO_DETAIL_USER as can_detail_permiso,
-    PERMISO_ADD_USER as can_add_permiso,
-    PERMISO_CHANGE_USER as can_change_permiso,
-    PERMISO_DELETE_USER as can_delete_permiso,
-    PERMISO_DETAIL_USER_MAKE_ACTIVE as can_make_active_permiso,
-    PERMISO_DETAIL_USER_MAKE_STAFF as can_make_staff_permiso,
-    PERMISO_DETAIL_USER_MAKE_SUPERUSER as can_make_superuser_permiso,
-    PERMISO_CHANGE_PERMISSION
+    USUARIOS as permisos_view,
+    PERMISSION as permisos_view_permission
 } from "../../../../00_utilities/permisos/types";
 
 import PermisosUsuario from '../../permisos/components/permisos_select_permisos';
@@ -75,17 +68,9 @@ class UsuariosDetail extends Component {
     }
 
     render() {
-        const {usuario, mi_cuenta, mis_permisos, permisos_activos, permisos_todos, grupos_todos} = this.props;
-
-        const can_add = tengoPermiso(mis_permisos, can_add_permiso);
-        const can_detail = tengoPermiso(mis_permisos, can_detail_permiso);
-        const can_change = tengoPermiso(mis_permisos, can_change_permiso);
-        const can_delete = tengoPermiso(mis_permisos, can_delete_permiso);
-        const can_list = tengoPermiso(mis_permisos, can_list_permiso);
-        const can_make_staff = tengoPermiso(mis_permisos, can_make_staff_permiso);
-        const can_make_active = tengoPermiso(mis_permisos, can_make_active_permiso);
-        const can_make_superuser = tengoPermiso(mis_permisos, can_make_superuser_permiso);
-        const puede_cambiar_permisos = tengoPermiso(mis_permisos, [PERMISO_CHANGE_PERMISSION]);
+        const {usuario, mis_permisos, permisos_activos, permisos_todos, grupos_todos} = this.props;
+        const permisos = permisosAdapter(mis_permisos, permisos_view);
+        const permisos_permission = permisosAdapter(mis_permisos, permisos_view_permission);
 
 
         if (!usuario) {
@@ -106,7 +91,7 @@ class UsuariosDetail extends Component {
         const permiso_activos_con_grupos = _.groupBy(permisos_activos_indpendientes, 'id');
 
         return (
-            <ValidarPermisos can_see={can_detail} nombre='detalles de usuario'>
+            <ValidarPermisos can_see={permisos.detail} nombre='detalles de usuario'>
                 <Titulo>Detalle {usuario.username}</Titulo>
                 <div className="row">
                     <AtributoTexto className='col-12' label='Nombre'
@@ -134,7 +119,7 @@ class UsuariosDetail extends Component {
                         label='Es Super Usuario'
                     />
                     <PermisosUsuario
-                        can_change={puede_cambiar_permisos}
+                        can_change={permisos_permission.change}
                         actualizarPermiso={this.actualizarPermiso}
                         actualizarGrupo={this.actualizarGrupo}
                         permisos_todos={permisos_todos}

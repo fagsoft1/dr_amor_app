@@ -11,11 +11,10 @@
     {% endblock %}
 
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/ReactReduxNotify.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/react-widget.min.css' %}">
-    <link rel="stylesheet" href="https://unpkg.com/react-table@latest/react-table.css">
+    {% block css-libraries %}
+        <link rel="stylesheet" href="{% static 'css/custom.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    {% endblock %}
 
 </head>
 <body>
@@ -31,11 +30,13 @@
 {% block content %}
 
 {% endblock %}
-<script src="{% static 'js/jquery-3.3.1.slim.min.js' %}"></script>
-<script src="{% static 'js/tether.min.js' %}"></script>
-<script src="{% static 'js/popper.min.js' %}"></script>
+{% block js_libraries %}
+    <script src="{% static 'js/jquery-3.3.1.slim.min.js' %}"></script>
+    <script src="{% static 'js/tether.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% endblock %}
 <script defer src="{% static 'js/fontawesome-all.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script>
     FontAwesomeConfig = {autoReplaceSvg: 'nest'}
 </script>

@@ -40,7 +40,7 @@ const DivPermiso = (props) => {
                             </Fragment>
                     }
                 </div>
-                <div className='col-12'>
+                <div className='col-12 mb-3'>
                     <span className='texto-cita top'> {permiso.content_type_label}</span>
                 </div>
             </div>

@@ -3,17 +3,11 @@ import {connect} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
 import CargarDatos from "../../../../00_utilities/components/system/cargar_datos";
 import {Titulo} from "../../../../00_utilities/templates/fragmentos";
-import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
-import {tengoPermiso} from "../../../../00_utilities/common";
+import {permisosAdapter} from "../../../../00_utilities/common";
 import CreateForm from '../components/forms/grupo_permiso_form';
-import {IconButtonContainerAdd} from '../../../../00_utilities/components/ui/icon/iconos';
-
+import ListManager from "../../../../00_utilities/components/CRUDTableManager";
 import {
-    PERMISO_LIST_GROUP as can_list_permiso,
-    PERMISO_DETAIL_GROUP as can_detail_permiso,
-    PERMISO_ADD_GROUP as can_add_permiso,
-    PERMISO_CHANGE_GROUP as can_change_permiso,
-    PERMISO_DELETE_GROUP as can_delete_permiso
+    GROUPS as permisos_view_groups
 } from '../../../../00_utilities/permisos/types';
 
 import Tabla from '../components/grupos_permisos_tabla';
@@ -22,19 +16,10 @@ import PermisosGrupo from '../components/permisos_select_permisos';
 class GruposPermisosList extends Component {
     constructor(props) {
         super(props);
-        this.state = ({
-            item_seleccionado: null,
-            modal_open: false
-        });
         /////////////////////////// Generales /////////////////////////////
         this.error_callback = this.error_callback.bind(this);
         this.notificar = this.notificar.bind(this);
-        this.onCancel = this.onCancel.bind(this);
-        this.onSelectItem = this.onSelectItem.bind(this);
-        this.handleModalClose = this.handleModalClose.bind(this);
-        this.handleModalOpen = this.handleModalOpen.bind(this);
         /////////////////////////////////////////////////////////////////
-
         this.cargarDatos = this.cargarDatos.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.actualizarPermiso = this.actualizarPermiso.bind(this);
@@ -43,13 +28,6 @@ class GruposPermisosList extends Component {
     }
 
 /////////////////////////// Generales /////////////////////////////
-    handleModalClose() {
-        this.setState({modal_open: false})
-    }
-
-    handleModalOpen() {
-        this.setState({modal_open: true})
-    }
 
     error_callback(error) {
         this.props.notificarErrorAjaxAction(error);
@@ -63,14 +41,6 @@ class GruposPermisosList extends Component {
         this.cargarDatos();
     }
 
-    onSelectItem(item) {
-        this.setState({item_seleccionado: item})
-    }
-
-    onCancel() {
-        this.setState({item_seleccionado: null, mostrar_form: false});
-    }
-
 ////////////////////////////////////////////////////////
 
     componentWillUnmount() {
@@ -81,8 +51,6 @@ class GruposPermisosList extends Component {
         const success_callback = (response) => {
             this.props.noCargando();
             this.notificar(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito el grupo de permisos ${response.name}`);
-            this.handleModalClose();
-            this.setState({item_seleccionado: null});
         };
         this.props.cargando();
 
@@ -100,22 +68,20 @@ class GruposPermisosList extends Component {
         this.props.fetchMisPermisos(cargarPermisosActivos, this.error_callback);
     }
 
-    actualizarPermiso(permiso) {
-        const {item_seleccionado} = this.state;
+    actualizarPermiso(permiso, item, onSelectItem) {
         const success_callback = (response) => {
+            this.notificar(`Se ha actualizado con éxito el grupo de permisos con el permiso ${permiso.codename}`);
+            onSelectItem(response);
             this.props.noCargando();
-            this.setState({item_seleccionado: response});
-            this.notificar(`Se ha actualizado con éxito el grupo de permisos con el permiso ${permiso.codename}`)
         };
-        if (item_seleccionado) {
+        if (item) {
             this.props.cargando();
-            this.props.addPermisoGrupo(item_seleccionado.id, permiso.id, success_callback, this.error_callback);
+            this.props.addPermisoGrupo(item.id, permiso.id, success_callback, this.error_callback);
         }
 
     }
 
     onDelete(grupoPermiso) {
-        this.setState({item_seleccionado: null});
         const success_callback = () => {
             this.props.noCargando();
             this.notificar(`Se ha eliminado con éxito el grupo de permisos ${grupoPermiso.name}`)
@@ -126,57 +92,80 @@ class GruposPermisosList extends Component {
 
     render() {
         const {mis_permisos, permisos, grupos_permisos} = this.props;
-        const {item_seleccionado, modal_open} = this.state;
-        const can_change = tengoPermiso(mis_permisos, can_change_permiso);
-        const can_add = tengoPermiso(mis_permisos, can_add_permiso);
-        const can_list = tengoPermiso(mis_permisos, can_list_permiso);
-        const can_delete = tengoPermiso(mis_permisos, can_delete_permiso);
-        const can_see_permisos = tengoPermiso(mis_permisos, [can_change_permiso, can_detail_permiso], "or");
+        const permisos_view = permisosAdapter(mis_permisos, permisos_view_groups);
 
         return (
-            <ValidarPermisos can_see={can_list}
-                             nombre='listas de grupos de permisos'>
-                <CreateForm
-                    onCancel={this.onCancel}
-                    item_seleccionado={item_seleccionado}
-                    onSubmit={this.onSubmit}
-                    handleClose={this.handleModalClose}
-                    modal_open={modal_open}
-                />
-                <Titulo>Lista de Grupos de Permisos</Titulo>
-
-                {can_add && <IconButtonContainerAdd
-                    onClick={() => {
-                        this.setState({item_seleccionado: null});
-                        this.handleModalOpen();
-                    }}
-                />}
-
-                <Tabla
-                    grupo_permisos={grupos_permisos}
-                    onSelectItem={this.onSelectItem}
-                    can_see={can_see_permisos}
-                    can_change={can_change}
-                    can_delete={can_delete}
-                    onUpdate={this.onUpdate}
-                    onDelete={this.onDelete}
-                    handleOpen={this.handleModalOpen}
-                />
+            <ListManager permisos={permisos_view} singular_name='grupos de permisos' plural_name='grupo de permisos'>
                 {
-                    item_seleccionado &&
-                    can_see_permisos &&
-                    <Fragment>
-                        <h5>{item_seleccionado.name}</h5>
-                        <PermisosGrupo
-                            can_change={can_change}
-                            actualizarPermiso={this.actualizarPermiso}
-                            permisos_todos={permisos}
-                            permisos_activos={item_seleccionado.permissions}
-                        />
-                    </Fragment>
+                    (list_manager_state,
+                     onSelectItem,
+                     onCancel,
+                     handleModalOpen,
+                     handleModalClose) => {
+                        return (
+                            <Fragment>
+                                <CreateForm
+                                    onCancel={onCancel}
+                                    item_seleccionado={list_manager_state.item_seleccionado}
+                                    onSubmit={
+                                        (item) => {
+                                            this.onSubmit(item, list_manager_state.singular_name);
+                                            handleModalClose();
+                                        }
+                                    }
+                                    modal_open={list_manager_state.modal_open}
+                                    element_type={`${list_manager_state.singular_name}`}
+                                />
+
+
+                                <Titulo>Lista de {list_manager_state.plural_name}</Titulo>
+                                <CargarDatos
+                                    cargarDatos={this.cargarDatos}
+                                />
+
+
+                                <Tabla
+                                    data={grupos_permisos}
+                                    permisos={permisos_view}
+                                    element_type={`${list_manager_state.singular_name}`}
+                                    onDelete={(item) => {
+                                        this.onDelete(item, list_manager_state.singular_name);
+                                        handleModalClose();
+                                    }}
+                                    onSelectItemEdit={(item) => {
+                                        onSelectItem(item);
+                                        handleModalOpen();
+                                    }}
+
+                                    onSelectItemDetail={(item) => {
+                                        this.props.fetchGruposPermisos(item.id, () => onSelectItem(item), this.error_callback);
+                                    }}
+                                    updateItem={(item) => this.onSubmit(item, list_manager_state.singular_name)}
+                                />
+                                {
+                                    list_manager_state.item_seleccionado &&
+                                    (permisos_view.change || permisos_view.detail) &&
+                                    <Fragment>
+                                        <h5>{list_manager_state.item_seleccionado.name}</h5>
+                                        <PermisosGrupo
+                                            can_change={permisos_view.change}
+                                            actualizarPermiso={(permiso) => {
+                                                this.actualizarPermiso(permiso, list_manager_state.item_seleccionado, onSelectItem);
+                                            }}
+                                            permisos_todos={permisos}
+                                            permisos_activos={list_manager_state.item_seleccionado.permissions}
+                                        />
+                                    </Fragment>
+                                }
+                                <CargarDatos
+                                    cargarDatos={this.cargarDatos}
+                                />
+
+                            </Fragment>
+                        )
+                    }
                 }
-                <CargarDatos cargarDatos={this.cargarDatos}/>
-            </ValidarPermisos>
+            </ListManager>
         )
     }
 

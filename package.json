@@ -1,22 +1,31 @@
 {
-  "name": "app_dr_amor",
+  "name": "DrAmor",
   "version": "1.0.0",
-  "description": "Proyecto de desarrollo de App Dr. Amor",
+  "description": "Proyecto de desarrollo de App Clínica Dr. Amor",
   "main": "webpack.base.config.js",
   "dependencies": {
     "accounting": "^0.4.1",
+    "jquery": "^3.3.1",
     "json-loader": "^0.5.7",
     "material-ui": "^0.19.4",
     "moment": "^2.19.1",
     "moment-timezone": "^0.5.14",
+    "npm": "^5.6.0",
+    "popper.js": "^1.12.9",
+    "prop-types": "^15.6.0",
     "react-big-calendar": "^0.17.0",
+    "react-hot-loader": "^3.1.3",
     "react-print": "^1.3.1",
-    "react-redux-notify": "^2.0.0",
+    "react-redux-notify": "^4.0.0",
     "react-router-dom": "^4.2.2",
+    "react-swipeable-views": "^0.12.12",
     "react-table": "^6.7.6",
     "react-widgets": "^4.0.2",
     "react-widgets-moment": "^4.0.2",
-    "redux-form-material-ui": "^4.3.0"
+    "redux-form": "^7.2.3",
+    "redux-form-material-ui": "^4.3.0",
+    "tether": "^1.4.3",
+    "webpack-dev-server": "^3.0.0"
   },
   "devDependencies": {
     "axios": "^0.16.2",
@@ -26,16 +35,20 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
-    "django-channels": "^1.1.8",
+    "bootstrap": "^4.0.0",
+    "css-loader": "^0.28.10",
+    "extract-text-webpack-plugin": "^3.0.2",
     "lodash": "^4.17.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "redux-form": "^7.0.4",
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.2.0",
-    "webpack": "^3.6.0",
+    "style-loader": "^0.20.2",
+    "uglifyjs-webpack-plugin": "^1.2.2",
+    "url-loader": "^0.6.2",
+    "webpack": "^3.10.0",
     "webpack-bundle-tracker": "^0.2.0"
   },
   "scripts": {
@@ -45,12 +58,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Fabitosoft/dramor_intranet.git"
+    "url": "git+https://github.com/Fabitosoft/07_intranet_proyectos.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Fabitosoft/dramor_intranet/issues"
+    "url": "https://github.com/Fabitosoft/07_intranet_proyectos/issues"
   },
-  "homepage": "https://github.com/Fabitosoft/dramor_intranet#readme"
+  "homepage": "https://github.com/Fabitosoft/07_intranet_proyectos#readme"
 }

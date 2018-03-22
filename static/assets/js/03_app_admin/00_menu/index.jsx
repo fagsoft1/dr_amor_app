@@ -1,72 +1,38 @@
-import React, {Component} from 'react';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import {tengoPermiso} from '../../00_utilities/common';
-import {Link} from 'react-router-dom'
-import FontIcon from 'material-ui/FontIcon';
-import {
-    PERMISO_LIST_USER,
-    PERMISO_LIST_PERMISSION,
-    PERMISO_LIST_GROUP
-} from '../../00_utilities/permisos/types';
-
-
-import MenuMiCuenta from './mi_cuenta';
+import React, {Fragment} from 'react';
+import MenuBase from '../../00_utilities/components/ui/menu/menu';
 import MenuTerceros from './terceros';
 import MenuPermisos from './permisos';
+import MenuInventarios from './inventarios';
+import FontIcon from 'material-ui/FontIcon';
+import {Link} from 'react-router-dom'
 
-import * as actions from "./../../01_actions/01_index";
-import {connect} from "react-redux";
+const iconStyles = {
+    padding: 8,
+};
 
+const Menu = () => {
+    return (
+        <MenuBase>
+            {mis_permisos => {
+                return (
+                    <Fragment>
+                        <MenuTerceros/>
+                        <MenuPermisos/>
+                        <MenuInventarios/>
+                        <Link to='/app/admin/empresas/empresas/list'>
+                            <FontIcon className="fas fa-building" style={iconStyles}/>
+                        </Link>
+                        <Link to='/app/admin/habitaciones/dashboard'>
+                            <FontIcon className="fas fa-bed" style={iconStyles}/>
+                        </Link>
+                        <Link to='/app/admin/productos/dashboard'>
+                            <FontIcon className="fas fa-glass-martini" style={iconStyles}/>
+                        </Link>
+                    </Fragment>
+                )
+            }}
+        </MenuBase>
+    )
+};
 
-class Menu extends Component {
-    componentDidMount() {
-        this.props.fetchMiCuenta();
-        this.props.fetchMisPermisos();
-    }
-
-    render() {
-        const {mis_permisos} = this.props;
-
-        const listar_usuarios = tengoPermiso(mis_permisos, [PERMISO_LIST_USER]);
-        const menu_terceros = listar_usuarios;
-
-
-        const listar_permisos = tengoPermiso(mis_permisos, [PERMISO_LIST_PERMISSION]);
-        const listar_groups = tengoPermiso(mis_permisos, [PERMISO_LIST_GROUP]);
-        const menu_permisos = listar_permisos || listar_groups;
-
-        return (
-            <Toolbar>
-                <ToolbarGroup firstChild={true}>
-                    <Link to='/app/'>
-                        <FontIcon className="fas fa-home pl-2"/>
-                    </Link>
-                    {
-                        menu_terceros &&
-                        <MenuTerceros listar_usuarios={listar_usuarios}/>
-                    }
-                    {
-                        menu_permisos &&
-                        <MenuPermisos
-                            listar_permisos={listar_permisos}
-                            listar_groups={listar_groups}
-                        />
-                    }
-                </ToolbarGroup>
-                <ToolbarGroup>
-                    <ToolbarSeparator/>
-                    <MenuMiCuenta/>
-                </ToolbarGroup>
-            </Toolbar>
-        )
-    }
-}
-
-function mapPropsToState(state, ownProps) {
-    return {
-        mi_cuenta: state.mi_cuenta,
-        mis_permisos: state.mis_permisos
-    }
-}
-
-export default connect(mapPropsToState, actions)(Menu);
+export default Menu;

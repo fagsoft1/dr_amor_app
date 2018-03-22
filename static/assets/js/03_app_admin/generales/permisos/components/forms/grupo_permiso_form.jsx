@@ -38,15 +38,11 @@ class Form extends Component {
                 pristine={pristine}
                 element_type='Grupo Permisos'
             >
-                <div className="m-2">
-                    <div className="row">
-                        <MyTextFieldSimple
-                            className="col-12"
-                            nombre='Nombre del Grupo'
-                            name='name'
-                            case='U'/>
-                    </div>
-                </div>
+                <MyTextFieldSimple
+                    className="col-12"
+                    nombre='Nombre del Grupo'
+                    name='name'
+                    case='U'/>
             </MyFormTagModal>
         )
     }
