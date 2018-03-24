@@ -69,6 +69,7 @@ class MovimientoInventarioSerializer(serializers.ModelSerializer):
             'entra_cantidad',
             'sale_costo',
             'sale_cantidad',
+            'observacion',
         ]
 
 
@@ -86,7 +87,8 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
             'bodega_destino',
             'bodega_destino_nombre',
             'movimiento_origen',
-            'movimiento_destino'
+            'movimiento_destino',
+            'trasladado',
         ]
         extra_kwargs = {
             'movimiento_origen': {'read_only': True},
@@ -97,6 +99,8 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
 
 class TrasladoInventarioDetalleSerializer(serializers.ModelSerializer):
     producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+    cantidad_origen = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    cantidad_destino = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
 
     class Meta:
         model = TrasladoInventarioDetalle
@@ -107,4 +111,7 @@ class TrasladoInventarioDetalleSerializer(serializers.ModelSerializer):
             'producto',
             'producto_nombre',
             'cantidad',
+            'cantidad_realmente_trasladada',
+            'cantidad_origen',
+            'cantidad_destino',
         ]

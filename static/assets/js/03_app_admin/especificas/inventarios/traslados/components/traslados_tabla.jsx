@@ -67,6 +67,7 @@ class Tabla extends React.Component {
                                 show: permisos_object.delete,
                                 maxWidth: 60,
                                 Cell: row =>
+                                    !row.original.trasladado &&
                                     <MyDialogButtonDelete
                                         onDelete={() => {
                                             onDelete(row.original)
@@ -81,6 +82,7 @@ class Tabla extends React.Component {
                                 show: permisos_object.change,
                                 maxWidth: 60,
                                 Cell: row =>
+                                    !row.original.trasladado &&
                                     <IconButtonTableEdit
                                         onClick={() => {
                                             onSelectItemEdit(row.original);

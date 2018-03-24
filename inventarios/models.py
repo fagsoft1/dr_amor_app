@@ -1,3 +1,6 @@
+import datetime
+
+from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
@@ -19,7 +22,7 @@ class Bodega(models.Model):
 
 class MovimientoInventario(TimeStampedModel):
     fecha = models.DateField()
-    creado_por = models.ForeignKey(User, on_delete=models.PROTECT)
+    creado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
     proveedor = models.ForeignKey(Tercero, related_name='movimientos_inventarios', on_delete=models.PROTECT, null=True,
                                   blank=True)
     bodega = models.ForeignKey(Bodega, on_delete=models.PROTECT, related_name='movimientos')
@@ -27,6 +30,7 @@ class MovimientoInventario(TimeStampedModel):
     detalle = models.TextField(null=True, blank=True)
     tipo = models.CharField(max_length=2, null=True, blank=True)
     cargado = models.BooleanField(default=False)
+    observacion = models.TextField(blank=True, null=True)
 
     def cargar_inventario(self):
         if not self.cargado:
@@ -54,6 +58,9 @@ class MovimientoInventarioDetalle(TimeStampedModel):
     saldo_costo = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     es_ultimo_saldo = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = [('movimiento', 'producto')]
+
     def calcular_costo_promedio(self):
         qs = MovimientoInventarioDetalle.objects.exclude(
             id=self.id
@@ -66,6 +73,13 @@ class MovimientoInventarioDetalle(TimeStampedModel):
         saldo_cantidad = 0
         saldo_costo = 0
         costo_unitario = 0
+
+        if self.movimiento.tipo == 'EA':
+            if movimiento:
+                saldo_cantidad = movimiento.saldo_cantidad + self.entra_cantidad
+                saldo_costo = movimiento.saldo_costo + (movimiento.costo_unitario * self.entra_cantidad)
+                costo_unitario = movimiento.costo_unitario
+
         if self.movimiento.tipo == 'E':
             saldo_cantidad = self.entra_cantidad
             saldo_costo = self.entra_costo
@@ -75,9 +89,9 @@ class MovimientoInventarioDetalle(TimeStampedModel):
                 saldo_costo += movimiento.saldo_costo
                 costo_unitario = saldo_costo / saldo_cantidad
 
-        if self.movimiento.tipo == 'S':
-            saldo_cantidad = movimiento.saldo_cantidad - self.saldo_cantidad
-            saldo_costo = movimiento.saldo_costo - (self.saldo_cantidad * movimiento.costo_unitario)
+        if self.movimiento.tipo == 'S' or self.movimiento.tipo == 'SA':
+            saldo_cantidad = movimiento.saldo_cantidad - self.sale_cantidad
+            saldo_costo = movimiento.saldo_costo - (self.sale_cantidad * movimiento.costo_unitario)
             costo_unitario = movimiento.costo_unitario
 
         qs.update(es_ultimo_saldo=False)
@@ -89,12 +103,44 @@ class MovimientoInventarioDetalle(TimeStampedModel):
 
 
 class TrasladoInventario(models.Model):
+    creado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
     bodega_origen = models.ForeignKey(Bodega, related_name='salidas_mercancia_traslado', on_delete=models.PROTECT)
     bodega_destino = models.ForeignKey(Bodega, related_name='entradas_mercancia_traslado', on_delete=models.PROTECT)
     movimiento_origen = models.OneToOneField(MovimientoInventario, related_name='traslado_entrega',
                                              on_delete=models.PROTECT, null=True, blank=True)
     movimiento_destino = models.OneToOneField(MovimientoInventario, related_name='traslado_recibe',
                                               on_delete=models.PROTECT, null=True, blank=True)
+    trasladado = models.BooleanField(default=False)
+
+    def realizar_traslado(self):
+        if not self.trasladado:
+            movimiento_origen = MovimientoInventario(
+                bodega=self.bodega_origen,
+                creado_por=self.creado_por,
+                fecha=datetime.datetime.now(),
+                tipo='S',
+                detalle='Traslado a bodega %s' % self.bodega_destino.nombre,
+                motivo='traslado_salida'
+            )
+            movimiento_origen.save()
+            movimiento_destino = MovimientoInventario(
+                bodega=self.bodega_destino,
+                creado_por=self.creado_por,
+                fecha=datetime.datetime.now(),
+                tipo='E',
+                detalle='Traslado desde bodega %s' % self.bodega_origen.nombre,
+                motivo='traslado_entrada'
+            )
+            movimiento_destino.save()
+            self.movimiento_origen = movimiento_origen
+            self.movimiento_destino = movimiento_destino
+            self.trasladado = True
+            self.save()
+            [x.retirar_de_origen() for x in self.detalles.all()]
+            movimiento_destino.cargado = True
+            movimiento_destino.save()
+            movimiento_origen.cargado = True
+            movimiento_origen.save()
 
     class Meta:
         permissions = [
@@ -107,3 +153,54 @@ class TrasladoInventarioDetalle(models.Model):
     traslado = models.ForeignKey(TrasladoInventario, on_delete=models.PROTECT, related_name='detalles')
     producto = models.ForeignKey(Producto, related_name='mis_traslados', on_delete=models.PROTECT)
     cantidad = models.DecimalField(max_digits=12, decimal_places=2)
+    cantidad_realmente_trasladada = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    class Meta:
+        unique_together = [('traslado', 'producto')]
+
+    def retirar_de_origen(self):
+        if self.cantidad > 0:
+            movimiento_saldo_origen = MovimientoInventarioDetalle.objects.filter(
+                es_ultimo_saldo=True,
+                movimiento__bodega=self.traslado.bodega_origen,
+                producto=self.producto
+            ).first()
+            cantidad_a_trasladar = Decimal(min(self.cantidad, movimiento_saldo_origen.saldo_cantidad))
+
+            costo_total = Decimal(movimiento_saldo_origen.costo_unitario * cantidad_a_trasladar)
+
+            movimiento_origen_detalle = MovimientoInventarioDetalle(
+                movimiento=self.traslado.movimiento_origen,
+                producto=self.producto,
+                sale_cantidad=cantidad_a_trasladar,
+                sale_costo=costo_total,
+                entra_cantidad=0,
+                entra_costo=0,
+                costo_unitario=0,
+                saldo_costo=0,
+                saldo_cantidad=0,
+                es_ultimo_saldo=False
+            )
+            movimiento_origen_detalle.save()
+            movimiento_origen_detalle.calcular_costo_promedio()
+            self.cantidad_realmente_trasladada = cantidad_a_trasladar
+            self.save()
+            self.ingresa_al_destino(movimiento_origen_detalle)
+        else:
+            self.delete()
+
+    def ingresa_al_destino(self, movimiento_origen_detalle):
+        movimiento_destino_detalle = MovimientoInventarioDetalle(
+            movimiento=self.traslado.movimiento_destino,
+            producto=movimiento_origen_detalle.producto,
+            sale_cantidad=0,
+            sale_costo=0,
+            entra_cantidad=movimiento_origen_detalle.sale_cantidad,
+            entra_costo=movimiento_origen_detalle.sale_costo,
+            costo_unitario=0,
+            saldo_costo=0,
+            saldo_cantidad=0,
+            es_ultimo_saldo=False
+        )
+        movimiento_destino_detalle.save()
+        movimiento_destino_detalle.calcular_costo_promedio()

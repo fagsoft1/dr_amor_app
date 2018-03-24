@@ -5,10 +5,21 @@ import {
     fetchObject,
     deleteObject,
     createObject,
-    callApiMethodWithParameters
+    callApiMethodWithParameters,
+    callApiMethod
 } from '../../00_general_fuctions'
 
 const current_url_api = 'traslados_inventarios';
+export const trasladarTrasladoInventario = (id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.update, payload: response})
+        };
+        callApiMethod(current_url_api, id, 'trasladar', dispatches, callback, callback_error)
+    }
+};
+
+
 export const createTrasladoInventario = (values, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {

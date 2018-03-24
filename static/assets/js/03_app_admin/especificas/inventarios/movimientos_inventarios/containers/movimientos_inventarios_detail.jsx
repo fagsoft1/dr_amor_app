@@ -64,7 +64,10 @@ class Detail extends Component {
                 <Titulo>Detalle</Titulo>
                 <div className="row">
                     <div className="col-12"><strong>Bodega: </strong>{object.bodega_nombre}</div>
-                    <div className="col-12"><strong>Proveedor: </strong>{object.proveedor_nombre}</div>
+                    {object.proveedor_nombre &&
+                    <div className="col-12"><strong>Proveedor: </strong>{object.proveedor_nombre}</div>}
+                    {object.observacion &&
+                    <div className="col-12"><strong>Observación: </strong>{object.observacion}</div>}
                 </div>
 
                 <ListCrud

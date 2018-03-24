@@ -60,35 +60,39 @@ class Form extends Component {
                 />
 
                 {
-                    movimiento_inventario_object.tipo === 'E' &&
+                    (movimiento_inventario_object.tipo === 'E' || movimiento_inventario_object.tipo === 'EA') &&
                     <Fragment>
                         <MyTextFieldSimple
                             nombre='Cantidad de Ingreso'
                             className='col-12'
                             name='entra_cantidad'
                         />
-
-                        < MyTextFieldSimple
-                            nombre='Costo'
-                            className='col-12'
-                            name='entra_costo'
-                        />
+                        {
+                            movimiento_inventario_object.tipo === 'E' &&
+                            < MyTextFieldSimple
+                                nombre='Costo'
+                                className='col-12'
+                                name='entra_costo'
+                            />
+                        }
                     </Fragment>
                 }
                 {
-                    movimiento_inventario_object.tipo === 'S' &&
+                    (movimiento_inventario_object.tipo === 'S' || movimiento_inventario_object.tipo === 'SA') &&
                     <Fragment>
                         <MyTextFieldSimple
                             nombre='Cantidad de Salida'
                             className='col-12'
                             name='sale_cantidad'
                         />
-
-                        < MyTextFieldSimple
-                            nombre='Costo'
-                            className='col-12'
-                            name='sale_costo'
-                        />
+                        {
+                            movimiento_inventario_object.tipo === 'S' &&
+                            < MyTextFieldSimple
+                                nombre='Costo'
+                                className='col-12'
+                                name='sale_costo'
+                            />
+                        }
                     </Fragment>
                 }
 

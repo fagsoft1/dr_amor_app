@@ -2,7 +2,9 @@ const validate = values => {
     const errors = {};
 
     const requiredFields = [
-        'nombre',
+        'bodega',
+        'observacion',
+        'fecha',
     ];
     requiredFields.map(field => {
         if (!values[field]) {

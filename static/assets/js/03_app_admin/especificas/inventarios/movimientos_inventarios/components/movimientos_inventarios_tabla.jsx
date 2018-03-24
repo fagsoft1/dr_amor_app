@@ -90,22 +90,6 @@ class Tabla extends React.Component {
 
                             },
                             {
-                                Header: "Editar",
-                                show: permisos_object.change,
-                                maxWidth: 60,
-                                Cell: row => {
-                                    return (
-                                        row.original.motivo === 'saldo_inicial' ?
-                                            <Fragment></Fragment> :
-                                            <IconButtonTableEdit
-                                                onClick={() => {
-                                                    onSelectItemEdit(row.original);
-                                                }}/>
-                                    )
-                                }
-
-                            },
-                            {
                                 Header: "Ver",
                                 show: permisos_object.detail,
                                 maxWidth: 60,

@@ -1,4 +1,4 @@
-from django.db.models import Sum, ExpressionWrapper, DecimalField
+from django.db.models import Sum, ExpressionWrapper, DecimalField, OuterRef, Subquery
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
@@ -61,10 +61,13 @@ class MovimientoInventarioViewSet(viewsets.ModelViewSet):
         if instance.motivo == 'saldo_inicial':
             instance.tipo = 'E'
             instance.detalle = 'Saldo Inicial'
+        if instance.motivo == 'ajuste_ingreso':
+            instance.tipo = 'EA'
+            instance.detalle = 'Ingreso Ajuste'
+        if instance.motivo == 'ajuste_salida':
+            instance.tipo = 'SA'
+            instance.detalle = 'Salida Ajuste'
         instance.save()
-    # def perform_update(self, serializer):
-    #     instance = serializer.save()
-    #     send_email_confirmation(user=self.request.user, modified=instance)
 
 
 class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
@@ -108,10 +111,30 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = TrasladoInventarioSerializer
 
+    @detail_route(methods=['post'])
+    def trasladar(self, request, pk=None):
+        traslado = self.get_object()
+        traslado.realizar_traslado()
+        serializer = self.get_serializer(traslado)
+        return Response(serializer.data)
+
 
 class TrasladoInventarioDetallesViewSet(viewsets.ModelViewSet):
+    producto_bodega_origen = MovimientoInventarioDetalle.objects.filter(
+        movimiento__bodega_id=OuterRef('traslado__bodega_origen_id'),
+        producto_id=OuterRef('producto_id'),
+        es_ultimo_saldo=True,
+    )
+    producto_bodega_destino = MovimientoInventarioDetalle.objects.filter(
+        movimiento__bodega_id=OuterRef('traslado__bodega_destino_id'),
+        producto_id=OuterRef('producto_id'),
+        es_ultimo_saldo=True,
+    )
     queryset = TrasladoInventarioDetalle.objects.select_related(
         'producto',
+    ).annotate(
+        cantidad_origen=Subquery(producto_bodega_origen.values('saldo_cantidad')),
+        cantidad_destino=Subquery(producto_bodega_destino.values('saldo_cantidad')),
     ).all()
     serializer_class = TrasladoInventarioDetalleSerializer
 
