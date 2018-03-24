@@ -56,6 +56,7 @@ THIRD_PART_APPS = [
     'crispy_forms',
     'rest_framework',
     'webpack_loader',
+    'channels',
     'imagekit',
 ]
 
@@ -145,3 +146,5 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = "media"
 STATIC_ROOT = "/static/"
+
+ASGI_APPLICATION = "dr_amor_app.routing.application"
