@@ -92,7 +92,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'dr_amor_app.wsgi.application'
+#WSGI_APPLICATION = 'dr_amor_app.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
