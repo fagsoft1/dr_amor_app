@@ -49,6 +49,7 @@ MY_APPS = [
     'habitaciones.apps.HabitacionesConfig',
     'productos.apps.ProductosConfig',
     'inventarios.apps.InventariosConfig',
+    'chat.apps.ChatConfig',
 ]
 
 THIRD_PART_APPS = [
@@ -92,7 +93,7 @@ TEMPLATES = [
     },
 ]
 
-#WSGI_APPLICATION = 'dr_amor_app.wsgi.application'
+# WSGI_APPLICATION = 'dr_amor_app.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -148,3 +149,12 @@ MEDIA_ROOT = "media"
 STATIC_ROOT = "/static/"
 
 ASGI_APPLICATION = "dr_amor_app.routing.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
