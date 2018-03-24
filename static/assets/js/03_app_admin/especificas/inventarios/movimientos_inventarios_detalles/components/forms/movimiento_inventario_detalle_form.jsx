@@ -3,8 +3,6 @@ import {reduxForm} from 'redux-form';
 import {
     MyTextFieldSimple,
     MyCombobox,
-    MyDateTimePickerField,
-    MyDropdownList
 } from '../../../../../../00_utilities/components/ui/forms/fields';
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
@@ -12,6 +10,14 @@ import validate from './validate';
 
 
 class Form extends Component {
+    componentDidMount() {
+        const {movimiento_inventario_object, notificarErrorAjaxAction, noCargando} = this.props;
+        if (movimiento_inventario_object.motivo === 'saldo_inicial') {
+            this.props.clearProductos();
+            this.props.fetchProductosParaSaldoInicial(() => noCargando(), notificarErrorAjaxAction);
+        }
+    }
+
     render() {
         const {
             pristine,

@@ -24,6 +24,8 @@ import proveedoresReducer from './especificas/terceros/proveedoresReducer';
 import bodegasReducer from './especificas/inventarios/bodegasReducer';
 import movimientosInventariosReducer from './especificas/inventarios/movimientosInventariosReducer';
 import movimientosInventariosDetallesReducer from './especificas/inventarios/movimientosInventariosDetallesReducer';
+import trasladosInventariosReducer from './especificas/inventarios/trasladosInventariosReducer';
+import trasladosInventariosDetallesReducer from './especificas/inventarios/trasladosInventariosDetallesReducer';
 
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
@@ -49,6 +51,8 @@ const rootReducer = combineReducers({
     bodegas: bodegasReducer,
     movimientos_inventarios: movimientosInventariosReducer,
     movimientos_inventarios_detalles: movimientosInventariosDetallesReducer,
+    traslados_inventarios: trasladosInventariosReducer,
+    traslados_inventarios_detalles: trasladosInventariosDetallesReducer,
 });
 
 export default rootReducer;

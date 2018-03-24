@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import CreateForm from './forms/movimiento_inventario_form';
-import Tabla from './movimientos_inventarios_tabla';
+import CreateForm from './forms/traslado_form';
+import Tabla from './traslados_tabla';
 import crudHOC from '../../../../../00_utilities/components/hoc_crud';
-import {fechaFormatoUno} from "../../../../../00_utilities/common";
 
 
 const CRUD = crudHOC(CreateForm, Tabla);
@@ -16,12 +15,12 @@ class List extends Component {
             createObjectMethod: this.createObjectMethod.bind(this),
             updateObjectMethod: this.updateObjectMethod.bind(this),
         };
-        this.plural_name = 'Movimientos Inventarios';
-        this.singular_name = 'Movimiento Inventario';
+        this.plural_name = 'Traslados Inventarios';
+        this.singular_name = 'Traslado Inventario';
     }
 
     successSubmitCallback(item) {
-        const nombre = `de ${fechaFormatoUno(item.fecha)} número ${item.id}`;
+        const nombre = item.nombre;
         const {noCargando, notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
         noCargando()
@@ -29,7 +28,7 @@ class List extends Component {
 
 
     successDeleteCallback(item) {
-        const nombre = `de ${fechaFormatoUno(item.fecha)} número ${item.id}`;
+        const nombre = item.nombre;
         const {noCargando, notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
         noCargando()
@@ -42,7 +41,7 @@ class List extends Component {
             noCargando();
         };
         cargando();
-        this.props.fetchMovimientoInventario(item_id, success_method, notificarErrorAjaxAction);
+        this.props.fetchTrasladoInventario(item_id, success_method, notificarErrorAjaxAction);
     }
 
     createObjectMethod(item, successCallback) {
@@ -50,10 +49,10 @@ class List extends Component {
         const success_method = (response) => {
             this.successSubmitCallback(item);
             successCallback();
-            this.props.history.push(`/app/admin/inventarios/movimientos_inventarios/detail/${response.id}`);
+            this.props.history.push(`/app/admin/inventarios/traslados/detail/${response.id}`);
         };
         cargando();
-        this.props.createMovimientoInventario(item, success_method, notificarErrorAjaxAction);
+        this.props.createTrasladoInventario(item, success_method, notificarErrorAjaxAction);
     }
 
     updateObjectMethod(item, successCallback) {
@@ -63,7 +62,7 @@ class List extends Component {
             successCallback();
         };
         cargando();
-        this.props.updateMovimientoInventario(item.id, item, success_method, notificarErrorAjaxAction);
+        this.props.updateTrasladoInventario(item.id, item, success_method, notificarErrorAjaxAction);
     }
 
     deleteObjectMethod(item, successCallback) {
@@ -73,7 +72,7 @@ class List extends Component {
             successCallback();
         };
         cargando();
-        this.props.deleteMovimientoInventario(item.id, success_method, notificarErrorAjaxAction);
+        this.props.deleteTrasladoInventario(item.id, success_method, notificarErrorAjaxAction);
     }
 
     render() {

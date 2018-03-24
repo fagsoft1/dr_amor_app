@@ -12,3 +12,5 @@ export * from './terceros/proveedoresAction';
 export * from './inventarios/bodegasAction';
 export * from './inventarios/movimientosInventariosAction';
 export * from './inventarios/movimientosInventariosDetallesAction';
+export * from './inventarios/traslasdosInventariosAction';
+export * from './inventarios/trasladosInventariosDetallesAction';

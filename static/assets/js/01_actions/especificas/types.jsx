@@ -123,3 +123,21 @@ export const MOVIMIENTO_INVENTARIO_DETALLE_TYPES = {
     clear: 'clear_movimientos_inventarios_detalles',
     update: 'update_movimiento_inventario_detalle',
 };
+
+export const TRASLADO_INVENTARIO_TYPES = {
+    create: 'create_traslado_inventario',
+    delete: 'delete_traslado_inventario',
+    fetch_all: 'fetch_traslados_inventarios',
+    fetch: 'fetch_traslado_inventario',
+    clear: 'clear_traslados_inventarios',
+    update: 'update_traslado_inventario',
+};
+
+export const TRASLADO_INVENTARIO_DETALLE_TYPES = {
+    create: 'create_traslado_inventario_detalle',
+    delete: 'delete_traslado_inventario_detalle',
+    fetch_all: 'fetch_traslados_inventarios_detalle',
+    fetch: 'fetch_traslado_inventario_detalle',
+    clear: 'clear_traslados_inventarios_detalle',
+    update: 'update_traslado_inventario_detalle',
+};

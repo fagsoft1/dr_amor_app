@@ -135,3 +135,19 @@ export const MOVIMIENTOS_INVENTARIOS_DETALLES = {
     list: 'list_movimientoinventariodetalle',
     detail: 'detail_movimientoinventariodetalle',
 };
+
+export const TRASLADOS_INVENTARIOS = {
+    add: 'add_trasladoinventario',
+    delete: 'delete_trasladoinventario',
+    change: 'change_trasladoinventario',
+    list: 'list_trasladoinventario',
+    detail: 'detail_trasladoinventario',
+};
+
+export const TRASLADOS_INVENTARIOS_DETALLE = {
+    add: 'add_trasladoinventariodetalle',
+    delete: 'delete_trasladoinventariodetalle',
+    change: 'change_trasladoinventariodetalle',
+    list: 'list_trasladoinventariodetalle',
+    detail: 'detail_trasladoinventariodetalle',
+};

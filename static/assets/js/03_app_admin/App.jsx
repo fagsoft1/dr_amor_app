@@ -16,8 +16,12 @@ import EmpresasList from "./especificas/empresas/empresas/containers/empresas_li
 import HabitacionesList from "./especificas/habitaciones/habitaciones_dashboard/containers/habitaciones_dashboard";
 import ProductosDashboard from "./especificas/productos/productos_dashboard/containers/base_dashboard";
 import BodegasList from "./especificas/inventarios/bodegas/containers/bodegas_list_container";
+import BodegasDetail from "./especificas/inventarios/bodegas/containers/bodega_detail";
 import MovimientosInventariosList from "./especificas/inventarios/movimientos_inventarios/containers/movimientos_inventarios_list_container";
 import MovimientosInventariosDetail from "./especificas/inventarios/movimientos_inventarios/containers/movimientos_inventarios_detail";
+
+import TrasladosInventariosList from "./especificas/inventarios/traslados/containers/traslados_list_container";
+import TrasladoInventarioDetail from "./especificas/inventarios/traslados/containers/traslados_detail";
 
 
 const AdminApp = (props) => {
@@ -38,10 +42,15 @@ const AdminApp = (props) => {
                         <Route exact path='/app/admin/productos/dashboard' component={ProductosDashboard}/>
                         <Route exact path='/app/admin/usuarios/detail/:id' component={UsuariosDetail}/>
                         <Route exact path='/app/admin/inventarios/bodegas/list' component={BodegasList}/>
+                        <Route exact path='/app/admin/inventarios/bodegas/detail/:id' component={BodegasDetail}/>
                         <Route exact path='/app/admin/inventarios/movimientos_inventarios/list'
                                component={MovimientosInventariosList}/>
                         <Route exact path='/app/admin/inventarios/movimientos_inventarios/detail/:id'
                                component={MovimientosInventariosDetail}/>
+                        <Route exact path='/app/admin/inventarios/traslados/list'
+                               component={TrasladosInventariosList}/>
+                        <Route exact path='/app/admin/inventarios/traslados/detail/:id'
+                               component={TrasladoInventarioDetail}/>
                         <Route exact path='/app/admin/usuarios/acompanantes/dashboard'
                                component={AcompanantesDashboard}/>
                     </Switch>

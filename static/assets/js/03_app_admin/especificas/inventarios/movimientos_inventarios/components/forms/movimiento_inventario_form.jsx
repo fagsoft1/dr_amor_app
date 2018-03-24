@@ -44,7 +44,7 @@ class Form extends Component {
                     textField='nombre'
                     placeholder='Seleccionar Bodega'
                     valuesField='id'
-                    data={_.map(bodegas_list, h => {
+                    data={_.map(_.pickBy(bodegas_list, e => e.es_principal), h => {
                         return ({
                             id: h.id,
                             nombre: h.nombre

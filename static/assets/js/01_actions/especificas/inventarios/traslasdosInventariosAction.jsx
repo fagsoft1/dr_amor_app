@@ -1,16 +1,15 @@
-import {
-    PRODUCTO_TYPES as TYPES
-} from '../../00_types';
+import {TRASLADO_INVENTARIO_TYPES as TYPES} from '../../00_types';
 import {
     fetchList,
     updateObject,
     fetchObject,
     deleteObject,
     createObject,
+    callApiMethodWithParameters
 } from '../../00_general_fuctions'
 
-const current_url_api = 'productos';
-export const createProducto = (values, callback = null, callback_error = null) => {
+const current_url_api = 'traslados_inventarios';
+export const createTrasladoInventario = (values, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -18,7 +17,7 @@ export const createProducto = (values, callback = null, callback_error = null) =
         createObject(current_url_api, values, dispatches, callback, callback_error)
     }
 };
-export const deleteProducto = (id, callback = null, callback_error = null) => {
+export const deleteTrasladoInventario = (id, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -26,7 +25,7 @@ export const deleteProducto = (id, callback = null, callback_error = null) => {
         deleteObject(current_url_api, id, dispatches, callback, callback_error)
     }
 };
-export const fetchProductos = (callback = null, callback_error = null) => {
+export const fetchTrasladosInventarios = (callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -34,15 +33,7 @@ export const fetchProductos = (callback = null, callback_error = null) => {
         fetchList(current_url_api, dispatches, callback, callback_error);
     }
 };
-export const fetchProductosParaSaldoInicial = (callback = null, callback_error = null) => {
-    return (dispatch) => {
-        const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
-        };
-        fetchList(`${current_url_api}/sin_saldos_iniciales`, dispatches, callback, callback_error);
-    }
-};
-export const fetchProducto = (id, callback = null, callback_error = null) => {
+export const fetchTrasladoInventario = (id, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
@@ -50,13 +41,13 @@ export const fetchProducto = (id, callback = null, callback_error = null) => {
         fetchObject(current_url_api, id, dispatches, callback, callback_error);
     }
 };
-export const clearProductos = () => {
+export const clearTrasladosInventarios = () => {
     return (dispatch) => {
         dispatch({type: TYPES.clear});
 
     }
 };
-export const updateProducto = (id, values, callback = null, callback_error = null) => {
+export const updateTrasladoInventario = (id, values, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

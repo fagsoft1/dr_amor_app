@@ -65,7 +65,7 @@ const renderDropdownList = ({input, data, valueField, textField, placeholder, on
                           placeholder={placeholder}
                           valueField={valueField}
                           textField={textField}
-                          onChange={input.onChange}
+                          onChange={(e)=>input.onChange(e[valueField])}
                           onSelect={onSelect}
             />
         </Fragment>
@@ -74,16 +74,17 @@ const renderDropdownList = ({input, data, valueField, textField, placeholder, on
 
 
 export const MyDropdownList = (props) => {
-    const {busy = false, textField = 'name', valuesField = 'id', dropUp} = props;
+    const {busy = false, textField = 'name', valuesField = 'id', className = ''} = props;
     return (
-        <Field
-            {...props}
-            component={renderDropdownList}
-            valueField={valuesField}
-            textField={textField}
-            busy={busy}
-            dropUp
-        />
+        <div className={`${className} mt-4`}>
+            <Field
+                {...props}
+                component={renderDropdownList}
+                valueField={valuesField}
+                textField={textField}
+                busy={busy}
+            />
+        </div>
     )
 };
 

@@ -16,6 +16,9 @@ const MenuTerceros = (props) => (
             <MenuItem primaryText="Kardex"
                       containerElement={<Link to='/app/admin/inventarios/movimientos_inventarios/list'/>}
             />
+            <MenuItem primaryText="Kardex Traslados"
+                      containerElement={<Link to='/app/admin/inventarios/traslados/list'/>}
+            />
         </div>
     </li>
 );

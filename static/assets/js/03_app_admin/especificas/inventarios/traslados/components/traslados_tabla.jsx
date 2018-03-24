@@ -1,7 +1,6 @@
-import React, {Fragment} from "react";
+import React from "react";
 import Checkbox from 'material-ui/Checkbox';
 import {MyDialogButtonDelete} from '../../../../../00_utilities/components/ui/dialog';
-import {fechaFormatoUno} from '../../../../../00_utilities/common';
 import {IconButtonTableEdit, IconButtonTableSee} from '../../../../../00_utilities/components/ui/icon/iconos';
 import {Link} from 'react-router-dom'
 
@@ -29,44 +28,21 @@ class Tabla extends React.Component {
                         Header: "Caracteristicas",
                         columns: [
                             {
-                                Header: "Id",
-                                accessor: "id",
-                                maxWidth: 100
-                            },
-                            {
-                                Header: "Fecha",
-                                accessor: "fecha",
+                                Header: "Bodega Origen",
+                                accessor: "bodega_origen_nombre",
                                 maxWidth: 150,
-                                Cell: row => fechaFormatoUno(row.value)
+                                filterable: true,
+                                filterMethod: (filter, row) => {
+                                    return row[filter.id].includes(filter.value.toUpperCase())
+                                }
                             },
                             {
-                                Header: "Proveedor",
-                                accessor: "proveedor_nombre",
-                                maxWidth: 250,
-                            },
-                            {
-                                Header: "Bodega",
-                                accessor: "bodega_nombre",
+                                Header: "Bodega Destino",
+                                accessor: "bodega_destino_nombre",
                                 maxWidth: 150,
-                            },
-                            {
-                                Header: "Detalle",
-                                accessor: "detalle",
-                                maxWidth: 300,
-                            },
-                            {
-                                Header: "Cargado",
-                                accessor: "cargado",
-                                maxWidth: 100,
-                                Cell: row => {
-                                    return (
-                                        <div className='text-center'>
-                                            {
-                                                row.value &&
-                                                <i className='fas fa-check-circle' style={{color: 'green'}}></i>
-                                            }
-                                        </div>
-                                    )
+                                filterable: true,
+                                filterMethod: (filter, row) => {
+                                    return row[filter.id].includes(filter.value.toUpperCase())
                                 }
                             },
                         ]
@@ -74,17 +50,28 @@ class Tabla extends React.Component {
                     {
                         Header: "Opciones",
                         columns: [
+                            // {
+                            //     Header: "Activo",
+                            //     accessor: "is_active",
+                            //     show: permisos_object.make_user_active,
+                            //     maxWidth: 60,
+                            //     Cell: row => (
+                            //         <Checkbox
+                            //             checked={row.value}
+                            //             onCheck={() => updateItem({...row.original, is_active: !row.value})}
+                            //         />
+                            //     )
+                            // },
                             {
                                 Header: "Elimi.",
                                 show: permisos_object.delete,
                                 maxWidth: 60,
                                 Cell: row =>
-                                    !row.original.cargado &&
                                     <MyDialogButtonDelete
                                         onDelete={() => {
                                             onDelete(row.original)
                                         }}
-                                        element_name={`de ${fechaFormatoUno(row.original.fecha)} número ${row.original.id}`}
+                                        element_name={row.original.nombre}
                                         element_type={singular_name}
                                     />
 
@@ -93,16 +80,11 @@ class Tabla extends React.Component {
                                 Header: "Editar",
                                 show: permisos_object.change,
                                 maxWidth: 60,
-                                Cell: row => {
-                                    return (
-                                        row.original.motivo === 'saldo_inicial' ?
-                                            <Fragment></Fragment> :
-                                            <IconButtonTableEdit
-                                                onClick={() => {
-                                                    onSelectItemEdit(row.original);
-                                                }}/>
-                                    )
-                                }
+                                Cell: row =>
+                                    <IconButtonTableEdit
+                                        onClick={() => {
+                                            onSelectItemEdit(row.original);
+                                        }}/>
 
                             },
                             {
@@ -110,8 +92,7 @@ class Tabla extends React.Component {
                                 show: permisos_object.detail,
                                 maxWidth: 60,
                                 Cell: row =>
-                                    <Link
-                                        to={`/app/admin/inventarios/movimientos_inventarios/detail/${row.original.id}`}>
+                                    <Link to={`/app/admin/inventarios/traslados/detail/${row.original.id}`}>
                                         <IconButtonTableSee/>
                                     </Link>
 

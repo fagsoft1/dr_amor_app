@@ -7,7 +7,7 @@ import {
     fetchObject,
     deleteObject,
     createObject,
-    callApiMethodWithParameters
+    fetchListWithParameter
 } from '../../00_general_fuctions'
 
 const current_url_api = 'movimiento_inventario_detalle';
@@ -33,6 +33,30 @@ export const fetchMovimientosInventariosDetalles = (callback = null, callback_er
             dispatch({type: TYPES.fetch_all, payload: response})
         };
         fetchList(current_url_api, dispatches, callback, callback_error);
+    }
+};
+export const fetchMovimientosInventariosDetallesxMovimiento = (movimiento_id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        fetchListWithParameter(`${current_url_api}/por_movimiento/?movimiento_id=${movimiento_id}`, dispatches, callback, callback_error);
+    }
+};
+export const fetchMovimientosInventariosSaldosxBodega = (bodega_id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        fetchListWithParameter(`${current_url_api}/actual_por_bodega/?bodega_id=${bodega_id}`, dispatches, callback, callback_error);
+    }
+};
+export const fetchMovimientosInventariosxBodegaxProducto = (bodega_id, producto_id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        fetchListWithParameter(`${current_url_api}/por_bodega_por_producto/?bodega_id=${bodega_id}&producto_id=${producto_id}`, dispatches, callback, callback_error);
     }
 };
 export const fetchMovimientoInventarioDetalle = (id, callback = null, callback_error = null) => {

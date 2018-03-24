@@ -1,4 +1,6 @@
+from django.db.models import Count, F, Q
 from rest_framework import viewsets, serializers, status
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
 from .api_serializers import CategoriaSerializer, CategoriaDosSerializer, ProductoSerializer, UnidadProductoSerializer
@@ -39,6 +41,14 @@ class ProductoViewSet(viewsets.ModelViewSet):
         'empresa'
     ).all()
     serializer_class = ProductoSerializer
+
+    @list_route(methods=['get'])
+    def sin_saldos_iniciales(self, request):
+        qs = self.queryset.filter(
+            ~Q(movimientos_inventarios__movimiento__motivo='saldo_inicial')
+        )
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
 
     # def perform_destroy(self, instance):
     #     if not instance.mis_movimientos_inventario.exists():

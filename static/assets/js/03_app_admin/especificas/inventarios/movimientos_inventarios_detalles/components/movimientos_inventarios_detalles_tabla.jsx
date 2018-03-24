@@ -16,7 +16,8 @@ class Tabla extends React.Component {
             singular_name,
             onDelete,
             onSelectItemEdit,
-            permisos_object
+            permisos_object,
+            movimiento
         } = this.props;
 
 
@@ -48,13 +49,15 @@ class Tabla extends React.Component {
                                 Header: "Cantidad",
                                 accessor: "entra_cantidad",
                                 maxWidth: 80,
+                                Footer: (<div className='text-right'>{numerosFormato(movimiento.entra_cantidad)}</div>),
                                 Cell: row => numerosFormato(row.value)
                             },
                             {
                                 Header: "Costo",
                                 accessor: "entra_costo",
                                 maxWidth: 80,
-                                Cell: row => pesosColombianos(row.value)
+                                Footer: (<div className='text-right'>{pesosColombianos(movimiento.entra_costo)}</div>),
+                                Cell: row => <div className='text-right'>{pesosColombianos(row.value)}</div>
                             },
                         ]
                     },
@@ -65,13 +68,15 @@ class Tabla extends React.Component {
                                 Header: "Cantidad",
                                 accessor: "sale_cantidad",
                                 maxWidth: 80,
+                                Footer: (<div className='text-right'>{numerosFormato(movimiento.sale_cantidad)}</div>),
                                 Cell: row => numerosFormato(row.value)
                             },
                             {
                                 Header: "Costo",
                                 accessor: "sale_costo",
                                 maxWidth: 80,
-                                Cell: row => pesosColombianos(row.value)
+                                Footer: (<div className='text-right'>{pesosColombianos(movimiento.sale_costo)}</div>),
+                                Cell: row => <div className='text-right'>{pesosColombianos(row.value)}</div>
                             },
                         ]
                     },
