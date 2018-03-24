@@ -4,4 +4,4 @@ dr_amor_app/settings/production.py
 secretsLocal.json
 db.sqlite3
 node_modules/**
-cosas.txt
+cositas.txt
