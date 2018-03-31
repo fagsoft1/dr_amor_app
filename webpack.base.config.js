@@ -6,7 +6,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, './static/assets/bundles/'),
-        filename: "[name].js"
+        filename: "[name]-[hash].js"
     },
     plugins: [],
     module: {
