@@ -19,6 +19,7 @@ import './../../css/custom.css';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import {WebSocketAPI} from './ws_api';
 
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise, thunk)(createStore);
 const store = configureStore();
@@ -32,6 +33,8 @@ function configureStore() {
             store.replaceReducer(nextRootReducer);
         });
     }
+    WebSocketAPI.connect();
+    WebSocketAPI.listen(store);
     return store;
 }
 

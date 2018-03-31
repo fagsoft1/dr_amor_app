@@ -1,4 +1,5 @@
 import axios from "axios/index";
+import {HABITACION_TYPES as TYPES} from "./00_types";
 
 const axios_instance = axios.create({
     baseURL: '/api/'
@@ -140,5 +141,12 @@ export function callApiMethodWithParameters(url, id, method, parameters, dispatc
         callback,
         callback_error
     );
+}
+
+export function baseWS(type, payload) {
+    return {
+        type: type,
+        payload: payload
+    }
 }
 

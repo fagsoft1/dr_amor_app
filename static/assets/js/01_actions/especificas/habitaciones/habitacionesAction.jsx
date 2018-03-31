@@ -7,10 +7,19 @@ import {
     fetchObject,
     deleteObject,
     createObject,
-    callApiMethodWithParameters
+    baseWS
 } from '../../00_general_fuctions'
 
 const current_url_api = 'habitaciones';
+
+export function refreshUpdateHabitacion(payload) {
+    return baseWS(TYPES.update, payload)
+}
+
+export function refreshDeleteHabitacion(id) {
+    return baseWS(TYPES.delete, id)
+}
+
 export const createHabitacion = (values, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {
