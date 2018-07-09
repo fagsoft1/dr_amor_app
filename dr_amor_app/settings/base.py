@@ -49,6 +49,11 @@ MY_APPS = [
     'habitaciones.apps.HabitacionesConfig',
     'productos.apps.ProductosConfig',
     'inventarios.apps.InventariosConfig',
+    'puntos_venta.apps.PuntosVentaConfig',
+    'ventas.apps.VentasConfig',
+    'accesos.apps.AccesosConfig',
+    'servicios.apps.ServiciosConfig',
+    'cajas.apps.CajasConfig',
 ]
 
 THIRD_PART_APPS = [
@@ -56,9 +61,14 @@ THIRD_PART_APPS = [
     'model_utils',
     'crispy_forms',
     'rest_framework',
+    'knox',
     'webpack_loader',
     'imagekit',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+}
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + MY_APPS + THIRD_PART_APPS
@@ -126,8 +136,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
 LANGUAGE_CODE = 'es'
-
-TIME_ZONE = 'UTC'
+# 3525918
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 

@@ -6,5 +6,6 @@ from .views import (
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
+    path('app/*', IndexView.as_view(), name='index'),
     path('accounts/', include('registration.backends.default.urls')),
 ]

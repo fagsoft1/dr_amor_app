@@ -5,15 +5,16 @@ import CargarDatos from "../../../../../00_utilities/components/system/cargar_da
 import {Titulo} from "../../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
-import {Tabs, Tab} from 'material-ui/Tabs';
-import SwipeableViews from 'react-swipeable-views';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import {
     ACOMPANANTES as bloque_1_permisos,
     CATEGORIAS_ACOMPANANTES as bloque_2_permisos,
 } from "../../../../../00_utilities/permisos/types";
 
 import BloqueCategorias from '../../categorias/components/categorias_acompanantes_list';
-import BloqueTabBase from '../../acompanantes/components/base_list';
+import BloqueAcompanantes from '../../acompanantes/components/acompanantes_list';
+import BloqueFraccionesTiempo from '../../fracciones_tiempos/components/fracciones_tiempos_list';
 
 const styles = {
     headline: {
@@ -40,7 +41,7 @@ class ListadoElementos extends Component {
 
     }
 
-    handleChange = (value) => {
+    handleChange = (event, value) => {
         if (value !== this.state.slideIndex) {
             this.cargarElementos(value);
         }
@@ -58,6 +59,8 @@ class ListadoElementos extends Component {
             this.props.fetchAcompanantes(cargarCategorias, notificarErrorAjaxAction);
         } else if (index === 1) {
             this.props.fetchCategoriasAcompanantes(() => noCargando(), notificarErrorAjaxAction);
+        } else if (index === 2) {
+            this.props.fetchFraccionesTiemposAcompanantes(() => noCargando(), notificarErrorAjaxAction);
         }
     }
 
@@ -78,7 +81,7 @@ class ListadoElementos extends Component {
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list, mis_permisos} = this.props;
+        const {bloque_1_list, bloque_2_list, bloque_3_list, mis_permisos} = this.props;
         const permisos_object_1 = permisosAdapter(mis_permisos, bloque_1_permisos);
         const permisos_object_2 = permisosAdapter(mis_permisos, bloque_2_permisos);
 
@@ -93,31 +96,36 @@ class ListadoElementos extends Component {
                     onChange={this.handleChange}
                     value={this.state.slideIndex}
                 >
-                    <Tab label="Acompanantes" value={0}/>
-                    <Tab label="Categorias" value={1}/>
+                    <Tab label="Acompanantes"/>
+                    <Tab label="Categorias"/>
+                    <Tab label="Fracciones Tiempo"/>
                 </Tabs>
 
-                <SwipeableViews
-                    index={this.state.slideIndex}
-                    onChangeIndex={this.handleChange}
-                >
-                    <div style={styles.slide}>
-                        <BloqueTabBase
-                            object_list={bloque_1_list}
-                            permisos_object={permisos_object_1}
-                            {...this.props}
-                            categorias_list={bloque_2_list}
-                        />
-                    </div>
-                    <div style={styles.slide}>
-                        <BloqueCategorias
-                            object_list={bloque_2_list}
-                            permisos_object={permisos_object_2}
-                            {...this.props}
-                        />
-                    </div>
-                </SwipeableViews>
-
+                {
+                    this.state.slideIndex === 0 &&
+                    <BloqueAcompanantes
+                        object_list={bloque_1_list}
+                        permisos_object={permisos_object_1}
+                        {...this.props}
+                        categorias_list={bloque_2_list}
+                    />
+                }
+                {
+                    this.state.slideIndex === 1 &&
+                    <BloqueCategorias
+                        object_list={bloque_2_list}
+                        permisos_object={permisos_object_2}
+                        {...this.props}
+                    />
+                }
+                {
+                    this.state.slideIndex === 2 &&
+                    <BloqueFraccionesTiempo
+                        object_list={bloque_3_list}
+                        permisos_object={permisos_object_2}
+                        {...this.props}
+                    />
+                }
                 <CargarDatos
                     cargarDatos={this.cargarDatos}
                 />
@@ -130,7 +138,8 @@ function mapPropsToState(state, ownProps) {
     return {
         mis_permisos: state.mis_permisos,
         bloque_1_list: state.acompanantes,
-        bloque_2_list: state.categorias_acompanantes
+        bloque_2_list: state.categorias_acompanantes,
+        bloque_3_list: state.fracciones_tiempos_acompanantes,
     }
 }
 

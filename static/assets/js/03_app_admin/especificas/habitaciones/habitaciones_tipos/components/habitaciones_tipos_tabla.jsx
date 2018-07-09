@@ -1,5 +1,5 @@
 import React from "react";
-import Checkbox from 'material-ui/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
 import {MyDialogButtonDelete} from '../../../../../00_utilities/components/ui/dialog';
 import {pesosColombianos} from '../../../../../00_utilities/common';
 import {IconButtonTableEdit, IconButtonTableSee} from '../../../../../00_utilities/components/ui/icon/iconos';
@@ -38,11 +38,29 @@ class Tabla extends React.Component {
                                 }
                             },
                             {
+                                Header: "% Valor sin Iva",
+                                maxWidth: 150,
+                                accessor: "valor_antes_impuestos",
+                                Cell: row => pesosColombianos(row.value)
+                            },
+                            {
+                                Header: "% Iva",
+                                accessor: "porcentaje_impuesto",
+                                maxWidth: 150,
+                                Cell: row => <span>{`${row.value}%`}</span>
+                            },
+                            {
+                                Header: "Impuesto",
+                                accessor: "impuesto",
+                                maxWidth: 150,
+                                Cell: row => pesosColombianos(row.value)
+                            },
+                            {
                                 Header: "Valor",
                                 accessor: "valor",
                                 maxWidth: 150,
                                 Cell: row => pesosColombianos(row.value)
-                            },
+                            }
                         ]
                     },
                     {

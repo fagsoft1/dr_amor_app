@@ -13,6 +13,7 @@ export const REGEX_CORREO_ELECTRONICO = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\
 export const pesosColombianos = (plata) => formatMoney(Number(plata), "$", 0, ".", ",");
 export const numerosFormato = (numero) => formatMoney(Number(numero), "", 0, ".", ",");
 export const fechaFormatoUno = (fecha) => moment.tz(fecha, "America/Bogota").format('MMMM D [de] YYYY');
+export const horaFormatoUno = (date) => moment.tz(date, "America/Bogota").format('hh:mm a');
 
 export const upper = value => value && value.toUpperCase();
 export const lower = value => value && value.toLowerCase();

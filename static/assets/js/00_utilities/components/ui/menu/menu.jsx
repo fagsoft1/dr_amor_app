@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import {Link} from 'react-router-dom'
-import FontIcon from 'material-ui/FontIcon';
 
 import * as actions from "../../../../01_actions/01_index";
 import {connect} from "react-redux";
@@ -30,8 +28,9 @@ class MenuBase extends Component {
                         {this.props.children(mis_permisos)}
                     </ul>
                     <ul className="navbar-nav">
-                        <span className="navbar-text">{mi_cuenta.username} | <a href="/accounts/logout/?next=/"><small>Salir </small>
-                        </a>
+                        <span className="navbar-text">{mi_cuenta.username} | <span className='puntero'
+                                                                                   onClick={() => this.props.logout()}><small>Salir </small>
+                        </span>
                         </span>
                     </ul>
                 </div>

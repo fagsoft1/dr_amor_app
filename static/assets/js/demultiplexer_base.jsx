@@ -6,7 +6,7 @@ const demultiplexer = (store, socket, actions) => {
                 store.dispatch(actions.update(payload));
                 break;
             case ("create"):
-                store.dispatch(actions.update(payload));
+                store.dispatch(actions.create(payload));
                 break;
             case ("delete"):
                 store.dispatch(actions.delete(payload.pk));

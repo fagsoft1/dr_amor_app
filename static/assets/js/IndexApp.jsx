@@ -1,9 +1,10 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "./01_actions/01_index";
 import Loading from "./00_utilities/components/system/loading_overlay";
-import CargarDatos from "./00_utilities/components/system/cargar_datos";
 import {Link} from 'react-router-dom'
+import {TIPOS_REGISTRO_INGRESO} from './00_utilities/permisos/types';
+import {permisosAdapter} from "./00_utilities/common";
 
 const Boton = (props) => {
     const {nombre, icono, link} = props;
@@ -22,23 +23,17 @@ const Boton = (props) => {
 };
 
 class IndexApp extends Component {
-    constructor(props) {
-        super(props);
-        this.cargarDatos = this.cargarDatos.bind(this);
-    }
-
     componentDidMount() {
-        this.cargarDatos()
-    }
-
-    cargarDatos() {
-        const {notificarErrorAjaxAction, cargando, noCargando} = this.props;
+        const {noCargando, cargando, notificarErrorAjaxAction} = this.props;
         cargando();
-        this.props.fetchMiCuenta(() => noCargando(), notificarErrorAjaxAction);
+        this.props.fetchMisPermisos(() => noCargando(), notificarErrorAjaxAction);
     }
 
     render() {
-        const {mi_cuenta: {is_staff, is_superuser}} = this.props;
+        const {mis_permisos} = this.props;
+        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
+        const permisos_modulo_acceso = permisosAdapter(mis_permisos, TIPOS_REGISTRO_INGRESO);
         return <Loading>
             <div className="mt-3">
                 <div className="container text-center">
@@ -47,37 +42,77 @@ class IndexApp extends Component {
                             <img className='img-fluid' src={`${img_static_url}/logo.png`} alt=""/>
                         </div>
                         {
-                            (is_staff || is_superuser) &&
+                            (mi_cuenta && (mi_cuenta.is_staff || mi_cuenta.is_superuser)) &&
                             <Boton
                                 nombre='Admin'
                                 link='/app/admin/'
                                 icono='fa-cogs'
                             />
                         }
+                        {
+                            punto_venta &&
+                            <Fragment>
+                                {
+                                    punto_venta.tipo === 1 &&
+                                    <Boton
+                                        nombre='Tienda'
+                                        link='/app/tienda/'
+                                        icono='fa-shopping-cart'
+                                    />
+                                }
+                                {
+                                    punto_venta.tipo === 0 &&
+                                    <Boton
+                                        nombre='Servicios'
+                                        link='/app/servicios/'
+                                        icono='fa-bed'
+                                    />
+                                }
+                            </Fragment>
+                        }
+                        {
+                            permisos_modulo_acceso.add &&
+                            <Boton
+                                nombre='Acceso'
+                                link='/app/acceso/'
+                                icono='fa-user-lock'
+                            />
+                        }
                         <Boton
-                            nombre='Tienda'
-                            link='/app/tienda/'
-                            icono='fa-shopping-cart'
-                        />
-                        <Boton
-                            nombre='Servicios'
-                            link='/app/servicios/'
-                            icono='fa-bed'
+                            nombre='Mi Cuenta'
+                            link='/app/mi_cuenta/'
+                            icono='fa-sliders-h'
                         />
                         <div className="col-4"></div>
                         <div className="col-4 boton-index mt-4">
-                            <a href="/accounts/logout/?next=/">
-                                <div className='icono'>
-                                    <div className="row">
-                                        <div className="col-12"><i className={`fas fa-sign-out-alt`}></i></div>
-                                        <div className="col-12">Salir</div>
-                                    </div>
+                            <div className='icono puntero' onClick={() => this.props.logout()}>
+                                <div className="row">
+                                    <div className="col-12"><i className={`fas fa-sign-out-alt`}></i></div>
+                                    <div className="col-12">Salir</div>
                                 </div>
-                            </a>
+                            </div>
                         </div>
                         <div className="col-4"></div>
-                        <CargarDatos cargarDatos={this.cargarDatos}/>
                     </div>
+                </div>
+
+                <div style={{position: 'fixed', left: 10, bottom: 10}}>
+                    {
+                        punto_venta &&
+                        punto_venta.nombre &&
+                        <Fragment>
+                            <strong>Punto de Venta: </strong>
+                            <small>{punto_venta.nombre}</small>
+                            <br/>
+                        </Fragment>
+                    }
+                    {
+                        mi_cuenta &&
+                        <Fragment>
+                            <strong>Usuario: </strong>
+                            <small>{mi_cuenta.username}</small>
+                        </Fragment>
+                    }
                 </div>
             </div>
         </Loading>
@@ -87,7 +122,7 @@ class IndexApp extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         mis_permisos: state.mis_permisos,
-        mi_cuenta: state.mi_cuenta
+        auth: state.auth,
     }
 }
 

@@ -5,15 +5,30 @@ from .models import Habitacion, TipoHabitacion
 
 
 class TipoHabitacionSerializer(serializers.ModelSerializer):
+    # valor_antes_impuestos = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=10)
+    # impuesto = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=10)
+
     class Meta:
         model = TipoHabitacion
-        fields = ('id', 'nombre', 'valor')
+        fields = (
+            'id',
+            'nombre',
+            'valor',
+            'porcentaje_impuesto',
+            'valor_antes_impuestos',
+            'impuesto',
+        )
+        extra_kwargs = {
+            'valor_antes_impuestos': {'read_only': True},
+            'impuesto': {'read_only': True},
+        }
 
 
 class HabitacionSerializer(serializers.ModelSerializer):
     tipo_habitacion_nombre = serializers.CharField(source='tipo.nombre', read_only=True)
     valor = serializers.DecimalField(source='tipo.valor', max_digits=10, decimal_places=0, read_only=True)
     empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)
+    tiempo_final_servicio = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Habitacion
@@ -21,14 +36,20 @@ class HabitacionSerializer(serializers.ModelSerializer):
             'url',
             'id',
             'activa',
+            'nombre',
             'tipo',
             'tipo_habitacion_nombre',
             'empresa',
             'empresa_nombre',
             'numero',
+            'tiempo_final_servicio',
+            'fecha_ultimo_estado',
             'estado',
             'valor',
         ]
+        extra_kwargs = {
+            'nombre': {'read_only': True},
+        }
 
 
 class HabitacionBinding(WebsocketBinding):

@@ -125,3 +125,201 @@ form .btn {
   color: #f44336;
   transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 }
+.numeri-pad-react .btn {
+  background-color: #f00;
+  color: #fff;
+  width: 100% !important;
+  height: 100% !important;
+  font-size: 2rem;
+  cursor: pointer;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.numeri-pad-react .btn-group {
+  padding: 0.3rem;
+}
+.cr-reg-acc .categoria {
+  margin: 1rem;
+}
+.cr-reg-acc .categoria .modelo-box {
+  padding: 1rem;
+  text-align: center;
+  margin: 0.2rem;
+}
+.cr-reg-acc .categoria .modelo-box.est-mod-0 {
+  background-color: #4fce7f;
+}
+.cr-reg-acc .categoria .modelo-box.est-mod-1 {
+  color: #fff;
+  background-color: #f00;
+}
+.habitacion .servicio.clock-0 {
+  font-size: 0.8rem;
+}
+.habitacion .servicio.clock-0 .fa {
+  display: none;
+}
+.habitacion .servicio.clock-1 {
+  font-size: 0.8rem;
+}
+.habitacion .servicio.clock-1 .fa {
+  display: none;
+}
+.habitacion.numero {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.habitacion.est-0 {
+  background-color: #90ee90 !important;
+  color: #000 !important;
+}
+.habitacion.est-0.icon {
+  background-color: transparent !important;
+  color: #90ee90 !important;
+}
+.habitacion.est-1 {
+  background-color: #f00 !important;
+  color: #fff !important;
+}
+.habitacion.est-1.icon {
+  background-color: transparent !important;
+  color: #f00 !important;
+}
+.habitacion.est-1 .servicio.clock-0 {
+  color: #fff !important;
+}
+.habitacion.est-1 .servicio.clock-1 {
+  color: #fff !important;
+}
+.habitacion.est-2 {
+  background-color: #ff0 !important;
+  color: #000 !important;
+}
+.habitacion.est-2.icon {
+  background-color: transparent !important;
+  color: #ff0 !important;
+}
+.habitacion.est-2 .servicio.clock-0 {
+  color: #000 !important;
+}
+.habitacion.est-2 .servicio.clock-1 {
+  color: #000 !important;
+}
+.habitacion.est-3 {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+.habitacion.est-3.icon {
+  background-color: transparent !important;
+  color: #000 !important;
+}
+.habitacion.est-3 .servicio.clock-0 {
+  color: #fff !important;
+}
+.habitacion.est-3 .servicio.clock-1 {
+  color: #fff !important;
+}
+.habitacion-tipo-list {
+  margin-top: 3rem;
+}
+.habitacion-tipo-list-item {
+  padding: 0.2rem;
+  border-radius: 10px;
+}
+.habitacion-tipo-list:nth-child(even) {
+  border-left: solid $rojo_dr_amor 1px;
+}
+.servicio.clock-0 {
+  color: #008000 !important;
+  font-size: 0.8rem;
+}
+.servicio.clock-1 {
+  color: $rojo_dr_amor !important;
+  font-size: 0.8rem;
+}
+.servicio.servicio-list-item {
+  margin-top: 0.1rem;
+  margin-bottom: 0.1rem;
+  background-color: #90ee90;
+  border-radius: 10px;
+}
+.servicio.servicio-list-item .btn {
+  cursor: pointer;
+}
+.servicio.servicio-list-item .fa {
+  color: #000;
+}
+.servicio.servicio-list-item.terminado {
+  color: #fff;
+  background: #000;
+}
+.servicio.servicio-list-item.terminado .fa {
+  color: #fff;
+}
+.servicio.servicio-list-item.espera {
+  background: #87cefa;
+}
+.servicio.servicio-modelo-nombre {
+  font-size: 0.8rem;
+  padding-left: 0.5rem;
+  padding-top: 0.5rem;
+}
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+.bubble {
+  position: relative;
+  padding: 3px;
+  margin-top: 5px;
+  background: transparent;
+  -webkit-border-radius: 14px;
+  -moz-border-radius: 14px;
+  border-radius: 14px;
+  border: #000 solid 1px;
+}
+.bubble:after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 0 5px 8px;
+  border-color: #000 transparent;
+  display: block;
+  width: 0;
+  z-index: 1;
+  margin-left: -5px;
+  top: -8px;
+  left: 20%;
+}
+.bubble:before {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 0 5px 8px;
+  border-color: #000 transparent;
+  display: block;
+  width: 0;
+  z-index: 0;
+  margin-left: -5px;
+  top: -9px;
+  left: 20%;
+}
+@-moz-keyframes blinker {
+  50% {
+    opacity: 0.4;
+  }
+}
+@-webkit-keyframes blinker {
+  50% {
+    opacity: 0.4;
+  }
+}
+@-o-keyframes blinker {
+  50% {
+    opacity: 0.4;
+  }
+}
+@keyframes blinker {
+  50% {
+    opacity: 0.4;
+  }
+}

@@ -72,6 +72,14 @@ export const TIPOS_HABITACIONES = {
     detail: 'detail_tipohabitacion',
 };
 
+export const TIPOS_REGISTRO_INGRESO = {
+    add: 'add_registroingreso',
+    delete: 'delete_registroingreso',
+    change: 'change_registroingreso',
+    list: 'list_registroingreso',
+    detail: 'detail_registroingreso',
+};
+
 export const PRODUCTOS = {
     add: 'add_producto',
     delete: 'delete_producto',
@@ -150,4 +158,46 @@ export const TRASLADOS_INVENTARIOS_DETALLE = {
     change: 'change_trasladoinventariodetalle',
     list: 'list_trasladoinventariodetalle',
     detail: 'detail_trasladoinventariodetalle',
+};
+
+export const PUNTOS_VENTAS = {
+    add: 'add_puntoventa',
+    delete: 'delete_puntoventa',
+    change: 'change_puntoventa',
+    list: 'list_puntoventa',
+    detail: 'detail_puntoventa',
+};
+
+
+export const FRACCIONES_TIEMPOS_ACOMPANANTES = {
+    add: 'add_fracciontiempo',
+    delete: 'delete_fracciontiempo',
+    change: 'change_fracciontiempo',
+    list: 'list_fracciontiempo',
+    detail: 'detail_fracciontiempo',
+};
+
+export const CATEGORIAS_FRACCIONES_TIEMPOS_ACOMPANANTES = {
+    add: 'add_categoriafracciontiempo',
+    delete: 'delete_categoriafracciontiempo',
+    change: 'change_categoriafracciontiempo',
+    list: 'list_categoriafracciontiempo',
+    detail: 'detail_categoriafracciontiempo',
+};
+
+
+export const SERVICIOS = {
+    add: 'add_servicios',
+    delete: 'delete_servicios',
+    change: 'change_servicios',
+    list: 'list_servicios',
+    detail: 'detail_servicios',
+};
+
+export const VENTAS_SERVICIOS = {
+    add: 'add_ventaservicio',
+    delete: 'delete_ventaservicio',
+    change: 'change_ventaservicio',
+    list: 'list_ventaservicio',
+    detail: 'detail_ventaservicio',
 };

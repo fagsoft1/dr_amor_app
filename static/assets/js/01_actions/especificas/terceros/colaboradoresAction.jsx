@@ -11,6 +11,23 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'colaboradores';
+
+export const adicionarPuntoVenta = (id, punto_venta_id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('punto_venta_id', punto_venta_id);
+        callApiMethodWithParameters(current_url_api, id, 'adicionar_punto_venta', params, null, callback, callback_error)
+    }
+};
+
+export const quitarPuntoVenta = (id, punto_venta_id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('punto_venta_id', punto_venta_id);
+        callApiMethodWithParameters(current_url_api, id, 'quitar_punto_venta', params, null, callback, callback_error)
+    }
+};
+
 export const createColaborador = (values, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {

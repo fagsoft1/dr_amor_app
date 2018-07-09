@@ -1,3 +1,4 @@
+from channels.binding.websockets import WebsocketBinding
 from rest_framework import serializers
 
 from .models import Bodega, MovimientoInventario, MovimientoInventarioDetalle, TrasladoInventario, \
@@ -19,6 +20,9 @@ class MovimientoInventarioDetalleSerializer(serializers.ModelSerializer):
     producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
     movimiento_detalle = serializers.CharField(source='movimiento.detalle', read_only=True)
     movimiento_proveedor_nombre = serializers.CharField(source='movimiento.proveedor.nombre', read_only=True)
+    bodega = serializers.IntegerField(source='movimiento.bodega_id', read_only=True)
+    producto_categoria_nombre = serializers.CharField(source='producto.categoria_dos.categoria.nombre', read_only=True)
+    producto_categoria_dos_nombre = serializers.CharField(source='producto.categoria_dos.nombre', read_only=True)
 
     class Meta:
         model = MovimientoInventarioDetalle
@@ -27,6 +31,7 @@ class MovimientoInventarioDetalleSerializer(serializers.ModelSerializer):
             'id',
             'modified',
             'movimiento',
+            'bodega',
             'movimiento_detalle',
             'movimiento_proveedor_nombre',
             'producto',
@@ -39,7 +44,26 @@ class MovimientoInventarioDetalleSerializer(serializers.ModelSerializer):
             'saldo_cantidad',
             'saldo_costo',
             'es_ultimo_saldo',
+            'producto_categoria_nombre',
+            'producto_categoria_dos_nombre',
         ]
+
+
+class MovimientoInventarioDetalleBinding(WebsocketBinding):
+    model = MovimientoInventarioDetalle
+    stream = "movimientos_inventarios_detalles"
+    fields = ["id", ]
+
+    def serialize_data(self, instance):
+        serializado = MovimientoInventarioDetalleSerializer(instance, context={'request': None})
+        return serializado.data
+
+    @classmethod
+    def group_names(cls, *args, **kwargs):
+        return ["binding.pos_servicios"]
+
+    def has_permission(self, user, action, pk):
+        return True
 
 
 class MovimientoInventarioSerializer(serializers.ModelSerializer):

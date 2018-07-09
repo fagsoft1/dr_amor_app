@@ -1,10 +1,13 @@
 asgi-redis==1.4.3
 asgiref==1.1.2
+asn1crypto==0.24.0
 attrs==17.4.0
 autobahn==18.3.1
 Automat==0.6.0
+cffi==1.11.5
 channels==1.1.8
 constantly==15.1.0
+cryptography==2.2.2
 daphne==1.4.2
 Django==2.0.2
 django-appconf==1.0.2
@@ -14,6 +17,7 @@ django-debug-toolbar==1.9.1
 django-imagekit==4.0.2
 django-model-utils==3.1.1
 django-registration-redux==2.1
+django-rest-knox==3.1.4
 django-webpack-loader==0.5.0
 djangorestframework==3.7.7
 hyperlink==18.0.0
@@ -23,6 +27,8 @@ msgpack-python==0.5.6
 pilkit==2.0
 Pillow==5.0.0
 psycopg2==2.7.4
+pycparser==2.18
+pyOpenSSL==18.0.0
 pytz==2017.3
 redis==2.10.6
 six==1.11.0

@@ -20,6 +20,13 @@ const asyncValidateFunction = (values, dispatch, props, blurredField, URL) => {
             }
         );
         const FULL_URL = `${URL}?${parametros}&format=json`;
+
+        const headers = {"Content-Type": "application/json"};
+        if (localStorage.token) {
+            headers["Authorization"] = `Token ${localStorage.token}`;
+        }
+        axios.defaults.headers = headers;
+
         axios.get(FULL_URL)
             .then((request) => {
                 resolve(request.data);

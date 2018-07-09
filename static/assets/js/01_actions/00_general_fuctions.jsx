@@ -1,5 +1,4 @@
 import axios from "axios/index";
-import {HABITACION_TYPES as TYPES} from "./00_types";
 
 const axios_instance = axios.create({
     baseURL: '/api/'
@@ -38,6 +37,11 @@ export function createRequest(request, dispatches = null, callback = null, callb
 export function fetchList(url, dispatches = null, callback = null, callback_error = null) {
     mostrarFunciones(() => console.log(`%cFETCH LIST - %c${url.toUpperCase()}`, 'color:red', 'color:blue'));
     const FULL_URL = `${url}/?format=json`;
+    const headers = {"Content-Type": "application/json"};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+    }
+    axios_instance.defaults.headers = headers;
     const request = axios_instance.get(FULL_URL);
     createRequest(
         request,
@@ -50,6 +54,11 @@ export function fetchList(url, dispatches = null, callback = null, callback_erro
 export function fetchListWithParameter(url, dispatches = null, callback = null, callback_error = null) {
     mostrarFunciones(() => console.log(`%cFETCH LIST PARAMETROS - %c${url.toUpperCase()}`, 'color:red', 'color:blue'));
     const FULL_URL = `${url}&format=json`;
+    const headers = {"Content-Type": "application/json"};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+    }
+    axios_instance.defaults.headers = headers;
     const request = axios_instance.get(FULL_URL);
     createRequest(
         request,
@@ -63,6 +72,11 @@ export function fetchObject(url, id, dispatches = null, callback = null, callbac
     mostrarFunciones(() => console.log(`%cFETCH OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
     const FULL_URL = `${url}/${id}/?format=json`;
     const request = axios_instance.get(FULL_URL);
+    const headers = {"Content-Type": "application/json"};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+    }
+    axios_instance.defaults.headers = headers;
     createRequest(
         request,
         dispatches,
@@ -75,6 +89,13 @@ export function updateObject(url, id, values, dispatches = null, callback = null
     mostrarFunciones(() => console.log(`%cUPDATE OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
+
+    const headers = {"Content-Type": "application/json"};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+    }
+    axios_instance.defaults.headers = headers;
+
     const FULL_URL = `${url}/${id}/`;
     const request = axios_instance.put(FULL_URL, values, config);
     createRequest(
@@ -89,6 +110,14 @@ export function createObject(url, values, dispatches = null, callback = null, ca
     mostrarFunciones(() => console.log(`%cCREATE OBJETO - %c${url.toUpperCase()}`, 'color:red', 'color:blue'));
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
+
+    const headers = {"Content-Type": "application/json"};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+    }
+    axios_instance.defaults.headers = headers;
+
+
     const FULL_URL = `${url}/`;
     const request = axios_instance.post(FULL_URL, values);
     createRequest(
@@ -103,6 +132,13 @@ export function deleteObject(url, id, dispatches = null, callback = null, callba
     mostrarFunciones(() => console.log(`%cDELETE OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
+
+    const headers = {"Content-Type": "application/json"};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+    }
+    axios_instance.defaults.headers = headers;
+
     const FULL_URL = `${url}/${id}/`;
     const request = axios_instance.delete(FULL_URL);
     createRequest(
@@ -118,6 +154,14 @@ export function callApiMethod(url, id, method, dispatches = null, callback = nul
     mostrarFunciones(() => console.log(`%cAPI METODO ${method.toUpperCase()} - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
+
+    const headers = {};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+    }
+    axios_instance.defaults.headers = headers;
+
+
     const FULL_URL = `${url}/${id}/${method}/`;
     const request = axios_instance.post(FULL_URL);
     createRequest(
@@ -133,6 +177,14 @@ export function callApiMethodWithParameters(url, id, method, parameters, dispatc
     mostrarFunciones(() => console.log(`%cAPI METODO ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
+
+    const headers = {};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+    }
+    axios_instance.defaults.headers = headers;
+
+
     const FULL_URL = `${url}/${id}/${method}/`;
     const request = axios_instance.post(FULL_URL, parameters);
     createRequest(

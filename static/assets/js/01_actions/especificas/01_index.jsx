@@ -1,5 +1,8 @@
 export * from './terceros/acompanantesAction';
+export * from './terceros/fraccionesTiempoAcompanantesAction';
+export * from './terceros/categoriasFraccionesTiempoAcompananteAction';
 export * from './terceros/colaboradoresAction';
+export * from './terceros/tercerosAction';
 export * from './terceros/categoriasAcompanantesAction';
 export * from './empresasAction';
 export * from './habitaciones/habitacionesAction';
@@ -14,3 +17,6 @@ export * from './inventarios/movimientosInventariosAction';
 export * from './inventarios/movimientosInventariosDetallesAction';
 export * from './inventarios/traslasdosInventariosAction';
 export * from './inventarios/trasladosInventariosDetallesAction';
+export * from './puntos_ventas/puntosVentasActions';
+export * from './servicios/serviciosAction';
+export * from './servicios/ventasServiciosActions';

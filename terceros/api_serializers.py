@@ -4,6 +4,22 @@ from rest_framework import serializers
 from .models import Tercero
 
 
+class TerceroSerializer(serializers.ModelSerializer):
+    categoria_modelo_nombre = serializers.CharField(source='categoria_modelo.nombre', read_only=True)
+    class Meta:
+        model = Tercero
+        fields = [
+            'id',
+            'full_name_proxy',
+            'es_acompanante',
+            'es_colaborador',
+            'categoria_modelo_nombre',
+            'categoria_modelo',
+            'presente',
+            'estado',
+        ]
+
+
 class AcompananteSerializer(serializers.ModelSerializer):
     categoria_modelo_nombre = serializers.CharField(source='categoria_modelo.nombre', read_only=True)
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)
@@ -25,10 +41,13 @@ class AcompananteSerializer(serializers.ModelSerializer):
             'nro_identificacion',
             'fecha_nacimiento',
             'grupo_sanguineo',
+            'es_acompanante',
             'alias_modelo',
             'categoria_modelo',
             'categoria_modelo_nombre',
             'usuario',
+            'presente',
+            'estado',
             'usuario_username'
         ]
         extra_kwargs = {
@@ -62,7 +81,9 @@ class AcompananteSerializer(serializers.ModelSerializer):
         new_group, created = Group.objects.get_or_create(name='ACOMPAÑANTES')
         user.groups.add(new_group)
         validated_data.update(usuario=user, es_acompanante=True)
-        return super().create(validated_data)
+        modelo = super().create(validated_data)
+        modelo.set_new_pin('0000')
+        return modelo
 
     def update(self, instance, validated_data):
         nombre = validated_data.get('nombre', None)
@@ -89,17 +110,21 @@ class ColaboradorSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'full_name',
+            'full_name_proxy',
             'nombre',
             'nombre_segundo',
             'apellido',
             'apellido_segundo',
             'genero',
             'tipo_documento',
+            'es_colaborador',
             'nro_identificacion',
             'identificacion',
             'fecha_nacimiento',
             'grupo_sanguineo',
             'usuario',
+            'presente',
+            'estado',
             'usuario_username'
         ]
         extra_kwargs = {
@@ -133,7 +158,9 @@ class ColaboradorSerializer(serializers.ModelSerializer):
         new_group, created = Group.objects.get_or_create(name='COLABORADORES')
         user.groups.add(new_group)
         validated_data.update(usuario=user, es_colaborador=True)
-        return super().create(validated_data)
+        colaborador = super().create(validated_data)
+        colaborador.set_new_pin('0000')
+        return colaborador
 
     def update(self, instance, validated_data):
         nombre = validated_data.get('nombre', None)
@@ -152,6 +179,10 @@ class ColaboradorSerializer(serializers.ModelSerializer):
 
 
 class ProveedorSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        validated_data.update(es_proveedor=True)
+        return super().create(validated_data)
+
     class Meta:
         model = Tercero
         fields = [

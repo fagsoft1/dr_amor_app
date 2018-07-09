@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from "prop-types";
-import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
 
 export const ListaTitulo = (props) => {
     return (
@@ -37,7 +37,7 @@ export class ListaBusqueda extends Component {
         return (
             <Fragment>
                 <TextField
-                    floatingLabelText="A buscar"
+                    placeholder="A buscar"
                     fullWidth={true}
                     onChange={(e) => this.setState({busqueda: e.target.value})}
                     autoComplete="off"

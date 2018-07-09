@@ -141,3 +141,59 @@ export const TRASLADO_INVENTARIO_DETALLE_TYPES = {
     clear: 'clear_traslados_inventarios_detalle',
     update: 'update_traslado_inventario_detalle',
 };
+
+export const PUNTO_VENTA_TYPES = {
+    create: 'create_punto_venta',
+    delete: 'delete_punto_venta',
+    fetch_all: 'fetch_puntos_ventas',
+    fetch: 'fetch_punto_venta',
+    clear: 'clear_puntos_ventas',
+    update: 'update_punto_venta',
+};
+
+export const TERCERO_TYPES = {
+    create: 'create_tercero',
+    delete: 'delete_tercero',
+    fetch_all: 'fetch_terceros',
+    fetch: 'fetch_tercero',
+    clear: 'clear_terceros',
+    update: 'update_tercero',
+};
+
+export const FRACCION_TIEMPO_ACOMPANANTE_TYPES = {
+    create: 'create_fraccion_tiempo_acompanante',
+    delete: 'delete_fraccion_tiempo_acompanante',
+    fetch_all: 'fetch_fracciones_tiempos_acompanantes',
+    fetch: 'fetch_fraccion_tiempo_acompanante',
+    clear: 'clear_fracciones_tiempos_acompanantes',
+    update: 'update_fraccion_tiempo_acompanante',
+};
+
+
+export const CATEGORIA_FRACCION_TIEMPO_ACOMPANANTE_TYPES = {
+    create: 'create_categoria_fraccion_tiempo_acompanante',
+    delete: 'delete_categoria_fraccion_tiempo_acompanante',
+    fetch_all: 'fetch_categorias_fracciones_tiempos_acompanantes',
+    fetch: 'fetch_categoria_fraccion_tiempo_acompanante',
+    clear: 'clear_categorias_fracciones_tiempos_acompanantes',
+    update: 'update_categoria_fraccion_tiempo_acompanante',
+};
+
+export const SERVICIO_TYPES = {
+    create: 'create_servicio',
+    delete: 'delete_servicio',
+    fetch_all: 'fetch_servicios',
+    fetch: 'fetch_servicio',
+    clear: 'clear_servicios',
+    update: 'update_servicio',
+};
+
+
+export const VENTA_SERVICIO_TYPES = {
+    create: 'create_venta_servicio',
+    delete: 'delete_venta_servicio',
+    fetch_all: 'fetch_ventas_servicios',
+    fetch: 'fetch_venta_servicio',
+    clear: 'clear_ventas_servicios',
+    update: 'update_venta_servicio',
+};

@@ -7,9 +7,19 @@ import {
     fetchObject,
     deleteObject,
     createObject,
+    baseWS,
 } from '../../00_general_fuctions'
 
 const current_url_api = 'productos';
+
+export function refreshUpdateProducto(payload) {
+    return baseWS(TYPES.update, payload)
+}
+
+export function refreshDeleteProducto(id) {
+    return baseWS(TYPES.delete, id)
+}
+
 export const createProducto = (values, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {

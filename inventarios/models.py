@@ -94,7 +94,10 @@ class MovimientoInventarioDetalle(TimeStampedModel):
             saldo_costo = movimiento.saldo_costo - (self.sale_cantidad * movimiento.costo_unitario)
             costo_unitario = movimiento.costo_unitario
 
-        qs.update(es_ultimo_saldo=False)
+        for x in qs.all():
+            x.es_ultimo_saldo = False
+            x.save()
+
         self.es_ultimo_saldo = True
         self.saldo_cantidad = saldo_cantidad
         self.saldo_costo = saldo_costo

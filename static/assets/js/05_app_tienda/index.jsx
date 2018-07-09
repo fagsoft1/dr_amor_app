@@ -1,15 +1,12 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom'
 
 class App extends Component {
     render() {
         return (
-            <div>
-                Tienda
-                <Link to='/app/servicios/'>Servicios</Link>
+            <div className='text-center'>
+                <img className='img-fluid' src={`${img_static_url}/logo.png`} alt="logo"/>
             </div>
         )
     }
 }
-
 export default App;

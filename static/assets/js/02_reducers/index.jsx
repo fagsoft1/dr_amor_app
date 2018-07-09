@@ -9,10 +9,17 @@ import usuariosReducer from './generales/usuariosReducer';
 import loadingReducer from './generales/loadingReducer';
 import miCuentaReducer from './generales/miCuentaReducer';
 
+import auth from './generales/authentication/authenticationReducer';
+
 
 import colaboradoresReducer from './especificas/terceros/colaboradoresReducer';
 import acompanantesReducer from './especificas/terceros/acompanantesReducer';
+import tercerosReducer from './especificas/terceros/tercerosReducer';
 import categoriasAcompanantesReducer from './especificas/terceros/categoriasAcompanantesReducer';
+import fraccionesTiemposReducer from './especificas/terceros/fraccionesTiemposAcompanantesReducer';
+import categoriasFraccionesTiemposReducer from './especificas/terceros/categoriasFraccionesTiempoAcompanantesReducer';
+
+
 import empresasReducer from './especificas/empresasReducer';
 import habitacionesReducer from './especificas/habitaciones/habitacionesReducer';
 import habitacionesTiposReducer from './especificas/habitaciones/habitacionesTipoReducer';
@@ -26,6 +33,9 @@ import movimientosInventariosReducer from './especificas/inventarios/movimientos
 import movimientosInventariosDetallesReducer from './especificas/inventarios/movimientosInventariosDetallesReducer';
 import trasladosInventariosReducer from './especificas/inventarios/trasladosInventariosReducer';
 import trasladosInventariosDetallesReducer from './especificas/inventarios/trasladosInventariosDetallesReducer';
+import puntosVentasReducer from './especificas/puntos_ventas/puntosVentasReducer';
+import serviciosReducer from './especificas/servicios/serviciosReducer';
+import ventasServiciosReducer from './especificas/servicios/ventasServiciosReducer';
 
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
@@ -37,9 +47,15 @@ const rootReducer = combineReducers({
     esta_cargando: loadingReducer,
     notifications: NotifyReducer,
     form: formReducer,
+    auth,
+
     colaboradores: colaboradoresReducer,
     acompanantes: acompanantesReducer,
+    terceros: tercerosReducer,
     categorias_acompanantes: categoriasAcompanantesReducer,
+    fracciones_tiempos_acompanantes: fraccionesTiemposReducer,
+    categorias_fracciones_tiempos_acompanantes: categoriasFraccionesTiemposReducer,
+
     empresas: empresasReducer,
     habitaciones: habitacionesReducer,
     habitaciones_tipos: habitacionesTiposReducer,
@@ -53,6 +69,10 @@ const rootReducer = combineReducers({
     movimientos_inventarios_detalles: movimientosInventariosDetallesReducer,
     traslados_inventarios: trasladosInventariosReducer,
     traslados_inventarios_detalles: trasladosInventariosDetallesReducer,
+    puntos_ventas: puntosVentasReducer,
+
+    servicios: serviciosReducer,
+    ventas_servicios: ventasServiciosReducer,
 });
 
 export default rootReducer;

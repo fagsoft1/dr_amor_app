@@ -1,32 +1,31 @@
 import React from 'react';
-import IconButton from 'material-ui/IconButton';
-import FlatButton from 'material-ui/FlatButton';
+import IconButton from '@material-ui/core/IconButton';
+import Icon from '@material-ui/core/Icon';
+import Button from '@material-ui/core/Button';
 import PropTypes from "prop-types";
 
 export const stylesIconos = {
     smallIcon: {
-        fontSize: '15px',
-        width: 15,
-        height: 15,
+        fontSize: '14px',
+        width: 17,
+        height: 17,
         padding: 0,
     },
-    small: {
-        width: 20,
-        height: 20,
-        padding: 1,
-    }
+    button: {
+        margin: 0,
+        padding: 0,
+    },
 };
 
 export const IconButtonTable = (props) => {
     const {onClick, iconClassName} = props;
     return (
         <IconButton
-            style={stylesIconos.small}
-            iconStyle={stylesIconos.smallIcon}
-            iconClassName={iconClassName}
             onClick={onClick}
-            {...props}
-        />
+            style={stylesIconos.button}
+        >
+            <Icon style={stylesIconos.smallIcon} className={iconClassName}/>
+        </IconButton>
     )
 };
 IconButtonTable.propTypes = {
@@ -38,12 +37,11 @@ export const IconButtonContainer = (props) => {
     const {onClick, iconClassName} = props;
     return (
         <IconButton
-            style={stylesIconos.small}
-            iconStyle={stylesIconos.smallIcon}
-            iconClassName={iconClassName}
             onClick={onClick}
-            {...props}
-        />
+            style={stylesIconos.button}
+        >
+            <Icon style={stylesIconos.smallIcon} className={iconClassName}/>
+        </IconButton>
     )
 };
 
@@ -54,20 +52,20 @@ IconButtonContainer.propTypes = {
 
 
 export const FlatIconModal = (props) => {
-    const {onClick, text, primary, disabled} = props;
+    const {onClick, text, disabled, className = 'btn btn-primary ml-3'} = props;
     return (
-        <FlatButton
-            label={text}
-            primary={primary}
+        <Button
+            className={className}
             onClick={onClick}
             disabled={disabled}
             {...props}
-        />
+        >
+            {text}
+        </Button>
     )
 };
 FlatIconModal.propTypes = {
     text: PropTypes.string,
-    primary: PropTypes.bool,
     onClick: PropTypes.func
 };
 

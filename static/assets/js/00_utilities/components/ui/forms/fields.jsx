@@ -2,14 +2,15 @@ import React, {Fragment} from 'react';
 import {upper, lower} from "../../../common";
 import {Field} from 'redux-form';
 import PropTypes from "prop-types";
-import RadioButton from 'material-ui/RadioButton';
-import MenuItem from 'material-ui/MenuItem';
-import {
-    TextField,
-    Checkbox,
-    RadioButtonGroup,
-    SelectField
-} from 'redux-form-material-ui'
+
+import TextField from '@material-ui/core/TextField';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import Combobox from 'react-widgets/lib/Combobox';
 import DropdownList from 'react-widgets/lib/DropdownList';
@@ -20,15 +21,21 @@ import moment from 'moment-timezone';
 moment.tz.setDefault("America/Bogota");
 momentLocaliser(moment);
 
-const renderTextField = ({input, label, meta: {touched, error}, ...custom}) => {
+const renderTextField = ({input, label, meta: {touched, error, warning}, ...custom}) => {
+    let new_custom = custom;
+    if (touched && error) {
+        new_custom = {...custom, helperText: error}
+    }
     return (
-        <TextField
-            hintText={label}
-            floatingLabelText={label}
-            errorText={touched && error}
-            {...input}
-            {...custom}
-        />
+        <Fragment>
+            <TextField
+                label={label}
+                margin="normal"
+                error={error && touched}
+                {...input}
+                {...new_custom}
+            />
+        </Fragment>
     )
 };
 export const MyTextFieldSimple = (props) => {
@@ -41,12 +48,12 @@ export const MyTextFieldSimple = (props) => {
     return (
         <Field
             fullWidth={true}
+            label={props.nombre}
             name={props.name}
+            helperText={props.helperText}
             {...props}
             component={renderTextField}
-            hintText={props.nombre}
             autoComplete="off"
-            floatingLabelText={props.nombre}
             normalize={normalize}
         />
     )
@@ -57,24 +64,27 @@ MyTextFieldSimple.propTypes = {
     nombre: PropTypes.string
 };
 
-const renderDropdownList = ({input, data, valueField, textField, placeholder, onSelect}) => {
+const renderDropdownList = ({input, data, valueField, textField, placeholder, onSelect, meta: {touched, error, warning}}) => {
     return (
         <Fragment>
-            <DropdownList {...input}
-                          data={data}
-                          placeholder={placeholder}
-                          valueField={valueField}
-                          textField={textField}
-                          onChange={(e)=>input.onChange(e[valueField])}
-                          onSelect={onSelect}
+            <DropdownList
+                {...input}
+                data={data}
+                placeholder={placeholder}
+                valueField={valueField}
+                textField={textField}
+                onChange={(e) => input.onChange(e[valueField])}
+                onSelect={onSelect}
             />
+            {touched && ((error && <span className='form-field-error'>{error}</span>) || (warning &&
+                <span>{warning}</span>))}
         </Fragment>
     )
 };
 
 
 export const MyDropdownList = (props) => {
-    const {busy = false, textField = 'name', valuesField = 'id', className = ''} = props;
+    const {busy = false, textField = 'name', valuesField = 'id', className = '', nombre = ''} = props;
     return (
         <div className={`${className} mt-4`}>
             <Field
@@ -83,12 +93,13 @@ export const MyDropdownList = (props) => {
                 valueField={valuesField}
                 textField={textField}
                 busy={busy}
+                placeholder={nombre}
             />
         </div>
     )
 };
 
-const renderCombobox = ({input, data, valueField, textField, placeholder, onSelect, meta: {touched, error, warning}}) => {
+const renderCombobox = ({input, data, valueField, textField, placeholder, onSelect = null, meta: {touched, error, warning}}) => {
     return (
         <Fragment>
             <Combobox {...input}
@@ -96,7 +107,9 @@ const renderCombobox = ({input, data, valueField, textField, placeholder, onSele
                       placeholder={placeholder}
                       valueField={valueField}
                       textField={textField}
-                      onChange={e => input.onChange(typeof(e) === 'string' ? e : e[valueField])}
+                      onChange={e => {
+                          input.onChange(typeof(e) === 'string' ? e : e[valueField])
+                      }}
                       onSelect={onSelect}
                       onBlur={() => input.onBlur()}
             />
@@ -108,7 +121,7 @@ const renderCombobox = ({input, data, valueField, textField, placeholder, onSele
 
 
 export const MyCombobox = (props) => {
-    const {busy = false, textField = 'name', valuesField = 'id', autoFocus = false, onSelect, className} = props;
+    const {busy = false, textField = 'name', valuesField = 'id', autoFocus = false, onSelect, className, nombre = ''} = props;
     return (
         <div className={`${className} mt-4`}>
             <Field
@@ -120,6 +133,7 @@ export const MyCombobox = (props) => {
                 onChange={v => v[valuesField]}
                 onSelect={onSelect}
                 busy={busy}
+                placeholder={nombre}
             />
         </div>
     )
@@ -138,6 +152,18 @@ MyCombobox.propTypes = {
     data: PropTypes.any,
 };
 
+const renderCheckbox = ({input, label}) => (
+    <FormControlLabel
+        control={
+            <Checkbox
+                checked={input.value}
+                onChange={(event, value) => input.onChange(value)}
+            />
+        }
+        label={label}
+    />
+)
+
 export const MyCheckboxSimple = (props) => {
     const {onClick} = props;
     return (
@@ -149,7 +175,7 @@ export const MyCheckboxSimple = (props) => {
             }}
             {...props}
             name={props.name}
-            component={Checkbox}
+            component={renderCheckbox}
             label={props.nombre}
             normalize={v => !!v}
         />
@@ -203,62 +229,39 @@ MyDateTimePickerField.propTypes = {
     nombre: PropTypes.string
 };
 
-export const MyRadioButtonGroup = (props) => {
+const renderRadioGroup = ({input, ...rest, nombre, meta, options, required = false, meta: {touched, error}}) => {
     return (
-        <div className={props.className}>
-            <label>{props.nombre}</label>
-            <Field name={props.name}
-                   {...props}
-                   className='col-12'
-                   component={RadioButtonGroup}
-                   fullWidth={true}
+        <FormControl component="fieldset" error={error && touched} required={required}>
+            <FormLabel component="legend">{nombre}</FormLabel>
+            <RadioGroup
+                aria-label="gender"
+                name={nombre}
+                value={input.value}
+                onChange={(event, value) => input.onChange(value)}
             >
-                {props.options.map(o => {
+                {options.map(o => {
                     return (
-                        <RadioButton
-                            key={o.label}
-                            value={o.value}
-                            label={o.label}
-                        />
+                        <FormControlLabel key={o.label} value={o.value} control={<Radio/>} label={o.label}/>
                     )
                 })}
-            </Field>
-        </div>
+            </RadioGroup>
+        </FormControl>
+    )
+}
+
+export const MyRadioButtonGroup = (props) => {
+    return (
+        <Field
+            name={props.name}
+            {...props}
+            className='col-12'
+            fullWidth={true}
+            required={props.required}
+            component={renderRadioGroup}>
+        </Field>
     )
 };
 MyRadioButtonGroup.propTypes = {
-    name: PropTypes.string,
-    className: PropTypes.string,
-    nombre: PropTypes.string,
-    options: PropTypes.any
-};
-
-
-export const MySelectField = (props) => {
-    return (
-        <Fragment>
-            <Field
-                {...props}
-                fullWidth={true}
-                name={props.name}
-                component={SelectField}
-                hintText={props.nombre}
-                floatingLabelText={props.nombre}
-            >
-                {props.options.map(o => {
-                    return (
-                        <MenuItem
-                            key={o.value}
-                            value={o.value}
-                            primaryText={o.primaryText}
-                        />
-                    )
-                })}
-            </Field>
-        </Fragment>
-    )
-};
-MySelectField.propTypes = {
     name: PropTypes.string,
     className: PropTypes.string,
     nombre: PropTypes.string,

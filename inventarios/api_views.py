@@ -1,5 +1,5 @@
 from django.db.models import Sum, ExpressionWrapper, DecimalField, OuterRef, Subquery
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 
@@ -20,11 +20,13 @@ from .models import (
 
 
 class BodegaViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Bodega.objects.all()
     serializer_class = BodegaSerializer
 
 
 class MovimientoInventarioViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = MovimientoInventario.objects.select_related(
         'proveedor',
         'bodega'
@@ -71,11 +73,14 @@ class MovimientoInventarioViewSet(viewsets.ModelViewSet):
 
 
 class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = MovimientoInventarioDetalle.objects.select_related(
         'movimiento',
         'movimiento__proveedor'
     ).prefetch_related(
-        'producto'
+        'producto',
+        'producto__categoria_dos',
+        'producto__categoria_dos__categoria'
     ).all()
     serializer_class = MovimientoInventarioDetalleSerializer
 
@@ -103,6 +108,7 @@ class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
 
 
 class TrasladoInventarioViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = TrasladoInventario.objects.select_related(
         'bodega_destino',
         'bodega_origen',
@@ -120,6 +126,7 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
 
 
 class TrasladoInventarioDetallesViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     producto_bodega_origen = MovimientoInventarioDetalle.objects.filter(
         movimiento__bodega_id=OuterRef('traslado__bodega_origen_id'),
         producto_id=OuterRef('producto_id'),

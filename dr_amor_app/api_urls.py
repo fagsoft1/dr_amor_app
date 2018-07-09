@@ -7,6 +7,8 @@ from empresas.api_urls import router as empresas_router
 from habitaciones.api_urls import router as habitaciones_router
 from productos.api_urls import router as productos_router
 from inventarios.api_urls import router as inventarios_router
+from puntos_venta.api_urls import router as puntos_ventas_router
+from servicios.api_urls import router as servicios_router
 
 router = DefaultRouter()
 router.extend(permisos_router)
@@ -17,3 +19,5 @@ router.extend(empresas_router)
 router.extend(habitaciones_router)
 router.extend(productos_router)
 router.extend(inventarios_router)
+router.extend(puntos_ventas_router)
+router.extend(servicios_router)

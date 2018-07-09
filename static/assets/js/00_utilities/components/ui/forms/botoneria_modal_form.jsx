@@ -8,31 +8,40 @@ const BotoneriaModalForm = (props) => {
         submitting,
         reset,
         initialValues = null,
-        onCancel
+        onCancel,
+        mostrar_submit = true,
+        mostrar_limpiar = true,
+        mostrar_cancelar = true,
     } = props;
     return (
         <div>
-            <FlatIconModal
-                text={initialValues ? 'Editar ' : 'Crear '}
-                primary={true}
-                disabled={submitting || pristine}
-                type='submit'
-            />
-            <FlatIconModal
-                text="Limpiar"
-                primary={false}
-                disabled={submitting || pristine}
-                onClick={reset}
-            />
-            <FlatIconModal
-                text={submitting || pristine ? 'Cerrar' : 'Cancelar'}
-                primary={false}
-                onClick={
-                    () => {
-                        onCancel();
+            {
+                mostrar_submit &&
+                <FlatIconModal
+                    text={initialValues ? 'Editar ' : 'Crear '}
+                    disabled={submitting || pristine}
+                    type='submit'
+                />
+            }
+            {
+                mostrar_limpiar &&
+                <FlatIconModal
+                    text="Limpiar"
+                    disabled={submitting || pristine}
+                    onClick={reset}
+                />
+            }
+            {
+                mostrar_cancelar &&
+                <FlatIconModal
+                    text={submitting || pristine ? 'Cerrar' : 'Cancelar'}
+                    onClick={
+                        () => {
+                            onCancel();
+                        }
                     }
-                }
-            />
+                />
+            }
         </div>
     )
 };

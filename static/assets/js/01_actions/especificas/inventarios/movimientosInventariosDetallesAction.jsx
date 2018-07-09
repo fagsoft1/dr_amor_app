@@ -7,10 +7,19 @@ import {
     fetchObject,
     deleteObject,
     createObject,
-    fetchListWithParameter
+    fetchListWithParameter, baseWS
 } from '../../00_general_fuctions'
 
 const current_url_api = 'movimiento_inventario_detalle';
+
+export function refreshUpdateMovimientoInventarioDetalle(payload) {
+    return baseWS(TYPES.update, payload)
+}
+
+export function refreshDeleteMovimientoInventarioDetalle(id) {
+    return baseWS(TYPES.delete, id)
+}
+
 export const createMovimientoInventarioDetalle = (values, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {

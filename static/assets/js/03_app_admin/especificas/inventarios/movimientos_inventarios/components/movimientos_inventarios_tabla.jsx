@@ -1,5 +1,5 @@
 import React, {Fragment} from "react";
-import Checkbox from 'material-ui/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
 import {MyDialogButtonDelete} from '../../../../../00_utilities/components/ui/dialog';
 import {fechaFormatoUno} from '../../../../../00_utilities/common';
 import {IconButtonTableEdit, IconButtonTableSee} from '../../../../../00_utilities/components/ui/icon/iconos';

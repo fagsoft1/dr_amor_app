@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 export const FlatIconModalCancel = (props) => {
     const {onClick} = props;
     return (
-        <FlatIconModal onClick={onClick} primary={false} text='Cancelar' {...props}/>
+        <FlatIconModal onClick={onClick} text='Cancelar' {...props}/>
     )
 };
 FlatIconModalCancel.propTypes = {
@@ -15,7 +15,7 @@ FlatIconModalCancel.propTypes = {
 export const FlatIconModalDelete = (props) => {
     const {onClick} = props;
     return (
-        <FlatIconModal onClick={onClick} primary={true} text='Eliminar' disabled={false} {...props}/>
+        <FlatIconModal onClick={onClick} text='Eliminar' disabled={false} {...props}/>
     )
 };
 FlatIconModalDelete.propTypes = {

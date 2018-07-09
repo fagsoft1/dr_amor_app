@@ -1,5 +1,10 @@
+import crypt
+
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
+
+from model_utils.models import TimeStampedModel
 
 from terceros_acompanantes.models import CategoriaAcompanante
 
@@ -18,6 +23,11 @@ class Tercero(models.Model):
         ('M', 'Masculino')
     )
 
+    CHOICES_ESTADO = (
+        (0, 'Disponible'),
+        (1, 'Ocupado')
+    )
+
     usuario = models.OneToOneField(User, on_delete=models.PROTECT, related_name='tercero', null=True, blank=True)
     tipo_documento = models.CharField(max_length=2, choices=CHOICES_TIPO_DOCUMENTO, default='CC')
     nro_identificacion = models.CharField(max_length=30, unique=True)
@@ -31,11 +41,20 @@ class Tercero(models.Model):
     es_acompanante = models.BooleanField(default=False)
     es_colaborador = models.BooleanField(default=False)
     es_proveedor = models.BooleanField(default=False)
-
+    presente = models.BooleanField(default=False)
+    pin = models.CharField(max_length=128, null=True)
     # campo para acompañante
     alias_modelo = models.CharField(max_length=120, blank=True, null=True, unique=True)
     categoria_modelo = models.ForeignKey(CategoriaAcompanante, on_delete=models.PROTECT, blank=True, null=True,
                                          related_name='acompanantes')
+    estado = models.PositiveIntegerField(choices=CHOICES_ESTADO, default=0)
+
+    def set_new_pin(self, raw_pin):
+        self.pin = crypt.crypt(raw_pin)
+        self.save()
+
+    def is_pin_correct(self, raw_pin):
+        return crypt.crypt(raw_pin, self.pin) == self.pin
 
     @staticmethod
     def existe_documento(nro_identificacion: str) -> bool:
@@ -76,6 +95,53 @@ class Tercero(models.Model):
     def identificacion(self) -> str:
         return '%s %s' % (self.get_tipo_documento_display(), self.nro_identificacion)
 
+    @property
+    def cuenta_abierta(self):
+        cuenta = self.usuario.cuentas.filter(liquidada=False).first()
+        if not cuenta:
+            cuenta = self.usuario.cuentas.create(liquidada=False)
+        return cuenta
+
+    def registra_entrada(self):
+        now = timezone.now().astimezone()
+        qs = self.usuario.regitros_ingresos.filter(
+            created__year=now.year,
+            created__month=now.month,
+            created__day=now.day,
+            fecha_fin__isnull=True
+        )
+        if not qs.exists():
+            self.usuario.regitros_ingresos.create()
+
+    def registra_salida(self):
+        now = timezone.now().astimezone()
+        qs = self.usuario.regitros_ingresos.filter(
+            created__year=now.year,
+            created__month=now.month,
+            created__day=now.day,
+            fecha_fin__isnull=True
+        )
+        if qs.exists():
+            qs.update(fecha_fin=now)
+        else:
+            self.usuario.regitros_ingresos.create(fecha_fin=now)
+
+    def cambiar_estado(self, nuevo_estado):
+        mensaje = ''
+        if self.estado != nuevo_estado:
+            if nuevo_estado == 0:
+                servicios = self.usuario.cuentas.filter(servicios__estado=1)
+                print(servicios)
+                if not servicios.exists():
+                    self.estado = 0
+                else:
+                    mensaje = 'Existen servicios aún activos'
+            if nuevo_estado == 1:
+                if self.presente:
+                    self.estado = 1
+            self.save()
+        return self.estado == nuevo_estado, mensaje
+
     class Meta:
         unique_together = [('tipo_documento', 'nro_identificacion')]
         permissions = [
@@ -95,3 +161,8 @@ class Tercero(models.Model):
             ['delete_terceroproveedor', 'Puede eliminar proveedores'],
             ['change_terceroproveedor', 'Puede cambiar proveedores'],
         ]
+
+
+class Cuenta(TimeStampedModel):
+    propietario = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT, related_name='cuentas')
+    liquidada = models.BooleanField(default=False, db_index=True)

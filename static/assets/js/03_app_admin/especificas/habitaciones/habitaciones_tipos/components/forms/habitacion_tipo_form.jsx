@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {reduxForm} from 'redux-form';
+import {formValueSelector, reduxForm} from 'redux-form';
 import {MyTextFieldSimple} from '../../../../../../00_utilities/components/ui/forms/fields';
+import {pesosColombianos} from '../../../../../../00_utilities/common';
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
@@ -18,7 +19,10 @@ class Form extends Component {
             handleSubmit,
             modal_open,
             singular_name,
+            valores,
         } = this.props;
+        const {porcentaje_impuesto, valor} = valores;
+        const valor_sin_iva = (valor / (1 + (porcentaje_impuesto / 100)));
         return (
             <MyFormTagModal
                 onCancel={onCancel}
@@ -40,15 +44,27 @@ class Form extends Component {
                     nombre='Valor'
                     name='valor'
                 />
+                <MyTextFieldSimple
+                    className="col-12 col-md-4"
+                    nombre='% Impuesto'
+                    name='porcentaje_impuesto'
+                />
+                <div className="col-12">
+                    <span><strong>Valor sin Iva: </strong>{pesosColombianos(valor_sin_iva)}</span>
+                </div>
             </MyFormTagModal>
         )
     }
 }
 
+const selector = formValueSelector('habitacionesTipoForm');
+
 function mapPropsToState(state, ownProps) {
     const {item_seleccionado} = ownProps;
+    const values = selector(state, 'porcentaje_impuesto', 'valor');
     return {
-        initialValues: item_seleccionado
+        initialValues: item_seleccionado,
+        valores: values,
     }
 }
 

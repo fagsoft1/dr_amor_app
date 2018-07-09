@@ -1,5 +1,5 @@
 import React from "react";
-import Checkbox from 'material-ui/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
 import {MyDialogButtonDelete} from '../../../../../00_utilities/components/ui/dialog';
 import {IconButtonTableEdit, IconButtonTableSee} from '../../../../../00_utilities/components/ui/icon/iconos';
 import {Link} from 'react-router-dom'
@@ -18,6 +18,7 @@ class Tabla extends React.Component {
             permisos_object
         } = this.props;
 
+        ///app/admin/usuarios/acompanantes/detail/:id
 
         return (
             <ReactTable
@@ -72,6 +73,16 @@ class Tabla extends React.Component {
                                         }}/>
 
                             },
+                            {
+                                Header: "Ver",
+                                show: permisos_object.detail,
+                                maxWidth: 60,
+                                Cell: row =>
+                                    <Link to={`/app/admin/usuarios/acompanantes/detail/${row.original.id}`}>
+                                        <IconButtonTableSee/>
+                                    </Link>
+
+                            }
                         ]
                     }
                 ]}

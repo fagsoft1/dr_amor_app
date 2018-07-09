@@ -12,8 +12,8 @@ import {
 import TablaInventarioActual from '../components/bodegas_inventario_movimiento_actual_tabla';
 import TablaInventarioProducto from '../components/bodegas_inventario_movimiento_producto_tabla';
 
-import {Tabs, Tab} from 'material-ui/Tabs';
-import SwipeableViews from 'react-swipeable-views';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 const styles = {
     headline: {
@@ -46,7 +46,7 @@ class Detail extends Component {
         this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id, () => noCargando(), notificarErrorAjaxAction);
     }
 
-    handleChange = (value) => {
+    handleChange = (event, value) => {
         if (value !== this.state.slideIndex) {
             this.cargarElementos(value);
         }
@@ -107,22 +107,27 @@ class Detail extends Component {
                     <Tab label="Inventario Actual" value={0}/>
                     <Tab label="Moviemiento Inventario" value={1}/>
                 </Tabs>
-                <SwipeableViews
-                    index={this.state.slideIndex}
-                    onChangeIndex={this.handleChange}
-                >
-                    <div style={styles.slide}>
-                        <TablaInventarioActual
-                            data={_.map(movimientos_inventarios_detalles_list, e => e)}
-                            verMovimientoProducto={this.verMovimientoProducto}
-                        />
-                    </div>
-                    <div style={styles.slide}>
-                        <TablaInventarioProducto
-                            data={_.map(_.orderBy(movimientos_inventarios_detalles_list, ['modified'],['desc']), e => e)}
-                        />
-                    </div>
-                </SwipeableViews>
+
+                {
+                    this.state.slideIndex === 0 &&
+                    <TablaInventarioActual
+                        data={
+                            _.map(
+                                _.pickBy(movimientos_inventarios_detalles_list, e => {
+                                    return (e.es_ultimo_saldo && e.bodega === object.id)
+                                }),
+                                e => e
+                            )
+                        }
+                        verMovimientoProducto={this.verMovimientoProducto}
+                    />
+                }
+                {
+                    this.state.slideIndex === 1 &&
+                    <TablaInventarioProducto
+                        data={_.map(_.orderBy(movimientos_inventarios_detalles_list, ['modified'], ['desc']), e => e)}
+                    />
+                }
                 <CargarDatos cargarDatos={this.cargarDatos}/>
             </ValidarPermisos>
         )

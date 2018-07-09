@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
+import {Redirect} from "react-router-dom";
 import * as actions from "../../../01_actions/01_index";
 
 const LoadingOverlay = (props) => {
@@ -8,6 +9,9 @@ const LoadingOverlay = (props) => {
     const style = {
         display: isActive
     };
+    if (!props.isAuthenticated) {
+        return <Redirect to="/"/>
+    }
     return (
         <div className="loading-overload-uno">
             <div className="loading-overload-dos" style={style}>
@@ -27,7 +31,8 @@ const LoadingOverlay = (props) => {
 
 function mapPropsToState(state, ownProps) {
     return {
-        esta_cargando: state.esta_cargando
+        esta_cargando: state.esta_cargando,
+        isAuthenticated: state.auth.isAuthenticated,
     }
 }
 

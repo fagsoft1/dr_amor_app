@@ -5,8 +5,8 @@ import CargarDatos from "../../../../../00_utilities/components/system/cargar_da
 import {Titulo} from "../../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
-import {Tabs, Tab} from 'material-ui/Tabs';
-import SwipeableViews from 'react-swipeable-views';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import {
     HABITACIONES as bloque_1_permisos,
     TIPOS_HABITACIONES as bloque_2_permisos,
@@ -40,7 +40,7 @@ class ListadoElementos extends Component {
 
     }
 
-    handleChange = (value) => {
+    handleChange = (event, value) => {
         if (value !== this.state.slideIndex) {
             this.cargarElementos(value);
         }
@@ -99,27 +99,23 @@ class ListadoElementos extends Component {
                     <Tab label="Habitaciones Tipos" value={1}/>
                 </Tabs>
 
-                <SwipeableViews
-                    index={this.state.slideIndex}
-                    onChangeIndex={this.handleChange}
-                >
-                    <div style={styles.slide}>
-                        <BloqueHabitaciones
-                            object_list={bloque_1_list}
-                            permisos_object={permisos_object_1}
-                            {...this.props}
-                            habitaciones_tipos_list={bloque_2_list}
-                        />
-                    </div>
-                    <div style={styles.slide}>
-                        <BloqueHabitacionesTipos
-                            object_list={bloque_2_list}
-                            permisos_object={permisos_object_2}
-                            {...this.props}
-                        />
-                    </div>
-                </SwipeableViews>
-
+                {
+                    this.state.slideIndex === 0 &&
+                    <BloqueHabitaciones
+                        object_list={bloque_1_list}
+                        permisos_object={permisos_object_1}
+                        {...this.props}
+                        habitaciones_tipos_list={bloque_2_list}
+                    />
+                }
+                {
+                    this.state.slideIndex === 1 &&
+                    <BloqueHabitacionesTipos
+                        object_list={bloque_2_list}
+                        permisos_object={permisos_object_2}
+                        {...this.props}
+                    />
+                }
                 <CargarDatos
                     cargarDatos={this.cargarDatos}
                 />

@@ -7,7 +7,9 @@ import {
     fetchObject,
     deleteObject,
     createObject,
-    baseWS
+    callApiMethodWithParameters,
+    callApiMethod,
+    baseWS,
 } from '../../00_general_fuctions'
 
 const current_url_api = 'habitaciones';
@@ -28,6 +30,48 @@ export const createHabitacion = (values, callback = null, callback_error = null)
         createObject(current_url_api, values, dispatches, callback, callback_error)
     }
 };
+
+export const iniciarServiciosHabitacion = (id, pago, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('pago', JSON.stringify(pago));
+        callApiMethodWithParameters(current_url_api, id, 'iniciar_servicios', params, null, callback, callback_error)
+    }
+};
+
+export const cambiarHabitacion = (id, pago, nueva_habitacion_id, servicios_array_id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('pago', JSON.stringify(pago));
+        params.append('nueva_habitacion_id', nueva_habitacion_id);
+        params.append('servicios_array_id', JSON.stringify(servicios_array_id));
+        callApiMethodWithParameters(current_url_api, id, 'cambiar_habitacion', params, null, callback, callback_error)
+    }
+};
+
+export const terminarServiciosHabitacion = (id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        callApiMethod(current_url_api, id, 'terminar_servicios', null, callback, callback_error)
+    }
+};
+
+export const cambiarEstadoHabitacion = (id, nuevo_estado, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('estado', nuevo_estado);
+        callApiMethodWithParameters(current_url_api, id, 'cambiar_estado', params, null, callback, callback_error)
+    }
+};
+
+export const adicionarServicioHabitacion = (id, tercero_id, categoria_fraccion_tiempo_id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('tercero_id', tercero_id);
+        params.append('categoria_fraccion_tiempo_id', categoria_fraccion_tiempo_id);
+        callApiMethodWithParameters(current_url_api, id, 'adicionar_servicio', params, null, callback, callback_error)
+    }
+};
+
 export const deleteHabitacion = (id, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {

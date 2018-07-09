@@ -1,6 +1,5 @@
 import React from 'react';
-import MenuItem from 'material-ui/MenuItem';
-import FontIcon from 'material-ui/FontIcon';
+import Icon from '@material-ui/core/Icon';
 import {Link} from 'react-router-dom'
 
 
@@ -8,17 +7,18 @@ const MenuTerceros = (props) => (
     <li className="nav-item dropdown">
         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
-            <FontIcon className="fas fa-warehouse-alt"/>
+            <Icon className="fas fa-warehouse-alt"/>
         </a>
         <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-            <MenuItem primaryText="Bodegas" containerElement={<Link to='/app/admin/inventarios/bodegas/list'/>}
-            />
-            <MenuItem primaryText="Kardex"
-                      containerElement={<Link to='/app/admin/inventarios/movimientos_inventarios/list'/>}
-            />
-            <MenuItem primaryText="Kardex Traslados"
-                      containerElement={<Link to='/app/admin/inventarios/traslados/list'/>}
-            />
+            <Link to='/app/admin/inventarios/bodegas/list'>
+                <span className="dropdown-item">Bodegas</span>
+            </Link>
+            <Link to='/app/admin/inventarios/movimientos_inventarios/list'>
+                <span className="dropdown-item">Kardex</span>
+            </Link>
+            <Link to='/app/admin/inventarios/traslados/list'>
+                <span className="dropdown-item">Kardex Traslados</span>
+            </Link>
         </div>
     </li>
 );

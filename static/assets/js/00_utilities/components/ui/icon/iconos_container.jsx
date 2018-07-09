@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 export const IconButtonContainerAdd = (props) => {
     const {onClick} = props;
     return (
-        <IconButtonContainer iconClassName={'far fa-plus'} onClick={onClick} {...props}/>
+        <IconButtonContainer iconClassName={'far fa-plus'} onClick={onClick}/>
     )
 };
 IconButtonContainerAdd.propTypes = {
@@ -15,17 +15,28 @@ IconButtonContainerAdd.propTypes = {
 export const ContainerNuevoButton = (props) => {
     const {onClick} = props;
     return (
-        <FlatIconModal onClick={onClick} primary={true} text='Nuevo' {...props}/>
+        <FlatIconModal onClick={onClick} text='Nuevo' {...props}/>
     )
 };
 ContainerNuevoButton.propTypes = {
     onClick: PropTypes.func
 };
 
+export const ContainerTextButton = (props) => {
+    const {onClick, text} = props;
+    return (
+        <FlatIconModal onClick={onClick} text={text} {...props}/>
+    )
+};
+ContainerTextButton.propTypes = {
+    text: PropTypes.string,
+    onClick: PropTypes.func,
+};
+
 export const ContainerIrButton = (props) => {
     const {onClick, text} = props;
     return (
-        <FlatIconModal onClick={onClick} primary={true} text={text} {...props}/>
+        <FlatIconModal onClick={onClick} text={text} {...props}/>
     )
 };
 

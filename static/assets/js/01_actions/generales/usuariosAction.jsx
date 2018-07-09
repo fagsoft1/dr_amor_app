@@ -13,6 +13,25 @@ import {
 
 const current_url_api = 'usuarios';
 
+export const cambiarContrasenaUsuario = (id, password_old, password, password_2, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('password_old', password_old);
+        params.append('password', password);
+        params.append('password_2', password_2);
+        callApiMethodWithParameters(current_url_api, id, 'cambiar_contrasena', params, null, callback, callback_error)
+    }
+};
+
+export const cambiarPinUsuario = (id, pin, password, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('pin', pin);
+        params.append('password', password);
+        callApiMethodWithParameters(current_url_api, id, 'cambiar_pin', params, null, callback, callback_error)
+    }
+};
+
 export const addPermisoUsuario = (id, permiso_id, callback = null, callback_error = null) => {
     return (dispatch) => {
         let params = new URLSearchParams();

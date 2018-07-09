@@ -1,5 +1,5 @@
 import React, {Fragment} from "react";
-import Checkbox from 'material-ui/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
 import {MyDialogButtonDelete} from '../../../../../00_utilities/components/ui/dialog';
 import {pesosColombianos, numerosFormato} from '../../../../../00_utilities/common';
 import {IconButtonTableEdit, IconButtonTableSee} from '../../../../../00_utilities/components/ui/icon/iconos';
@@ -11,6 +11,7 @@ class Tabla extends React.Component {
     render() {
 
         const data = this.props.data;
+        console.log(data)
         const {
             updateItem,
             singular_name,

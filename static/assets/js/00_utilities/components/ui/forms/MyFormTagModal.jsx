@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from "prop-types";
 import {MyDialogCreate} from '../../../../00_utilities/components/ui/dialog';
 import BotoneriaModalForm from '../../../../00_utilities/components/ui/forms/botoneria_modal_form';
+
 export const MyFormTagModal = (props) => {
     const {
         pristine,
@@ -12,12 +13,17 @@ export const MyFormTagModal = (props) => {
         onCancel,
         modal_open,
         element_type,
-        modelStyle
+        fullScreen = true,
+        modelStyle,
+        mostrar_submit = true,
+        mostrar_limpiar = true,
+        mostrar_cancelar = true,
     } = props;
     return (
         <MyDialogCreate
             element_type={`${initialValues ? 'Editar ' : 'Crear '} ${element_type}`}
             is_open={modal_open}
+            fullScreen={fullScreen}
             modelStyle={modelStyle}
         >
             <form className="card" onSubmit={onSubmit}>
@@ -25,6 +31,9 @@ export const MyFormTagModal = (props) => {
                     {props.children}
                 </div>
                 <BotoneriaModalForm
+                    mostrar_submit={mostrar_submit}
+                    mostrar_limpiar={mostrar_limpiar}
+                    mostrar_cancelar={mostrar_cancelar}
                     onCancel={onCancel}
                     pristine={pristine}
                     reset={reset}

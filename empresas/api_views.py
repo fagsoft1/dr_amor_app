@@ -1,9 +1,10 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from .api_serializers import EmpresaSerializer
 from .models import Empresa
 
 
 class EmpresaViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializer
 

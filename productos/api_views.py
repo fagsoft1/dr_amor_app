@@ -1,5 +1,5 @@
 from django.db.models import Count, F, Q
-from rest_framework import viewsets, serializers, status
+from rest_framework import viewsets, serializers, status, permissions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
@@ -8,6 +8,7 @@ from .models import Categoria, CategoriaDos, Producto, UnidadProducto
 
 
 class CategoriaViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
 
@@ -20,6 +21,7 @@ class CategoriaViewSet(viewsets.ModelViewSet):
 
 
 class CategoriaDosViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = CategoriaDos.objects.select_related(
         'categoria'
     ).all()
@@ -34,6 +36,7 @@ class CategoriaDosViewSet(viewsets.ModelViewSet):
 
 
 class ProductoViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Producto.objects.select_related(
         'categoria_dos__categoria',
         'categoria_dos',
@@ -59,6 +62,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
 
 
 class UnidadProductoViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = UnidadProducto.objects.all()
     serializer_class = UnidadProductoSerializer
 

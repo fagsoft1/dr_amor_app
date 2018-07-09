@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import {ListaBusqueda} from '../../../../00_utilities/utiles';
-import IconButton from 'material-ui/IconButton';
+import Icon from '@material-ui/core/Icon';
 
 const DivPermiso = (props) => {
     const {permiso, id_permisos_activos, actualizarPermiso, permiso_activos_con_grupos, can_change} = props;
@@ -53,10 +53,10 @@ const DivGrupo = (props) => {
     const esta = _.has(grupos_activos, id);
     return (
         <div className='col-12'>
-            <span>{name.toUpperCase()}</span>
+            <span>{name.toUpperCase()} </span>
             {
                 can_change &&
-                <IconButton iconClassName={`${esta ? 'fas fa-check-square' : 'far fa-square'}`}
+                <Icon className={`${esta ? 'fas fa-check-square' : 'far fa-square'} puntero`}
                             onClick={() => actualizarGrupo(grupo)}/>
             }
             <div className='row pl-4'>
