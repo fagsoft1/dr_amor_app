@@ -99,7 +99,7 @@ class ServicioHabitacionList extends Component {
                     servicio_para_iniciar_array.length > 0 &&
                     <div className="col-12">
                         <FormaPago
-                            onSubmit={onIniciarServicios}
+                            onSubmit={pago => onIniciarServicios(pago, servicio_para_iniciar_array)}
                             valor_a_pagar={valor_total}
                             texto_boton='Iniciar Servicios'
                         >

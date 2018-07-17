@@ -11,7 +11,8 @@ import UsuariosList from "./generales/usuarios/containers/usuarios_list";
 import UsuariosDetail from "./generales/usuarios/containers/usuarios_detail";
 import AcompanantesDashboard from "./especificas/terceros_acompanantes/dashboard/containers/acompanantes_dashboard";
 
-import ColaboradorList from "./especificas/terceros_colaboradores/colaboradores/containers/colaboradores_list_container";
+import ColaboradorList
+    from "./especificas/terceros_colaboradores/colaboradores/containers/colaboradores_list_container";
 import ColaboradorDetail from "./especificas/terceros_colaboradores/colaboradores/containers/colaboradores_detail";
 
 
@@ -33,6 +34,8 @@ import CategoriaAcompananteDetail
     from "./especificas/terceros_acompanantes/categorias/containers/categoria_detail";
 
 import PuntosVentasList from "./especificas/puntos_ventas/puntos_ventas/containers/puntos_ventas_list_container";
+
+import BilletesMonedasList from "./especificas/cajas/billetes_monedas/containers/billetes_monedas_list_container";
 
 const AdminApp = (props) => {
     return (
@@ -68,6 +71,8 @@ const AdminApp = (props) => {
                                component={CategoriaAcompananteDetail}/>
                         <Route exact path='/app/admin/puntos_ventas/puntos_ventas/list'
                                component={PuntosVentasList}/>
+                        <Route exact path='/app/admin/cajas/billetes_monedas/list'
+                               component={BilletesMonedasList}/>
                     </Switch>
                 </div>
             </Fragment>

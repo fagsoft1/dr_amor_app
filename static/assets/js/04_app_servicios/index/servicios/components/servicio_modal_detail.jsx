@@ -46,9 +46,11 @@ class ServicioDetailModal extends Component {
             cerraModal,
         } = this.props;
         cargando();
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         solicitarAnulacionServicio(
             servicio.id,
             values.observacion_anulacion,
+            punto_venta.id,
             (response) => {
                 notificarAction(response.result);
                 noCargando();
@@ -56,7 +58,6 @@ class ServicioDetailModal extends Component {
             },
             notificarErrorAjaxAction
         );
-        console.log(values)
     }
 
     onExtenderTiempo(values) {
@@ -70,9 +71,11 @@ class ServicioDetailModal extends Component {
             cerraModal,
         } = this.props;
         cargando();
+
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         cambiarTiempoServicio(
             servicio.id,
-            values,
+            {...values, punto_venta_id: punto_venta.id},
             (response) => {
                 notificarAction(response.result);
                 noCargando();
@@ -85,16 +88,16 @@ class ServicioDetailModal extends Component {
     onCambiarHabitacion(pago, nueva_habitacion_id, servicios) {
         const {
             cambiarHabitacion,
-            habitacion,
             servicio,
             cerraModal,
             notificarAction,
             notificarErrorAjaxAction,
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         cambiarHabitacion(
             servicio.habitacion,
-            pago,
+            {...pago, punto_venta_id: punto_venta.id},
             nueva_habitacion_id,
             servicios_array_id,
             (response) => {

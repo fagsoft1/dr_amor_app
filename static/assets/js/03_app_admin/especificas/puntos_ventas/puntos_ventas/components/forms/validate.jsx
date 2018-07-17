@@ -7,7 +7,7 @@ const validate = values => {
         'tipo',
     ];
     requiredFields.map(field => {
-        if (!values[field] === 0 || !values[field]) {
+        if (!values[field]) {
             errors[field] = 'Requerido'
         }
     });

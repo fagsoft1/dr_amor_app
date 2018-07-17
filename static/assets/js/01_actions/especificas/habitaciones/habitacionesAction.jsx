@@ -31,10 +31,11 @@ export const createHabitacion = (values, callback = null, callback_error = null)
     }
 };
 
-export const iniciarServiciosHabitacion = (id, pago, callback = null, callback_error = null) => {
+export const iniciarServiciosHabitacion = (id, pago, servicios_array_id, callback = null, callback_error = null) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pago', JSON.stringify(pago));
+        params.append('servicios_array_id', JSON.stringify(servicios_array_id));
         callApiMethodWithParameters(current_url_api, id, 'iniciar_servicios', params, null, callback, callback_error)
     }
 };
@@ -49,9 +50,11 @@ export const cambiarHabitacion = (id, pago, nueva_habitacion_id, servicios_array
     }
 };
 
-export const terminarServiciosHabitacion = (id, callback = null, callback_error = null) => {
+export const terminarServiciosHabitacion = (id, punto_venta_id, callback = null, callback_error = null) => {
     return (dispatch) => {
-        callApiMethod(current_url_api, id, 'terminar_servicios', null, callback, callback_error)
+        let params = new URLSearchParams();
+        params.append('punto_venta_id', punto_venta_id);
+        callApiMethodWithParameters(current_url_api, id, 'terminar_servicios', params, null, callback, callback_error)
     }
 };
 

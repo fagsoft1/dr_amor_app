@@ -11,7 +11,9 @@ class MenuBase extends Component {
     }
 
     render() {
-        const {mis_permisos, mi_cuenta} = this.props;
+
+        const {mis_permisos} = this.props;
+        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
         return (
             <nav className="navbar sticky-top navbar-expand-lg navbar-light bg-light mt-0 mb-0 pt-0 pb-0">
                 <Link to='/app/'>
@@ -41,7 +43,6 @@ class MenuBase extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mi_cuenta: state.mi_cuenta,
         mis_permisos: state.mis_permisos
     }
 }

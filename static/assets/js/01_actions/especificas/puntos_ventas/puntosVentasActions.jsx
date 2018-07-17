@@ -5,10 +5,20 @@ import {
     updateObject,
     fetchObject,
     deleteObject,
-    createObject
+    createObject,
+    callApiMethodWithParameters
 } from '../../00_general_fuctions'
 
 const current_url_api = 'puntos_ventas';
+
+export const hacerEntregaEfectivoCajaPuntoVenta = (id, cierre, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('cierre', JSON.stringify(cierre));
+        callApiMethodWithParameters(current_url_api, id, 'hacer_entrega_efectivo_caja', params, null, callback, callback_error)
+    }
+};
+
 
 export const fetchPuntosVentas_por_usuario_username = (username, callback = null, callback_error = null) => {
     return (dispatch) => {

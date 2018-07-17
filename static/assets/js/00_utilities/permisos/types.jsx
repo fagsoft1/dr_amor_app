@@ -185,6 +185,14 @@ export const CATEGORIAS_FRACCIONES_TIEMPOS_ACOMPANANTES = {
     detail: 'detail_categoriafracciontiempo',
 };
 
+export const BILLETES_MONEDAS = {
+    add: 'add_billetemoneda',
+    delete: 'delete_billetemoneda',
+    change: 'change_billetemoneda',
+    list: 'list_billetemoneda',
+    detail: 'detail_billetemoneda',
+};
+
 
 export const SERVICIOS = {
     add: 'add_servicios',
@@ -192,12 +200,4 @@ export const SERVICIOS = {
     change: 'change_servicios',
     list: 'list_servicios',
     detail: 'detail_servicios',
-};
-
-export const VENTAS_SERVICIOS = {
-    add: 'add_ventaservicio',
-    delete: 'delete_ventaservicio',
-    change: 'change_ventaservicio',
-    list: 'list_ventaservicio',
-    detail: 'detail_ventaservicio',
 };

@@ -303,6 +303,18 @@ form .btn {
   top: -9px;
   left: 20%;
 }
+.liquidacion_acompanantes td,
+.liquidacion_acompanantes th {
+  padding: 4px;
+}
+.liquidacion_acompanantes table {
+  font-size: 0.7rem;
+}
+.ReactTable .rt-tr,
+.ReactTable .rt-td {
+  padding: 0 !important;
+  margin: 0 !important;
+}
 @-moz-keyframes blinker {
   50% {
     opacity: 0.4;

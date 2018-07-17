@@ -15,10 +15,10 @@ class PermissionViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def mis_permisos(self, request):
-        # if request.user.is_superuser:
-        #     permissions_list = Permission.objects.all()
-        #     serializer = self.get_serializer(permissions_list, many=True)
-        #     return Response(serializer.data)
+        if request.user.is_superuser:
+            permissions_list = Permission.objects.all()
+            serializer = self.get_serializer(permissions_list, many=True)
+            return Response(serializer.data)
         permissions_list = self.queryset.filter(
             Q(user=request.user) |
             Q(group__user=request.user)
@@ -55,11 +55,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     def adicionar_permiso(self, request, pk=None):
         grupo = self.get_object()
         id_permiso = int(request.POST.get('id_permiso'))
-        print(id_permiso)
         permiso = Permission.objects.get(id=id_permiso)
-
-        print(grupo)
-
         tiene_permiso = grupo.permissions.filter(id=id_permiso).exists()
         if not tiene_permiso:
             grupo.permissions.add(permiso)

@@ -102,6 +102,11 @@ class Tercero(models.Model):
             cuenta = self.usuario.cuentas.create(liquidada=False)
         return cuenta
 
+    @property
+    def ultima_cuenta_liquidada(self):
+        cuenta = self.usuario.cuentas.filter(liquidada=True).last()
+        return cuenta
+
     def registra_entrada(self):
         now = timezone.now().astimezone()
         qs = self.usuario.regitros_ingresos.filter(
@@ -131,7 +136,6 @@ class Tercero(models.Model):
         if self.estado != nuevo_estado:
             if nuevo_estado == 0:
                 servicios = self.usuario.cuentas.filter(servicios__estado=1)
-                print(servicios)
                 if not servicios.exists():
                     self.estado = 0
                 else:

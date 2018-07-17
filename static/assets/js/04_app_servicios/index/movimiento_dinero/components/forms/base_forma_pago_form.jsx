@@ -63,8 +63,8 @@ class BaseFormaPagoForm extends Component {
                                             <Fragment>
                                                 <MyDropdownList
                                                     name='franquicia'
-                                                    valuesField='name'
-                                                    textField='id'
+                                                    valuesField='id'
+                                                    textField='name'
                                                     data={[
                                                         {id: 'VISA', name: 'VISA'},
                                                         {id: 'MASTERCARD', name: 'MASTERCARD'},

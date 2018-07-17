@@ -11,7 +11,6 @@ class Tabla extends React.Component {
     render() {
 
         const data = this.props.data;
-        console.log(data)
         const {
             updateItem,
             singular_name,

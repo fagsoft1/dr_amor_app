@@ -35,6 +35,16 @@ export const fetchAcompanantes = (callback = null, callback_error = null) => {
         fetchList(current_url_api, dispatches, callback, callback_error);
     }
 };
+
+export const fetchAcompanantesPresentes = (callback = null, callback_error = null) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        fetchList(`${current_url_api}/listar_presentes`, dispatches, callback, callback_error);
+    }
+};
+
 export const fetchAcompanante = (id, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {

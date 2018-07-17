@@ -12,10 +12,11 @@ import {
 
 const current_url_api = 'servicios';
 
-export const solicitarAnulacionServicio = (id, observacion_anulacion, callback = null, callback_error = null) => {
+export const solicitarAnulacionServicio = (id, observacion_anulacion, punto_venta_id, callback = null, callback_error = null) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('observacion_anulacion', observacion_anulacion);
+        params.append('punto_venta_id', punto_venta_id);
         callApiMethodWithParameters(current_url_api, id, 'solicitar_anulacion', params, null, callback, callback_error)
     }
 };
@@ -46,9 +47,11 @@ export const deleteServicio = (id, callback = null, callback_error = null) => {
         deleteObject(current_url_api, id, dispatches, callback, callback_error)
     }
 };
-export const terminarServicio = (id, callback = null, callback_error = null) => {
+export const terminarServicio = (id, punto_venta_id, callback = null, callback_error = null) => {
     return (dispatch) => {
-        callApiMethod(current_url_api, id, 'terminar_servicio', null, callback, callback_error)
+        let params = new URLSearchParams();
+        params.append('punto_venta_id', punto_venta_id);
+        callApiMethodWithParameters(current_url_api, id, 'terminar_servicio', params, null, callback, callback_error)
     }
 };
 export const fetchServicios = (callback = null, callback_error = null) => {
@@ -73,6 +76,14 @@ export const fetchServicios_por_habitacion = (habitacion_id, callback = null, ca
             dispatch({type: TYPES.fetch_all, payload: response})
         };
         fetchListWithParameter(`${current_url_api}/pendientes_por_habitacion/?habitacion_id=${habitacion_id}`, dispatches, callback, callback_error);
+    }
+};
+export const fetchServicios_por_tercero_cuenta_abierta = (tercero_id, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        fetchListWithParameter(`${current_url_api}/consultar_por_tercero_cuenta_abierta/?tercero_id=${tercero_id}`, dispatches, callback, callback_error);
     }
 };
 export const fetchServicio = (id, callback = null, callback_error = null) => {

@@ -81,9 +81,10 @@ class HabitacionDetailModal extends Component {
             notificarErrorAjaxAction,
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         cambiarHabitacion(
             habitacion.id,
-            pago,
+            {...pago, punto_venta_id: punto_venta.id},
             nueva_habitacion_id,
             servicios_array_id,
             (response) => {
@@ -106,6 +107,7 @@ class HabitacionDetailModal extends Component {
             notificarAction,
             cerraModal,
         } = this.props;
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         cargando();
         fetchHabitacion(
             habitacion.id,
@@ -113,6 +115,7 @@ class HabitacionDetailModal extends Component {
                 if (response.estado === 1) {
                     terminarServiciosHabitacion(
                         habitacion.id,
+                        punto_venta.id,
                         (response2) => {
                             noCargando();
                             notificarAction(response2.result);
@@ -127,7 +130,7 @@ class HabitacionDetailModal extends Component {
     }
 
 
-    onIniciarServicios(pago) {
+    onIniciarServicios(pago, servicios) {
         const {
             iniciarServiciosHabitacion,
             habitacion,
@@ -135,9 +138,12 @@ class HabitacionDetailModal extends Component {
             notificarErrorAjaxAction,
             cerraModal
         } = this.props;
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
+        const servicios_array_id = _.map(servicios, s => s.id);
         iniciarServiciosHabitacion(
             habitacion.id,
-            pago,
+            {...pago, punto_venta_id: punto_venta.id},
+            servicios_array_id,
             response => {
                 notificarAction(response.result);
                 this.cargarDatos();

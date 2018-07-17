@@ -53,7 +53,7 @@ class IndexApp extends Component {
                             punto_venta &&
                             <Fragment>
                                 {
-                                    punto_venta.tipo === 1 &&
+                                    punto_venta.tipo === 2 &&
                                     <Boton
                                         nombre='Tienda'
                                         link='/app/tienda/'
@@ -61,7 +61,7 @@ class IndexApp extends Component {
                                     />
                                 }
                                 {
-                                    punto_venta.tipo === 0 &&
+                                    punto_venta.tipo === 1 &&
                                     <Boton
                                         nombre='Servicios'
                                         link='/app/servicios/'
@@ -83,6 +83,14 @@ class IndexApp extends Component {
                             link='/app/mi_cuenta/'
                             icono='fa-sliders-h'
                         />
+                        {
+                            punto_venta &&
+                            <Boton
+                                nombre='Caja'
+                                link='/app/cajas/'
+                                icono='fa-money-check-alt'
+                            />
+                        }
                         <div className="col-4"></div>
                         <div className="col-4 boton-index mt-4">
                             <div className='icono puntero' onClick={() => this.props.logout()}>
@@ -94,25 +102,6 @@ class IndexApp extends Component {
                         </div>
                         <div className="col-4"></div>
                     </div>
-                </div>
-
-                <div style={{position: 'fixed', left: 10, bottom: 10}}>
-                    {
-                        punto_venta &&
-                        punto_venta.nombre &&
-                        <Fragment>
-                            <strong>Punto de Venta: </strong>
-                            <small>{punto_venta.nombre}</small>
-                            <br/>
-                        </Fragment>
-                    }
-                    {
-                        mi_cuenta &&
-                        <Fragment>
-                            <strong>Usuario: </strong>
-                            <small>{mi_cuenta.username}</small>
-                        </Fragment>
-                    }
                 </div>
             </div>
         </Loading>

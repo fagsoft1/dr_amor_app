@@ -48,6 +48,7 @@ import AppIndex from './IndexApp';
 import AppAdmin from './03_app_admin/App';
 import AppTienda from './05_app_tienda/App';
 import AppServicios from './04_app_servicios/App';
+import AppCaja from './07_cajas/App';
 import AppAcceso from './06_app_acceso/App';
 import Login from './authentication/login/containers/login';
 import MiCuenta from './authentication/mi_cuenta/seguridad/containers/dashboard';
@@ -71,21 +72,50 @@ class RootContainerComponent extends Component {
 
     render() {
         let {PrivateRoute} = this;
+        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         return (
             <BrowserRouter>
                 <Fragment>
                     <Notify/>
                     <Switch>
                         <PrivateRoute exact path="/" component={AppIndex}/>
-                        <Route exact path='/app' component={AppIndex}/>
+                        <PrivateRoute exact path='/app' component={AppIndex}/>
                         <Route path='/app/login' component={Login}/>
                         <Route path='/app/mi_cuenta' component={MiCuenta}/>
                         <Route path='/app/admin' component={AppAdmin}/>
                         <Route path='/app/tienda' component={AppTienda}/>
                         <Route path='/app/servicios' component={AppServicios}/>
+                        <Route path='/app/cajas' component={AppCaja}/>
                         <Route path='/app/acceso' component={AppAcceso}/>
                         <Route component={NotFound}/>
                     </Switch>
+                    <div style={{
+                        position: 'fixed',
+                        left: 10,
+                        bottom: 10,
+                        borderRadius: '10px',
+                        border: 'solid black 2px',
+                        padding: '2px',
+                        backgroundColor: 'white'
+                    }}>
+                        {
+                            punto_venta &&
+                            punto_venta.nombre &&
+                            <Fragment>
+                                <strong>Punto de Venta: </strong>
+                                <small>{punto_venta.nombre}</small>
+                                <br/>
+                            </Fragment>
+                        }
+                        {
+                            mi_cuenta &&
+                            <Fragment>
+                                <strong>Usuario: </strong>
+                                <small>{mi_cuenta.username}</small>
+                            </Fragment>
+                        }
+                    </div>
                 </Fragment>
             </BrowserRouter>
         )

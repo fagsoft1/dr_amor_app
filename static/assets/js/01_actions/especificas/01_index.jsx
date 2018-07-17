@@ -19,4 +19,4 @@ export * from './inventarios/traslasdosInventariosAction';
 export * from './inventarios/trasladosInventariosDetallesAction';
 export * from './puntos_ventas/puntosVentasActions';
 export * from './servicios/serviciosAction';
-export * from './servicios/ventasServiciosActions';
+export * from './cajas/billetesMonedasAction';

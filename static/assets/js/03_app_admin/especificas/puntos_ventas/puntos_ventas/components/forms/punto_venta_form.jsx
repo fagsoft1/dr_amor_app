@@ -63,8 +63,8 @@ class Form extends Component {
                 <MyDropdownList
                     className="col-12 col-md-6"
                     data={[
-                        {id: 0, nombre: 'Servicios'},
-                        {id: 1, nombre: 'Tienda'},
+                        {id: 1, nombre: 'Servicios'},
+                        {id: 2, nombre: 'Tienda'},
                     ]}
                     textField='nombre'
                     name='tipo'

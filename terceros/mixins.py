@@ -1,14 +1,29 @@
+from django.db.models import OuterRef, ExpressionWrapper, DecimalField, Subquery, Max
 from rest_framework import serializers
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from knox.models import AuthToken
 
 from dr_amor_app.utils_queryset import query_varios_campos_or
+from liquidaciones.models import LiquidacionCuenta
 from terceros.models import Tercero
 
 
 class TerceroViewSetMixin(object):
     search_fields = None
+
+    def get_queryset(self):
+        saldo = LiquidacionCuenta.objects.filter(
+            cuenta__liquidada=True,
+            cuenta__propietario_id=OuterRef('usuario_id')
+        ).order_by('-pk')
+        qs = self.queryset.annotate(
+            saldo_final=ExpressionWrapper(
+                Subquery(saldo.values('saldo')[:1]),
+                output_field=DecimalField(max_digits=10, decimal_places=2)
+            )
+        ).all()
+        return qs
 
     def buscar_x_parametro(self, request) -> Response:
         parametro = request.GET.get('parametro')

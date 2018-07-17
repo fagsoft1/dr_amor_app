@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import * as actions from "../../../../01_actions/01_index";
 import HabitacionList from '../../habitaciones/containers/habitaciones_list';
 import ServiciosList from '../../servicios/containers/servicios_list';
@@ -134,7 +134,6 @@ class ServiciosDashboar extends Component {
             modal_servicio_open,
             servicio_id
         } = this.state;
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         return (
             <div className="row">
                 {
@@ -180,17 +179,6 @@ class ServiciosDashboar extends Component {
                             />
                         </div>
                     </div>
-                </div>
-                <div style={{position: 'fixed', left: 10, bottom: 10}}>
-                    {
-                        punto_venta &&
-                        punto_venta.nombre &&
-                        <Fragment>
-                            <strong>Punto de Venta: </strong>
-                            <small>{punto_venta.nombre}</small>
-                            <br/>
-                        </Fragment>
-                    }
                 </div>
             </div>
         )

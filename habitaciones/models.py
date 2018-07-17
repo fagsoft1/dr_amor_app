@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Max
 from django.utils import timezone
 
 from empresas.models import Empresa
@@ -41,6 +40,11 @@ class Habitacion(models.Model):
     activa = models.BooleanField(default=1)
     fecha_ultimo_estado = models.DateTimeField(null=True, blank=True)
 
+    def iniciar_servicios(self, usuario, servicios, punto_venta):
+        self.save()
+        [servicio.iniciar(usuario, punto_venta) for servicio in servicios.all()]
+        self.cambiar_estado(1)
+
     class Meta:
         permissions = [
             ['list_habitacion', 'Puede listar habitaciones'],
@@ -50,10 +54,6 @@ class Habitacion(models.Model):
     def nombre(self):
         return '%s %s' % (self.tipo.nombre, self.numero)
 
-    @property
-    def ultimo_venta_servicio(self):
-        return self.ventas_servicios.filter(estado=0).last()
-
     def cambiar_estado(self, nuevo_estado):
         if self.estado != nuevo_estado:
             temp_estado = None
@@ -62,11 +62,9 @@ class Habitacion(models.Model):
                     temp_estado = nuevo_estado
             elif self.estado == 1:
                 if nuevo_estado == 2:
-                    hay_servicios_activos = self.ventas_servicios.filter(servicios__estado=1).exists()
-                    if not hay_servicios_activos:
-                        vs_para_iniciar = self.ventas_servicios.filter(servicios__estado=0)
-                        for vs in vs_para_iniciar:
-                            vs.servicios.filter(estado=0).delete()
+                    servicios = self.servicios.filter(estado=1)
+                    if not servicios.exists():
+                        [servicio.delete() for servicio in self.servicios.filter(estado=0)]
                         temp_estado = nuevo_estado
             elif self.estado == 2:
                 if nuevo_estado in [0, 3]:

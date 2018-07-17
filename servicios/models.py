@@ -8,42 +8,7 @@ from model_utils.models import TimeStampedModel
 from empresas.models import Empresa
 from habitaciones.models import Habitacion
 from terceros.models import Cuenta
-
-
-class VentaServicio(TimeStampedModel):
-    ESTADO_CHOICES = (
-        (0, 'Activo'),
-        (2, 'Iniciado'),
-        (3, 'Terminado'),
-    )
-    created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name='servicios_registrados')
-    habitacion = models.ForeignKey(Habitacion, on_delete=models.PROTECT, related_name='ventas_servicios')
-    estado = models.IntegerField(choices=ESTADO_CHOICES, default=0)
-
-    def cambiar_estado(self, estado_nuevo):
-        if not estado_nuevo == 0:
-            servicios_activos = self.servicios.filter(estado=1)
-            if servicios_activos.exists():
-                self.estado = 2
-                self.save()
-            elif self.estado != estado_nuevo:
-                if estado_nuevo == 2:
-                    self.estado = estado_nuevo
-                elif estado_nuevo == 3:
-                    servicios_activos = self.servicios.filter(estado=1)
-                    if not servicios_activos.exists():
-                        servicios_para_eliminar = self.servicios.filter(estado=0)
-                        [servicio.delete() for servicio in servicios_para_eliminar.all()]
-                        self.estado = estado_nuevo
-                self.save()
-        return estado_nuevo == self.estado
-
-    def iniciar_servicios(self, usuario):
-        self.cambiar_estado(2)
-        self.save()
-        servicios = self.servicios.order_by('id')
-        [servicio.iniciar(usuario) for servicio in servicios.all()]
-        self.habitacion.cambiar_estado(1)
+from puntos_venta.models import PuntoVenta
 
 
 class Servicio(TimeStampedModel):
@@ -54,7 +19,8 @@ class Servicio(TimeStampedModel):
         (3, 'Anulado'),
         (4, 'Solicitud Anulación'),
     )
-    venta_servicio = models.ForeignKey(VentaServicio, on_delete=models.CASCADE, related_name='servicios')
+    habitacion = models.ForeignKey(Habitacion, on_delete=models.PROTECT, related_name='servicios', null=True,
+                                   blank=True)
     cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='servicios')
     empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT, related_name='servicios', null=True, blank=True)
     estado = models.IntegerField(choices=ESTADO_CHOICES, default=0)
@@ -83,7 +49,7 @@ class Servicio(TimeStampedModel):
         hora_final = (hora_inicio + timezone.timedelta(minutes=self.tiempo_minutos))
         return hora_final
 
-    def iniciar(self, usuario):
+    def iniciar(self, usuario, punto_venta):
         hora_inicio = timezone.localtime(timezone.now())
         tercero = self.cuenta.propietario.tercero
         tercero.cambiar_estado(1)
@@ -96,10 +62,10 @@ class Servicio(TimeStampedModel):
         self.hora_inicio = hora_inicio
         self.hora_final = self.calcular_hora_final(hora_inicio)
         self.save()
-        BitacoraServicio.crear_bitacora_inicio_servicio(usuario, self)
+        BitacoraServicio.crear_bitacora_inicio_servicio(usuario, self, punto_venta)
 
-    def cambiar_tiempo(self, tiempo, usuario):
-        BitacoraServicio.crear_bitacora_cambiar_tiempo_servicio(usuario, self, tiempo)
+    def cambiar_tiempo(self, tiempo, usuario, punto_venta):
+        BitacoraServicio.crear_bitacora_cambiar_tiempo_servicio(usuario, self, tiempo, punto_venta)
         self.tiempo_minutos = tiempo
         self.hora_final = self.calcular_hora_final(self.hora_inicio)
         self.save()
@@ -107,22 +73,20 @@ class Servicio(TimeStampedModel):
         if tiene_siguiente:
             Servicio.recursivo_asignacion_horas(None, self)
 
-    def terminar(self, usuario):
+    def terminar(self, usuario, punto_venta):
         hora_final_real = timezone.localtime(timezone.now())
         self.estado = 2
         self.servicio_anterior = None
         self.servicio_siguiente = None
         self.hora_final_real = hora_final_real
         self.save()
-        venta_servicio = self.venta_servicio
-        venta_servicio.cambiar_estado(3)
-        habitacion = venta_servicio.habitacion
+        habitacion = self.habitacion
         habitacion.cambiar_estado(2)
         tercero = self.cuenta.propietario.tercero
         tercero.cambiar_estado(0)
-        BitacoraServicio.crear_bitacora_terminar_servicio(usuario, self)
+        BitacoraServicio.crear_bitacora_terminar_servicio(usuario, self, punto_venta)
 
-    def anular(self, observacion_anulacion, usuario):
+    def anular(self, observacion_anulacion, usuario, punto_venta):
         self.estado = 4
         self.hora_anulacion = timezone.localtime(timezone.now())
         self.observacion_anulacion = observacion_anulacion
@@ -148,12 +112,10 @@ class Servicio(TimeStampedModel):
                 servicio_siguiente.hora_final = servicio_siguiente.calcular_hora_final(self.hora_inicio)
                 servicio_siguiente.save()
                 Servicio.recursivo_asignacion_horas(None, self)
-
-        self.venta_servicio.cambiar_estado(3)
-        self.venta_servicio.habitacion.cambiar_estado(2)
+        self.habitacion.cambiar_estado(2)
         tercero = self.cuenta.propietario.tercero
         tercero.cambiar_estado(0)
-        BitacoraServicio.crear_bitacora_solicitar_anular_servicio(usuario, self, observacion_anulacion)
+        BitacoraServicio.crear_bitacora_solicitar_anular_servicio(usuario, self, observacion_anulacion, punto_venta)
 
     @staticmethod
     def recursivo_asignacion_horas(servicio_anterior, servicio):
@@ -182,13 +144,6 @@ class BitacoraServicio(TimeStampedModel):
         null=True,
         blank=True
     )
-    venta_servicio = models.ForeignKey(
-        VentaServicio,
-        on_delete=models.PROTECT,
-        related_name='bitacoras_servicio',
-        null=True,
-        blank=True
-    )
     habitacion_nombre = models.CharField(max_length=300, null=True, blank=True)
     habitacion_anterior_nombre = models.CharField(max_length=300, null=True, blank=True)
     habitacion_nueva_nombre = models.CharField(max_length=300, null=True, blank=True)
@@ -199,21 +154,22 @@ class BitacoraServicio(TimeStampedModel):
     tiempo_minutos_recorridos = models.PositiveIntegerField(null=True, blank=True)
     concepto = models.CharField(max_length=200)
     observacion = models.TextField(null=True)
+    punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='bitacoras_servicios')
 
     @staticmethod
-    def crear_bitacora_inicio_servicio(usuario, servicio):
+    def crear_bitacora_inicio_servicio(usuario, servicio, punto_venta):
         BitacoraServicio.objects.create(
             created_by=usuario,
             servicio=servicio,
-            venta_servicio=servicio.venta_servicio,
+            habitacion_nombre=servicio.habitacion.nombre,
             concepto='Inicia Servicio',
             tiempo_contratado=servicio.tiempo_minutos,
+            punto_venta_id=punto_venta,
             hora_evento=timezone.localtime(timezone.now()),
-            habitacion_nombre=servicio.venta_servicio.habitacion.nombre
         )
 
     @staticmethod
-    def crear_bitacora_terminar_servicio(usuario, servicio):
+    def crear_bitacora_terminar_servicio(usuario, servicio, punto_venta):
         now = timezone.now()
         tiempo_inicio_servicio = servicio.hora_inicio
         tiempo_minutos_recorridos = ((now - tiempo_inicio_servicio).seconds / 60) if tiempo_inicio_servicio < now else 0
@@ -221,33 +177,33 @@ class BitacoraServicio(TimeStampedModel):
         BitacoraServicio.objects.create(
             created_by=usuario,
             servicio=servicio,
-            venta_servicio=servicio.venta_servicio,
             concepto='Termina Servicio',
+            punto_venta_id=punto_venta,
             tiempo_contratado=servicio.tiempo_minutos,
             hora_evento=timezone.localtime(timezone.now()),
-            habitacion_nombre=servicio.venta_servicio.habitacion.nombre,
+            habitacion_nombre=servicio.habitacion.nombre,
             tiempo_minutos_recorridos=tiempo_minutos_recorridos
         )
 
     @staticmethod
-    def crear_bitacora_solicitar_anular_servicio(usuario, servicio, observacion_anulacion):
+    def crear_bitacora_solicitar_anular_servicio(usuario, servicio, observacion_anulacion, punto_venta):
         now = timezone.now()
         tiempo_inicio_servicio = servicio.hora_inicio
         tiempo_minutos_recorridos = ((now - tiempo_inicio_servicio).seconds / 60) if tiempo_inicio_servicio < now else 0
         BitacoraServicio.objects.create(
             created_by=usuario,
             servicio=servicio,
-            venta_servicio=servicio.venta_servicio,
             concepto='Solicita Anular Servicio',
             observacion=observacion_anulacion,
+            punto_venta_id=punto_venta,
             tiempo_contratado=servicio.tiempo_minutos,
             hora_evento=timezone.localtime(timezone.now()),
-            habitacion_nombre=servicio.venta_servicio.habitacion.nombre,
+            habitacion_nombre=servicio.habitacion.nombre,
             tiempo_minutos_recorridos=tiempo_minutos_recorridos
         )
 
     @staticmethod
-    def crear_bitacora_cambiar_tiempo_servicio(usuario, servicio, tiempo_contratado_nuevo):
+    def crear_bitacora_cambiar_tiempo_servicio(usuario, servicio, tiempo_contratado_nuevo, punto_venta):
         now = timezone.now()
         tiempo_inicio_servicio = servicio.hora_inicio
         concepto = 'Extención de tiempo' if tiempo_contratado_nuevo > servicio.tiempo_minutos else 'Disminución de tiempo'
@@ -256,17 +212,18 @@ class BitacoraServicio(TimeStampedModel):
         BitacoraServicio.objects.create(
             created_by=usuario,
             servicio=servicio,
-            venta_servicio=servicio.venta_servicio,
             concepto=concepto,
+            punto_venta_id=punto_venta,
             tiempo_contratado_anterior=servicio.tiempo_minutos,
             tiempo_contratado_nuevo=tiempo_contratado_nuevo,
             hora_evento=timezone.localtime(timezone.now()),
-            habitacion=servicio.venta_servicio.habitacion.nombre,
+            habitacion_nombre=servicio.habitacion.nombre,
             tiempo_minutos_recorridos=tiempo_minutos_recorridos
         )
 
     @staticmethod
     def crear_bitacora_cambiar_habitacion_servicio(usuario, servicio, habitacion_anterior, habitacion_nueva,
+                                                   punto_venta,
                                                    observacion_devolucion=None):
         now = timezone.now()
         tiempo_inicio_servicio = servicio.hora_inicio
@@ -274,8 +231,8 @@ class BitacoraServicio(TimeStampedModel):
         BitacoraServicio.objects.create(
             created_by=usuario,
             servicio=servicio,
-            venta_servicio=servicio.venta_servicio,
             concepto='Cambio de habitación',
+            punto_venta_id=punto_venta,
             hora_evento=timezone.localtime(timezone.now()),
             habitacion_anterior_nombre=habitacion_anterior.nombre,
             tiempo_contratado=servicio.tiempo_minutos,

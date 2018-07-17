@@ -54,6 +54,7 @@ MY_APPS = [
     'accesos.apps.AccesosConfig',
     'servicios.apps.ServiciosConfig',
     'cajas.apps.CajasConfig',
+    'liquidaciones.apps.LiquidacionesConfig',
 ]
 
 THIRD_PART_APPS = [
@@ -65,10 +66,10 @@ THIRD_PART_APPS = [
     'webpack_loader',
     'imagekit',
 ]
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
-}
+#
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+# }
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + MY_APPS + THIRD_PART_APPS

@@ -1,5 +1,7 @@
+import json
+
 from rest_framework import viewsets, permissions
-from rest_framework.decorators import list_route
+from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 
 from .api_serializers import (
@@ -7,6 +9,12 @@ from .api_serializers import (
 )
 from .models import (
     PuntoVenta,
+)
+from cajas.models import (
+    BaseDisponibleDenominacion,
+    EfectivoEntregaDenominacion,
+    ArqueoCaja,
+    MovimientoDineroPDV
 )
 
 
@@ -34,3 +42,21 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         )
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
+
+    @detail_route(methods=['post'])
+    def hacer_entrega_efectivo_caja(self, request, pk=None):
+        punto_venta = self.get_object()
+        cierre = json.loads(request.POST.get('cierre'))
+        cierre_para_arqueo = cierre.pop('cierre_para_arqueo')
+        denominaciones_entrega = cierre.pop('denominaciones_entrega')
+        denominaciones_base = cierre.pop('denominaciones_base')
+
+        arqueo = ArqueoCaja.objects.create(usuario=self.request.user, **cierre_para_arqueo)
+        for denominacion in denominaciones_entrega:
+            EfectivoEntregaDenominacion.objects.create(arqueo_caja=arqueo, **denominacion)
+
+        for denominacion in denominaciones_base:
+            BaseDisponibleDenominacion.objects.create(arqueo_caja=arqueo, **denominacion)
+        MovimientoDineroPDV.objects.filter(punto_venta_id=punto_venta).update(arqueo_caja=arqueo)
+
+        return Response({'result': 'jiji'})

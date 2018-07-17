@@ -3,7 +3,6 @@ import {numerosFormato} from '../../../00_utilities/common';
 
 const ListaProductosItem = (props) => {
     const {item} = props;
-    console.log(item)
     return (
         <div className="col-6 col-md-4 col-lg-3 col-xl-2 p-1">
             <div

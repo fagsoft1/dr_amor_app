@@ -5,7 +5,7 @@ import ServicioListItem from '../../servicios/components/servicio_list_item';
 class ServicioList extends Component {
     constructor(props) {
         super(props);
-        this.state = {busqueda: ''}
+        this.state = {busqueda: ''};
         this.cargarServicio = this.cargarServicio.bind(this);
         this.terminarServicio = this.terminarServicio.bind(this);
         this.onBusquedaChange = this.onBusquedaChange.bind(this);
@@ -22,10 +22,12 @@ class ServicioList extends Component {
             notificarAction
         } = this.props;
         cargando();
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         const cargarHabitaciones = () => fetchHabitaciones(() => noCargando(), notificarErrorAjaxAction);
         const cargarServiciosEnProceso = () => fetchServicios_en_proceso(cargarHabitaciones, notificarErrorAjaxAction);
         terminarServicio(
             servicio_id,
+            punto_venta.id,
             (response) => {
                 const {result} = response;
                 notificarAction(result);

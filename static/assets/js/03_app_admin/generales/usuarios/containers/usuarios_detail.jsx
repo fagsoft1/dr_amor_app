@@ -139,7 +139,6 @@ class UsuariosDetail extends Component {
 function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
-        mi_cuenta: state.mi_cuenta,
         permisos_activos: state.permisos_otro_usuario,
         grupos_todos: state.grupos_permisos,
         permisos_todos: state.permisos,

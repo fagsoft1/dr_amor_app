@@ -37,7 +37,6 @@ class App extends Component {
 
     render() {
         const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
-        console.log(punto_venta);
         const {inventario_list} = this.props;
         return (
             <div className="p-3">

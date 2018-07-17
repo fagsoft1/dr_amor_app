@@ -26,6 +26,14 @@ export const registrarSalidaTercero = (id, pin, callback = null, callback_error 
     }
 };
 
+export const liquidarCuentaTercero = (id, pago, callback = null, callback_error = null) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('pago', JSON.stringify(pago));
+        callApiMethodWithParameters(current_url_api, id, 'liquidar_cuenta', params, null, callback, callback_error)
+    }
+};
+
 export const fetchTercerosAusentes = (callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {

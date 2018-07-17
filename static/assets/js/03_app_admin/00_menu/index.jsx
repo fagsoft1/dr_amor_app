@@ -5,10 +5,11 @@ import Icon from '@material-ui/core/Icon';
 import MenuInventarios from './inventarios';
 import MenuPermisos from './permisos';
 import MenuTerceros from './terceros';
+import MenuCaja from './caja';
 
 const iconStyles = {
     paddingTop: 8,
-    paddingRight:8
+    paddingRight: 8
 };
 
 const Menu = () => {
@@ -20,6 +21,7 @@ const Menu = () => {
                         <MenuTerceros/>
                         <MenuPermisos/>
                         <MenuInventarios/>
+                        <MenuCaja/>
                         <Link to='/app/admin/empresas/empresas/list'>
                             <div style={iconStyles}>
                                 <Icon style={iconStyles} className="fas fa-building"/>

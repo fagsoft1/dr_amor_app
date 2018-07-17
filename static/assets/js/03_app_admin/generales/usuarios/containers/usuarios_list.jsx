@@ -64,7 +64,8 @@ class UsuariosList extends Component {
     }
 
     render() {
-        const {object_list, mi_cuenta, mis_permisos} = this.props;
+        const {object_list, mis_permisos} = this.props;
+        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
         const permisos = permisosAdapter(mis_permisos, permisos_view);
         return (
 
@@ -136,7 +137,6 @@ class UsuariosList extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         mis_permisos: state.mis_permisos,
-        mi_cuenta: state.mi_cuenta,
         object_list: state.usuarios
     }
 }
