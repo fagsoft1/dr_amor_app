@@ -17,6 +17,8 @@ class PuntoVentaSerializer(serializers.ModelSerializer):
             'bodega_nombre',
             'tipo',
             'tipo_nombre',
+            'abierto',
+            'usuario_actual',
         ]
 
     def get_tipo_nombre(self, obj):

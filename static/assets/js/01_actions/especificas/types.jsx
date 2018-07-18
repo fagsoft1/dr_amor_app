@@ -188,12 +188,20 @@ export const SERVICIO_TYPES = {
     update: 'update_servicio',
 };
 
+export const BILLETE_MONEDA_TYPES = {
+    create: 'create_billete_moneda',
+    delete: 'delete_billete_moneda',
+    fetch_all: 'fetch_billetes_monedas',
+    fetch: 'fetch_billete_moneda',
+    clear: 'clear_billetes_monedas',
+    update: 'update_billete_moneda',
+};
 
-export const VENTA_SERVICIO_TYPES = {
-    create: 'create_venta_servicio',
-    delete: 'delete_venta_servicio',
-    fetch_all: 'fetch_ventas_servicios',
-    fetch: 'fetch_venta_servicio',
-    clear: 'clear_ventas_servicios',
-    update: 'update_venta_servicio',
+export const ARQUEO_CAJA_TYPES = {
+    create: 'create_arqueo_caja',
+    delete: 'delete_arqueo_caja',
+    fetch_all: 'fetch_arqueos_cajas',
+    fetch: 'fetch_arqueo_caja',
+    clear: 'clear_arqueos_cajas',
+    update: 'update_arqueo_caja',
 };

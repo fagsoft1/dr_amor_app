@@ -112,6 +112,17 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+
+        if punto_venta:
+            if punto_venta.abierto and not punto_venta.usuario_actual == user:
+                raise serializers.ValidationError(
+                    {'error': ['%s tiene abierto este Punto de Venta!' % punto_venta.usuario_actual.username]}
+                )
+            else:
+                punto_venta.abierto = True
+                punto_venta.usuario_actual = user
+                punto_venta.save()
+
         tokens = AuthToken.objects.filter(user=user)
         tokens.delete()
         return Response({

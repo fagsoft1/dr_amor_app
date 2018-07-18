@@ -201,3 +201,11 @@ export const SERVICIOS = {
     list: 'list_servicios',
     detail: 'detail_servicios',
 };
+
+export const ARQUEOS_CAJAS = {
+    add: 'add_arqueocaja',
+    delete: 'delete_arqueocaja',
+    change: 'change_arqueocaja',
+    list: 'list_arqueocaja',
+    detail: 'detail_arqueocaja',
+};

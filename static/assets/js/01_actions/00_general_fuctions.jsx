@@ -1,7 +1,8 @@
 import axios from "axios/index";
 
 const axios_instance = axios.create({
-    baseURL: '/api/'
+    baseURL: '/api/',
+    //contentType: 'application/json; charset=utf-8',
 });
 
 const mostrarFunciones = (e) => {
@@ -173,7 +174,7 @@ export function callApiMethod(url, id, method, dispatches = null, callback = nul
 }
 
 
-export function callApiMethodWithParameters(url, id, method, parameters, dispatches = null, callback = null, callback_error = null) {
+export function callApiMethodWithParameters(url, id, method, values, dispatches = null, callback = null, callback_error = null) {
     mostrarFunciones(() => console.log(`%cAPI METODO ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
@@ -181,12 +182,39 @@ export function callApiMethodWithParameters(url, id, method, parameters, dispatc
     const headers = {};
     if (localStorage.token) {
         headers["Authorization"] = `Token ${localStorage.token}`;
+        headers["Content-Type"] = 'application/x-www-form-urlencoded;charset=UTF-8';
     }
     axios_instance.defaults.headers = headers;
 
 
     const FULL_URL = `${url}/${id}/${method}/`;
-    const request = axios_instance.post(FULL_URL, parameters);
+    const request = axios_instance.post(FULL_URL, values);
+    createRequest(
+        request,
+        dispatches,
+        callback,
+        callback_error
+    );
+}
+
+export function callApiMethodWithParametersPDF(url, id, method, parameters, dispatches = null, callback = null, callback_error = null) {
+    console.log(`%cAPI METODO ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id} PARA PDF`, 'color:red', 'color:blue', 'color:green');
+    axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    axios_instance.defaults.xsrfCookieName = "csrftoken";
+    const FULL_URL = `${url}/${id}/${method}/`;
+    const request = axios_instance.post(FULL_URL, parameters, {responseType: 'arraybuffer'});
+    createRequest(
+        request,
+        dispatches,
+        callback,
+        callback_error
+    );
+}
+
+export function fetchObjectWithParameterPDF(url, dispatches = null, callback = null, callback_error = null) {
+    console.log(`%cFETCH LIST PARAMETROS - %c${url.toUpperCase()} PARA PDF`, 'color:red', 'color:blue');
+    const FULL_URL = `${url}&format=json`;
+    const request = axios_instance.get(FULL_URL, {responseType: 'arraybuffer'});
     createRequest(
         request,
         dispatches,

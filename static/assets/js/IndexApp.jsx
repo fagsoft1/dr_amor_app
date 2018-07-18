@@ -30,7 +30,7 @@ class IndexApp extends Component {
     }
 
     render() {
-        const {mis_permisos} = this.props;
+        const {mis_permisos, notificarErrorAjaxAction} = this.props;
         const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
         const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         const permisos_modulo_acceso = permisosAdapter(mis_permisos, TIPOS_REGISTRO_INGRESO);
@@ -93,7 +93,24 @@ class IndexApp extends Component {
                         }
                         <div className="col-4"></div>
                         <div className="col-4 boton-index mt-4">
-                            <div className='icono puntero' onClick={() => this.props.logout()}>
+                            <div className='icono puntero' onClick={() => {
+                                if (punto_venta && punto_venta.id) {
+                                    this.props.updatePuntoVenta(
+                                        punto_venta.id, {
+                                            ...punto_venta,
+                                            usuario_actual: null,
+                                            abierto: false
+                                        },
+                                        () => {
+                                            this.props.logout();
+                                        },
+                                        notificarErrorAjaxAction
+                                    )
+                                }
+                                else {
+                                    this.props.logout();
+                                }
+                            }}>
                                 <div className="row">
                                     <div className="col-12"><i className={`fas fa-sign-out-alt`}></i></div>
                                     <div className="col-12">Salir</div>

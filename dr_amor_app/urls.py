@@ -9,8 +9,8 @@ from index.views import IndexView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
     path('api/auth/', include('usuarios.urls')),
+    path('api/', include(router.urls)),
     url(r'^app/*', IndexView.as_view()),
     path('', include('index.urls')),
 ]

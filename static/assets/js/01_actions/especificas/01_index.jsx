@@ -1,3 +1,4 @@
+export * from './reportes/reportesAction';
 export * from './terceros/acompanantesAction';
 export * from './terceros/fraccionesTiempoAcompanantesAction';
 export * from './terceros/categoriasFraccionesTiempoAcompananteAction';
@@ -20,3 +21,4 @@ export * from './inventarios/trasladosInventariosDetallesAction';
 export * from './puntos_ventas/puntosVentasActions';
 export * from './servicios/serviciosAction';
 export * from './cajas/billetesMonedasAction';
+export * from './cajas/arqueosCajasAction';

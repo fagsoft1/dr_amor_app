@@ -1,0 +1,9 @@
+@page {
+  text-align: justify;
+  font-family: Arial;
+  font-size: 0.8rem;
+  width: 80mm;
+  min-height: 10mm;
+  max-height: auto;
+  margin: 1cm 1cm 1cm 1cm;
+}

@@ -52,11 +52,33 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         denominaciones_base = cierre.pop('denominaciones_base')
 
         arqueo = ArqueoCaja.objects.create(usuario=self.request.user, **cierre_para_arqueo)
+        total_base = 0
         for denominacion in denominaciones_entrega:
-            EfectivoEntregaDenominacion.objects.create(arqueo_caja=arqueo, **denominacion)
+            if int(denominacion.get('cantidad')) > 0:
+                EfectivoEntregaDenominacion.objects.create(arqueo_caja=arqueo, **denominacion)
 
         for denominacion in denominaciones_base:
-            BaseDisponibleDenominacion.objects.create(arqueo_caja=arqueo, **denominacion)
-        MovimientoDineroPDV.objects.filter(punto_venta_id=punto_venta).update(arqueo_caja=arqueo)
+            cantidad = int(denominacion.get('cantidad'))
+            valor = int(denominacion.get('valor'))
+            if cantidad > 0:
+                total_base += cantidad * valor
+                BaseDisponibleDenominacion.objects.create(arqueo_caja=arqueo, **denominacion)
 
-        return Response({'result': 'jiji'})
+        MovimientoDineroPDV.objects.filter(
+            punto_venta_id=punto_venta,
+            arqueo_caja__isnull=True
+        ).update(
+            arqueo_caja=arqueo)
+        MovimientoDineroPDV.objects.create(
+            punto_venta=punto_venta,
+            tipo='I',
+            tipo_dos='BASE_INI',
+            valor_efectivo=total_base,
+            creado_por=self.request.user,
+            concepto='Ingreso de base generada por el arqueo %s' % arqueo.id
+        )
+        punto_venta.abierto = False
+        punto_venta.usuario_actual = None
+        punto_venta.save()
+
+        return Response({'arqueo_id': arqueo.id})

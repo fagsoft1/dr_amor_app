@@ -17,7 +17,7 @@ def get_secret(setting, variable, secrets=secrets):
         raise ImproperlyConfigured(error_msg)
 
 
-if get_secret("EMAIL_SERVER", "EMAIL_IS_LOCAL"):
+if str_to_bool(get_secret("EMAIL_SERVER", "EMAIL_IS_LOCAL")):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 THIRD_PART_APPS = [
@@ -58,3 +58,37 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(SITE_ROOT, 'webpack-stats.json'),
     }
 }
+
+########## EMAIL CONFIGURATION
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
+
+# 'EMAIL_IS_LOCAL'
+if not str_to_bool(get_secret("EMAIL_SERVER", "EMAIL_IS_LOCAL")):
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host
+EMAIL_HOST = get_secret("EMAIL_SERVER", "EMAIL_HOST")
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host-password
+EMAIL_HOST_PASSWORD = get_secret("EMAIL_SERVER", "EMAIL_HOST_PASSWORD")
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host-user
+EMAIL_HOST_USER = get_secret("EMAIL_SERVER", "EMAIL_HOST_USER")
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#email-port
+EMAIL_PORT = get_secret("EMAIL_SERVER", "EMAIL_PORT")
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
+EMAIL_SUBJECT_PREFIX = '[%s] ' % 'Dr. Amor'
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#email-use-tls
+EMAIL_USE_TLS = str_to_bool(get_secret("EMAIL_SERVER", "EMAIL_USE_TLS"))
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#server-email
+SERVER_EMAIL = get_secret("EMAIL_SERVER", "SERVER_EMAIL")
+
+EMAIL_USE_SSL = str_to_bool(get_secret("EMAIL_SERVER", "EMAIL_USE_SSL"))
+
+DEFAULT_FROM_EMAIL = get_secret("EMAIL_SERVER", "DEFAULT_FROM_EMAIL")
+
+########## END EMAIL CONFIGURATION

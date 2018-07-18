@@ -10,6 +10,27 @@ class MenuBase extends Component {
         this.props.fetchMisPermisos();
     }
 
+    onSalir() {
+        const {notificarErrorAjaxAction} = this.props;
+        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
+        if (punto_venta && punto_venta.id) {
+            this.props.updatePuntoVenta(
+                punto_venta.id, {
+                    ...punto_venta,
+                    usuario_actual: null,
+                    abierto: false
+                },
+                () => {
+                    this.props.logout();
+                },
+                notificarErrorAjaxAction
+            )
+        }
+        else {
+            this.props.logout();
+        }
+    }
+
     render() {
 
         const {mis_permisos} = this.props;
@@ -31,7 +52,7 @@ class MenuBase extends Component {
                     </ul>
                     <ul className="navbar-nav">
                         <span className="navbar-text">{mi_cuenta.username} | <span className='puntero'
-                                                                                   onClick={() => this.props.logout()}><small>Salir </small>
+                                                                                   onClick={() => this.onSalir()}><small>Salir </small>
                         </span>
                         </span>
                     </ul>

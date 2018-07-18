@@ -30,12 +30,3 @@ export const USUARIO_TYPES = {
     update: 'update_usuario',
     cuenta: 'fetch_mi_cuenta'
 };
-
-export const BILLETE_MONEDA_TYPES = {
-    create: 'create_billete_moneda',
-    delete: 'delete_billete_moneda',
-    fetch_all: 'fetch_billetes_monedas',
-    fetch: 'fetch_billete_moneda',
-    clear: 'clear_billetes_monedas',
-    update: 'update_billete_moneda',
-};

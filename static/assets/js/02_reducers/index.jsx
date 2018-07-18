@@ -36,6 +36,7 @@ import trasladosInventariosDetallesReducer from './especificas/inventarios/trasl
 import puntosVentasReducer from './especificas/puntos_ventas/puntosVentasReducer';
 import serviciosReducer from './especificas/servicios/serviciosReducer';
 import billetesMonedasReducer from './especificas/cajas/billetesMonedasReducer';
+import arqueosCajasReducer from './especificas/cajas/arqueosCajasReducer';
 
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
@@ -74,6 +75,7 @@ const rootReducer = combineReducers({
     servicios: serviciosReducer,
 
     billetes_monedas: billetesMonedasReducer,
+    arqueos_cajas: arqueosCajasReducer,
 });
 
 export default rootReducer;

@@ -1,0 +1,10 @@
+{% load static l10n humanize %}
+<br/>
+<br/>
+<br/>
+{{ usuario|title }}<br/>
+<span style="font-weight: bold">Id Cierre: </span>{{ arqueo.id }}<br/>
+<span style="font-weight: bold">Punto: </span>{{ punto_venta }}<br/>
+<span style="font-weight: bold">Fecha Generación: </span>{% now "j \d\e F Y" %}<br/>
+<span style="font-weight: bold">Hora Generación: </span>{% now "H:i" %}<br/>
+<br/>

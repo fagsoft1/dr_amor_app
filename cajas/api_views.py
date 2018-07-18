@@ -1,7 +1,16 @@
+from io import BytesIO
+
+from django.core.mail import EmailMultiAlternatives
 from django.db.models import OuterRef, ExpressionWrapper, Subquery, Sum, F, DecimalField, Case, When, Value
 from django.db.models.functions import Coalesce
-from rest_framework import viewsets, permissions
+from django.http import HttpResponse
+from django.template.loader import get_template, render_to_string
+from rest_framework import viewsets, permissions, serializers
+from rest_framework.decorators import list_route, detail_route
+from rest_framework.response import Response
+from weasyprint import CSS, HTML
 
+from dr_amor_app import settings
 from .api_serializers import BilleteMonedaSerializer, ArqueoCajaSerializer
 from .models import (
     BilleteMoneda,
@@ -31,6 +40,16 @@ class ArqueoCajaViewSet(viewsets.ModelViewSet):
         mo_dinero = MovimientoDineroPDV.objects.values(
             'arqueo_caja_id'
         ).annotate(
+            mo_nro_pagos_tarjetas=Sum(
+                Case(
+                    When(
+                        valor_tarjeta__gt=0,
+                        then=Value(1)
+                    ),
+                    default=Value(0),
+                    output_field=DecimalField(max_digits=10, decimal_places=2)
+                )
+            ),
             total_ingreso_efectivo=Sum(
                 Case(
                     When(tipo='I', then=Coalesce(F('valor_efectivo'), 0)),
@@ -49,7 +68,9 @@ class ArqueoCajaViewSet(viewsets.ModelViewSet):
             ),
             total_ingreso_tarjeta=Sum(
                 Case(
-                    When(tipo='I', then=Coalesce(F('valor_tarjeta'), 0)),
+                    When(
+                        tipo='I',
+                        then=Coalesce(F('valor_tarjeta'), 0)),
                     default=Value(0),
                     output_field=DecimalField(max_digits=10, decimal_places=2)
                 )
@@ -101,6 +122,7 @@ class ArqueoCajaViewSet(viewsets.ModelViewSet):
             valor_mo_ingreso_efectivo=Subquery(mo_dinero.values('total_ingreso_efectivo')),
             valor_mo_ingreso_tarjeta=Subquery(mo_dinero.values('total_ingreso_tarjeta')),
             valor_mo_total=Subquery(mo_dinero.values('total')),
+            mo_nro_pagos_tarjetas=Subquery(mo_dinero.values('mo_nro_pagos_tarjetas')),
             cuadre=ExpressionWrapper(
                 (
                         Subquery(efectivo.values('total')) +
@@ -114,3 +136,111 @@ class ArqueoCajaViewSet(viewsets.ModelViewSet):
 
         ).all()
         return qs
+
+    @detail_route(methods=['post'])
+    def imprimir_entrega(self, request, pk=None):
+        arqueo = self.get_object()
+
+        entrega = EfectivoEntregaDenominacion.objects.filter(
+            arqueo_caja=arqueo,
+            cantidad__gt=0
+        ).annotate(
+            total=ExpressionWrapper(
+                F('valor') * F('cantidad'),
+                output_field=DecimalField(max_digits=10, decimal_places=2)
+            )
+        )
+
+        base = BaseDisponibleDenominacion.objects.filter(
+            arqueo_caja=arqueo,
+            cantidad__gt=0
+        ).annotate(
+            total=ExpressionWrapper(
+                F('valor') * F('cantidad'),
+                output_field=DecimalField(max_digits=10, decimal_places=2)
+            )
+        )
+
+        context = {
+            'entrega': entrega.all(),
+            'base': base.all(),
+            'arqueo': arqueo
+        }
+
+        html_get_template = get_template('reportes/cajas/entrega_cierre_pdf.html').render(context)
+        html = HTML(
+            string=html_get_template,
+            base_url=request.build_absolute_uri()
+        )
+
+        width = '80mm'
+        height = '30cm'
+        size = 'size: %s %s' % (width, height)
+        margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
+
+        css_string = '@page {text-align: justify; font-family: Arial;font-size: 0.6rem;%s;%s}' % (size, margin)
+        main_doc = html.render(stylesheets=[CSS(string=css_string)])
+
+        output = BytesIO()
+        main_doc.write_pdf(
+            target=output
+        )
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        response.write(output.getvalue())
+        output.close()
+        return response
+
+    def generar_pdf_arqueo(self, request):
+        arqueo = self.get_queryset().get(id=self.get_object().id)
+        context = {
+            'arqueo': arqueo
+        }
+        html_get_template = get_template('reportes/cajas/arqueo_pdf.html').render(context)
+        html = HTML(
+            string=html_get_template,
+            base_url=request.build_absolute_uri()
+        )
+        main_doc = html.render(stylesheets=[CSS('static/css/reportes_carta.css')])
+        return main_doc
+
+    @detail_route(methods=['post'])
+    def imprimir_arqueo(self, request, pk=None):
+        output = BytesIO()
+        main_doc = self.generar_pdf_arqueo(request)
+        main_doc.write_pdf(
+            target=output
+        )
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        response.write(output.getvalue())
+        output.close()
+        return response
+
+    @detail_route(methods=['post'])
+    def enviar_arqueo_email(self, request, pk=None):
+        arqueo = self.get_object()
+        main_doc = self.generar_pdf_arqueo(request)
+        text_content = render_to_string('email/cajas/arqueo_caja_envio_correo.html', {})
+        output = BytesIO()
+        main_doc.write_pdf(
+            target=output
+        )
+
+        msg = EmailMultiAlternatives(
+            'Arqueo de Caja de %s' % arqueo.usuario.username,
+            text_content,
+            bcc=['fabiogarciasanchez+dramor@gmail.com'],
+            from_email='Clínica Dr. Amor <%s>' % 'webmaster@clinicadramor.com',
+            to=['fabiogarciasanchez+dramor@gmail.com']
+        )
+        msg.attach_alternative(text_content, "text/html")
+        msg.attach('Arqueo de caja %s' % arqueo.usuario.username, output.getvalue(), 'application/pdf')
+        try:
+            msg.send()
+        except Exception as e:
+            raise serializers.ValidationError(
+                'Se há presentado un error al intentar enviar el correo, envío fallido: %s' % e)
+        return Response({'resultado': 'ok'})

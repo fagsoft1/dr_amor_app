@@ -59,6 +59,7 @@ class MovimientoDineroPDV(TimeStampedModel):
         ("CAM_HABITACION", "Cambio de Habitacion Servicio"),
         ("LIQ_ACOM", "Liquidacion Acompañante"),
         ("ANU_SER_ACOM", "Anulacion Servicio Acompañante"),
+        ("BASE_INI", "Base Inicial"),
     )
     punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='movimientos_dinero')
     creado_por = models.ForeignKey(User, on_delete=models.PROTECT)

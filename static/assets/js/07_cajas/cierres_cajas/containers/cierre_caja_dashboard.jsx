@@ -30,13 +30,13 @@ const TablaBilletesMonedas = (props) => {
                             </td>
                             <td style={styles.table.td}>
                                 <input
-                                    value={denominaciones && denominaciones[d.valor] ? denominaciones[d.valor].cantidad : 0}
+                                    value={denominaciones && denominaciones[d.id] ? denominaciones[d.id].cantidad : 0}
                                     name={d.valor} type='number'
-                                    onChange={(e) => onChange(e.target.value, d.valor, d.tipo)}
+                                    onChange={(e) => onChange(d.id, e.target.value, d.valor, d.tipo)}
                                 />
                             </td>
                             <td style={styles.table.td}>
-                                {denominaciones && denominaciones[d.valor] ? pesosColombianos(denominaciones[d.valor].total) : 0}
+                                {denominaciones && denominaciones[d.id] ? pesosColombianos(denominaciones[d.id].total) : 0}
                             </td>
                         </tr>
                     )
@@ -111,16 +111,16 @@ class LiquidarAcompanante extends Component {
         this.props.clearBilletesMonedas();
     }
 
-    onChangeEntrega(cantidad, valor, tipo) {
+    onChangeEntrega(id, cantidad, valor, tipo) {
         const {denominaciones_entrega} = this.state;
         const nueva = {cantidad, valor, total: cantidad * valor, tipo};
-        this.setState({denominaciones_entrega: {...denominaciones_entrega, [valor]: nueva}});
+        this.setState({denominaciones_entrega: {...denominaciones_entrega, [id]: nueva}});
     }
 
-    onChangeBase(cantidad, valor, tipo) {
+    onChangeBase(id, cantidad, valor, tipo) {
         const {denominaciones_base} = this.state;
         const nueva = {cantidad, valor, total: cantidad * valor, tipo};
-        this.setState({denominaciones_base: {...denominaciones_base, [valor]: nueva}});
+        this.setState({denominaciones_base: {...denominaciones_base, [id]: nueva}});
     }
 
     cargarDatos() {
@@ -135,7 +135,15 @@ class LiquidarAcompanante extends Component {
     }
 
     onCerrarCajaPuntoVenta() {
-        const {hacerEntregaEfectivoCajaPuntoVenta} = this.props;
+        const {
+            hacerEntregaEfectivoCajaPuntoVenta,
+            printEntregasArqueosCajas,
+            envioEmailArqueo,
+            cargando,
+            noCargando,
+            notificarErrorAjaxAction,
+        } = this.props;
+        cargando();
         const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         const cierre = this.state;
         const cierre2 = {
@@ -153,7 +161,24 @@ class LiquidarAcompanante extends Component {
                 punto_venta_id: cierre.punto_venta_id
             }
         };
-        hacerEntregaEfectivoCajaPuntoVenta(punto_venta.id, cierre2)
+        const success_callback = (response) => {
+            const url = window.URL.createObjectURL(new Blob([response], {type: 'application/pdf'}));
+            window.open(url, "_blank");
+            localStorage.removeItem('punto_venta');
+            this.props.history.push('/app');
+            noCargando();
+        };
+        const imprimirEntrega = (arqueo_id) => printEntregasArqueosCajas(arqueo_id, success_callback, (r) => {
+            notificarErrorAjaxAction(r, 60000);
+            noCargando();
+        });
+        const enviarEmail = (arqueo_id) => {
+            envioEmailArqueo(arqueo_id,
+                () => {
+                    imprimirEntrega(arqueo_id);
+                }, res => notificarErrorAjaxAction(res, 60000));
+        };
+        hacerEntregaEfectivoCajaPuntoVenta(punto_venta.id, cierre2, res => enviarEmail(res.arqueo_id));
     }
 
     render() {

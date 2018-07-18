@@ -56,6 +56,8 @@ class TerceroViewSetMixin(object):
         tercero = self.get_object()
         pin = request.POST.get('pin')
 
+        print(request.POST)
+
         if not pin or pin == "":
             raise serializers.ValidationError('El pin no puede ser vacio')
         elif not tercero.is_pin_correct(pin):
@@ -73,6 +75,8 @@ class TerceroViewSetMixin(object):
     def registrar_salida(self, request, pk=None):
         tercero = self.get_object()
         pin = request.POST.get('pin')
+
+        print(request.POST)
 
         if not pin or pin == "":
             raise serializers.ValidationError('El pin no puede ser vacio')
