@@ -12,15 +12,15 @@ class Seguridad extends Component {
     }
 
     onCambiarPin(values, callback) {
-        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
         const {
-            cargando,
-            noCargando,
+
+
             notificarAction,
             notificarErrorAjaxAction,
-            cambiarPinUsuario
+            cambiarPinUsuario,
+            auth: {mi_cuenta}
         } = this.props;
-        cargando();
+
         cambiarPinUsuario(
             mi_cuenta.id,
             values.pin,
@@ -29,26 +29,26 @@ class Seguridad extends Component {
                 if (response && response.result) {
                     notificarAction(response.result)
                 }
-                noCargando();
+
                 callback();
             },
             (response) => {
-                noCargando();
+
                 notificarErrorAjaxAction(response)
             }
         )
     }
 
     onCambiarPassword(values, callback) {
-        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
         const {
-            cargando,
-            noCargando,
+
+
             notificarAction,
             notificarErrorAjaxAction,
-            cambiarContrasenaUsuario
+            cambiarContrasenaUsuario,
+            auth: {mi_cuenta}
         } = this.props;
-        cargando();
+
         cambiarContrasenaUsuario(
             mi_cuenta.id,
             values.password_old,
@@ -58,18 +58,18 @@ class Seguridad extends Component {
                 if (response && response.result) {
                     notificarAction(response.result)
                 }
-                noCargando();
+
                 callback();
             },
             (response) => {
-                noCargando();
+
                 notificarErrorAjaxAction(response)
             }
         )
     }
 
     render() {
-        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
+        const {auth: {mi_cuenta}} = this.props;
         return (
             <div className="row">
                 {
@@ -90,7 +90,7 @@ class Seguridad extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos
+        auth: state.auth,
     }
 }
 

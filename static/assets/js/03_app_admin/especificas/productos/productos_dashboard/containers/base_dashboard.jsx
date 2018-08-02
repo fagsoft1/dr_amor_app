@@ -54,28 +54,24 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAjaxAction, cargando, noCargando} = this.props;
+        const {notificarErrorAjaxAction,} = this.props;
         let index = value !== null ? value : this.state.slideIndex;
-        cargando();
 
-        const cargarCategoriasProductosDos = () => this.props.fetchCategoriasProductosDos(() => noCargando(), notificarErrorAjaxAction);
-        const cargarCategoriasProductos = () => this.props.fetchCategoriasProductos(() => noCargando(), notificarErrorAjaxAction);
-        const cargarUnidadesProductos = () => this.props.fetchUnidadesProductos(() => noCargando(), notificarErrorAjaxAction);
-        const cargarEmpresas = () => this.props.fetchEmpresas(() => noCargando(), notificarErrorAjaxAction);
+
+        const cargarCategoriasProductosDos = () => this.props.fetchCategoriasProductosDos(null, notificarErrorAjaxAction);
+        const cargarCategoriasProductos = () => this.props.fetchCategoriasProductos(null, notificarErrorAjaxAction);
+        const cargarUnidadesProductos = () => this.props.fetchUnidadesProductos(null, notificarErrorAjaxAction);
+        const cargarEmpresas = () => this.props.fetchEmpresas(null, notificarErrorAjaxAction);
 
         if (index === 0) {
             cargarUnidadesProductos();
-            cargando();
             cargarCategoriasProductosDos();
-            cargando();
             cargarEmpresas();
-            cargando();
-            this.props.fetchProductos(() => noCargando(), notificarErrorAjaxAction);
+            this.props.fetchProductos(null, notificarErrorAjaxAction);
         } else if (index === 1) {
             cargarCategoriasProductos();
         } else if (index === 2) {
             cargarCategoriasProductos();
-            cargando();
             cargarCategoriasProductosDos();
         } else if (index === 3) {
             cargarUnidadesProductos();
@@ -96,17 +92,15 @@ class ListadoElementos extends Component {
     }
 
     cargarDatos() {
-        const {notificarErrorAjaxAction, cargando} = this.props;
-        cargando();
-        this.props.fetchMisPermisos(() => this.cargarElementos(), notificarErrorAjaxAction)
+        this.cargarElementos();
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list, bloque_3_list, bloque_4_list, mis_permisos} = this.props;
-        const permisos_object_1 = permisosAdapter(mis_permisos, bloque_1_permisos);
-        const permisos_object_2 = permisosAdapter(mis_permisos, bloque_2_permisos);
-        const permisos_object_3 = permisosAdapter(mis_permisos, bloque_3_permisos);
-        const permisos_object_4 = permisosAdapter(mis_permisos, bloque_4_permisos);
+        const {bloque_1_list, bloque_2_list, bloque_3_list, bloque_4_list, auth: {mis_permisos}} = this.props;
+        const permisos_object_1 = permisosAdapter( bloque_1_permisos);
+        const permisos_object_2 = permisosAdapter( bloque_2_permisos);
+        const permisos_object_3 = permisosAdapter( bloque_3_permisos);
+        const permisos_object_4 = permisosAdapter( bloque_4_permisos);
 
         const can_see =
             permisos_object_1.list ||
@@ -172,7 +166,7 @@ class ListadoElementos extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         bloque_1_list: state.productos,
         bloque_2_list: state.productos_categorias,
         bloque_3_list: state.productos_categorias_dos,

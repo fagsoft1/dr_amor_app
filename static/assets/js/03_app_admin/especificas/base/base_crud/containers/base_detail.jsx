@@ -25,19 +25,18 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {noCargando, cargando, notificarAction, notificarErrorAjaxAction} = this.props;
-        cargando();
+        const {  notificarAction, notificarErrorAjaxAction} = this.props;
+
         const success_callback = () => {
-            noCargando();
+
         };
-        const cargarAlgo = () => this.props.fetchAlgo(id, success_callback, notificarErrorAjaxAction);
-        this.props.fetchMisPermisos(cargarAlgo, notificarErrorAjaxAction);
+        this.props.fetchAlgo(id, success_callback, notificarErrorAjaxAction);
 
     }
 
     render() {
-        const {object, mis_permisos} = this.props;
-        const permisos = permisosAdapter(mis_permisos, permisos_view);
+        const {object, auth: {mis_permisos}} = this.props;
+        const permisos = permisosAdapter( permisos_view);
 
 
         if (!object) {
@@ -60,7 +59,7 @@ class Detail extends Component {
 function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         object: state.algos[id]
     }
 }

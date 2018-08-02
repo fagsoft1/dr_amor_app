@@ -31,42 +31,42 @@ class Detail extends Component {
     }
 
     updateCantidadTraslado(item) {
-        const {noCargando, cargando, notificarAction, notificarErrorAjaxAction} = this.props;
-        cargando();
-        this.props.updateTrasladoInventarioDetalle(item.id, item, () => noCargando(), notificarErrorAjaxAction)
+        const {  notificarAction, notificarErrorAjaxAction} = this.props;
+
+        this.props.updateTrasladoInventarioDetalle(item.id, item, null, notificarErrorAjaxAction)
     }
 
     addItemTraslado(item) {
-        const {noCargando, cargando, notificarAction, notificarErrorAjaxAction} = this.props;
-        cargando();
-        const cargarTrasladoDetalle = (response) => this.props.fetchTrasladoInventarioDetalle(response.id, () => noCargando(), notificarErrorAjaxAction)
+        const {  notificarAction, notificarErrorAjaxAction} = this.props;
+
+        const cargarTrasladoDetalle = (response) => this.props.fetchTrasladoInventarioDetalle(response.id, null, notificarErrorAjaxAction)
         this.props.createTrasladoInventarioDetalle(item, cargarTrasladoDetalle, notificarErrorAjaxAction)
     }
 
     eliminarItem(item_id) {
-        const {noCargando, cargando, notificarAction, notificarErrorAjaxAction} = this.props;
-        this.props.deleteTrasladoInventarioDetalle(item_id, () => noCargando(), notificarErrorAjaxAction)
+        const {  notificarAction, notificarErrorAjaxAction} = this.props;
+        this.props.deleteTrasladoInventarioDetalle(item_id, null, notificarErrorAjaxAction)
     }
 
     cargarDatos() {
         const {id} = this.props.match.params;
         let bodega_origen_id = null;
-        const {noCargando, cargando, notificarAction, notificarErrorAjaxAction} = this.props;
-        cargando();
-        const cargarInventarioBodegaOrigen = () => this.props.fetchMovimientosInventariosSaldosxBodega(bodega_origen_id, () => noCargando(), notificarErrorAjaxAction);
+        const {  notificarAction, notificarErrorAjaxAction} = this.props;
+
+        const cargarInventarioBodegaOrigen = () => this.props.fetchMovimientosInventariosSaldosxBodega(bodega_origen_id, null, notificarErrorAjaxAction);
         const cargarTrasladoInventarioDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(id, cargarInventarioBodegaOrigen, notificarErrorAjaxAction);
-        const cargarTrasladoInventario = () => this.props.fetchTrasladoInventario(id, (e) => {
+        this.props.fetchTrasladoInventario(id, (e) => {
                 cargarTrasladoInventarioDetalles(e);
                 bodega_origen_id = e.bodega_origen;
             },
-            notificarErrorAjaxAction);
-        this.props.fetchMisPermisos(cargarTrasladoInventario, notificarErrorAjaxAction);
+            notificarErrorAjaxAction
+        );
 
     }
 
     render() {
-        const {object, mis_permisos, traslados_inventarios_detalles_list, inventarios_bodega_origen_list} = this.props;
-        const permisos = permisosAdapter(mis_permisos, permisos_view);
+        const {object, traslados_inventarios_detalles_list, inventarios_bodega_origen_list, auth: {mis_permisos}} = this.props;
+        const permisos = permisosAdapter( permisos_view);
 
         if (!object) {
             return <SinObjeto/>
@@ -106,9 +106,9 @@ class Detail extends Component {
                 {
                     !object.trasladado &&
                     <span className='btn btn-primary' onClick={() => {
-                        const {noCargando, cargando, notificarErrorAjaxAction, trasladarTrasladoInventario} = this.props;
-                        cargando();
-                        const cargarDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(object.id, () => noCargando(), notificarErrorAjaxAction);
+                        const {  notificarErrorAjaxAction, trasladarTrasladoInventario} = this.props;
+
+                        const cargarDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(object.id, null, notificarErrorAjaxAction);
                         trasladarTrasladoInventario(object.id, cargarDetalles, notificarErrorAjaxAction);
                     }}>
                     Trasladar
@@ -124,7 +124,7 @@ class Detail extends Component {
 function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         object: state.traslados_inventarios[id],
         traslados_inventarios_detalles_list: state.traslados_inventarios_detalles,
         inventarios_bodega_origen_list: state.movimientos_inventarios_detalles,

@@ -6,7 +6,6 @@ import ListaProductos from '../../tienda/components/lista_categorias_productos';
 import Cuenta from '../../tienda/components/cuenta';
 import * as actions from "../../../01_actions/01_index";
 import {connect} from "react-redux";
-import {noCargando} from "../../../01_actions/generales/utiles/loadingAction";
 
 class App extends Component {
     constructor(props) {
@@ -24,7 +23,7 @@ class App extends Component {
         //     if (puntos_ventas.length > 0) {
         //         const punto_venta = puntos_ventas[0];
         //         this.props.fetchBodega(punto_venta.bodega, (bodega => {
-        //             this.props.fetchMovimientosInventariosSaldosxBodega(bodega.id, () => noCargando());
+        //             this.props.fetchMovimientosInventariosSaldosxBodega(bodega.id, null);
         //             this.setState({punto_venta, bodega})
         //         }));
         //     }
@@ -36,8 +35,7 @@ class App extends Component {
     }
 
     render() {
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
-        const {inventario_list} = this.props;
+        const {inventario_list, auth: {punto_venta}} = this.props;
         return (
             <div className="p-3">
                 <div className="row">
@@ -55,7 +53,7 @@ class App extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         puntos_ventas: _.pickBy(state.puntos_ventas, e => e.tipo === 1),
         inventario_list: state.movimientos_inventarios_detalles,
     }

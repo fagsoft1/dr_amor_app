@@ -26,7 +26,7 @@ class ServiciosDashboar extends Component {
     }
 
     componentDidMount() {
-        this.props.cargando();
+
         this.cargarDatos();
         this.interval = setInterval(
             () => {
@@ -37,10 +37,10 @@ class ServiciosDashboar extends Component {
 
     cargarDatos() {
         const {
-            noCargando,
+
             notificarErrorAjaxAction
         } = this.props;
-        const cargarHabitaciones = () => this.props.fetchHabitaciones(() => noCargando(), notificarErrorAjaxAction);
+        const cargarHabitaciones = () => this.props.fetchHabitaciones(null, notificarErrorAjaxAction);
         this.props.fetchServicios_en_proceso(cargarHabitaciones, notificarErrorAjaxAction);
     }
 
@@ -56,13 +56,13 @@ class ServiciosDashboar extends Component {
 
     onClickHabitacion(habitacion_id, callback = null) {
         const {
-            cargando,
-            noCargando,
+
+
             notificarErrorAjaxAction,
             notificarAction,
             fetchHabitacion
         } = this.props;
-        cargando();
+
         fetchHabitacion(
             habitacion_id,
             (response) => {
@@ -72,15 +72,15 @@ class ServiciosDashboar extends Component {
                 } else if (estado === 0 || estado === 1) {
                     this.abrirModalHabitacion(response)
                 }
-                noCargando()
+
             },
             notificarErrorAjaxAction
         );
     }
 
     abrirModalServicio(servicio) {
-        const {cargando, noCargando, notificarErrorAjaxAction} = this.props;
-        cargando();
+        const {  notificarErrorAjaxAction} = this.props;
+
         this.clearDatos();
         this.props.fetchServicio(
             servicio.id,
@@ -90,7 +90,7 @@ class ServiciosDashboar extends Component {
                 } else {
                     this.cargarDatos();
                 }
-                noCargando();
+
             },
             notificarErrorAjaxAction
         );
@@ -98,20 +98,20 @@ class ServiciosDashboar extends Component {
 
     cerraModalServicio() {
         const {
-            cargando,
+
         } = this.props;
         this.setState({modal_servicio_open: false, servicio_id: null});
-        cargando();
+
         this.cargarDatos();
     }
 
     abrirModalHabitacion(habitacion) {
-        const {cargando, noCargando, notificarErrorAjaxAction} = this.props;
-        cargando();
+        const {  notificarErrorAjaxAction} = this.props;
+
         this.props.clearServicios();
         this.props.fetchTercerosPresentes(() => {
                 this.setState({modal_habitacion_open: true, habitacion_id: habitacion.id});
-                noCargando();
+
             },
             notificarErrorAjaxAction
         );
@@ -187,7 +187,7 @@ class ServiciosDashboar extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         terceros: state.terceros,
         habitaciones: state.habitaciones,
         servicios: state.servicios,

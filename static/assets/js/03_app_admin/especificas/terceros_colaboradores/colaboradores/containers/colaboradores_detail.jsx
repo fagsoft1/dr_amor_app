@@ -56,13 +56,13 @@ class Detail extends Component {
 
     addPuntoVenta(punto_venta) {
         const {id} = this.props.match.params;
-        const {noCargando, cargando, notificarErrorAjaxAction, adicionarPuntoVenta} = this.props;
-        cargando();
+        const {notificarErrorAjaxAction, adicionarPuntoVenta} = this.props;
+
         adicionarPuntoVenta(
             id,
             punto_venta.id,
             () => {
-                this.cargarPuntosVentasColaborador(noCargando())
+                this.cargarPuntosVentasColaborador()
             },
             notificarErrorAjaxAction
         )
@@ -70,13 +70,13 @@ class Detail extends Component {
 
     quitarPuntoVenta(punto_venta) {
         const {id} = this.props.match.params;
-        const {noCargando, cargando, notificarErrorAjaxAction, quitarPuntoVenta} = this.props;
-        cargando();
+        const {notificarErrorAjaxAction, quitarPuntoVenta} = this.props;
+
         quitarPuntoVenta(
             id,
             punto_venta.id,
             () => {
-                this.cargarPuntosVentasColaborador(noCargando())
+                this.cargarPuntosVentasColaborador()
             },
             notificarErrorAjaxAction
         )
@@ -101,20 +101,19 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {noCargando, cargando, notificarErrorAjaxAction} = this.props;
-        cargando();
+        const { notificarErrorAjaxAction} = this.props;
+
         const success_callback = () => {
-            noCargando();
+
         };
         const fetchPuntosVentasColaborador = () => this.cargarPuntosVentasColaborador(success_callback);
-        const cargarColaborador = () => this.props.fetchColaborador(id, fetchPuntosVentasColaborador, notificarErrorAjaxAction);
-        this.props.fetchMisPermisos(cargarColaborador, notificarErrorAjaxAction);
+        this.props.fetchColaborador(id, fetchPuntosVentasColaborador, notificarErrorAjaxAction);
 
     }
 
     render() {
-        const {object, mis_permisos, puntos_ventas} = this.props;
-        const permisos = permisosAdapter(mis_permisos, permisos_view);
+        const {object, puntos_ventas, auth: {mis_permisos}} = this.props;
+        const permisos = permisosAdapter(permisos_view);
         const {puntos_ventas_colaborador} = this.state;
         const puntos_venta_para_adicionar = puntos_ventas_colaborador ? _.pickBy(puntos_ventas, pv => !_.map(puntos_ventas_colaborador, pv => pv.id).includes(pv.id)) : null;
         if (!object) {
@@ -147,7 +146,7 @@ class Detail extends Component {
 function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         object: state.colaboradores[id],
         puntos_ventas: state.puntos_ventas,
     }

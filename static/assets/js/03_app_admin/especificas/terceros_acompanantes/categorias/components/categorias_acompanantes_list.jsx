@@ -21,56 +21,56 @@ class List extends Component {
 
     successSubmitCallback(item) {
         const nombre = item.nombre;
-        const {noCargando, notificarAction} = this.props;
+        const { notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        noCargando()
+        
     }
 
 
     successDeleteCallback(item) {
         const nombre = item.nombre;
-        const {noCargando, notificarAction} = this.props;
+        const { notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        noCargando()
+        
     }
 
     fetchObjectMethod(item_id, successCallback) {
-        const {cargando, noCargando, notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAjaxAction} = this.props;
         const success_method = (item) => {
             successCallback(item);
-            noCargando();
+
         };
-        cargando();
+        
         this.props.fetchCategoriaAcompanante(item_id, success_method, notificarErrorAjaxAction);
     }
 
     createObjectMethod(item, successCallback) {
-        const {cargando, notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAjaxAction} = this.props;
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
-        cargando();
+        
         this.props.createCategoriaAcompanante(item, success_method, notificarErrorAjaxAction);
     }
 
     updateObjectMethod(item, successCallback) {
-        const {cargando, notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAjaxAction} = this.props;
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
-        cargando();
+        
         this.props.updateCategoriaAcompanante(item.id, item, success_method, notificarErrorAjaxAction);
     }
 
     deleteObjectMethod(item, successCallback) {
-        const {cargando, notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAjaxAction} = this.props;
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
-        cargando();
+        
         this.props.deleteCategoriaAcompanante(item.id, success_method, notificarErrorAjaxAction);
     }
 

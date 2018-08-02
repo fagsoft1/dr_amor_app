@@ -39,19 +39,18 @@ class PermisosList extends Component {
     }
 
     cargarDatos() {
-        this.props.cargando();
-        const cargarPermisos = () => this.props.fetchPermisos(() => this.props.noCargando(), this.error_callback);
-        this.props.fetchMisPermisos(cargarPermisos, this.error_callback)
+
+        this.props.fetchPermisos(null, this.error_callback);
 
     }
 
     updatePermiso(permiso) {
-        this.props.cargando();
+
         this.props.updatePermiso(
             permiso.id,
             permiso,
             () => {
-                this.props.noCargando();
+                null
                 this.notificar(`Se ha actualizado con éxito el permiso ${permiso.codename}`)
             },
             this.error_callback
@@ -60,10 +59,11 @@ class PermisosList extends Component {
 
 
     render() {
-        const {mis_permisos, permisos} = this.props;
-        const can_change_permiso = tengoPermiso(mis_permisos, can_change_permiso_plus);
+        const {permisos, auth: {mis_permisos}} = this.props;
+        const can_change_permiso = tengoPermiso(can_change_permiso_plus);
+        const permisos_this_view = permisosAdapter( permisos_view);
 
-        const permisos_this_view = permisosAdapter(mis_permisos, permisos_view);
+        console.log(permisos_this_view)
 
         return (
             <ValidarPermisos can_see={permisos_this_view.list}
@@ -82,7 +82,7 @@ class PermisosList extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         permisos: state.permisos
     }
 }

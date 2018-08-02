@@ -13,13 +13,13 @@ const Item = (props) => {
             <td>{servicio.hora_inicio && horaFormatoUno(servicio.hora_inicio)}</td>
             <td>{servicio.hora_final && horaFormatoUno(servicio.hora_final)}</td>
             <td>{servicio.categoria}</td>
-            <td>{servicio.estado === 0 && pesosColombianos(servicio.valor_servicio)}</td>
-            <td>{servicio.estado === 0 && pesosColombianos(servicio.valor_habitacion)}</td>
-            <td>{servicio.estado === 0 && pesosColombianos(servicio.valor_iva_habitacion)}</td>
-            <td>{servicio.estado === 0 && pesosColombianos(servicio.valor_total)}</td>
+            <td>{servicio.nuevo && pesosColombianos(servicio.valor_servicio)}</td>
+            <td>{servicio.nuevo && pesosColombianos(servicio.valor_habitacion)}</td>
+            <td>{servicio.nuevo && pesosColombianos(servicio.valor_iva_habitacion)}</td>
+            <td>{servicio.nuevo && pesosColombianos(servicio.valor_total)}</td>
             <td>
                 {
-                    servicio.estado === 0 &&
+                    servicio.nuevo &&
                     <i className='fas fa-trash puntero'
                        onClick={() => onDeleteServicio(servicio.id)}
                     >
@@ -41,16 +41,28 @@ class ServicioHabitacionList extends Component {
             onCambiarHabitacion,
             mostrar_terminar_servicios,
             mostrar_cambiar_habitacion,
+            servicios_nuevos,
             habitaciones,
             habitacion,
         } = this.props;
-        const servicios_array = _.map(servicios, s => s);
 
-        const servicio_para_iniciar_array = _.map(_.pickBy(servicios, s => s.estado === 0), s => s);
-        const valor_total = servicio_para_iniciar_array.reduce((v, s) => parseFloat(v) + parseFloat(s.valor_total), 0);
-        const valor_habitacion = servicio_para_iniciar_array.reduce((v, s) => parseFloat(v) + parseFloat(s.valor_habitacion), 0);
-        const valor_iva_habitacion = servicio_para_iniciar_array.reduce((v, s) => parseFloat(v) + parseFloat(s.valor_iva_habitacion), 0);
-        const valor_servicio = servicio_para_iniciar_array.reduce((v, s) => parseFloat(v) + parseFloat(s.valor_servicio), 0);
+        const servicios_nuevos_array = _.map(servicios_nuevos, e => {
+            return ({
+                ...e,
+                id: e.id_temp,
+            })
+        });
+
+        let servicios_array = _.map(servicios, s => s);
+        _.orderBy(servicios_nuevos_array, ['acompanante_nombre', 'tiempo_minutos'], ['asc', 'desc']).map(s => {
+            servicios_array = [...servicios_array, s]
+        });
+
+        const valor_total = servicios_nuevos_array.reduce((v, s) => parseFloat(v) + parseFloat(s.valor_total), 0);
+
+        const valor_habitacion = servicios_nuevos_array.reduce((v, s) => parseFloat(v) + parseFloat(s.valor_habitacion), 0);
+        const valor_iva_habitacion = servicios_nuevos_array.reduce((v, s) => parseFloat(v) + parseFloat(s.valor_iva_habitacion), 0);
+        const valor_servicio = servicios_nuevos_array.reduce((v, s) => parseFloat(v) + parseFloat(s.valor_servicio), 0);
         const servicios_para_terminar_array = _.map(_.pickBy(servicios, s => s.estado === 1), s => s);
 
         const servicios_para_cambiar_habitacion_array = _.map(_.pickBy(servicios, s => {
@@ -83,7 +95,7 @@ class ServicioHabitacionList extends Component {
                     })}
                     </tbody>
                     {
-                        servicio_para_iniciar_array.length > 0 &&
+                        servicios_nuevos_array.length > 0 &&
                         <tfoot>
                         <tr>
                             <td colSpan={5}></td>
@@ -96,10 +108,10 @@ class ServicioHabitacionList extends Component {
                     }
                 </table>
                 {
-                    servicio_para_iniciar_array.length > 0 &&
+                    servicios_nuevos_array.length > 0 &&
                     <div className="col-12">
                         <FormaPago
-                            onSubmit={pago => onIniciarServicios(pago, servicio_para_iniciar_array)}
+                            onSubmit={pago => onIniciarServicios(pago, servicios_nuevos_array)}
                             valor_a_pagar={valor_total}
                             texto_boton='Iniciar Servicios'
                         >
@@ -108,6 +120,7 @@ class ServicioHabitacionList extends Component {
                 }
                 {
                     mostrar_cambiar_habitacion &&
+                    servicios_nuevos_array.length === 0 &&
                     <div className="col-12">
                         <CambioHabitacion
                             habitaciones={habitaciones_para_cambiar_array}

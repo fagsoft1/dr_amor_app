@@ -27,18 +27,17 @@ class List extends Component {
     }
 
     cargarDatos() {
-        const {cargando, noCargando, notificarErrorAjaxAction} = this.props;
-        cargando();
-        const cargarBodegas = () => this.props.fetchBodegas(() => noCargando(), notificarErrorAjaxAction);
+        const {  notificarErrorAjaxAction} = this.props;
+        
+        const cargarBodegas = () => this.props.fetchBodegas(null, notificarErrorAjaxAction);
         const cargarProveedores = () => this.props.fetchProveedores(cargarBodegas, notificarErrorAjaxAction);
-        const cargarMovimientosInventarios = () => this.props.fetchMovimientosInventarios(cargarProveedores, notificarErrorAjaxAction);
-        this.props.fetchMisPermisos(cargarMovimientosInventarios, notificarErrorAjaxAction)
+        this.props.fetchMovimientosInventarios(cargarProveedores, notificarErrorAjaxAction);
 
     }
 
     render() {
-        const {object_list, mis_permisos} = this.props;
-        const bloque_1_list = permisosAdapter(mis_permisos, permisos_view);
+        const {object_list, auth: {mis_permisos}} = this.props;
+        const bloque_1_list = permisosAdapter( permisos_view);
         return (
             <Fragment>
                 <ListCrud
@@ -56,7 +55,7 @@ class List extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         object_list: _.orderBy(state.movimientos_inventarios, ['fecha'], ['asc']),
         proveedores_list: state.proveedores,
         bodegas_list: state.bodegas,

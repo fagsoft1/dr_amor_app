@@ -27,6 +27,12 @@ class TipoHabitacionSerializer(serializers.ModelSerializer):
 class HabitacionSerializer(serializers.ModelSerializer):
     tipo_habitacion_nombre = serializers.CharField(source='tipo.nombre', read_only=True)
     valor = serializers.DecimalField(source='tipo.valor', max_digits=10, decimal_places=0, read_only=True)
+    porcentaje_impuesto = serializers.DecimalField(
+        source='tipo.porcentaje_impuesto',
+        max_digits=10,
+        decimal_places=2,
+        read_only=True
+    )
     empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)
     tiempo_final_servicio = serializers.DateTimeField(read_only=True)
 
@@ -39,6 +45,7 @@ class HabitacionSerializer(serializers.ModelSerializer):
             'nombre',
             'tipo',
             'tipo_habitacion_nombre',
+            'porcentaje_impuesto',
             'empresa',
             'empresa_nombre',
             'numero',

@@ -24,19 +24,19 @@ class List extends Component {
     successSubmitCallback(response) {
         const {tipo_registro} = this.state;
         const {result} = response;
-        const {noCargando, notificarAction} = this.props;
+        const { notificarAction} = this.props;
         notificarAction(result);
-        noCargando()
+
         this.setState({modal_open: false, tipo_registro: null});
     }
 
     onSubmit(item) {
-        const {cargando, notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAjaxAction} = this.props;
         const {tipo_registro} = this.state;
         const success_method = (response) => {
             this.successSubmitCallback(response);
         };
-        cargando();
+
         let metodo = null;
         if (tipo_registro === 'Registro Entrada') {
             metodo = this.props.registrarIngresoTercero;
@@ -51,8 +51,8 @@ class List extends Component {
             object_list,
             permisos_object,
             notificarErrorAjaxAction,
-            noCargando,
-            cargando,
+
+
             modelosxcategoria,
             colaboradores_presentes
         } = this.props;
@@ -66,16 +66,16 @@ class List extends Component {
                     text='Registrar Entrada'
                     onClick={() => {
                         this.setState({modal_open: true, tipo_registro: 'Registro Entrada'});
-                        cargando();
-                        this.props.fetchTercerosAusentes(() => noCargando(), notificarErrorAjaxAction);
+
+                        this.props.fetchTercerosAusentes(null, notificarErrorAjaxAction);
                     }}
                 />
                 <ContainerTextButton
                     text='Registrar Salida'
                     onClick={() => {
                         this.setState({modal_open: true, tipo_registro: 'Registro Salida'});
-                        cargando();
-                        this.props.fetchTercerosPresentes(() => noCargando(), notificarErrorAjaxAction);
+
+                        this.props.fetchTercerosPresentes(null, notificarErrorAjaxAction);
                     }}
                 />
                 {
@@ -86,7 +86,7 @@ class List extends Component {
                         {...this.props}
                         modal_open={modal_open}
                         onCancel={() => {
-                            noCargando();
+
                             this.setState({modal_open: false, tipo_registro: null});
                         }}
                         onSubmit={this.onSubmit}

@@ -62,7 +62,7 @@ form .btn {
   height: 100%;
   opacity: 0.9;
   position: absolute;
-  z-index: 99;
+  z-index: 1400;
 }
 .loading-overload-tres {
   border-radius: 10px;
@@ -72,7 +72,7 @@ form .btn {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 99;
+  z-index: 1400;
   background-color: #f00;
   padding: 0.5rem;
   color: #fff;
@@ -312,8 +312,19 @@ form .btn {
 }
 .ReactTable .rt-tr,
 .ReactTable .rt-td {
-  padding: 0 !important;
+  padding: 1px !important;
   margin: 0 !important;
+}
+.ReactTable .rt-tr button,
+.ReactTable .rt-td button,
+.ReactTable .rt-tr input,
+.ReactTable .rt-td input,
+.ReactTable .rt-tr span,
+.ReactTable .rt-td span {
+  align-items: baseline;
+  line-height: normal;
+  width: 25px;
+  height: 25px;
 }
 @-moz-keyframes blinker {
   50% {

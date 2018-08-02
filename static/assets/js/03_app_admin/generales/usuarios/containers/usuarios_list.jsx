@@ -30,21 +30,19 @@ class UsuariosList extends Component {
     }
 
     cargarDatos() {
-        const {cargando, noCargando, notificarErrorAjaxAction} = this.props;
-        cargando();
-        const cargarUsuarios = () => this.props.fetchUsuarios(() => noCargando(), notificarErrorAjaxAction);
-        const cargarMiCuenta = () => this.props.fetchMiCuenta(cargarUsuarios, notificarErrorAjaxAction);
-        this.props.fetchMisPermisos(cargarMiCuenta, notificarErrorAjaxAction)
+        const {  notificarErrorAjaxAction} = this.props;
+
+        this.props.fetchUsuarios(null, notificarErrorAjaxAction);
     }
 
     onSubmit(item, tipo) {
         const nombre = item.username;
-        const {cargando, noCargando, notificarAction, notificarErrorAjaxAction} = this.props;
+        const {  notificarAction, notificarErrorAjaxAction} = this.props;
         const success_callback = () => {
             notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${tipo.toLowerCase()} ${nombre}`);
-            noCargando();
+
         };
-        cargando();
+
         if (item.id) {
             this.props.updateUsuario(item.id, item, success_callback, notificarErrorAjaxAction);
         } else {
@@ -54,19 +52,18 @@ class UsuariosList extends Component {
 
     onDelete(item, tipo) {
         const nombre = item.username;
-        const {cargando, noCargando, notificarAction, notificarErrorAjaxAction} = this.props;
+        const {  notificarAction, notificarErrorAjaxAction} = this.props;
         const success_callback = () => {
-            noCargando();
+
             notificarAction(`Se ha eliminado con éxito ${tipo.toLowerCase()} ${nombre}`)
         };
-        cargando();
+
         this.props.deleteUsuario(item.id, success_callback, notificarErrorAjaxAction)
     }
 
     render() {
-        const {object_list, mis_permisos} = this.props;
-        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
-        const permisos = permisosAdapter(mis_permisos, permisos_view);
+        const {object_list, auth: {mis_permisos, mi_cuenta}} = this.props;
+        const permisos = permisosAdapter( permisos_view);
         return (
 
             <ListManager permisos={permisos} singular_name='usuario' plural_name='usuarios'>
@@ -108,12 +105,12 @@ class UsuariosList extends Component {
                                         handleModalClose();
                                     }}
                                     onSelectItemEdit={(item) => {
-                                        const {cargando, noCargando, notificarErrorAjaxAction} = this.props;
-                                        cargando();
+                                        const {  notificarErrorAjaxAction} = this.props;
+
                                         this.props.fetchUsuario(item.id, () => {
                                                 onSelectItem(item);
                                                 handleModalOpen();
-                                                noCargando();
+
                                             },
                                             notificarErrorAjaxAction
                                         )
@@ -136,7 +133,7 @@ class UsuariosList extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         object_list: state.usuarios
     }
 }

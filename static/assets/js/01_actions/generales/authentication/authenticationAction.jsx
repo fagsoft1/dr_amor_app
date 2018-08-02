@@ -48,11 +48,16 @@ export const login = (username, password, punto_venta = null, callback = null) =
             .then(res => {
                 if (res.status < 500) {
                     return res.json().then(data => {
+                        if (callback) {
+                            callback()
+                        }
                         return {status: res.status, data};
                     })
                 } else {
+                    if (callback) {
+                        callback()
+                    }
                     console.log("Server Error!");
-                    //throw res;
                 }
             })
             .then(res => {

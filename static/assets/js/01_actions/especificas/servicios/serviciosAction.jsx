@@ -17,7 +17,7 @@ export const solicitarAnulacionServicio = (id, observacion_anulacion, punto_vent
         let params = new URLSearchParams();
         params.append('observacion_anulacion', observacion_anulacion);
         params.append('punto_venta_id', punto_venta_id);
-        callApiMethodWithParameters(current_url_api, id, 'solicitar_anulacion', params, null, callback, callback_error)
+        callApiMethodWithParameters(current_url_api, id, 'solicitar_anulacion', params, null, callback, callback_error, dispatch)
     }
 };
 
@@ -26,7 +26,7 @@ export const cambiarTiempoServicio = (id, pago, callback = null, callback_error 
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pago', JSON.stringify(pago));
-        callApiMethodWithParameters(current_url_api, id, 'cambiar_tiempo', params, null, callback, callback_error)
+        callApiMethodWithParameters(current_url_api, id, 'cambiar_tiempo', params, null, callback, callback_error, dispatch)
     }
 };
 
@@ -36,7 +36,7 @@ export const createServicio = (values, callback = null, callback_error = null) =
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
         };
-        createObject(current_url_api, values, dispatches, callback, callback_error)
+        createObject(current_url_api, values, dispatches, callback, callback_error, dispatch)
     }
 };
 export const deleteServicio = (id, callback = null, callback_error = null) => {
@@ -44,14 +44,14 @@ export const deleteServicio = (id, callback = null, callback_error = null) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        deleteObject(current_url_api, id, dispatches, callback, callback_error)
+        deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
     }
 };
 export const terminarServicio = (id, punto_venta_id, callback = null, callback_error = null) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('punto_venta_id', punto_venta_id);
-        callApiMethodWithParameters(current_url_api, id, 'terminar_servicio', params, null, callback, callback_error)
+        callApiMethodWithParameters(current_url_api, id, 'terminar_servicio', params, null, callback, callback_error, dispatch)
     }
 };
 export const fetchServicios = (callback = null, callback_error = null) => {
@@ -59,7 +59,7 @@ export const fetchServicios = (callback = null, callback_error = null) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error);
+        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchServicios_en_proceso = (callback = null, callback_error = null) => {
@@ -67,7 +67,7 @@ export const fetchServicios_en_proceso = (callback = null, callback_error = null
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(`${current_url_api}/en_proceso`, dispatches, callback, callback_error);
+        fetchList(`${current_url_api}/en_proceso`, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchServicios_por_habitacion = (habitacion_id, callback = null, callback_error = null) => {
@@ -75,7 +75,7 @@ export const fetchServicios_por_habitacion = (habitacion_id, callback = null, ca
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListWithParameter(`${current_url_api}/pendientes_por_habitacion/?habitacion_id=${habitacion_id}`, dispatches, callback, callback_error);
+        fetchListWithParameter(`${current_url_api}/pendientes_por_habitacion/?habitacion_id=${habitacion_id}`, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchServicios_por_tercero_cuenta_abierta = (tercero_id, callback = null, callback_error = null) => {
@@ -83,7 +83,7 @@ export const fetchServicios_por_tercero_cuenta_abierta = (tercero_id, callback =
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListWithParameter(`${current_url_api}/consultar_por_tercero_cuenta_abierta/?tercero_id=${tercero_id}`, dispatches, callback, callback_error);
+        fetchListWithParameter(`${current_url_api}/consultar_por_tercero_cuenta_abierta/?tercero_id=${tercero_id}`, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchServicio = (id, callback = null, callback_error = null) => {
@@ -91,7 +91,7 @@ export const fetchServicio = (id, callback = null, callback_error = null) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        fetchObject(current_url_api, id, dispatches, callback, callback_error);
+        fetchObject(current_url_api, id, dispatches, callback, callback_error, dispatch);
     }
 };
 export const clearServicios = () => {
@@ -105,6 +105,6 @@ export const updateServicio = (id, values, callback = null, callback_error = nul
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        updateObject(current_url_api, id, values, dispatches, callback, callback_error)
+        updateObject(current_url_api, id, values, dispatches, callback, callback_error, dispatch)
     }
 };

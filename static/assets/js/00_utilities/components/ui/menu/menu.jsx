@@ -5,14 +5,8 @@ import * as actions from "../../../../01_actions/01_index";
 import {connect} from "react-redux";
 
 class MenuBase extends Component {
-    componentDidMount() {
-        this.props.fetchMiCuenta();
-        this.props.fetchMisPermisos();
-    }
-
     onSalir() {
-        const {notificarErrorAjaxAction} = this.props;
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
+        const {notificarErrorAjaxAction, auth: {punto_venta}} = this.props;
         if (punto_venta && punto_venta.id) {
             this.props.updatePuntoVenta(
                 punto_venta.id, {
@@ -32,9 +26,7 @@ class MenuBase extends Component {
     }
 
     render() {
-
-        const {mis_permisos} = this.props;
-        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
+        const {auth: {mis_permisos, mi_cuenta}} = this.props;
         return (
             <nav className="navbar sticky-top navbar-expand-lg navbar-light bg-light mt-0 mb-0 pt-0 pb-0">
                 <Link to='/app/'>
@@ -64,7 +56,7 @@ class MenuBase extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos
+        auth: state.auth,
     }
 }
 

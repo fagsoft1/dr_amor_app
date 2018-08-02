@@ -20,7 +20,7 @@ export function fetchMisPermisos(callback = null, callback_error = null) {
         const dispatches = (response) => {
             dispatch({type: FETCH_MIS_PERMISOS, payload: response})
         };
-        fetchList(FULL_URL, dispatches, callback, callback_error);
+        fetchList(FULL_URL, dispatches, callback, callback_error, dispatch);
     }
 }
 
@@ -31,7 +31,7 @@ export function fetchPermisosActivos(callback = null, callback_error = null) {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(FULL_URL, dispatches, callback, callback_error);
+        fetchList(FULL_URL, dispatches, callback, callback_error, dispatch);
     }
 }
 
@@ -42,7 +42,7 @@ export function fetchOtroUsuarioPermisos(id, callback = null, callback_error = n
         const dispatches = (response) => {
             dispatch({type: FETCH_OTRO_USUARIO_PERMISOS, payload: response})
         };
-        fetchListWithParameter(FULL_URL, dispatches, callback, callback_error);
+        fetchListWithParameter(FULL_URL, dispatches, callback, callback_error, dispatch);
     }
 }
 
@@ -51,7 +51,7 @@ export const fetchPermisos = (callback = null, callback_error = null) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error);
+        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
     }
 };
 
@@ -60,7 +60,7 @@ export const updatePermiso = (id, values, callback = null, callback_error = null
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        updateObject(current_url_api, id, values, dispatches, callback, callback_error)
+        updateObject(current_url_api, id, values, dispatches, callback, callback_error, dispatch)
     }
 };
 
@@ -69,7 +69,7 @@ export const fetchPermiso = (id, callback = null, callback_error = null) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        fetchObject(current_url_api, id, dispatches, callback, callback_error);
+        fetchObject(current_url_api, id, dispatches, callback, callback_error, dispatch);
     }
 };
 

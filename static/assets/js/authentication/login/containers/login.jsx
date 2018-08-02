@@ -19,13 +19,13 @@ class Login extends Component {
     }
 
     cargarPuntosVentasCliente(username) {
-        const {cargando, noCargando, notificarErrorAjaxAction, notificarAction, fetchPuntosVentas_por_usuario_username} = this.props;
-        cargando();
+        const {notificarErrorAjaxAction, notificarAction, fetchPuntosVentas_por_usuario_username} = this.props;
+
         fetchPuntosVentas_por_usuario_username(
             username,
             () => {
                 this.setState({cargando_puntos_ventas: true});
-                noCargando();
+
             },
             notificarErrorAjaxAction
         );
@@ -38,7 +38,9 @@ class Login extends Component {
 
     onSubmit(e) {
         const {username, password, punto_venta = null} = e;
-        this.props.login(username, password, punto_venta);
+        const {noCargando, cargando} = this.props;
+        cargando();
+        this.props.login(username, password, punto_venta, () => noCargando());
     }
 
     render() {
@@ -49,7 +51,8 @@ class Login extends Component {
             reset,
             puntos_ventas,
             auth,
-            error
+            error,
+            esta_cargando
         } = this.props;
         const {cargando_puntos_ventas} = this.state;
 
@@ -66,6 +69,7 @@ class Login extends Component {
                     <MyTextFieldSimple
                         name='username'
                         nombre='Nombre de Usuario'
+                        disabled={esta_cargando}
                         className='col-12'
                         onBlur={(e) => this.cargarPuntosVentasCliente(e.target.value)}
                         onChange={() => {
@@ -81,6 +85,7 @@ class Login extends Component {
                                 nombre='Contraseña'
                                 className='col-12'
                                 type='password'
+                                disabled={esta_cargando}
                                 autoFocus={true}
                                 onChange={() => {
                                     this.props.clear_authentication_errors();
@@ -89,6 +94,7 @@ class Login extends Component {
                             {
                                 _.size(puntos_ventas) > 0 &&
                                 <MyDropdownList
+                                    disabled={esta_cargando}
                                     name='punto_venta'
                                     nombre='Seleccione punto de venta'
                                     data={_.map(puntos_ventas, p => p)}
@@ -111,13 +117,13 @@ class Login extends Component {
 
                     <FlatIconModal
                         text='Ingresar'
-                        disabled={submitting || pristine}
+                        disabled={submitting || pristine || esta_cargando}
                         type='submit'
                     />
 
                     <FlatIconModal
                         text="Limpiar"
-                        disabled={submitting || pristine}
+                        disabled={submitting || pristine || esta_cargando}
                         onClick={reset}
                     />
                 </form>
@@ -128,6 +134,7 @@ class Login extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
+        esta_cargando: state.esta_cargando,
         auth: state.auth,
         puntos_ventas: state.puntos_ventas
     }

@@ -28,14 +28,14 @@ class LiquidarAcompanante extends Component {
 
     efectuarConsulta() {
         const {
-            cargando,
-            noCargando,
+
+
             notificarErrorAjaxAction,
             fetchServicios_por_tercero_cuenta_abierta
         } = this.props;
         const {id_tercero} = this.state;
-        cargando();
-        fetchServicios_por_tercero_cuenta_abierta(id_tercero, () => noCargando(), notificarErrorAjaxAction);
+
+        fetchServicios_por_tercero_cuenta_abierta(id_tercero, null, notificarErrorAjaxAction);
     }
 
     componentDidMount() {
@@ -48,24 +48,24 @@ class LiquidarAcompanante extends Component {
 
     cargarDatos() {
         const {
-            cargando,
-            noCargando,
+
+
             notificarErrorAjaxAction,
             fetchAcompanantesPresentes,
         } = this.props;
-        cargando();
-        fetchAcompanantesPresentes(() => noCargando(), notificarErrorAjaxAction);
+
+        fetchAcompanantesPresentes(null, notificarErrorAjaxAction);
     }
 
     onPagar(pago) {
         const {
             liquidarCuentaTercero,
-            cargando,
-            noCargando,
+
+
             notificarErrorAjaxAction,
+            auth:{punto_venta}
         } = this.props;
-        cargando();
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
+
         liquidarCuentaTercero(
             this.state.id_tercero,
             {
@@ -73,7 +73,7 @@ class LiquidarAcompanante extends Component {
                 punto_venta_id: punto_venta.id
             },
             () => {
-                noCargando();
+
                 this.setState({id_tercero: null});
                 this.props.clearAcompanantes();
                 this.cargarDatos();
@@ -143,7 +143,7 @@ class LiquidarAcompanante extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         acompanantes: state.acompanantes,
         servicios: state.servicios,
     }

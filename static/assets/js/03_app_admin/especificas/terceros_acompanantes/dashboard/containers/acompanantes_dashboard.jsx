@@ -51,16 +51,16 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAjaxAction, cargando, noCargando} = this.props;
+        const {notificarErrorAjaxAction,} = this.props;
         let index = value !== null ? value : this.state.slideIndex;
-        cargando();
+
         if (index === 0) {
-            const cargarCategorias = this.props.fetchCategoriasAcompanantes(() => noCargando(), notificarErrorAjaxAction);
-            this.props.fetchAcompanantes(cargarCategorias, notificarErrorAjaxAction);
+            const cargarCategorias = this.props.fetchCategoriasAcompanantes(null, notificarErrorAjaxAction);
+            this.props.fetchAcompanantes(cargarCategorias, null, notificarErrorAjaxAction);
         } else if (index === 1) {
-            this.props.fetchCategoriasAcompanantes(() => noCargando(), notificarErrorAjaxAction);
+            this.props.fetchCategoriasAcompanantes(null, notificarErrorAjaxAction);
         } else if (index === 2) {
-            this.props.fetchFraccionesTiemposAcompanantes(() => noCargando(), notificarErrorAjaxAction);
+            this.props.fetchFraccionesTiemposAcompanantes(null, notificarErrorAjaxAction);
         }
     }
 
@@ -75,15 +75,13 @@ class ListadoElementos extends Component {
     }
 
     cargarDatos() {
-        const {notificarErrorAjaxAction, cargando} = this.props;
-        cargando();
-        this.props.fetchMisPermisos(() => this.cargarElementos(), notificarErrorAjaxAction)
+        this.cargarElementos();
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list, bloque_3_list, mis_permisos} = this.props;
-        const permisos_object_1 = permisosAdapter(mis_permisos, bloque_1_permisos);
-        const permisos_object_2 = permisosAdapter(mis_permisos, bloque_2_permisos);
+        const {bloque_1_list, bloque_2_list, bloque_3_list, auth: {mis_permisos}} = this.props;
+        const permisos_object_1 = permisosAdapter(bloque_1_permisos);
+        const permisos_object_2 = permisosAdapter(bloque_2_permisos);
 
         const can_see =
             permisos_object_1.list ||
@@ -136,7 +134,7 @@ class ListadoElementos extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         bloque_1_list: state.acompanantes,
         bloque_2_list: state.categorias_acompanantes,
         bloque_3_list: state.fracciones_tiempos_acompanantes,

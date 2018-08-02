@@ -15,6 +15,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import {Route, Switch, Link} from 'react-router-dom';
 import Seguridad from "../components/seguridad";
 import Loading from '../../../../00_utilities/components/system/loading_overlay';
+import {connect} from "react-redux";
+import * as actions from "../../../../01_actions/01_index";
 
 const drawerWidth = 240;
 
@@ -64,9 +66,7 @@ class ResponsiveDrawer extends React.Component {
     };
 
     render() {
-        const {classes, theme} = this.props;
-        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
-
+        const {classes, theme, auth: {mi_cuenta}} = this.props;
         const drawer = (
             <div>
                 <div className={classes.toolbar}/>
@@ -156,5 +156,14 @@ ResponsiveDrawer.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
 };
+
+function mapPropsToState(state, ownProps) {
+    return {
+        auth: state.auth,
+        puntos_ventas: _.pickBy(state.puntos_ventas, e => e.tipo === 1)
+    }
+}
+
+ResponsiveDrawer = connect(mapPropsToState, actions)(ResponsiveDrawer)
 
 export default withStyles(styles, {withTheme: true})(ResponsiveDrawer);

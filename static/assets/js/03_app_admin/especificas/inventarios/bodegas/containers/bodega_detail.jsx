@@ -38,12 +38,12 @@ class Detail extends Component {
     }
 
     verMovimientoProducto(item_id) {
-        const {notificarErrorAjaxAction, cargando, noCargando} = this.props;
-        cargando();
+        const {notificarErrorAjaxAction,} = this.props;
+
         const {id} = this.props.match.params;
         this.setState({slideIndex: 1});
         this.props.clearMovimientosInventarios();
-        this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id, () => noCargando(), notificarErrorAjaxAction);
+        this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id, null, notificarErrorAjaxAction);
     }
 
     handleChange = (event, value) => {
@@ -56,12 +56,12 @@ class Detail extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAjaxAction, cargando, noCargando} = this.props;
+        const {notificarErrorAjaxAction,} = this.props;
         let index = value !== null ? value : this.state.slideIndex;
         if (index === 0) {
-            cargando();
+
             const {id} = this.props.match.params;
-            this.props.fetchMovimientosInventariosSaldosxBodega(id, () => noCargando(), notificarErrorAjaxAction);
+            this.props.fetchMovimientosInventariosSaldosxBodega(id, null, notificarErrorAjaxAction);
         } else if (index === 1) {
 
         }
@@ -78,19 +78,17 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {cargando, notificarErrorAjaxAction} = this.props;
-        cargando();
+        const { notificarErrorAjaxAction} = this.props;
+
         const success_callback = () => {
             this.cargarElementos();
         };
-        const cargarBodega = () => this.props.fetchBodega(id, success_callback, notificarErrorAjaxAction);
-        this.props.fetchMisPermisos(cargarBodega, notificarErrorAjaxAction);
-
+        this.props.fetchBodega(id, success_callback, notificarErrorAjaxAction);
     }
 
     render() {
-        const {object, mis_permisos, movimientos_inventarios_detalles_list} = this.props;
-        const permisos = permisosAdapter(mis_permisos, permisos_view);
+        const {object, movimientos_inventarios_detalles_list, auth: {mis_permisos}} = this.props;
+        const permisos = permisosAdapter( permisos_view);
 
 
         if (!object) {
@@ -139,7 +137,7 @@ function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
         movimientos_inventarios_detalles_list: state.movimientos_inventarios_detalles,
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         object: state.bodegas[id]
     }
 }

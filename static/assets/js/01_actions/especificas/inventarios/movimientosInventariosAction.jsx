@@ -16,7 +16,7 @@ export const createMovimientoInventario = (values, callback = null, callback_err
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
         };
-        createObject(current_url_api, values, dispatches, callback, callback_error)
+        createObject(current_url_api, values, dispatches, callback, callback_error, dispatch)
     }
 };
 export const deleteMovimientoInventario = (id, callback = null, callback_error = null) => {
@@ -24,7 +24,7 @@ export const deleteMovimientoInventario = (id, callback = null, callback_error =
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        deleteObject(current_url_api, id, dispatches, callback, callback_error)
+        deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
     }
 };
 
@@ -33,7 +33,7 @@ export const cargarInventarioMovimientoInventario = (id, callback = null, callba
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        callApiMethod(current_url_api, id, 'cargar_inventario', dispatches, callback, callback_error)
+        callApiMethod(current_url_api, id, 'cargar_inventario', dispatches, callback, callback_error, dispatch)
     }
 };
 
@@ -43,7 +43,7 @@ export const fetchMovimientosInventarios = (callback = null, callback_error = nu
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error);
+        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchMovimientoSaldoInicial = (callback = null, callback_error = null) => {
@@ -51,7 +51,7 @@ export const fetchMovimientoSaldoInicial = (callback = null, callback_error = nu
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(`${current_url_api}/saldos_iniciales`, dispatches, callback, callback_error);
+        fetchList(`${current_url_api}/saldos_iniciales`, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchMovimientoInventario = (id, callback = null, callback_error = null) => {
@@ -59,7 +59,7 @@ export const fetchMovimientoInventario = (id, callback = null, callback_error = 
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        fetchObject(current_url_api, id, dispatches, callback, callback_error);
+        fetchObject(current_url_api, id, dispatches, callback, callback_error, dispatch);
     }
 };
 export const clearMovimientosInventarios = () => {
@@ -73,6 +73,6 @@ export const updateMovimientoInventario = (id, values, callback = null, callback
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        updateObject(current_url_api, id, values, dispatches, callback, callback_error)
+        updateObject(current_url_api, id, values, dispatches, callback, callback_error, dispatch)
     }
 };

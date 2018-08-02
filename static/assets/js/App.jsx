@@ -72,8 +72,7 @@ class RootContainerComponent extends Component {
 
     render() {
         let {PrivateRoute} = this;
-        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
+        const {auth: {mi_cuenta, punto_venta}} = this.props;
         return (
             <BrowserRouter>
                 <Fragment>
@@ -82,13 +81,13 @@ class RootContainerComponent extends Component {
                         <PrivateRoute exact path="/" component={AppIndex}/>
                         <PrivateRoute exact path='/app' component={AppIndex}/>
                         <Route path='/app/login' component={Login}/>
-                        <Route path='/app/mi_cuenta' component={MiCuenta}/>
-                        <Route path='/app/admin' component={AppAdmin}/>
-                        <Route path='/app/tienda' component={AppTienda}/>
-                        <Route path='/app/servicios' component={AppServicios}/>
-                        <Route path='/app/cajas' component={AppCaja}/>
-                        <Route path='/app/acceso' component={AppAcceso}/>
-                        <Route component={NotFound}/>
+                        <PrivateRoute path='/app/mi_cuenta' component={MiCuenta}/>
+                        <PrivateRoute path='/app/admin' component={AppAdmin}/>
+                        <PrivateRoute path='/app/tienda' component={AppTienda}/>
+                        <PrivateRoute path='/app/servicios' component={AppServicios}/>
+                        <PrivateRoute path='/app/cajas' component={AppCaja}/>
+                        <PrivateRoute path='/app/acceso' component={AppAcceso}/>
+                        <PrivateRoute component={NotFound}/>
                     </Switch>
                     <div style={{
                         position: 'fixed',

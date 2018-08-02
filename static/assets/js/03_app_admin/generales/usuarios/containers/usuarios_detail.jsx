@@ -40,37 +40,31 @@ class UsuariosDetail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {noCargando, cargando} = this.props;
-        cargando();
-        const cargarGruposPermisos = () => this.props.fetchGruposPermisos(() => noCargando(), this.error_callback);
+
+
+        const cargarGruposPermisos = () => this.props.fetchGruposPermisos(null, this.error_callback);
         const cargarPermisosActivos = () => this.props.fetchPermisosActivos(cargarGruposPermisos, this.error_callback);
         const cargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id, cargarPermisosActivos, this.error_callback);
-        const cargarUsuario = () => this.props.fetchUsuario(id, cargarPermisosUsuario, this.error_callback);
-        const cargarMisPermisos = () => this.props.fetchMisPermisos(cargarUsuario, this.error_callback);
-        this.props.fetchMiCuenta(cargarMisPermisos, this.error_callback);
+        this.props.fetchUsuario(id, cargarPermisosUsuario, this.error_callback);
 
     }
 
     actualizarPermiso(permiso) {
         const {id} = this.props.match.params;
-        const {cargando, noCargando} = this.props;
-        cargando();
-        const CargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id, () => noCargando(), this.error_callback);
+        const CargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id, null, this.error_callback);
         this.props.addPermisoUsuario(id, permiso.id, CargarPermisosUsuario, this.error_callback)
     }
 
     actualizarGrupo(grupo) {
         const {id} = this.props.match.params;
-        const {cargando, noCargando} = this.props;
-        cargando();
-        const CargarUsuario = () => this.props.fetchUsuario(id, () => noCargando(), this.error_callback);
+        const CargarUsuario = () => this.props.fetchUsuario(id, null, this.error_callback);
         this.props.addGrupoUsuario(id, grupo.id, CargarUsuario, this.error_callback)
     }
 
     render() {
-        const {usuario, mis_permisos, permisos_activos, permisos_todos, grupos_todos} = this.props;
-        const permisos = permisosAdapter(mis_permisos, permisos_view);
-        const permisos_permission = permisosAdapter(mis_permisos, permisos_view_permission);
+        const {usuario, permisos_activos, permisos_todos, grupos_todos, auth: {mis_permisos}} = this.props;
+        const permisos = permisosAdapter( permisos_view);
+        const permisos_permission = permisosAdapter( permisos_view_permission);
 
 
         if (!usuario) {
@@ -142,7 +136,7 @@ function mapPropsToState(state, ownProps) {
         permisos_activos: state.permisos_otro_usuario,
         grupos_todos: state.grupos_permisos,
         permisos_todos: state.permisos,
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         usuario: state.usuarios[id]
     }
 }

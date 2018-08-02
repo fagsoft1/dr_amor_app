@@ -118,6 +118,30 @@ class Servicio(TimeStampedModel):
         BitacoraServicio.crear_bitacora_solicitar_anular_servicio(usuario, self, observacion_anulacion, punto_venta)
 
     @staticmethod
+    def adicionar_servicio(habitacion, tercero, categoria_fraccion_tiempo):
+        if tercero:
+            empresa = habitacion.empresa
+            estado = 0
+            tiempo_minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
+            categoria = tercero.categoria_modelo.nombre
+            valor_servicio = categoria_fraccion_tiempo.valor
+            valor_habitacion = habitacion.tipo.valor_antes_impuestos
+            valor_habitacion_con_iva = habitacion.tipo.valor
+            cuenta = tercero.cuenta_abierta
+            valor_iva_habitacion = valor_habitacion_con_iva - valor_habitacion
+            return Servicio.objects.create(
+                habitacion=habitacion,
+                cuenta=cuenta,
+                empresa=empresa,
+                estado=estado,
+                tiempo_minutos=tiempo_minutos,
+                categoria=categoria,
+                valor_servicio=valor_servicio,
+                valor_habitacion=valor_habitacion,
+                valor_iva_habitacion=valor_iva_habitacion
+            )
+
+    @staticmethod
     def recursivo_asignacion_horas(servicio_anterior, servicio):
         if not servicio:
             pass

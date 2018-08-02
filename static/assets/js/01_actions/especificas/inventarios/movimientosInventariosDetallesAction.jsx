@@ -25,7 +25,7 @@ export const createMovimientoInventarioDetalle = (values, callback = null, callb
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
         };
-        createObject(current_url_api, values, dispatches, callback, callback_error)
+        createObject(current_url_api, values, dispatches, callback, callback_error, dispatch)
     }
 };
 export const deleteMovimientoInventarioDetalle = (id, callback = null, callback_error = null) => {
@@ -33,7 +33,7 @@ export const deleteMovimientoInventarioDetalle = (id, callback = null, callback_
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        deleteObject(current_url_api, id, dispatches, callback, callback_error)
+        deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
     }
 };
 export const fetchMovimientosInventariosDetalles = (callback = null, callback_error = null) => {
@@ -41,7 +41,7 @@ export const fetchMovimientosInventariosDetalles = (callback = null, callback_er
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error);
+        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchMovimientosInventariosDetallesxMovimiento = (movimiento_id, callback = null, callback_error = null) => {
@@ -49,7 +49,7 @@ export const fetchMovimientosInventariosDetallesxMovimiento = (movimiento_id, ca
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListWithParameter(`${current_url_api}/por_movimiento/?movimiento_id=${movimiento_id}`, dispatches, callback, callback_error);
+        fetchListWithParameter(`${current_url_api}/por_movimiento/?movimiento_id=${movimiento_id}`, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchMovimientosInventariosSaldosxBodega = (bodega_id, callback = null, callback_error = null) => {
@@ -57,7 +57,7 @@ export const fetchMovimientosInventariosSaldosxBodega = (bodega_id, callback = n
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListWithParameter(`${current_url_api}/actual_por_bodega/?bodega_id=${bodega_id}`, dispatches, callback, callback_error);
+        fetchListWithParameter(`${current_url_api}/actual_por_bodega/?bodega_id=${bodega_id}`, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchMovimientosInventariosxBodegaxProducto = (bodega_id, producto_id, callback = null, callback_error = null) => {
@@ -65,7 +65,7 @@ export const fetchMovimientosInventariosxBodegaxProducto = (bodega_id, producto_
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListWithParameter(`${current_url_api}/por_bodega_por_producto/?bodega_id=${bodega_id}&producto_id=${producto_id}`, dispatches, callback, callback_error);
+        fetchListWithParameter(`${current_url_api}/por_bodega_por_producto/?bodega_id=${bodega_id}&producto_id=${producto_id}`, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchMovimientoInventarioDetalle = (id, callback = null, callback_error = null) => {
@@ -73,7 +73,7 @@ export const fetchMovimientoInventarioDetalle = (id, callback = null, callback_e
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        fetchObject(current_url_api, id, dispatches, callback, callback_error);
+        fetchObject(current_url_api, id, dispatches, callback, callback_error, dispatch);
     }
 };
 export const clearMovimientosInventariosDetalles = () => {
@@ -87,6 +87,6 @@ export const updateMovimientoInventarioDetalle = (id, values, callback = null, c
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        updateObject(current_url_api, id, values, dispatches, callback, callback_error)
+        updateObject(current_url_api, id, values, dispatches, callback, callback_error, dispatch)
     }
 };

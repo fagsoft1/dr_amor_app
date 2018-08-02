@@ -8,7 +8,7 @@ from empresas.models import Empresa
 class TipoHabitacion(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
     valor = models.DecimalField(max_digits=10, decimal_places=0, default=0, verbose_name='Valor con Iva')
-    porcentaje_impuesto = models.DecimalField(max_digits=10, decimal_places=0, default=0)
+    porcentaje_impuesto = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     @property
     def valor_antes_impuestos(self):

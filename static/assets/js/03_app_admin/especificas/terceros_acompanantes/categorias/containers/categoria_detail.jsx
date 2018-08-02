@@ -30,20 +30,19 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {noCargando, cargando, notificarAction, notificarErrorAjaxAction} = this.props;
-        cargando();
+        const {  notificarAction, notificarErrorAjaxAction} = this.props;
+
         const success_callback = () => {
-            noCargando();
+
         };
         const cargarCategoriaFraccionTiempo = () => this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(id, success_callback, notificarErrorAjaxAction);
-        const cargarCategoriaAcompanante = () => this.props.fetchCategoriaAcompanante(id, cargarCategoriaFraccionTiempo, notificarErrorAjaxAction);
-        this.props.fetchMisPermisos(cargarCategoriaAcompanante, notificarErrorAjaxAction);
+        this.props.fetchCategoriaAcompanante(id, cargarCategoriaFraccionTiempo, notificarErrorAjaxAction);
 
     }
 
     render() {
-        const {object, mis_permisos, categorias_fracciones_tiempo_list, fracciones_tiempo_list} = this.props;
-        const permisos = permisosAdapter(mis_permisos, permisos_view);
+        const {object, categorias_fracciones_tiempo_list, fracciones_tiempo_list, auth: {mis_permisos}} = this.props;
+        const permisos = permisosAdapter( permisos_view);
 
 
         if (!object) {
@@ -72,7 +71,7 @@ class Detail extends Component {
 function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         object: state.categorias_acompanantes[id],
         categorias_fracciones_tiempo_list: state.categorias_fracciones_tiempos_acompanantes,
         fracciones_tiempo_list: state.fracciones_tiempos_acompanantes,

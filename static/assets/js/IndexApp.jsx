@@ -23,17 +23,9 @@ const Boton = (props) => {
 };
 
 class IndexApp extends Component {
-    componentDidMount() {
-        const {noCargando, cargando, notificarErrorAjaxAction} = this.props;
-        cargando();
-        this.props.fetchMisPermisos(() => noCargando(), notificarErrorAjaxAction);
-    }
-
     render() {
-        const {mis_permisos, notificarErrorAjaxAction} = this.props;
-        const mi_cuenta = JSON.parse(localStorage.getItem("mi_cuenta"));
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
-        const permisos_modulo_acceso = permisosAdapter(mis_permisos, TIPOS_REGISTRO_INGRESO);
+        const {notificarErrorAjaxAction, auth: {mis_permisos, punto_venta, mi_cuenta}} = this.props;
+        const permisos_modulo_acceso = permisosAdapter( TIPOS_REGISTRO_INGRESO);
         return <Loading>
             <div className="mt-3">
                 <div className="container text-center">
@@ -127,7 +119,6 @@ class IndexApp extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
         auth: state.auth,
     }
 }

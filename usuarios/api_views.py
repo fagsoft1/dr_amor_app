@@ -1,10 +1,12 @@
 from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from knox.models import AuthToken
 from rest_framework import viewsets, generics, permissions, serializers
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 
+from permisos.api_serializers import PermissionSerializer
 from .api_serializers import UsuarioSerializer, LoginUserSerializer, UserSerializer
 from puntos_venta.models import PuntoVenta
 from puntos_venta.api_serializers import PuntoVentaSerializer
@@ -125,11 +127,22 @@ class LoginAPI(generics.GenericAPIView):
 
         tokens = AuthToken.objects.filter(user=user)
         tokens.delete()
+
+        if user.is_superuser:
+            permissions_list = Permission.objects.all()
+        else:
+            permissions_list = Permission.objects.filter(
+                Q(user=user) |
+                Q(group__user=user)
+            ).distinct()
+
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user),
             "punto_venta": PuntoVentaSerializer(punto_venta, context=self.get_serializer_context()).data,
             "mi_cuenta": UsuarioSerializer(user, context=self.get_serializer_context()).data,
+            "mis_permisos": PermissionSerializer(permissions_list, context=self.get_serializer_context(),
+                                                 many=True).data,
         })
 
 

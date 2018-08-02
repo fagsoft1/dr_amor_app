@@ -67,7 +67,7 @@ form
     height 100%
     opacity .9
     position absolute
-    z-index 99
+    z-index 1400
 
 .loading-overload-tres
   border-radius 10px
@@ -77,7 +77,7 @@ form
   top 50%
   left 50%
   transform translate(-50%, -50%)
-  z-index 99
+  z-index 1400
   background-color $dr-amor-color_1
   padding 0.5rem
   color white
@@ -297,5 +297,10 @@ $habitacion_estado_mantenimiento = black
 
 .ReactTable
   .rt-tr, .rt-td
-    padding 0 !important
+    padding 1px !important
     margin 0 !important
+    button, input, span
+      align-items baseline
+      line-height normal
+      width 25px
+      height 25px

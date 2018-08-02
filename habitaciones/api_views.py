@@ -65,14 +65,12 @@ class HabitacionViewSet(viewsets.ModelViewSet):
     def iniciar_servicios(self, request, pk=None):
         habitacion = self.get_object()
         pago = json.loads(request.POST.get('pago'))
+        servicios = json.loads(request.POST.get('servicios'))
         punto_venta_id = pago.get('punto_venta_id', None)
         valor_efectivo = pago.get('valor_efectivo', 0)
         valor_tarjeta = pago.get('valor_tarjeta', 0)
         nro_autorizacion = pago.get('nro_autorizacion', 0)
         franquicia = pago.get('franquicia', None)
-
-        servicios_array_id = json.loads(request.POST.get('servicios_array_id', None))
-        servicios = Servicio.objects.filter(id__in=servicios_array_id)
 
         movimiento = MovimientoDineroPDV.objects.create(
             tipo="I",
@@ -85,9 +83,18 @@ class HabitacionViewSet(viewsets.ModelViewSet):
             nro_autorizacion=nro_autorizacion,
             franquicia=franquicia
         )
-        movimiento.servicios.set(servicios)
-        movimiento.save()
-        habitacion.iniciar_servicios(self.request.user, servicios, punto_venta_id)
+
+        for servicio in servicios:
+            servicio.pop('id')
+            tercero_id = servicio.pop('tercero_id')
+            tercero = Tercero.objects.get(pk=tercero_id)
+
+            categoria_fraccion_tiempo_id = servicio.pop('categoria_fraccion_tiempo_id')
+            categoria_fraccion_tiempo = CategoriaFraccionTiempo.objects.get(pk=categoria_fraccion_tiempo_id)
+            servicio_adicionado = Servicio.adicionar_servicio(habitacion, tercero, categoria_fraccion_tiempo)
+            movimiento.servicios.add(servicio_adicionado)
+        servicios_a_iniciar = movimiento.servicios.all()
+        habitacion.iniciar_servicios(self.request.user, servicios_a_iniciar, punto_venta_id)
         mensaje = 'Los servicios para habitacion %s han iniciado.' % (habitacion.numero)
         return Response({'result': mensaje})
 
@@ -179,33 +186,3 @@ class HabitacionViewSet(viewsets.ModelViewSet):
                 habitacion.numero, habitacion.get_estado_display())
             return Response({'result': mensaje})
         raise serializers.ValidationError('No se pudo ejecutar el cambio de estado')
-
-    @detail_route(methods=['post'])
-    def adicionar_servicio(self, request, pk=None):
-        habitacion = self.get_object()
-        tercero_id = request.POST.get('tercero_id')
-        categoria_fraccion_tiempo_id = request.POST.get('categoria_fraccion_tiempo_id')
-        tercero = Tercero.objects.get(pk=tercero_id)
-        if tercero:
-            categoria_fraccion_tiempo = CategoriaFraccionTiempo.objects.get(pk=categoria_fraccion_tiempo_id)
-            empresa = habitacion.empresa
-            estado = 0
-            tiempo_minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
-            categoria = tercero.categoria_modelo.nombre
-            valor_servicio = categoria_fraccion_tiempo.valor
-            valor_habitacion = habitacion.tipo.valor_antes_impuestos
-            valor_habitacion_con_iva = habitacion.tipo.valor
-            cuenta = tercero.cuenta_abierta
-            valor_iva_habitacion = valor_habitacion_con_iva - valor_habitacion
-            Servicio.objects.create(
-                habitacion=habitacion,
-                cuenta=cuenta,
-                empresa=empresa,
-                estado=estado,
-                tiempo_minutos=tiempo_minutos,
-                categoria=categoria,
-                valor_servicio=valor_servicio,
-                valor_habitacion=valor_habitacion,
-                valor_iva_habitacion=valor_iva_habitacion
-            )
-        return Response({'result': 'prueba'})

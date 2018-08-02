@@ -95,7 +95,7 @@ class LiquidarAcompanante extends Component {
             nro_voucher: 0,
             dolares: 0,
             dolares_tasa: 0,
-            punto_venta_id: JSON.parse(localStorage.getItem("punto_venta")).id
+            punto_venta_id: null,
         };
         this.cargarDatos = this.cargarDatos.bind(this);
         this.onChangeEntrega = this.onChangeEntrega.bind(this);
@@ -104,6 +104,8 @@ class LiquidarAcompanante extends Component {
     }
 
     componentDidMount() {
+        const {auth: {punto_venta}} = this.props;
+        this.setState({punto_venta_id: punto_venta.id});
         this.cargarDatos();
     }
 
@@ -125,13 +127,13 @@ class LiquidarAcompanante extends Component {
 
     cargarDatos() {
         const {
-            cargando,
-            noCargando,
+
+
             notificarErrorAjaxAction,
             fetchBilletesMonedas,
         } = this.props;
-        cargando();
-        fetchBilletesMonedas(() => noCargando(), notificarErrorAjaxAction);
+
+        fetchBilletesMonedas(null, notificarErrorAjaxAction);
     }
 
     onCerrarCajaPuntoVenta() {
@@ -139,12 +141,12 @@ class LiquidarAcompanante extends Component {
             hacerEntregaEfectivoCajaPuntoVenta,
             printEntregasArqueosCajas,
             envioEmailArqueo,
-            cargando,
-            noCargando,
+
+
             notificarErrorAjaxAction,
+            auth: {punto_venta}
         } = this.props;
-        cargando();
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
+
         const cierre = this.state;
         const cierre2 = {
             denominaciones_base: _.map(cierre.denominaciones_base, e => {
@@ -166,11 +168,11 @@ class LiquidarAcompanante extends Component {
             window.open(url, "_blank");
             localStorage.removeItem('punto_venta');
             this.props.history.push('/app');
-            noCargando();
+
         };
         const imprimirEntrega = (arqueo_id) => printEntregasArqueosCajas(arqueo_id, success_callback, (r) => {
             notificarErrorAjaxAction(r, 60000);
-            noCargando();
+
         });
         const enviarEmail = (arqueo_id) => {
             envioEmailArqueo(arqueo_id,
@@ -331,7 +333,7 @@ class LiquidarAcompanante extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         billetes_monedas: state.billetes_monedas,
     }
 }

@@ -11,10 +11,10 @@ import validate from './validate';
 
 class Form extends Component {
     componentDidMount() {
-        const {movimiento_inventario_object, notificarErrorAjaxAction, noCargando} = this.props;
+        const {movimiento_inventario_object, notificarErrorAjaxAction,} = this.props;
         if (movimiento_inventario_object.motivo === 'saldo_inicial') {
             this.props.clearProductos();
-            this.props.fetchProductosParaSaldoInicial(() => noCargando(), notificarErrorAjaxAction);
+            this.props.fetchProductosParaSaldoInicial(null, notificarErrorAjaxAction);
         }
     }
 

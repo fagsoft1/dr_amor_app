@@ -25,16 +25,14 @@ class List extends Component {
     }
 
     cargarDatos() {
-        const {cargando, noCargando, notificarErrorAjaxAction} = this.props;
-        cargando();
-        const cargarBilletesMonedas = () => this.props.fetchBilletesMonedas(() => noCargando(), notificarErrorAjaxAction);
-        this.props.fetchMisPermisos(cargarBilletesMonedas, notificarErrorAjaxAction)
-
+        const {  notificarErrorAjaxAction} = this.props;
+        
+        this.props.fetchBilletesMonedas(null, notificarErrorAjaxAction);
     }
 
     render() {
-        const {object_list, mis_permisos} = this.props;
-        const bloque_1_list = permisosAdapter(mis_permisos, permisos_view);
+        const {object_list, auth: {mis_permisos}} = this.props;
+        const bloque_1_list = permisosAdapter( permisos_view);
         return (
             <Fragment>
                 <ListCrud
@@ -52,7 +50,7 @@ class List extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         object_list: state.billetes_monedas
     }
 }

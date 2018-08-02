@@ -50,13 +50,12 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAjaxAction, cargando, noCargando} = this.props;
+        const {notificarErrorAjaxAction} = this.props;
         let index = value !== null ? value : this.state.slideIndex;
-        cargando();
-        const cargarHabitacionesTipos = () => this.props.fetchTiposHabitaciones(() => noCargando(), notificarErrorAjaxAction);
+        const cargarHabitacionesTipos = () => this.props.fetchTiposHabitaciones(null, notificarErrorAjaxAction);
         if (index === 0) {
             const cargarEmpresas = () => this.props.fetchEmpresas(cargarHabitacionesTipos, notificarErrorAjaxAction);
-            this.props.fetchHabitaciones(cargarEmpresas, notificarErrorAjaxAction);
+            this.props.fetchHabitaciones(cargarEmpresas,notificarErrorAjaxAction);
         } else if (index === 1) {
             cargarHabitacionesTipos();
         }
@@ -74,15 +73,13 @@ class ListadoElementos extends Component {
     }
 
     cargarDatos() {
-        const {notificarErrorAjaxAction, cargando} = this.props;
-        cargando();
-        this.props.fetchMisPermisos(() => this.cargarElementos(), notificarErrorAjaxAction)
+        this.cargarElementos();
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list, mis_permisos} = this.props;
-        const permisos_object_1 = permisosAdapter(mis_permisos, bloque_1_permisos);
-        const permisos_object_2 = permisosAdapter(mis_permisos, bloque_2_permisos);
+        const {bloque_1_list, bloque_2_list, auth: {mis_permisos}} = this.props;
+        const permisos_object_1 = permisosAdapter(bloque_1_permisos);
+        const permisos_object_2 = permisosAdapter(bloque_2_permisos);
 
         const can_see =
             permisos_object_1.list ||
@@ -126,7 +123,8 @@ class ListadoElementos extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
+        auth: state.auth,
         bloque_1_list: state.habitaciones,
         bloque_2_list: state.habitaciones_tipos,
         empresas_list: state.empresas,

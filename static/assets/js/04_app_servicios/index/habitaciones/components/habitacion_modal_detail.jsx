@@ -13,7 +13,8 @@ class HabitacionDetailModal extends Component {
         this.state = {
             mostrar_avanzado: false,
             mostrar_terminar_servicios: false,
-            mostrar_cambiar_habitacion: false
+            mostrar_cambiar_habitacion: false,
+            servicios_nuevos: {}
         };
         this.onSelectModelo = this.onSelectModelo.bind(this);
         this.onAdicionarServicio = this.onAdicionarServicio.bind(this);
@@ -34,42 +35,56 @@ class HabitacionDetailModal extends Component {
     }
 
     cargarDatos() {
-        const {habitacion, cargando, noCargando, notificarErrorAjaxAction} = this.props;
-        const cargarServicios = () => this.props.fetchServicios_por_habitacion(habitacion.id, () => noCargando(), notificarErrorAjaxAction);
+        const {habitacion, notificarErrorAjaxAction} = this.props;
+
+        const cargarServicios = () => this.props.fetchServicios_por_habitacion(habitacion.id, null, notificarErrorAjaxAction);
         this.props.fetchTercerosPresentes(cargarServicios, notificarErrorAjaxAction);
     }
 
     onSelectModelo(categoria_modelo_id) {
-        const {cargando, noCargando, notificarErrorAjaxAction} = this.props;
+        const {notificarErrorAjaxAction} = this.props;
         this.props.clearCategoriasFraccionesTiemposAcompanantes();
-        cargando();
-        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(categoria_modelo_id, () => noCargando(), notificarErrorAjaxAction)
+
+        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(categoria_modelo_id, null, notificarErrorAjaxAction)
     }
 
     onAdicionarServicio(valores) {
         const {
-            adicionarServicioHabitacion,
             habitacion,
-            cargando,
-            noCargando,
-            notificarErrorAjaxAction
+            terceros,
+            categorias_fracciones_tiempo_list,
         } = this.props;
+        const {servicios_nuevos} = this.state;
+
         const {id_tercero, categoria_fraccion_tiempo_id} = valores;
-        const cargarServicios = () => this.props.fetchServicios_por_habitacion(habitacion.id, () => noCargando(), notificarErrorAjaxAction);
-        adicionarServicioHabitacion(habitacion.id, id_tercero, categoria_fraccion_tiempo_id, cargarServicios, notificarErrorAjaxAction)
+        const tercero = terceros[valores.id_tercero];
+        const categoria_tiempo = categorias_fracciones_tiempo_list[valores.categoria_fraccion_tiempo_id];
+
+        const valor_habitacion = (parseFloat(habitacion.valor) / (1 + parseFloat(habitacion.porcentaje_impuesto / 100))).toFixed(0);
+        const valor_impuesto = (parseFloat(habitacion.valor) - valor_habitacion).toFixed(0);
+
+        const maximo = _.size(servicios_nuevos) > 0 ? _.max(_.map(servicios_nuevos, e => e.id)) : 0;
+
+        const servicio_nuevo = {
+            id: maximo + 1,
+            id_temp: `nue_${maximo + 1}`,
+            tercero_id: id_tercero,
+            categoria_fraccion_tiempo_id: categoria_fraccion_tiempo_id,
+            acompanante_nombre: tercero.full_name_proxy,
+            tiempo_minutos: categoria_tiempo.fraccion_tiempo_minutos,
+            categoria: categoria_tiempo.categoria_nombre,
+            valor_servicio: categoria_tiempo.valor,
+            valor_habitacion: valor_habitacion,
+            valor_iva_habitacion: valor_impuesto,
+            valor_total: parseFloat(valor_habitacion) + parseFloat(valor_impuesto) + parseFloat(categoria_tiempo.valor),
+            nuevo: true
+        };
+        this.setState({servicios_nuevos: {...servicios_nuevos, [servicio_nuevo.id_temp]: servicio_nuevo}})
     }
 
     onDeleteServicio(servicio_id) {
-        const {deleteServicio, fetchServicio, cargando, noCargando, notificarErrorAjaxAction} = this.props;
-        fetchServicio(
-            servicio_id,
-            (response) => {
-                if (response.estado === 0) {
-                    deleteServicio(servicio_id)
-                }
-            },
-            notificarErrorAjaxAction
-        );
+        const {servicios_nuevos} = this.state;
+        this.setState({servicios_nuevos: _.omit(servicios_nuevos, servicio_id)})
     }
 
     onCambiarHabitacion(pago, nueva_habitacion_id, servicios) {
@@ -79,9 +94,9 @@ class HabitacionDetailModal extends Component {
             cerraModal,
             notificarAction,
             notificarErrorAjaxAction,
+            auth: {punto_venta}
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
         cambiarHabitacion(
             habitacion.id,
             {...pago, punto_venta_id: punto_venta.id},
@@ -100,15 +115,15 @@ class HabitacionDetailModal extends Component {
         const {
             terminarServiciosHabitacion,
             fetchHabitacion,
-            cargando,
-            noCargando,
+
+
             habitacion,
             notificarErrorAjaxAction,
             notificarAction,
             cerraModal,
+            auth: {punto_venta}
         } = this.props;
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
-        cargando();
+
         fetchHabitacion(
             habitacion.id,
             (response) => {
@@ -117,7 +132,7 @@ class HabitacionDetailModal extends Component {
                         habitacion.id,
                         punto_venta.id,
                         (response2) => {
-                            noCargando();
+
                             notificarAction(response2.result);
                             cerraModal();
                         },
@@ -136,14 +151,17 @@ class HabitacionDetailModal extends Component {
             habitacion,
             notificarAction,
             notificarErrorAjaxAction,
-            cerraModal
+            cerraModal,
+
+
+            auth: {punto_venta}
         } = this.props;
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
-        const servicios_array_id = _.map(servicios, s => s.id);
+
+        const {servicios_nuevos} = this.state;
         iniciarServiciosHabitacion(
             habitacion.id,
             {...pago, punto_venta_id: punto_venta.id},
-            servicios_array_id,
+            _.map(servicios_nuevos, e => e),
             response => {
                 notificarAction(response.result);
                 this.cargarDatos();
@@ -167,7 +185,8 @@ class HabitacionDetailModal extends Component {
         const {
             mostrar_avanzado,
             mostrar_terminar_servicios,
-            mostrar_cambiar_habitacion
+            mostrar_cambiar_habitacion,
+            servicios_nuevos
         } = this.state;
 
         const servicios_habitacion = _.map(
@@ -206,6 +225,7 @@ class HabitacionDetailModal extends Component {
                             mostrar_terminar_servicios={mostrar_terminar_servicios}
                             mostrar_cambiar_habitacion={mostrar_cambiar_habitacion}
                             servicios={servicios_habitacion}
+                            servicios_nuevos={servicios_nuevos}
                             onDeleteServicio={this.onDeleteServicio}
                             onTerminarServicios={this.onTerminarServicios}
                             onIniciarServicios={this.onIniciarServicios}
@@ -245,19 +265,19 @@ class HabitacionDetailModal extends Component {
                                         onClick={() => {
                                             const {
                                                 fetchHabitaciones,
-                                                cargando,
-                                                noCargando,
+
+
                                                 notificarErrorAjaxAction
                                             } = this.props;
                                             fetchHabitaciones(
                                                 () => {
-                                                    cargando();
+
                                                     this.setState({
                                                         mostrar_terminar_servicios: false,
                                                         mostrar_cambiar_habitacion: true
                                                     })
                                                 },
-                                                noCargando(),
+                                                null,
                                                 notificarErrorAjaxAction
                                             )
                                         }}

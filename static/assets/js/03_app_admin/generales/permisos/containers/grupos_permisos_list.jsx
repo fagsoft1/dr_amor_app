@@ -49,10 +49,9 @@ class GruposPermisosList extends Component {
 
     onSubmit(item) {
         const success_callback = (response) => {
-            this.props.noCargando();
             this.notificar(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito el grupo de permisos ${response.name}`);
         };
-        this.props.cargando();
+
 
         if (item.id) {
             this.props.updateGrupoPermiso(item.id, item, success_callback, this.error_callback)
@@ -62,20 +61,18 @@ class GruposPermisosList extends Component {
     }
 
     cargarDatos() {
-        this.props.cargando();
-        const cargarGruposPermisos = () => this.props.fetchGruposPermisos(() => this.props.noCargando(), this.error_callback);
-        const cargarPermisosActivos = () => this.props.fetchPermisosActivos(cargarGruposPermisos, this.error_callback);
-        this.props.fetchMisPermisos(cargarPermisosActivos, this.error_callback);
+
+        const cargarGruposPermisos = () => this.props.fetchGruposPermisos(null, this.error_callback);
+        this.props.fetchPermisosActivos(cargarGruposPermisos, this.error_callback);
     }
 
     actualizarPermiso(permiso, item, onSelectItem) {
         const success_callback = (response) => {
             this.notificar(`Se ha actualizado con éxito el grupo de permisos con el permiso ${permiso.codename}`);
             onSelectItem(response);
-            this.props.noCargando();
         };
         if (item) {
-            this.props.cargando();
+
             this.props.addPermisoGrupo(item.id, permiso.id, success_callback, this.error_callback);
         }
 
@@ -83,16 +80,15 @@ class GruposPermisosList extends Component {
 
     onDelete(grupoPermiso) {
         const success_callback = () => {
-            this.props.noCargando();
             this.notificar(`Se ha eliminado con éxito el grupo de permisos ${grupoPermiso.name}`)
         };
-        this.props.cargando();
+
         this.props.deleteGrupoPermiso(grupoPermiso.id, success_callback, this.error_callback)
     }
 
     render() {
-        const {mis_permisos, permisos, grupos_permisos} = this.props;
-        const permisos_view = permisosAdapter(mis_permisos, permisos_view_groups);
+        const {permisos, grupos_permisos, auth: {mis_permisos}} = this.props;
+        const permisos_view = permisosAdapter( permisos_view_groups);
 
         return (
             <ListManager permisos={permisos_view} singular_name='grupos de permisos' plural_name='grupo de permisos'>
@@ -173,7 +169,7 @@ class GruposPermisosList extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         grupos_permisos: state.grupos_permisos,
         permisos: state.permisos
     }

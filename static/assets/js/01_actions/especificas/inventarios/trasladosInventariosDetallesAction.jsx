@@ -14,7 +14,7 @@ export const createTrasladoInventarioDetalle = (values, callback = null, callbac
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
         };
-        createObject(current_url_api, values, dispatches, callback, callback_error)
+        createObject(current_url_api, values, dispatches, callback, callback_error, dispatch)
     }
 };
 export const deleteTrasladoInventarioDetalle = (id, callback = null, callback_error = null) => {
@@ -22,7 +22,7 @@ export const deleteTrasladoInventarioDetalle = (id, callback = null, callback_er
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        deleteObject(current_url_api, id, dispatches, callback, callback_error)
+        deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
     }
 };
 export const fetchTrasladosInventariosDetalles = (callback = null, callback_error = null) => {
@@ -30,7 +30,7 @@ export const fetchTrasladosInventariosDetalles = (callback = null, callback_erro
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error);
+        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchTrasladosInventariosDetallesxTralado = (traslado_id, callback = null, callback_error = null) => {
@@ -38,7 +38,7 @@ export const fetchTrasladosInventariosDetallesxTralado = (traslado_id, callback 
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListWithParameter(`${current_url_api}/por_traslado/?traslado_id=${traslado_id}`, dispatches, callback, callback_error);
+        fetchListWithParameter(`${current_url_api}/por_traslado/?traslado_id=${traslado_id}`, dispatches, callback, callback_error, dispatch);
     }
 };
 export const fetchTrasladoInventarioDetalle = (id, callback = null, callback_error = null) => {
@@ -46,7 +46,7 @@ export const fetchTrasladoInventarioDetalle = (id, callback = null, callback_err
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        fetchObject(current_url_api, id, dispatches, callback, callback_error);
+        fetchObject(current_url_api, id, dispatches, callback, callback_error, dispatch);
     }
 };
 export const clearTrasladosInventariosDetalles = () => {
@@ -60,6 +60,6 @@ export const updateTrasladoInventarioDetalle = (id, values, callback = null, cal
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        updateObject(current_url_api, id, values, dispatches, callback, callback_error)
+        updateObject(current_url_api, id, values, dispatches, callback, callback_error, dispatch)
     }
 };

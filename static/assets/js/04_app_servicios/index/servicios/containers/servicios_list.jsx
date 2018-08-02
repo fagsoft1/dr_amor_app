@@ -16,14 +16,14 @@ class ServicioList extends Component {
             fetchServicios_en_proceso,
             terminarServicio,
             fetchHabitaciones,
-            cargando,
-            noCargando,
+
+
             notificarErrorAjaxAction,
-            notificarAction
+            notificarAction,
+            auth: {punto_venta}
         } = this.props;
-        cargando();
-        const punto_venta = JSON.parse(localStorage.getItem("punto_venta"));
-        const cargarHabitaciones = () => fetchHabitaciones(() => noCargando(), notificarErrorAjaxAction);
+
+        const cargarHabitaciones = () => fetchHabitaciones(null, notificarErrorAjaxAction);
         const cargarServiciosEnProceso = () => fetchServicios_en_proceso(cargarHabitaciones, notificarErrorAjaxAction);
         terminarServicio(
             servicio_id,
@@ -44,12 +44,12 @@ class ServicioList extends Component {
     cargarServicio(id) {
         const {
             fetchServicio,
-            cargando,
-            noCargando,
+
+
             notificarErrorAjaxAction
         } = this.props;
-        cargando();
-        fetchServicio(id, () => noCargando(), notificarErrorAjaxAction);
+
+        fetchServicio(id, null, notificarErrorAjaxAction);
     }
 
     render() {

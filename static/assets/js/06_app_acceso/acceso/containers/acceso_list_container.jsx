@@ -26,16 +26,14 @@ class List extends Component {
     }
 
     cargarDatos() {
-        const {cargando, noCargando, notificarErrorAjaxAction} = this.props;
-        cargando();
-        const cargarTercerosPresentes = () => this.props.fetchTercerosPresentes(() => noCargando(), notificarErrorAjaxAction);
-        this.props.fetchMisPermisos(cargarTercerosPresentes, notificarErrorAjaxAction)
-
+        const {  notificarErrorAjaxAction} = this.props;
+        
+        this.props.fetchTercerosPresentes(null, notificarErrorAjaxAction);
     }
 
     render() {
-        const {terceros_list, mis_permisos} = this.props;
-        const bloque_1_list = permisosAdapter(mis_permisos, permisos_view);
+        const {terceros_list, auth: {mis_permisos}} = this.props;
+        const bloque_1_list = permisosAdapter( permisos_view);
         const terceros = _.map(terceros_list, c => {
             return ({
                 id: c.id,
@@ -77,7 +75,7 @@ class List extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mis_permisos: state.mis_permisos,
+        auth: state.auth,
         terceros_list: state.terceros
     }
 }
