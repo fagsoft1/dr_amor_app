@@ -25,16 +25,16 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {  notificarAction, notificarErrorAjaxAction} = this.props;
+        const {  notificarAction, notificarErrorAction} = this.props;
 
         const success_callback = () => {
 
         };
-        this.props.fetchAlgo(id, success_callback, notificarErrorAjaxAction);
+        this.props.fetchAlgo(id, success_callback, notificarErrorAction);
     }
 
     render() {
-        const {object, auth: {mis_permisos}} = this.props;
+        const {object} = this.props;
         const permisos = permisosAdapter( permisos_view);
 
 

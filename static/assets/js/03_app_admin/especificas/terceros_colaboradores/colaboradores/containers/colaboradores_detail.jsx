@@ -56,7 +56,7 @@ class Detail extends Component {
 
     addPuntoVenta(punto_venta) {
         const {id} = this.props.match.params;
-        const {notificarErrorAjaxAction, adicionarPuntoVenta} = this.props;
+        const {notificarErrorAction, adicionarPuntoVenta} = this.props;
 
         adicionarPuntoVenta(
             id,
@@ -64,13 +64,13 @@ class Detail extends Component {
             () => {
                 this.cargarPuntosVentasColaborador()
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         )
     }
 
     quitarPuntoVenta(punto_venta) {
         const {id} = this.props.match.params;
-        const {notificarErrorAjaxAction, quitarPuntoVenta} = this.props;
+        const {notificarErrorAction, quitarPuntoVenta} = this.props;
 
         quitarPuntoVenta(
             id,
@@ -78,41 +78,41 @@ class Detail extends Component {
             () => {
                 this.cargarPuntosVentasColaborador()
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         )
     }
 
     cargarPuntosVentasColaborador(callback = null) {
         const {id} = this.props.match.params;
-        const {notificarErrorAjaxAction} = this.props;
+        const {notificarErrorAction} = this.props;
         const fetchPuntosVentas = () => this.props.fetchPuntosVentas(() => {
             if (callback) {
                 callback();
             }
-        }, notificarErrorAjaxAction);
+        }, notificarErrorAction);
         this.props.fetchPuntosVentas_por_colaborador(
             id,
             (puntos_ventas_colaborador) => {
                 this.setState({puntos_ventas_colaborador});
                 fetchPuntosVentas()
             },
-            notificarErrorAjaxAction);
+            notificarErrorAction);
     }
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
 
         const success_callback = () => {
 
         };
         const fetchPuntosVentasColaborador = () => this.cargarPuntosVentasColaborador(success_callback);
-        this.props.fetchColaborador(id, fetchPuntosVentasColaborador, notificarErrorAjaxAction);
+        this.props.fetchColaborador(id, fetchPuntosVentasColaborador, notificarErrorAction);
 
     }
 
     render() {
-        const {object, puntos_ventas, auth: {mis_permisos}} = this.props;
+        const {object, puntos_ventas} = this.props;
         const permisos = permisosAdapter(permisos_view);
         const {puntos_ventas_colaborador} = this.state;
         const puntos_venta_para_adicionar = puntos_ventas_colaborador ? _.pickBy(puntos_ventas, pv => !_.map(puntos_ventas_colaborador, pv => pv.id).includes(pv.id)) : null;

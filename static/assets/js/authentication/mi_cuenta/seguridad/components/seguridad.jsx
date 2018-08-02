@@ -16,7 +16,7 @@ class Seguridad extends Component {
 
 
             notificarAction,
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             cambiarPinUsuario,
             auth: {mi_cuenta}
         } = this.props;
@@ -34,7 +34,7 @@ class Seguridad extends Component {
             },
             (response) => {
 
-                notificarErrorAjaxAction(response)
+                notificarErrorAction(response)
             }
         )
     }
@@ -44,7 +44,7 @@ class Seguridad extends Component {
 
 
             notificarAction,
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             cambiarContrasenaUsuario,
             auth: {mi_cuenta}
         } = this.props;
@@ -63,7 +63,7 @@ class Seguridad extends Component {
             },
             (response) => {
 
-                notificarErrorAjaxAction(response)
+                notificarErrorAction(response)
             }
         )
     }

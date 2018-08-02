@@ -16,10 +16,10 @@ import PermisosGrupo from '../components/permisos_select_permisos';
 class GruposPermisosList extends Component {
     constructor(props) {
         super(props);
-        /////////////////////////// Generales /////////////////////////////
-        this.error_callback = this.error_callback.bind(this);
+        this.state = {
+            todos_los_permisos: {},
+        };
         this.notificar = this.notificar.bind(this);
-        /////////////////////////////////////////////////////////////////
         this.cargarDatos = this.cargarDatos.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.actualizarPermiso = this.actualizarPermiso.bind(this);
@@ -27,69 +27,74 @@ class GruposPermisosList extends Component {
 
     }
 
-/////////////////////////// Generales /////////////////////////////
-
-    error_callback(error) {
-        this.props.notificarErrorAjaxAction(error);
-    }
-
     notificar(mensaje) {
         this.props.notificarAction(mensaje);
     }
 
     componentDidMount() {
+        const {notificarErrorAction} = this.props;
+        this.props.fetchPermisosActivos(
+            (response) => {
+                this.setState({todos_los_permisos: _.mapKeys(response, 'id')})
+            }, notificarErrorAction
+        );
         this.cargarDatos();
     }
-
-////////////////////////////////////////////////////////
 
     componentWillUnmount() {
         this.props.clearGruposPermisos()
     }
 
     onSubmit(item) {
+        const {notificarErrorAction} = this.props;
         const success_callback = (response) => {
             this.notificar(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito el grupo de permisos ${response.name}`);
         };
 
-
         if (item.id) {
-            this.props.updateGrupoPermiso(item.id, item, success_callback, this.error_callback)
+            this.props.updateGrupoPermiso(item.id, item, success_callback, notificarErrorAction)
         } else {
-            this.props.createGrupoPermiso(item, success_callback, this.error_callback)
+            this.props.createGrupoPermiso(item, success_callback, notificarErrorAction)
         }
     }
 
     cargarDatos() {
-
-        const cargarGruposPermisos = () => this.props.fetchGruposPermisos(null, this.error_callback);
-        this.props.fetchPermisosActivos(cargarGruposPermisos, this.error_callback);
+        const {notificarErrorAction} = this.props;
+        this.props.fetchGruposPermisos(null, notificarErrorAction);
     }
 
-    actualizarPermiso(permiso, item, onSelectItem) {
-        const success_callback = (response) => {
+    actualizarPermiso(permiso, item) {
+        const {notificarErrorAction, fetchPermisosPorGrupo} = this.props;
+        const success_callback = () => {
             this.notificar(`Se ha actualizado con éxito el grupo de permisos con el permiso ${permiso.codename}`);
-            onSelectItem(response);
+            fetchPermisosPorGrupo(
+                item.id,
+                null,
+                notificarErrorAction
+            )
         };
         if (item) {
-
-            this.props.addPermisoGrupo(item.id, permiso.id, success_callback, this.error_callback);
+            this.props.addPermisoGrupo(item.id, permiso.id, success_callback, notificarErrorAction);
         }
-
     }
 
     onDelete(grupoPermiso) {
+        const {notificarErrorAction} = this.props;
         const success_callback = () => {
             this.notificar(`Se ha eliminado con éxito el grupo de permisos ${grupoPermiso.name}`)
         };
-
-        this.props.deleteGrupoPermiso(grupoPermiso.id, success_callback, this.error_callback)
+        this.props.deleteGrupoPermiso(grupoPermiso.id, success_callback, notificarErrorAction)
     }
 
     render() {
-        const {permisos, grupos_permisos, auth: {mis_permisos}} = this.props;
-        const permisos_view = permisosAdapter( permisos_view_groups);
-
+        const {
+            notificarErrorAction,
+            permisos,
+            grupos_permisos,
+            fetchPermisosPorGrupo,
+        } = this.props;
+        const {todos_los_permisos} = this.state;
+        const permisos_view = permisosAdapter(permisos_view_groups);
         return (
             <ListManager permisos={permisos_view} singular_name='grupos de permisos' plural_name='grupo de permisos'>
                 {
@@ -134,7 +139,13 @@ class GruposPermisosList extends Component {
                                     }}
 
                                     onSelectItemDetail={(item) => {
-                                        this.props.fetchGruposPermisos(item.id, () => onSelectItem(item), this.error_callback);
+                                        fetchPermisosPorGrupo(
+                                            item.id,
+                                            () => {
+                                                onSelectItem(item);
+                                            },
+                                            notificarErrorAction
+                                        )
                                     }}
                                     updateItem={(item) => this.onSubmit(item, list_manager_state.singular_name)}
                                 />
@@ -145,11 +156,12 @@ class GruposPermisosList extends Component {
                                         <h5>{list_manager_state.item_seleccionado.name}</h5>
                                         <PermisosGrupo
                                             can_change={permisos_view.change}
-                                            actualizarPermiso={(permiso) => {
-                                                this.actualizarPermiso(permiso, list_manager_state.item_seleccionado, onSelectItem);
-                                            }}
-                                            permisos_todos={permisos}
-                                            permisos_activos={list_manager_state.item_seleccionado.permissions}
+                                            actualizarPermiso={
+                                                (permiso) => {
+                                                    this.actualizarPermiso(permiso, list_manager_state.item_seleccionado);
+                                                }}
+                                            permisos_todos={todos_los_permisos}
+                                            permisos_activos={permisos}
                                         />
                                     </Fragment>
                                 }

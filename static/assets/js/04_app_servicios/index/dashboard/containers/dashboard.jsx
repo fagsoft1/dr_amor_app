@@ -38,10 +38,10 @@ class ServiciosDashboar extends Component {
     cargarDatos() {
         const {
 
-            notificarErrorAjaxAction
+            notificarErrorAction
         } = this.props;
-        const cargarHabitaciones = () => this.props.fetchHabitaciones(null, notificarErrorAjaxAction);
-        this.props.fetchServicios_en_proceso(cargarHabitaciones, notificarErrorAjaxAction);
+        const cargarHabitaciones = () => this.props.fetchHabitaciones(null, notificarErrorAction);
+        this.props.fetchServicios_en_proceso(cargarHabitaciones, notificarErrorAction);
     }
 
     clearDatos() {
@@ -58,7 +58,7 @@ class ServiciosDashboar extends Component {
         const {
 
 
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             notificarAction,
             fetchHabitacion
         } = this.props;
@@ -74,12 +74,12 @@ class ServiciosDashboar extends Component {
                 }
 
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 
     abrirModalServicio(servicio) {
-        const {  notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAction} = this.props;
 
         this.clearDatos();
         this.props.fetchServicio(
@@ -92,7 +92,7 @@ class ServiciosDashboar extends Component {
                 }
 
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 
@@ -106,14 +106,14 @@ class ServiciosDashboar extends Component {
     }
 
     abrirModalHabitacion(habitacion) {
-        const {  notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAction} = this.props;
 
         this.props.clearServicios();
         this.props.fetchTercerosPresentes(() => {
                 this.setState({modal_habitacion_open: true, habitacion_id: habitacion.id});
 
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 

@@ -30,12 +30,12 @@ class LiquidarAcompanante extends Component {
         const {
 
 
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             fetchServicios_por_tercero_cuenta_abierta
         } = this.props;
         const {id_tercero} = this.state;
 
-        fetchServicios_por_tercero_cuenta_abierta(id_tercero, null, notificarErrorAjaxAction);
+        fetchServicios_por_tercero_cuenta_abierta(id_tercero, null, notificarErrorAction);
     }
 
     componentDidMount() {
@@ -50,11 +50,11 @@ class LiquidarAcompanante extends Component {
         const {
 
 
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             fetchAcompanantesPresentes,
         } = this.props;
 
-        fetchAcompanantesPresentes(null, notificarErrorAjaxAction);
+        fetchAcompanantesPresentes(null, notificarErrorAction);
     }
 
     onPagar(pago) {
@@ -62,7 +62,7 @@ class LiquidarAcompanante extends Component {
             liquidarCuentaTercero,
 
 
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             auth:{punto_venta}
         } = this.props;
 
@@ -78,7 +78,7 @@ class LiquidarAcompanante extends Component {
                 this.props.clearAcompanantes();
                 this.cargarDatos();
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         )
     }
 

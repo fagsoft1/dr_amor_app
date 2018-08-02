@@ -2,12 +2,11 @@ import {
     CATEGORIA_PRODUCTO_TYPES as TYPES
 } from '../../00_types';
 import {
-    fetchList,
+    fetchListGet,
     updateObject,
     fetchObject,
     deleteObject,
     createObject,
-    callApiMethodWithParameters
 } from '../../00_general_fuctions'
 
 const current_url_api = 'productos_categorias';
@@ -27,12 +26,12 @@ export const deleteCategoriaProducto = (id, callback = null, callback_error = nu
         deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
     }
 };
-export const fetchCategoriasProductos = (callback = null, callback_error = null) => {
+export const fetchCategoriasProductos = (callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
+        fetchListGet(current_url_api, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
     }
 };
 export const fetchCategoriaProducto = (id, callback = null, callback_error = null) => {

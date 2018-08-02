@@ -49,13 +49,13 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAjaxAction,} = this.props;
+        const {notificarErrorAction,} = this.props;
         let index = value !== null ? value : this.state.slideIndex;
 
         if (index === 0) {
-            this.props.fetchAlgos1(null, notificarErrorAjaxAction);
+            this.props.fetchAlgos1(null, notificarErrorAction);
         } else if (index === 2) {
-            this.props.fetchAlgos2(null, notificarErrorAjaxAction);
+            this.props.fetchAlgos2(null, notificarErrorAction);
         }
     }
 
@@ -69,12 +69,12 @@ class ListadoElementos extends Component {
     }
 
     cargarDatos() {
-        const {notificarErrorAjaxAction, cargando} = this.props;
+        const {notificarErrorAction, cargando} = this.props;
 
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list, auth: {mis_permisos}} = this.props;
+        const {bloque_1_list, bloque_2_list} = this.props;
         const permisos_object_1 = permisosAdapter( bloque_1_permisos);
         const permisos_object_2 = permisosAdapter( bloque_2_permisos);
 

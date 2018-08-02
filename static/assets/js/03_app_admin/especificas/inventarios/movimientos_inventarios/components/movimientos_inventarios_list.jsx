@@ -36,44 +36,44 @@ class List extends Component {
     }
 
     fetchObjectMethod(item_id, successCallback) {
-        const {  notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAction} = this.props;
         const success_method = (item) => {
             successCallback(item);
 
         };
 
-        this.props.fetchMovimientoInventario(item_id, success_method, notificarErrorAjaxAction);
+        this.props.fetchMovimientoInventario(item_id, success_method, notificarErrorAction);
     }
 
     createObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = (response) => {
             this.successSubmitCallback(item);
             successCallback();
             this.props.history.push(`/app/admin/inventarios/movimientos_inventarios/detail/${response.id}`);
         };
 
-        this.props.createMovimientoInventario(item, success_method, notificarErrorAjaxAction);
+        this.props.createMovimientoInventario(item, success_method, notificarErrorAction);
     }
 
     updateObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
 
-        this.props.updateMovimientoInventario(item.id, item, success_method, notificarErrorAjaxAction);
+        this.props.updateMovimientoInventario(item.id, item, success_method, notificarErrorAction);
     }
 
     deleteObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
 
-        this.props.deleteMovimientoInventario(item.id, success_method, notificarErrorAjaxAction);
+        this.props.deleteMovimientoInventario(item.id, success_method, notificarErrorAction);
     }
 
     render() {

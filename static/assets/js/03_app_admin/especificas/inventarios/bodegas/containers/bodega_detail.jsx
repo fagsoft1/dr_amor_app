@@ -38,12 +38,12 @@ class Detail extends Component {
     }
 
     verMovimientoProducto(item_id) {
-        const {notificarErrorAjaxAction,} = this.props;
+        const {notificarErrorAction,} = this.props;
 
         const {id} = this.props.match.params;
         this.setState({slideIndex: 1});
         this.props.clearMovimientosInventarios();
-        this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id, null, notificarErrorAjaxAction);
+        this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id, null, notificarErrorAction);
     }
 
     handleChange = (event, value) => {
@@ -56,12 +56,12 @@ class Detail extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAjaxAction,} = this.props;
+        const {notificarErrorAction,} = this.props;
         let index = value !== null ? value : this.state.slideIndex;
         if (index === 0) {
 
             const {id} = this.props.match.params;
-            this.props.fetchMovimientosInventariosSaldosxBodega(id, null, notificarErrorAjaxAction);
+            this.props.fetchMovimientosInventariosSaldosxBodega(id, null, notificarErrorAction);
         } else if (index === 1) {
 
         }
@@ -78,16 +78,16 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
 
         const success_callback = () => {
             this.cargarElementos();
         };
-        this.props.fetchBodega(id, success_callback, notificarErrorAjaxAction);
+        this.props.fetchBodega(id, success_callback, notificarErrorAction);
     }
 
     render() {
-        const {object, movimientos_inventarios_detalles_list, auth: {mis_permisos}} = this.props;
+        const {object, movimientos_inventarios_detalles_list} = this.props;
         const permisos = permisosAdapter( permisos_view);
 
 

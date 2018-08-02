@@ -15,6 +15,9 @@ import PermisosUsuario from '../../permisos/components/permisos_select_permisos'
 class UsuariosDetail extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            todos_los_permisos: {},
+        };
         this.cargarDatos = this.cargarDatos.bind(this);
         this.error_callback = this.error_callback.bind(this);
         this.notificar = this.notificar.bind(this);
@@ -23,7 +26,7 @@ class UsuariosDetail extends Component {
     }
 
     error_callback(error) {
-        this.props.notificarErrorAjaxAction(error);
+        this.props.notificarErrorAction(error);
     }
 
     notificar(mensaje) {
@@ -31,6 +34,15 @@ class UsuariosDetail extends Component {
     }
 
     componentDidMount() {
+        const {
+            notificarErrorAction,
+            fetchPermisosActivos
+        } = this.props;
+        fetchPermisosActivos(
+            (response) => {
+                this.setState({todos_los_permisos: _.mapKeys(response, 'id')})
+            }, notificarErrorAction
+        );
         this.cargarDatos();
     }
 
@@ -40,8 +52,6 @@ class UsuariosDetail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-
-
         const cargarGruposPermisos = () => this.props.fetchGruposPermisos(null, this.error_callback);
         const cargarPermisosActivos = () => this.props.fetchPermisosActivos(cargarGruposPermisos, this.error_callback);
         const cargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id, cargarPermisosActivos, this.error_callback);
@@ -62,18 +72,21 @@ class UsuariosDetail extends Component {
     }
 
     render() {
-        const {usuario, permisos_activos, permisos_todos, grupos_todos, auth: {mis_permisos}} = this.props;
-        const permisos = permisosAdapter( permisos_view);
-        const permisos_permission = permisosAdapter( permisos_view_permission);
+        const {usuario, permisos_activos, permisos_todos, grupos_todos} = this.props;
+        const {todos_los_permisos} = this.state;
+        const permisos = permisosAdapter(permisos_view);
+        const permisos_permission = permisosAdapter(permisos_view_permission);
 
 
         if (!usuario) {
             return <SinObjeto/>
         }
 
-        const grupos_activos = _.pickBy(grupos_todos, grupo => {
-            return usuario.groups.includes(grupo.id)
-        });
+        const grupos_activos = _.pickBy(
+            grupos_todos,
+            grupo => {
+                return usuario.groups.includes(grupo.id)
+            });
 
         let permisos_activos_indpendientes = [];
         _.mapValues(grupos_activos, (e) => {
@@ -116,7 +129,7 @@ class UsuariosDetail extends Component {
                         can_change={permisos_permission.change}
                         actualizarPermiso={this.actualizarPermiso}
                         actualizarGrupo={this.actualizarGrupo}
-                        permisos_todos={permisos_todos}
+                        permisos_todos={todos_los_permisos}
                         permisos_activos={permisos_activos}
                         grupos_todos={grupos_todos}
                         grupos_activos={grupos_activos}

@@ -54,20 +54,20 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAjaxAction,} = this.props;
+        const {notificarErrorAction,} = this.props;
         let index = value !== null ? value : this.state.slideIndex;
 
 
-        const cargarCategoriasProductosDos = () => this.props.fetchCategoriasProductosDos(null, notificarErrorAjaxAction);
-        const cargarCategoriasProductos = () => this.props.fetchCategoriasProductos(null, notificarErrorAjaxAction);
-        const cargarUnidadesProductos = () => this.props.fetchUnidadesProductos(null, notificarErrorAjaxAction);
-        const cargarEmpresas = () => this.props.fetchEmpresas(null, notificarErrorAjaxAction);
+        const cargarCategoriasProductosDos = () => this.props.fetchCategoriasProductosDos(null, notificarErrorAction);
+        const cargarCategoriasProductos = () => this.props.fetchCategoriasProductos(null, notificarErrorAction);
+        const cargarUnidadesProductos = () => this.props.fetchUnidadesProductos(null, notificarErrorAction);
+        const cargarEmpresas = () => this.props.fetchEmpresas(null, notificarErrorAction);
 
         if (index === 0) {
             cargarUnidadesProductos();
             cargarCategoriasProductosDos();
             cargarEmpresas();
-            this.props.fetchProductos(null, notificarErrorAjaxAction);
+            this.props.fetchProductos(null, notificarErrorAction);
         } else if (index === 1) {
             cargarCategoriasProductos();
         } else if (index === 2) {
@@ -96,7 +96,7 @@ class ListadoElementos extends Component {
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list, bloque_3_list, bloque_4_list, auth: {mis_permisos}} = this.props;
+        const {bloque_1_list, bloque_2_list, bloque_3_list, bloque_4_list} = this.props;
         const permisos_object_1 = permisosAdapter( bloque_1_permisos);
         const permisos_object_2 = permisosAdapter( bloque_2_permisos);
         const permisos_object_3 = permisosAdapter( bloque_3_permisos);

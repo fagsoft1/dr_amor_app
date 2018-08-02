@@ -28,10 +28,10 @@ class ServicioDetailModal extends Component {
     }
 
     cargarDatos() {
-        const {  notificarErrorAjaxAction, servicio} = this.props;
+        const {  notificarErrorAction, servicio} = this.props;
         this.props.clearCategoriasFraccionesTiemposAcompanantes();
 
-        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(servicio.categoria_id, null, notificarErrorAjaxAction)
+        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(servicio.categoria_id, null, notificarErrorAction)
 
     }
 
@@ -39,7 +39,7 @@ class ServicioDetailModal extends Component {
         const {
 
 
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             notificarAction,
             servicio,
             solicitarAnulacionServicio,
@@ -56,7 +56,7 @@ class ServicioDetailModal extends Component {
 
                 cerraModal();
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 
@@ -64,7 +64,7 @@ class ServicioDetailModal extends Component {
         const {
 
 
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             notificarAction,
             servicio,
             cambiarTiempoServicio,
@@ -80,7 +80,7 @@ class ServicioDetailModal extends Component {
 
                 cerraModal();
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 
@@ -90,7 +90,7 @@ class ServicioDetailModal extends Component {
             servicio,
             cerraModal,
             notificarAction,
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             auth: {punto_venta}
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
@@ -104,7 +104,7 @@ class ServicioDetailModal extends Component {
                 cerraModal();
                 notificarAction(result);
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 

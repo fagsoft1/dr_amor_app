@@ -35,17 +35,17 @@ class HabitacionDetailModal extends Component {
     }
 
     cargarDatos() {
-        const {habitacion, notificarErrorAjaxAction} = this.props;
+        const {habitacion, notificarErrorAction} = this.props;
 
-        const cargarServicios = () => this.props.fetchServicios_por_habitacion(habitacion.id, null, notificarErrorAjaxAction);
-        this.props.fetchTercerosPresentes(cargarServicios, notificarErrorAjaxAction);
+        const cargarServicios = () => this.props.fetchServicios_por_habitacion(habitacion.id, null, notificarErrorAction);
+        this.props.fetchTercerosPresentes(cargarServicios, notificarErrorAction);
     }
 
     onSelectModelo(categoria_modelo_id) {
-        const {notificarErrorAjaxAction} = this.props;
+        const {notificarErrorAction} = this.props;
         this.props.clearCategoriasFraccionesTiemposAcompanantes();
 
-        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(categoria_modelo_id, null, notificarErrorAjaxAction)
+        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(categoria_modelo_id, null, notificarErrorAction)
     }
 
     onAdicionarServicio(valores) {
@@ -93,7 +93,7 @@ class HabitacionDetailModal extends Component {
             habitacion,
             cerraModal,
             notificarAction,
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             auth: {punto_venta}
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
@@ -107,7 +107,7 @@ class HabitacionDetailModal extends Component {
                 cerraModal();
                 notificarAction(result);
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 
@@ -118,7 +118,7 @@ class HabitacionDetailModal extends Component {
 
 
             habitacion,
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             notificarAction,
             cerraModal,
             auth: {punto_venta}
@@ -136,11 +136,11 @@ class HabitacionDetailModal extends Component {
                             notificarAction(response2.result);
                             cerraModal();
                         },
-                        notificarErrorAjaxAction
+                        notificarErrorAction
                     )
                 }
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 
@@ -150,7 +150,7 @@ class HabitacionDetailModal extends Component {
             iniciarServiciosHabitacion,
             habitacion,
             notificarAction,
-            notificarErrorAjaxAction,
+            notificarErrorAction,
             cerraModal,
 
 
@@ -167,7 +167,7 @@ class HabitacionDetailModal extends Component {
                 this.cargarDatos();
                 cerraModal();
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 
@@ -267,7 +267,7 @@ class HabitacionDetailModal extends Component {
                                                 fetchHabitaciones,
 
 
-                                                notificarErrorAjaxAction
+                                                notificarErrorAction
                                             } = this.props;
                                             fetchHabitaciones(
                                                 () => {
@@ -278,7 +278,7 @@ class HabitacionDetailModal extends Component {
                                                     })
                                                 },
                                                 null,
-                                                notificarErrorAjaxAction
+                                                notificarErrorAction
                                             )
                                         }}
                                     > Cambiar Habitacion</span>

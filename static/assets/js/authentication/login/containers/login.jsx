@@ -19,7 +19,7 @@ class Login extends Component {
     }
 
     cargarPuntosVentasCliente(username) {
-        const {notificarErrorAjaxAction, notificarAction, fetchPuntosVentas_por_usuario_username} = this.props;
+        const {notificarErrorAction, notificarAction, fetchPuntosVentas_por_usuario_username} = this.props;
 
         fetchPuntosVentas_por_usuario_username(
             username,
@@ -27,7 +27,7 @@ class Login extends Component {
                 this.setState({cargando_puntos_ventas: true});
 
             },
-            notificarErrorAjaxAction
+            notificarErrorAction
         );
     }
 

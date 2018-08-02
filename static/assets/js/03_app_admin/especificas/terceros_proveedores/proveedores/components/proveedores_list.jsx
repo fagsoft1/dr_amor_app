@@ -35,43 +35,43 @@ class List extends Component {
     }
 
     fetchObjectMethod(item_id, successCallback) {
-        const {  notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAction} = this.props;
         const success_method = (item) => {
             successCallback(item);
 
         };
         
-        this.props.fetchProveedor(item_id, success_method, notificarErrorAjaxAction);
+        this.props.fetchProveedor(item_id, success_method, notificarErrorAction);
     }
 
     createObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
         
-        this.props.createProveedor(item, success_method, notificarErrorAjaxAction);
+        this.props.createProveedor(item, success_method, notificarErrorAction);
     }
 
     updateObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
         
-        this.props.updateProveedor(item.id, item, success_method, notificarErrorAjaxAction);
+        this.props.updateProveedor(item.id, item, success_method, notificarErrorAction);
     }
 
     deleteObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
         
-        this.props.deleteProveedor(item.id, success_method, notificarErrorAjaxAction);
+        this.props.deleteProveedor(item.id, success_method, notificarErrorAction);
     }
 
     render() {

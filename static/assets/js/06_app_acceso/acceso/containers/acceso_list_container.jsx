@@ -26,13 +26,13 @@ class List extends Component {
     }
 
     cargarDatos() {
-        const {  notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAction} = this.props;
         
-        this.props.fetchTercerosPresentes(null, notificarErrorAjaxAction);
+        this.props.fetchTercerosPresentes(null, notificarErrorAction);
     }
 
     render() {
-        const {terceros_list, auth: {mis_permisos}} = this.props;
+        const {terceros_list} = this.props;
         const bloque_1_list = permisosAdapter( permisos_view);
         const terceros = _.map(terceros_list, c => {
             return ({

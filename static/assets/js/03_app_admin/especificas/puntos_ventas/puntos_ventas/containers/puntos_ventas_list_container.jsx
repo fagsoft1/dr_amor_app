@@ -26,14 +26,14 @@ class List extends Component {
     }
 
     cargarDatos() {
-        const {  notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAction} = this.props;
         
-        this.props.fetchPuntosVentas(null, notificarErrorAjaxAction);
+        this.props.fetchPuntosVentas(null, notificarErrorAction);
 
     }
 
     render() {
-        const {object_list, auth: {mis_permisos}} = this.props;
+        const {object_list} = this.props;
         const bloque_1_list = permisosAdapter( permisos_view);
         return (
             <Fragment>

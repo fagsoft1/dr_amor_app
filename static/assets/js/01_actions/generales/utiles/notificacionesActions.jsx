@@ -26,7 +26,7 @@ export function notificarAction(mensaje, tipo = 'success', tiempo = 5000) {
     }
 }
 
-export function notificarErrorAjaxAction(error, tiempo = 7000) {
+export function notificarErrorAction(error, tiempo = 7000) {
     return function (dispatch) {
         let mensaje = '';
         let mensaje_final = '';

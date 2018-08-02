@@ -1,12 +1,12 @@
 import {PUNTO_VENTA_TYPES as TYPES} from '../../00_types';
 import {
-    fetchList,
-    fetchListWithParameter,
+    fetchListGet,
+    fetchListGetURLParameters,
     updateObject,
     fetchObject,
     deleteObject,
     createObject,
-    callApiMethodWithParameters
+    callApiMethodPostParameters
 } from '../../00_general_fuctions'
 
 const current_url_api = 'puntos_ventas';
@@ -15,26 +15,26 @@ export const hacerEntregaEfectivoCajaPuntoVenta = (id, cierre, callback = null, 
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('cierre', JSON.stringify(cierre));
-        callApiMethodWithParameters(current_url_api, id, 'hacer_entrega_efectivo_caja', params, null, callback, callback_error, dispatch)
+        callApiMethodPostParameters(current_url_api, id, 'hacer_entrega_efectivo_caja', params, null, callback, callback_error, dispatch)
     }
 };
 
 
-export const fetchPuntosVentas_por_usuario_username = (username, callback = null, callback_error = null) => {
+export const fetchPuntosVentas_por_usuario_username = (username, callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListWithParameter(`${current_url_api}/listar_por_usuario_username/?username=${username}`, dispatches, callback, callback_error, dispatch);
+        fetchListGetURLParameters(`${current_url_api}/listar_por_usuario_username/?username=${username}`, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
     }
 };
 
-export const fetchPuntosVentas_por_colaborador = (colaborador_id, callback = null, callback_error = null) => {
+export const fetchPuntosVentas_por_colaborador = (colaborador_id, callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListWithParameter(`${current_url_api}/listar_por_colaborador/?colaborador_id=${colaborador_id}`, dispatches, callback, callback_error, dispatch);
+        fetchListGetURLParameters(`${current_url_api}/listar_por_colaborador/?colaborador_id=${colaborador_id}`, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
     }
 };
 
@@ -54,12 +54,12 @@ export const deletePuntoVenta = (id, callback = null, callback_error = null) => 
         deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
     }
 };
-export const fetchPuntosVentas = (callback = null, callback_error = null) => {
+export const fetchPuntosVentas = (callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
+        fetchListGet(current_url_api, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
     }
 };
 export const fetchPuntoVenta = (id, callback = null, callback_error = null) => {

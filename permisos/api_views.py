@@ -27,6 +27,14 @@ class PermissionViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @list_route(methods=['get'])
+    def por_grupo(self, request):
+        grupo_id = int(self.request.GET.get('grupo_id'))
+        grupo = Group.objects.get(id=grupo_id)
+        permissions_list = grupo.permissions.all()
+        serializer = self.get_serializer(permissions_list, many=True)
+        return Response(serializer.data)
+
+    @list_route(methods=['get'])
     def permiso_x_usuario(self, request):
         user_id = int(request.GET.get('user_id'))
         user = User.objects.get(id=user_id)

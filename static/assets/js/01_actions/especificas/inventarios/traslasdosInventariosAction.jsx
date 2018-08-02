@@ -1,12 +1,11 @@
 import {TRASLADO_INVENTARIO_TYPES as TYPES} from '../../00_types';
 import {
-    fetchList,
+    fetchListGet,
     updateObject,
     fetchObject,
     deleteObject,
     createObject,
-    callApiMethodWithParameters,
-    callApiMethod
+    callApiMethodPost
 } from '../../00_general_fuctions'
 
 const current_url_api = 'traslados_inventarios';
@@ -15,7 +14,7 @@ export const trasladarTrasladoInventario = (id, callback = null, callback_error 
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        callApiMethod(current_url_api, id, 'trasladar', dispatches, callback, callback_error, dispatch)
+        callApiMethodPost(current_url_api, id, 'trasladar', dispatches, callback, callback_error, dispatch)
     }
 };
 
@@ -36,12 +35,12 @@ export const deleteTrasladoInventario = (id, callback = null, callback_error = n
         deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
     }
 };
-export const fetchTrasladosInventarios = (callback = null, callback_error = null) => {
+export const fetchTrasladosInventarios = (callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
+        fetchListGet(current_url_api, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
     }
 };
 export const fetchTrasladoInventario = (id, callback = null, callback_error = null) => {

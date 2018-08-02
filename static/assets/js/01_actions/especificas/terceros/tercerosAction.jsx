@@ -1,11 +1,9 @@
 import {TERCERO_TYPES as TYPES} from '../../00_types';
 import {
-    fetchList,
+    fetchListGet,
     updateObject,
     fetchObject,
-    deleteObject,
-    createObject,
-    callApiMethodWithParameters
+    callApiMethodPostParameters
 } from '../../00_general_fuctions'
 
 const current_url_api = 'terceros';
@@ -14,7 +12,7 @@ export const registrarIngresoTercero = (id, pin, callback = null, callback_error
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pin', pin);
-        callApiMethodWithParameters(current_url_api, id, 'registrar_ingreso', params, null, callback, callback_error, dispatch)
+        callApiMethodPostParameters(current_url_api, id, 'registrar_ingreso', params, null, callback, callback_error, dispatch)
     }
 };
 
@@ -22,7 +20,7 @@ export const registrarSalidaTercero = (id, pin, callback = null, callback_error 
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pin', pin);
-        callApiMethodWithParameters(current_url_api, id, 'registrar_salida', params, null, callback, callback_error, dispatch)
+        callApiMethodPostParameters(current_url_api, id, 'registrar_salida', params, null, callback, callback_error, dispatch)
     }
 };
 
@@ -30,34 +28,34 @@ export const liquidarCuentaTercero = (id, pago, callback = null, callback_error 
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pago', JSON.stringify(pago));
-        callApiMethodWithParameters(current_url_api, id, 'liquidar_cuenta', params, null, callback, callback_error, dispatch)
+        callApiMethodPostParameters(current_url_api, id, 'liquidar_cuenta', params, null, callback, callback_error, dispatch)
     }
 };
 
-export const fetchTercerosAusentes = (callback = null, callback_error = null) => {
+export const fetchTercerosAusentes = (callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(`${current_url_api}/listar_ausentes`, dispatches, callback, callback_error, dispatch);
+        fetchListGet(`${current_url_api}/listar_ausentes`, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
     }
 };
 
-export const fetchTercerosPresentes = (callback = null, callback_error = null) => {
+export const fetchTercerosPresentes = (callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(`${current_url_api}/listar_presentes`, dispatches, callback, callback_error, dispatch);
+        fetchListGet(`${current_url_api}/listar_presentes`, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
     }
 };
 
-export const fetchTerceros = (callback = null, callback_error = null) => {
+export const fetchTerceros = (callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
+        fetchListGet(current_url_api, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
     }
 };
 export const fetchTercero = (id, callback = null, callback_error = null) => {

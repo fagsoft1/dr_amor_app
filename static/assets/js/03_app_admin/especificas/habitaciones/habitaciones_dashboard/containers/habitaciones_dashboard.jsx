@@ -50,12 +50,12 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAjaxAction} = this.props;
+        const {notificarErrorAction} = this.props;
         let index = value !== null ? value : this.state.slideIndex;
-        const cargarHabitacionesTipos = () => this.props.fetchTiposHabitaciones(null, notificarErrorAjaxAction);
+        const cargarHabitacionesTipos = () => this.props.fetchTiposHabitaciones(null, notificarErrorAction);
         if (index === 0) {
-            const cargarEmpresas = () => this.props.fetchEmpresas(cargarHabitacionesTipos, notificarErrorAjaxAction);
-            this.props.fetchHabitaciones(cargarEmpresas,notificarErrorAjaxAction);
+            const cargarEmpresas = () => this.props.fetchEmpresas(cargarHabitacionesTipos, notificarErrorAction);
+            this.props.fetchHabitaciones(cargarEmpresas, notificarErrorAction);
         } else if (index === 1) {
             cargarHabitacionesTipos();
         }
@@ -77,7 +77,7 @@ class ListadoElementos extends Component {
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list, auth: {mis_permisos}} = this.props;
+        const {bloque_1_list, bloque_2_list} = this.props;
         const permisos_object_1 = permisosAdapter(bloque_1_permisos);
         const permisos_object_2 = permisosAdapter(bloque_2_permisos);
 

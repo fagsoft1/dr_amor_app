@@ -35,43 +35,43 @@ class List extends Component {
     }
 
     fetchObjectMethod(item_id, successCallback) {
-        const {  notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAction} = this.props;
         const success_method = (item) => {
             successCallback(item);
 
         };
         
-        this.props.fetchCategoriaFraccionTiempoAcompanante(item_id, success_method, notificarErrorAjaxAction);
+        this.props.fetchCategoriaFraccionTiempoAcompanante(item_id, success_method, notificarErrorAction);
     }
 
     createObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = (response) => {
             this.successSubmitCallback(response);
             successCallback();
         };
         
-        this.props.createCategoriaFraccionTiempoAcompanante(item, success_method, notificarErrorAjaxAction);
+        this.props.createCategoriaFraccionTiempoAcompanante(item, success_method, notificarErrorAction);
     }
 
     updateObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = (response) => {
             this.successSubmitCallback(response);
             successCallback();
         };
         
-        this.props.updateCategoriaFraccionTiempoAcompanante(item.id, item, success_method, notificarErrorAjaxAction);
+        this.props.updateCategoriaFraccionTiempoAcompanante(item.id, item, success_method, notificarErrorAction);
     }
 
     deleteObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
         
-        this.props.deleteCategoriaFraccionTiempoAcompanante(item.id, success_method, notificarErrorAjaxAction);
+        this.props.deleteCategoriaFraccionTiempoAcompanante(item.id, success_method, notificarErrorAction);
     }
 
     render() {

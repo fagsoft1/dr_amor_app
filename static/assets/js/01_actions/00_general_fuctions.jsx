@@ -13,7 +13,11 @@ const mostrarFunciones = (e) => {
     }
 };
 
-export function createRequest(request, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
+export function createRequest(request, dispatches = null, callback = null, callback_error = null, dispatch_method = null, clear_action_type = null) {
+    if (clear_action_type) {
+        console.log(`Uso ${clear_action_type}`);
+        dispatch_method({type: clear_action_type})
+    }
     if (dispatch_method) {
         dispatch_method({type: LOADING})
     }
@@ -29,7 +33,7 @@ export function createRequest(request, dispatches = null, callback = null, callb
                 dispatch_method({type: LOADING_STOP})
             }
         }).catch(error => {
-                if (callback_error, dispatch) {
+                if (callback_error) {
                     if (!error.response) {
                         callback_error({type_error: 'no_connection'})
                     } else if (error.request) {
@@ -42,7 +46,7 @@ export function createRequest(request, dispatches = null, callback = null, callb
         );
 }
 
-export function fetchList(url, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
+export function fetchListGet(url, dispatches = null, callback = null, callback_error = null, dispatch_method = null, clear_action_type = null) {
     mostrarFunciones(() => console.log(`%cFETCH LIST - %c${url.toUpperCase()}`, 'color:red', 'color:blue'));
     const FULL_URL = `${url}/?format=json`;
     const headers = {"Content-Type": "application/json"};
@@ -56,11 +60,12 @@ export function fetchList(url, dispatches = null, callback = null, callback_erro
         dispatches,
         callback,
         callback_error,
-        dispatch_method
+        dispatch_method,
+        clear_action_type
     );
 }
 
-export function fetchListWithParameter(url, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
+export function fetchListGetURLParameters(url, dispatches = null, callback = null, callback_error = null, dispatch_method = null, clear_action_type = null) {
     mostrarFunciones(() => console.log(`%cFETCH LIST PARAMETROS - %c${url.toUpperCase()}`, 'color:red', 'color:blue'));
     const FULL_URL = `${url}&format=json`;
     const headers = {"Content-Type": "application/json"};
@@ -74,7 +79,8 @@ export function fetchListWithParameter(url, dispatches = null, callback = null, 
         dispatches,
         callback,
         callback_error,
-        dispatch_method
+        dispatch_method,
+        clear_action_type
     );
 }
 
@@ -164,7 +170,7 @@ export function deleteObject(url, id, dispatches = null, callback = null, callba
 }
 
 
-export function callApiMethod(url, id, method, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
+export function callApiMethodPost(url, id, method, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
     mostrarFunciones(() => console.log(`%cAPI METODO ${method.toUpperCase()} - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
@@ -188,7 +194,7 @@ export function callApiMethod(url, id, method, dispatches = null, callback = nul
 }
 
 
-export function callApiMethodWithParameters(url, id, method, values, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
+export function callApiMethodPostParameters(url, id, method, values, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
     mostrarFunciones(() => console.log(`%cAPI METODO ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
@@ -212,7 +218,7 @@ export function callApiMethodWithParameters(url, id, method, values, dispatches 
     );
 }
 
-export function callApiMethodWithParametersPDF(url, id, method, parameters, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
+export function callApiMethodPostParametersPDF(url, id, method, parameters, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
     console.log(`%cAPI METODO ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id} PARA PDF`, 'color:red', 'color:blue', 'color:green');
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";

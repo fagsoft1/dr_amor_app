@@ -129,7 +129,7 @@ class LoginAPI(generics.GenericAPIView):
         tokens.delete()
 
         if user.is_superuser:
-            permissions_list = Permission.objects.all()
+            permissions_list = None
         else:
             permissions_list = Permission.objects.filter(
                 Q(user=user) |

@@ -19,6 +19,10 @@ export const upper = value => value && value.toUpperCase();
 export const lower = value => value && value.toLowerCase();
 
 export const tengoPermiso = (permisos, tipo = 'and') => {
+    const mi_cuenta = JSON.parse(localStorage.getItem('mi_cuenta'));
+    if (mi_cuenta.is_superuser) {
+        return true
+    }
     const mis_permisos = _.map(JSON.parse(localStorage.getItem('mis_permisos')), e => e.codename);
     let permisos_a_validar_array = permisos;
     if (!Array.isArray(permisos)) {

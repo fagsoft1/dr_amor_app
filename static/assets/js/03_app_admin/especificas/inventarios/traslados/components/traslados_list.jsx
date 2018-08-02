@@ -35,44 +35,44 @@ class List extends Component {
     }
 
     fetchObjectMethod(item_id, successCallback) {
-        const {  notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAction} = this.props;
         const success_method = (item) => {
             successCallback(item);
 
         };
 
-        this.props.fetchTrasladoInventario(item_id, success_method, notificarErrorAjaxAction);
+        this.props.fetchTrasladoInventario(item_id, success_method, notificarErrorAction);
     }
 
     createObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = (response) => {
             this.successSubmitCallback(item);
             successCallback();
             this.props.history.push(`/app/admin/inventarios/traslados/detail/${response.id}`);
         };
 
-        this.props.createTrasladoInventario(item, success_method, notificarErrorAjaxAction);
+        this.props.createTrasladoInventario(item, success_method, notificarErrorAction);
     }
 
     updateObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
 
-        this.props.updateTrasladoInventario(item.id, item, success_method, notificarErrorAjaxAction);
+        this.props.updateTrasladoInventario(item.id, item, success_method, notificarErrorAction);
     }
 
     deleteObjectMethod(item, successCallback) {
-        const { notificarErrorAjaxAction} = this.props;
+        const { notificarErrorAction} = this.props;
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
 
-        this.props.deleteTrasladoInventario(item.id, success_method, notificarErrorAjaxAction);
+        this.props.deleteTrasladoInventario(item.id, success_method, notificarErrorAction);
     }
 
     render() {

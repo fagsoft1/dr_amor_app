@@ -2,13 +2,12 @@ import {
     HABITACION_TYPES as TYPES,
 } from '../../00_types';
 import {
-    fetchList,
+    fetchListGet,
     updateObject,
     fetchObject,
     deleteObject,
     createObject,
-    callApiMethodWithParameters,
-    callApiMethod,
+    callApiMethodPostParameters,
     baseWS,
 } from '../../00_general_fuctions'
 
@@ -36,7 +35,7 @@ export const iniciarServiciosHabitacion = (id, pago, servicios, callback = null,
         let params = new URLSearchParams();
         params.append('pago', JSON.stringify(pago));
         params.append('servicios', JSON.stringify(servicios));
-        callApiMethodWithParameters(current_url_api, id, 'iniciar_servicios', params, null, callback, callback_error, dispatch)
+        callApiMethodPostParameters(current_url_api, id, 'iniciar_servicios', params, null, callback, callback_error, dispatch)
     }
 };
 
@@ -46,7 +45,7 @@ export const cambiarHabitacion = (id, pago, nueva_habitacion_id, servicios_array
         params.append('pago', JSON.stringify(pago));
         params.append('nueva_habitacion_id', nueva_habitacion_id);
         params.append('servicios_array_id', JSON.stringify(servicios_array_id));
-        callApiMethodWithParameters(current_url_api, id, 'cambiar_habitacion', params, null, callback, callback_error, dispatch)
+        callApiMethodPostParameters(current_url_api, id, 'cambiar_habitacion', params, null, callback, callback_error, dispatch)
     }
 };
 
@@ -54,7 +53,7 @@ export const terminarServiciosHabitacion = (id, punto_venta_id, callback = null,
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('punto_venta_id', punto_venta_id);
-        callApiMethodWithParameters(current_url_api, id, 'terminar_servicios', params, null, callback, callback_error, dispatch)
+        callApiMethodPostParameters(current_url_api, id, 'terminar_servicios', params, null, callback, callback_error, dispatch)
     }
 };
 
@@ -62,7 +61,7 @@ export const cambiarEstadoHabitacion = (id, nuevo_estado, callback = null, callb
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('estado', nuevo_estado);
-        callApiMethodWithParameters(current_url_api, id, 'cambiar_estado', params, null, callback, callback_error, dispatch)
+        callApiMethodPostParameters(current_url_api, id, 'cambiar_estado', params, null, callback, callback_error, dispatch)
     }
 };
 
@@ -74,12 +73,12 @@ export const deleteHabitacion = (id, callback = null, callback_error = null) => 
         deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
     }
 };
-export const fetchHabitaciones = (callback = null, callback_error = null) => {
+export const fetchHabitaciones = (callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response});
+            dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchList(current_url_api, dispatches, callback, callback_error, dispatch);
+        fetchListGet(current_url_api, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
     }
 };
 export const fetchHabitacion = (id, callback = null, callback_error = null) => {

@@ -30,26 +30,25 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {  notificarErrorAjaxAction} = this.props;
+        const {  notificarErrorAction} = this.props;
 
         const success_callback = (movimiento) => {
             if (!movimiento.cargado) {
-                this.props.clearProductos();
                 if (movimiento.motivo === 'saldo_inicial') {
-                    this.props.fetchProductosParaSaldoInicial(null, notificarErrorAjaxAction);
+                    this.props.fetchProductosParaSaldoInicial(null, notificarErrorAction);
                 } else {
-                    this.props.fetchProductos(null, notificarErrorAjaxAction);
+                    this.props.fetchProductos(null, notificarErrorAction);
                 }
             }
 
         };
-        const cargarMovimientoInventario = () => this.props.fetchMovimientoInventario(id, success_callback, notificarErrorAjaxAction);
-        this.props.fetchMovimientosInventariosDetallesxMovimiento(id, cargarMovimientoInventario, notificarErrorAjaxAction);
+        const cargarMovimientoInventario = () => this.props.fetchMovimientoInventario(id, success_callback, notificarErrorAction);
+        this.props.fetchMovimientosInventariosDetallesxMovimiento(id, cargarMovimientoInventario, notificarErrorAction);
 
     }
 
     render() {
-        const {object, movimientos_inventarios_detalles_list, auth: {mis_permisos}} = this.props;
+        const {object, movimientos_inventarios_detalles_list} = this.props;
         const {id} = this.props.match.params;
         const permisos = permisosAdapter( permisos_view);
 
@@ -87,10 +86,10 @@ class Detail extends Component {
                     !object.cargado &&
                     _.size(movimientos_inventarios_detalles_list) > 0 &&
                     <span className='btn btn-primary' onClick={() => {
-                        const {  notificarErrorAjaxAction, cargarInventarioMovimientoInventario} = this.props;
+                        const {  notificarErrorAction, cargarInventarioMovimientoInventario} = this.props;
 
-                        const cargarDetalles = () => this.props.fetchMovimientosInventariosDetallesxMovimiento(id, null, notificarErrorAjaxAction);
-                        cargarInventarioMovimientoInventario(id, cargarDetalles, notificarErrorAjaxAction);
+                        const cargarDetalles = () => this.props.fetchMovimientosInventariosDetallesxMovimiento(id, null, notificarErrorAction);
+                        cargarInventarioMovimientoInventario(id, cargarDetalles, notificarErrorAction);
                     }}>
                     Cargar Inventario
                 </span>

@@ -23,7 +23,7 @@ class PermisosList extends Component {
     }
 
     error_callback(error) {
-        this.props.notificarErrorAjaxAction(error);
+        this.props.notificarErrorAction(error);
     }
 
     notificar(mensaje) {
@@ -50,7 +50,6 @@ class PermisosList extends Component {
             permiso.id,
             permiso,
             () => {
-                null
                 this.notificar(`Se ha actualizado con éxito el permiso ${permiso.codename}`)
             },
             this.error_callback
@@ -59,11 +58,9 @@ class PermisosList extends Component {
 
 
     render() {
-        const {permisos, auth: {mis_permisos}} = this.props;
+        const {permisos} = this.props;
         const can_change_permiso = tengoPermiso(can_change_permiso_plus);
         const permisos_this_view = permisosAdapter( permisos_view);
-
-        console.log(permisos_this_view)
 
         return (
             <ValidarPermisos can_see={permisos_this_view.list}

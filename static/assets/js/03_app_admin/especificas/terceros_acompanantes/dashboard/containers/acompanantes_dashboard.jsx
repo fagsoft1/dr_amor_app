@@ -51,16 +51,16 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAjaxAction,} = this.props;
+        const {notificarErrorAction,} = this.props;
         let index = value !== null ? value : this.state.slideIndex;
 
         if (index === 0) {
-            const cargarCategorias = this.props.fetchCategoriasAcompanantes(null, notificarErrorAjaxAction);
-            this.props.fetchAcompanantes(cargarCategorias, null, notificarErrorAjaxAction);
+            const cargarCategorias = this.props.fetchCategoriasAcompanantes(null, notificarErrorAction);
+            this.props.fetchAcompanantes(cargarCategorias, null, notificarErrorAction);
         } else if (index === 1) {
-            this.props.fetchCategoriasAcompanantes(null, notificarErrorAjaxAction);
+            this.props.fetchCategoriasAcompanantes(null, notificarErrorAction);
         } else if (index === 2) {
-            this.props.fetchFraccionesTiemposAcompanantes(null, notificarErrorAjaxAction);
+            this.props.fetchFraccionesTiemposAcompanantes(null, notificarErrorAction);
         }
     }
 
@@ -79,7 +79,7 @@ class ListadoElementos extends Component {
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list, bloque_3_list, auth: {mis_permisos}} = this.props;
+        const {bloque_1_list, bloque_2_list, bloque_3_list} = this.props;
         const permisos_object_1 = permisosAdapter(bloque_1_permisos);
         const permisos_object_2 = permisosAdapter(bloque_2_permisos);
 
