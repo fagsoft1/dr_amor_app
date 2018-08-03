@@ -4,8 +4,8 @@ import {Redirect} from "react-router-dom";
 import * as actions from "../../../01_actions/01_index";
 
 const LoadingOverlay = (props) => {
-    const {esta_cargando} = props;
-    let isActive = esta_cargando ? 'block' : 'none';
+    const {esta_cargando: {cargando, mensaje}} = props;
+    let isActive = cargando ? 'block' : 'none';
     const style = {
         display: isActive
     };
@@ -19,8 +19,9 @@ const LoadingOverlay = (props) => {
                     <i className="fas fa-spinner-third fa-spin">
 
                     </i>
-                    <div>
-                        Cargando...
+                    <div style={{fontSize: '14px'}}>
+                        Procesando...<br/>
+                        <span style={{fontSize: '12px'}}>{mensaje}</span>
                     </div>
                 </div>
             </div>

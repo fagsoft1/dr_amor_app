@@ -6,11 +6,15 @@ import {
 export default function (state = false, action) {
     switch (action.type) {
         case LOADING:
-            return true;
-            break;
+            return {
+                cargando: true,
+                mensaje: action.message ? action.message : ''
+            };
         case LOADING_STOP:
-            return false;
-            break;
+            return {
+                cargando: false,
+                mensaje: null
+            };
         default:
             return state;
     }

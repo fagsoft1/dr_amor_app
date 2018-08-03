@@ -12,7 +12,8 @@ export const registrarIngresoTercero = (id, pin, callback = null, callback_error
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pin', pin);
-        callApiMethodPostParameters(current_url_api, id, 'registrar_ingreso', params, null, callback, callback_error, dispatch)
+        const options = {callback, callback_error, dispatch_method: dispatch};
+        callApiMethodPostParameters(current_url_api, id, 'registrar_ingreso', params, options)
     }
 };
 
@@ -20,7 +21,8 @@ export const registrarSalidaTercero = (id, pin, callback = null, callback_error 
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pin', pin);
-        callApiMethodPostParameters(current_url_api, id, 'registrar_salida', params, null, callback, callback_error, dispatch)
+        const options = {callback, callback_error, dispatch_method: dispatch};
+        callApiMethodPostParameters(current_url_api, id, 'registrar_salida', params, options)
     }
 };
 
@@ -28,7 +30,8 @@ export const liquidarCuentaTercero = (id, pago, callback = null, callback_error 
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pago', JSON.stringify(pago));
-        callApiMethodPostParameters(current_url_api, id, 'liquidar_cuenta', params, null, callback, callback_error, dispatch)
+        const options = {callback, callback_error, dispatch_method: dispatch};
+        callApiMethodPostParameters(current_url_api, id, 'liquidar_cuenta', params, options)
     }
 };
 
@@ -37,7 +40,14 @@ export const fetchTercerosAusentes = (callback = null, callback_error = null, li
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGet(`${current_url_api}/listar_ausentes`, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGet(`${current_url_api}/listar_ausentes`, options);
     }
 };
 
@@ -46,7 +56,14 @@ export const fetchTercerosPresentes = (callback = null, callback_error = null, l
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGet(`${current_url_api}/listar_presentes`, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGet(`${current_url_api}/listar_presentes`, options);
     }
 };
 
@@ -55,7 +72,14 @@ export const fetchTerceros = (callback = null, callback_error = null, limpiar_co
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGet(current_url_api, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGet(current_url_api, options);
     }
 };
 export const fetchTercero = (id, callback = null, callback_error = null) => {
@@ -63,7 +87,8 @@ export const fetchTercero = (id, callback = null, callback_error = null) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        fetchObject(current_url_api, id, dispatches, callback, callback_error, dispatch);
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        fetchObject(current_url_api, id, options);
     }
 };
 export const clearTerceros = () => {
@@ -77,6 +102,7 @@ export const updateTercero = (id, values, callback = null, callback_error = null
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        updateObject(current_url_api, id, values, dispatches, callback, callback_error, dispatch)
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        updateObject(current_url_api, id, values, options);
     }
 };

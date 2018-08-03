@@ -25,7 +25,8 @@ export const createMovimientoInventarioDetalle = (values, callback = null, callb
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
         };
-        createObject(current_url_api, values, dispatches, callback, callback_error, dispatch)
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        createObject(current_url_api, values, options);
     }
 };
 export const deleteMovimientoInventarioDetalle = (id, callback = null, callback_error = null) => {
@@ -33,7 +34,8 @@ export const deleteMovimientoInventarioDetalle = (id, callback = null, callback_
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        deleteObject(current_url_api, id, options);
     }
 };
 export const fetchMovimientosInventariosDetalles = (callback = null, callback_error = null, limpiar_coleccion = true) => {
@@ -41,7 +43,14 @@ export const fetchMovimientosInventariosDetalles = (callback = null, callback_er
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGet(current_url_api, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGet(current_url_api, options);
     }
 };
 export const fetchMovimientosInventariosDetallesxMovimiento = (movimiento_id, callback = null, callback_error = null, limpiar_coleccion = true) => {
@@ -49,7 +58,14 @@ export const fetchMovimientosInventariosDetallesxMovimiento = (movimiento_id, ca
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGetURLParameters(`${current_url_api}/por_movimiento/?movimiento_id=${movimiento_id}`, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGetURLParameters(`${current_url_api}/por_movimiento/?movimiento_id=${movimiento_id}`, options);
     }
 };
 export const fetchMovimientosInventariosSaldosxBodega = (bodega_id, callback = null, callback_error = null, limpiar_coleccion = true) => {
@@ -57,7 +73,14 @@ export const fetchMovimientosInventariosSaldosxBodega = (bodega_id, callback = n
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGetURLParameters(`${current_url_api}/actual_por_bodega/?bodega_id=${bodega_id}`, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGetURLParameters(`${current_url_api}/actual_por_bodega/?bodega_id=${bodega_id}`, options);
     }
 };
 export const fetchMovimientosInventariosxBodegaxProducto = (bodega_id, producto_id, callback = null, callback_error = null, limpiar_coleccion = true) => {
@@ -65,7 +88,14 @@ export const fetchMovimientosInventariosxBodegaxProducto = (bodega_id, producto_
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGetURLParameters(`${current_url_api}/por_bodega_por_producto/?bodega_id=${bodega_id}&producto_id=${producto_id}`, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGetURLParameters(`${current_url_api}/por_bodega_por_producto/?bodega_id=${bodega_id}&producto_id=${producto_id}`, options);
     }
 };
 export const fetchMovimientoInventarioDetalle = (id, callback = null, callback_error = null) => {
@@ -73,7 +103,8 @@ export const fetchMovimientoInventarioDetalle = (id, callback = null, callback_e
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        fetchObject(current_url_api, id, dispatches, callback, callback_error, dispatch);
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        fetchObject(current_url_api, id, options);
     }
 };
 export const clearMovimientosInventariosDetalles = () => {
@@ -87,6 +118,7 @@ export const updateMovimientoInventarioDetalle = (id, values, callback = null, c
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        updateObject(current_url_api, id, values, dispatches, callback, callback_error, dispatch)
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        updateObject(current_url_api, id, values, options);
     }
 };

@@ -20,7 +20,14 @@ export function fetchMisPermisos(callback = null, callback_error = null) {
         const dispatches = (response) => {
             dispatch({type: FETCH_MIS_PERMISOS, payload: response})
         };
-        fetchListGet(FULL_URL, dispatches, callback, callback_error, dispatch);
+
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+        };
+        fetchListGet(FULL_URL, options);
     }
 }
 
@@ -31,7 +38,14 @@ export function fetchPermisosActivos(callback = null, callback_error = null, lim
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGet(FULL_URL, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGet(FULL_URL, options);
     }
 }
 
@@ -43,7 +57,14 @@ export function fetchPermisosPorGrupo(grupo_id, callback = null, callback_error 
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGetURLParameters(FULL_URL, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGetURLParameters(FULL_URL, options);
     }
 }
 
@@ -54,7 +75,13 @@ export function fetchOtroUsuarioPermisos(id, callback = null, callback_error = n
         const dispatches = (response) => {
             dispatch({type: FETCH_OTRO_USUARIO_PERMISOS, payload: response})
         };
-        fetchListGetURLParameters(FULL_URL, dispatches, callback, callback_error, dispatch);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+        };
+        fetchListGetURLParameters(FULL_URL, options);
     }
 }
 
@@ -63,7 +90,14 @@ export const fetchPermisos = (callback = null, callback_error = null, limpiar_co
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGet(current_url_api, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGet(current_url_api, options);
     }
 };
 
@@ -72,7 +106,8 @@ export const updatePermiso = (id, values, callback = null, callback_error = null
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        updateObject(current_url_api, id, values, dispatches, callback, callback_error, dispatch)
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        updateObject(current_url_api, id, values, options);
     }
 };
 
@@ -81,7 +116,8 @@ export const fetchPermiso = (id, callback = null, callback_error = null) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        fetchObject(current_url_api, id, dispatches, callback, callback_error, dispatch);
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        fetchObject(current_url_api, id, options);
     }
 };
 

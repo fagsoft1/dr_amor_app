@@ -26,7 +26,6 @@ class ServiciosDashboar extends Component {
     }
 
     componentDidMount() {
-
         this.cargarDatos();
         this.interval = setInterval(
             () => {
@@ -37,11 +36,16 @@ class ServiciosDashboar extends Component {
 
     cargarDatos() {
         const {
-
             notificarErrorAction
         } = this.props;
-        const cargarHabitaciones = () => this.props.fetchHabitaciones(null, notificarErrorAction);
-        this.props.fetchServicios_en_proceso(cargarHabitaciones, notificarErrorAction);
+        const {
+            modal_habitacion_open,
+            modal_servicio_open
+        } = this.state;
+        if (!(modal_habitacion_open || modal_servicio_open)) {
+            const cargarHabitaciones = () => this.props.fetchHabitaciones(null, notificarErrorAction, false, false);
+            this.props.fetchServicios_en_proceso(cargarHabitaciones, notificarErrorAction, false, false);
+        }
     }
 
     clearDatos() {
@@ -56,10 +60,7 @@ class ServiciosDashboar extends Component {
 
     onClickHabitacion(habitacion_id, callback = null) {
         const {
-
-
             notificarErrorAction,
-            notificarAction,
             fetchHabitacion
         } = this.props;
 
@@ -79,7 +80,7 @@ class ServiciosDashboar extends Component {
     }
 
     abrirModalServicio(servicio) {
-        const {  notificarErrorAction} = this.props;
+        const {notificarErrorAction} = this.props;
 
         this.clearDatos();
         this.props.fetchServicio(
@@ -97,21 +98,15 @@ class ServiciosDashboar extends Component {
     }
 
     cerraModalServicio() {
-        const {
-
-        } = this.props;
         this.setState({modal_servicio_open: false, servicio_id: null});
-
         this.cargarDatos();
     }
 
     abrirModalHabitacion(habitacion) {
-        const {  notificarErrorAction} = this.props;
-
+        const {notificarErrorAction} = this.props;
         this.props.clearServicios();
         this.props.fetchTercerosPresentes(() => {
                 this.setState({modal_habitacion_open: true, habitacion_id: habitacion.id});
-
             },
             notificarErrorAction
         );

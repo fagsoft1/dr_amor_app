@@ -13,7 +13,8 @@ export const createBilleteMoneda = (values, callback = null, callback_error = nu
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
         };
-        createObject(current_url_api, values, dispatches, callback, callback_error, dispatch)
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        createObject(current_url_api, values, options);
     }
 };
 export const deleteBilleteMoneda = (id, callback = null, callback_error = null) => {
@@ -21,7 +22,8 @@ export const deleteBilleteMoneda = (id, callback = null, callback_error = null) 
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        deleteObject(current_url_api, id, dispatches, callback, callback_error, dispatch)
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        deleteObject(current_url_api, id, options);
     }
 };
 export const fetchBilletesMonedas = (callback = null, callback_error = null, limpiar_coleccion = true) => {
@@ -29,7 +31,14 @@ export const fetchBilletesMonedas = (callback = null, callback_error = null, lim
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
-        fetchListGet(current_url_api, dispatches, callback, callback_error, dispatch, limpiar_coleccion ? TYPES.clear : null);
+        const options = {
+            dispatches,
+            callback,
+            callback_error,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGet(current_url_api, options);
     }
 };
 export const fetchBilleteMoneda = (id, callback = null, callback_error = null) => {
@@ -37,7 +46,7 @@ export const fetchBilleteMoneda = (id, callback = null, callback_error = null) =
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        fetchObject(current_url_api, id, dispatches, callback, callback_error, dispatch);
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};         fetchObject(current_url_api, id, options);
     }
 };
 export const clearBilletesMonedas = () => {
@@ -51,6 +60,6 @@ export const updateBilleteMoneda = (id, values, callback = null, callback_error 
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        updateObject(current_url_api, id, values, dispatches, callback, callback_error, dispatch)
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};         updateObject(current_url_api, id, values, options);
     }
 };

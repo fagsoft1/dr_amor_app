@@ -69,7 +69,7 @@ class Login extends Component {
                     <MyTextFieldSimple
                         name='username'
                         nombre='Nombre de Usuario'
-                        disabled={esta_cargando}
+                        disabled={esta_cargando.cargando}
                         className='col-12'
                         onBlur={(e) => this.cargarPuntosVentasCliente(e.target.value)}
                         onChange={() => {
@@ -85,7 +85,7 @@ class Login extends Component {
                                 nombre='Contraseña'
                                 className='col-12'
                                 type='password'
-                                disabled={esta_cargando}
+                                disabled={esta_cargando.cargando}
                                 autoFocus={true}
                                 onChange={() => {
                                     this.props.clear_authentication_errors();
@@ -94,7 +94,7 @@ class Login extends Component {
                             {
                                 _.size(puntos_ventas) > 0 &&
                                 <MyDropdownList
-                                    disabled={esta_cargando}
+                                    disabled={esta_cargando.cargando}
                                     name='punto_venta'
                                     nombre='Seleccione punto de venta'
                                     data={_.map(puntos_ventas, p => p)}
@@ -117,13 +117,13 @@ class Login extends Component {
 
                     <FlatIconModal
                         text='Ingresar'
-                        disabled={submitting || pristine || esta_cargando}
+                        disabled={submitting || pristine || esta_cargando.cargando}
                         type='submit'
                     />
 
                     <FlatIconModal
                         text="Limpiar"
-                        disabled={submitting || pristine || esta_cargando}
+                        disabled={submitting || pristine || esta_cargando.cargando}
                         onClick={reset}
                     />
                 </form>
