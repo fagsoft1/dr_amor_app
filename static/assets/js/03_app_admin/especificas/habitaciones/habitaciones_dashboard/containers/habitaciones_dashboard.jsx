@@ -50,12 +50,12 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAction} = this.props;
+        
         let index = value !== null ? value : this.state.slideIndex;
-        const cargarHabitacionesTipos = () => this.props.fetchTiposHabitaciones(null, notificarErrorAction);
+        const cargarHabitacionesTipos = () => this.props.fetchTiposHabitaciones();
         if (index === 0) {
-            const cargarEmpresas = () => this.props.fetchEmpresas(cargarHabitacionesTipos, notificarErrorAction);
-            this.props.fetchHabitaciones(cargarEmpresas, notificarErrorAction);
+            const cargarEmpresas = () => this.props.fetchEmpresas(cargarHabitacionesTipos);
+            this.props.fetchHabitaciones(cargarEmpresas);
         } else if (index === 1) {
             cargarHabitacionesTipos();
         }

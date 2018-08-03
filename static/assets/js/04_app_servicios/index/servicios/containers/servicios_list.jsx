@@ -16,24 +16,17 @@ class ServicioList extends Component {
             fetchServicios_en_proceso,
             terminarServicio,
             fetchHabitaciones,
-
-
-            notificarErrorAction,
-            notificarAction,
             auth: {punto_venta}
         } = this.props;
 
-        const cargarHabitaciones = () => fetchHabitaciones(null, notificarErrorAction);
-        const cargarServiciosEnProceso = () => fetchServicios_en_proceso(cargarHabitaciones, notificarErrorAction);
+        const cargarHabitaciones = () => fetchHabitaciones();
+        const cargarServiciosEnProceso = () => fetchServicios_en_proceso(cargarHabitaciones);
         terminarServicio(
             servicio_id,
             punto_venta.id,
-            (response) => {
-                const {result} = response;
-                notificarAction(result);
+            () => {
                 cargarServiciosEnProceso()
-            },
-            notificarErrorAction
+            }
         );
     }
 
@@ -44,12 +37,8 @@ class ServicioList extends Component {
     cargarServicio(id) {
         const {
             fetchServicio,
-
-
-            notificarErrorAction
         } = this.props;
-
-        fetchServicio(id, null, notificarErrorAction);
+        fetchServicio(id);
     }
 
     render() {

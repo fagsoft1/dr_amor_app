@@ -38,12 +38,12 @@ class Detail extends Component {
     }
 
     verMovimientoProducto(item_id) {
-        const {notificarErrorAction,} = this.props;
+        
 
         const {id} = this.props.match.params;
         this.setState({slideIndex: 1});
         this.props.clearMovimientosInventarios();
-        this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id, null, notificarErrorAction);
+        this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id, null);
     }
 
     handleChange = (event, value) => {
@@ -56,12 +56,12 @@ class Detail extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAction,} = this.props;
+        
         let index = value !== null ? value : this.state.slideIndex;
         if (index === 0) {
 
             const {id} = this.props.match.params;
-            this.props.fetchMovimientosInventariosSaldosxBodega(id, null, notificarErrorAction);
+            this.props.fetchMovimientosInventariosSaldosxBodega(id, null);
         } else if (index === 1) {
 
         }
@@ -78,12 +78,12 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const { notificarErrorAction} = this.props;
+        
 
         const success_callback = () => {
             this.cargarElementos();
         };
-        this.props.fetchBodega(id, success_callback, notificarErrorAction);
+        this.props.fetchBodega(id, success_callback);
     }
 
     render() {

@@ -28,14 +28,11 @@ class LiquidarAcompanante extends Component {
 
     efectuarConsulta() {
         const {
-
-
-            notificarErrorAction,
             fetchServicios_por_tercero_cuenta_abierta
         } = this.props;
         const {id_tercero} = this.state;
 
-        fetchServicios_por_tercero_cuenta_abierta(id_tercero, null, notificarErrorAction);
+        fetchServicios_por_tercero_cuenta_abierta(id_tercero, null);
     }
 
     componentDidMount() {
@@ -48,21 +45,15 @@ class LiquidarAcompanante extends Component {
 
     cargarDatos() {
         const {
-
-
-            notificarErrorAction,
             fetchAcompanantesPresentes,
         } = this.props;
 
-        fetchAcompanantesPresentes(null, notificarErrorAction);
+        fetchAcompanantesPresentes();
     }
 
     onPagar(pago) {
         const {
             liquidarCuentaTercero,
-
-
-            notificarErrorAction,
             auth:{punto_venta}
         } = this.props;
 
@@ -77,8 +68,7 @@ class LiquidarAcompanante extends Component {
                 this.setState({id_tercero: null});
                 this.props.clearAcompanantes();
                 this.cargarDatos();
-            },
-            notificarErrorAction
+            }
         )
     }
 

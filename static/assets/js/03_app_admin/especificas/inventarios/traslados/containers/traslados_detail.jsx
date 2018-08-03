@@ -31,35 +31,34 @@ class Detail extends Component {
     }
 
     updateCantidadTraslado(item) {
-        const {  notificarAction, notificarErrorAction} = this.props;
+        const {  notificarAction} = this.props;
 
-        this.props.updateTrasladoInventarioDetalle(item.id, item, null, notificarErrorAction)
+        this.props.updateTrasladoInventarioDetalle(item.id, item, null)
     }
 
     addItemTraslado(item) {
-        const {  notificarAction, notificarErrorAction} = this.props;
+        const {  notificarAction} = this.props;
 
-        const cargarTrasladoDetalle = (response) => this.props.fetchTrasladoInventarioDetalle(response.id, null, notificarErrorAction)
-        this.props.createTrasladoInventarioDetalle(item, cargarTrasladoDetalle, notificarErrorAction)
+        const cargarTrasladoDetalle = (response) => this.props.fetchTrasladoInventarioDetalle(response.id, null)
+        this.props.createTrasladoInventarioDetalle(item, cargarTrasladoDetalle)
     }
 
     eliminarItem(item_id) {
-        const {  notificarAction, notificarErrorAction} = this.props;
-        this.props.deleteTrasladoInventarioDetalle(item_id, null, notificarErrorAction)
+        const {  notificarAction} = this.props;
+        this.props.deleteTrasladoInventarioDetalle(item_id, null)
     }
 
     cargarDatos() {
         const {id} = this.props.match.params;
         let bodega_origen_id = null;
-        const {  notificarAction, notificarErrorAction} = this.props;
+        const {  notificarAction} = this.props;
 
-        const cargarInventarioBodegaOrigen = () => this.props.fetchMovimientosInventariosSaldosxBodega(bodega_origen_id, null, notificarErrorAction);
-        const cargarTrasladoInventarioDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(id, cargarInventarioBodegaOrigen, notificarErrorAction);
+        const cargarInventarioBodegaOrigen = () => this.props.fetchMovimientosInventariosSaldosxBodega(bodega_origen_id, null);
+        const cargarTrasladoInventarioDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(id, cargarInventarioBodegaOrigen);
         this.props.fetchTrasladoInventario(id, (e) => {
                 cargarTrasladoInventarioDetalles(e);
                 bodega_origen_id = e.bodega_origen;
-            },
-            notificarErrorAction
+            }
         );
 
     }
@@ -106,10 +105,10 @@ class Detail extends Component {
                 {
                     !object.trasladado &&
                     <span className='btn btn-primary' onClick={() => {
-                        const {  notificarErrorAction, trasladarTrasladoInventario} = this.props;
+                        const { trasladarTrasladoInventario} = this.props;
 
-                        const cargarDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(object.id, null, notificarErrorAction);
-                        trasladarTrasladoInventario(object.id, cargarDetalles, notificarErrorAction);
+                        const cargarDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(object.id, null);
+                        trasladarTrasladoInventario(object.id, cargarDetalles);
                     }}>
                     Trasladar
                 </span>

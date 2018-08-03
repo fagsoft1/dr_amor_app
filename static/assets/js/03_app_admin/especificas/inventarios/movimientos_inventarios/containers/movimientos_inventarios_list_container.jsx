@@ -27,11 +27,11 @@ class List extends Component {
     }
 
     cargarDatos() {
-        const {  notificarErrorAction} = this.props;
+
         
-        const cargarBodegas = () => this.props.fetchBodegas(null, notificarErrorAction);
-        const cargarProveedores = () => this.props.fetchProveedores(cargarBodegas, notificarErrorAction);
-        this.props.fetchMovimientosInventarios(cargarProveedores, notificarErrorAction);
+        const cargarBodegas = () => this.props.fetchBodegas();
+        const cargarProveedores = () => this.props.fetchProveedores(cargarBodegas);
+        this.props.fetchMovimientosInventarios(cargarProveedores);
 
     }
 

@@ -17,13 +17,8 @@ class PermisosList extends Component {
     constructor(props) {
         super(props);
         this.cargarDatos = this.cargarDatos.bind(this);
-        this.error_callback = this.error_callback.bind(this);
         this.updatePermiso = this.updatePermiso.bind(this);
         this.notificar = this.notificar.bind(this);
-    }
-
-    error_callback(error) {
-        this.props.notificarErrorAction(error);
     }
 
     notificar(mensaje) {
@@ -39,9 +34,7 @@ class PermisosList extends Component {
     }
 
     cargarDatos() {
-
-        this.props.fetchPermisos(null, this.error_callback);
-
+        this.props.fetchPermisos();
     }
 
     updatePermiso(permiso) {
@@ -60,7 +53,7 @@ class PermisosList extends Component {
     render() {
         const {permisos} = this.props;
         const can_change_permiso = tengoPermiso(can_change_permiso_plus);
-        const permisos_this_view = permisosAdapter( permisos_view);
+        const permisos_this_view = permisosAdapter(permisos_view);
 
         return (
             <ValidarPermisos can_see={permisos_this_view.list}

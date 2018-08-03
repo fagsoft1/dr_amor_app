@@ -36,15 +36,12 @@ class ServiciosDashboar extends Component {
 
     cargarDatos() {
         const {
-            notificarErrorAction
-        } = this.props;
-        const {
             modal_habitacion_open,
             modal_servicio_open
         } = this.state;
         if (!(modal_habitacion_open || modal_servicio_open)) {
-            const cargarHabitaciones = () => this.props.fetchHabitaciones(null, notificarErrorAction, false, false);
-            this.props.fetchServicios_en_proceso(cargarHabitaciones, notificarErrorAction, false, false);
+            const cargarHabitaciones = () => this.props.fetchHabitaciones(null, null, false, false);
+            this.props.fetchServicios_en_proceso(cargarHabitaciones, null, false, false);
         }
     }
 
@@ -59,10 +56,7 @@ class ServiciosDashboar extends Component {
     }
 
     onClickHabitacion(habitacion_id, callback = null) {
-        const {
-            notificarErrorAction,
-            fetchHabitacion
-        } = this.props;
+        const {fetchHabitacion} = this.props;
 
         fetchHabitacion(
             habitacion_id,
@@ -74,14 +68,11 @@ class ServiciosDashboar extends Component {
                     this.abrirModalHabitacion(response)
                 }
 
-            },
-            notificarErrorAction
+            }
         );
     }
 
     abrirModalServicio(servicio) {
-        const {notificarErrorAction} = this.props;
-
         this.clearDatos();
         this.props.fetchServicio(
             servicio.id,
@@ -92,8 +83,7 @@ class ServiciosDashboar extends Component {
                     this.cargarDatos();
                 }
 
-            },
-            notificarErrorAction
+            }
         );
     }
 
@@ -103,12 +93,11 @@ class ServiciosDashboar extends Component {
     }
 
     abrirModalHabitacion(habitacion) {
-        const {notificarErrorAction} = this.props;
+
         this.props.clearServicios();
         this.props.fetchTercerosPresentes(() => {
                 this.setState({modal_habitacion_open: true, habitacion_id: habitacion.id});
-            },
-            notificarErrorAction
+            }
         );
     }
 

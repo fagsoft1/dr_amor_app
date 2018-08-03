@@ -32,12 +32,11 @@ class GruposPermisosList extends Component {
     }
 
     componentDidMount() {
-        const {notificarErrorAction} = this.props;
+
         this.props.fetchPermisosActivos(
             (response) => {
                 this.setState({todos_los_permisos: _.mapKeys(response, 'id')})
-            }, notificarErrorAction
-        );
+            });
         this.cargarDatos();
     }
 
@@ -46,49 +45,44 @@ class GruposPermisosList extends Component {
     }
 
     onSubmit(item) {
-        const {notificarErrorAction} = this.props;
+
         const success_callback = (response) => {
             this.notificar(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito el grupo de permisos ${response.name}`);
         };
 
         if (item.id) {
-            this.props.updateGrupoPermiso(item.id, item, success_callback, notificarErrorAction)
+            this.props.updateGrupoPermiso(item.id, item, success_callback)
         } else {
-            this.props.createGrupoPermiso(item, success_callback, notificarErrorAction)
+            this.props.createGrupoPermiso(item, success_callback)
         }
     }
 
     cargarDatos() {
-        const {notificarErrorAction} = this.props;
-        this.props.fetchGruposPermisos(null, notificarErrorAction);
+
+        this.props.fetchGruposPermisos();
     }
 
     actualizarPermiso(permiso, item) {
-        const {notificarErrorAction, fetchPermisosPorGrupo} = this.props;
+        const {fetchPermisosPorGrupo} = this.props;
         const success_callback = () => {
             this.notificar(`Se ha actualizado con éxito el grupo de permisos con el permiso ${permiso.codename}`);
-            fetchPermisosPorGrupo(
-                item.id,
-                null,
-                notificarErrorAction
-            )
+            fetchPermisosPorGrupo(item.id)
         };
         if (item) {
-            this.props.addPermisoGrupo(item.id, permiso.id, success_callback, notificarErrorAction);
+            this.props.addPermisoGrupo(item.id, permiso.id, success_callback);
         }
     }
 
     onDelete(grupoPermiso) {
-        const {notificarErrorAction} = this.props;
+
         const success_callback = () => {
             this.notificar(`Se ha eliminado con éxito el grupo de permisos ${grupoPermiso.name}`)
         };
-        this.props.deleteGrupoPermiso(grupoPermiso.id, success_callback, notificarErrorAction)
+        this.props.deleteGrupoPermiso(grupoPermiso.id, success_callback)
     }
 
     render() {
         const {
-            notificarErrorAction,
             permisos,
             grupos_permisos,
             fetchPermisosPorGrupo,
@@ -143,8 +137,7 @@ class GruposPermisosList extends Component {
                                             item.id,
                                             () => {
                                                 onSelectItem(item);
-                                            },
-                                            notificarErrorAction
+                                            }
                                         )
                                     }}
                                     updateItem={(item) => this.onSubmit(item, list_manager_state.singular_name)}

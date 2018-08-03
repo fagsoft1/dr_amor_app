@@ -127,13 +127,10 @@ class LiquidarAcompanante extends Component {
 
     cargarDatos() {
         const {
-
-
-            notificarErrorAction,
             fetchBilletesMonedas,
         } = this.props;
 
-        fetchBilletesMonedas(null, notificarErrorAction);
+        fetchBilletesMonedas();
     }
 
     onCerrarCajaPuntoVenta() {
@@ -141,9 +138,6 @@ class LiquidarAcompanante extends Component {
             hacerEntregaEfectivoCajaPuntoVenta,
             printEntregasArqueosCajas,
             envioEmailArqueo,
-
-
-            notificarErrorAction,
             auth: {punto_venta}
         } = this.props;
 
@@ -170,15 +164,11 @@ class LiquidarAcompanante extends Component {
             this.props.history.push('/app');
 
         };
-        const imprimirEntrega = (arqueo_id) => printEntregasArqueosCajas(arqueo_id, success_callback, (r) => {
-            notificarErrorAction(r, 60000);
-
-        });
+        const imprimirEntrega = (arqueo_id) => printEntregasArqueosCajas(arqueo_id, success_callback);
         const enviarEmail = (arqueo_id) => {
-            envioEmailArqueo(arqueo_id,
-                () => {
-                    imprimirEntrega(arqueo_id);
-                }, res => notificarErrorAction(res, 60000));
+            envioEmailArqueo(arqueo_id, () => {
+                imprimirEntrega(arqueo_id)
+            })
         };
         hacerEntregaEfectivoCajaPuntoVenta(punto_venta.id, cierre2, res => enviarEmail(res.arqueo_id));
     }

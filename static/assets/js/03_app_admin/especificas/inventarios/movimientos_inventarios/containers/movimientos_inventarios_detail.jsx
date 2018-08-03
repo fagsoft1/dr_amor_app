@@ -30,20 +30,20 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {  notificarErrorAction} = this.props;
+
 
         const success_callback = (movimiento) => {
             if (!movimiento.cargado) {
                 if (movimiento.motivo === 'saldo_inicial') {
-                    this.props.fetchProductosParaSaldoInicial(null, notificarErrorAction);
+                    this.props.fetchProductosParaSaldoInicial();
                 } else {
-                    this.props.fetchProductos(null, notificarErrorAction);
+                    this.props.fetchProductos();
                 }
             }
 
         };
-        const cargarMovimientoInventario = () => this.props.fetchMovimientoInventario(id, success_callback, notificarErrorAction);
-        this.props.fetchMovimientosInventariosDetallesxMovimiento(id, cargarMovimientoInventario, notificarErrorAction);
+        const cargarMovimientoInventario = () => this.props.fetchMovimientoInventario(id, success_callback);
+        this.props.fetchMovimientosInventariosDetallesxMovimiento(id, cargarMovimientoInventario);
 
     }
 
@@ -86,10 +86,10 @@ class Detail extends Component {
                     !object.cargado &&
                     _.size(movimientos_inventarios_detalles_list) > 0 &&
                     <span className='btn btn-primary' onClick={() => {
-                        const {  notificarErrorAction, cargarInventarioMovimientoInventario} = this.props;
+                        const { cargarInventarioMovimientoInventario} = this.props;
 
-                        const cargarDetalles = () => this.props.fetchMovimientosInventariosDetallesxMovimiento(id, null, notificarErrorAction);
-                        cargarInventarioMovimientoInventario(id, cargarDetalles, notificarErrorAction);
+                        const cargarDetalles = () => this.props.fetchMovimientosInventariosDetallesxMovimiento(id, null);
+                        cargarInventarioMovimientoInventario(id, cargarDetalles);
                     }}>
                     Cargar Inventario
                 </span>

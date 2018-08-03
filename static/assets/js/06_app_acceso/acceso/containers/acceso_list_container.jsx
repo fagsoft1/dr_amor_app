@@ -26,9 +26,9 @@ class List extends Component {
     }
 
     cargarDatos() {
-        const {  notificarErrorAction} = this.props;
+
         
-        this.props.fetchTercerosPresentes(null, notificarErrorAction);
+        this.props.fetchTercerosPresentes();
     }
 
     render() {

@@ -25,9 +25,9 @@ class List extends Component {
     }
 
     cargarDatos() {
-        const {  notificarErrorAction} = this.props;
+
         
-        this.props.fetchProveedores(null, notificarErrorAction);
+        this.props.fetchProveedores();
 
     }
 

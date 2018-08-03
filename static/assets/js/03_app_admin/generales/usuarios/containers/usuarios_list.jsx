@@ -30,40 +30,40 @@ class UsuariosList extends Component {
     }
 
     cargarDatos() {
-        const {  notificarErrorAction} = this.props;
 
-        this.props.fetchUsuarios(null, notificarErrorAction);
+
+        this.props.fetchUsuarios();
     }
 
     onSubmit(item, tipo) {
         const nombre = item.username;
-        const {  notificarAction, notificarErrorAction} = this.props;
+        const {notificarAction} = this.props;
         const success_callback = () => {
             notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${tipo.toLowerCase()} ${nombre}`);
 
         };
 
         if (item.id) {
-            this.props.updateUsuario(item.id, item, success_callback, notificarErrorAction);
+            this.props.updateUsuario(item.id, item, success_callback);
         } else {
-            this.props.createUsuario(item, success_callback, notificarErrorAction);
+            this.props.createUsuario(item, success_callback);
         }
     }
 
     onDelete(item, tipo) {
         const nombre = item.username;
-        const {  notificarAction, notificarErrorAction} = this.props;
+        const {notificarAction} = this.props;
         const success_callback = () => {
 
             notificarAction(`Se ha eliminado con éxito ${tipo.toLowerCase()} ${nombre}`)
         };
 
-        this.props.deleteUsuario(item.id, success_callback, notificarErrorAction)
+        this.props.deleteUsuario(item.id, success_callback)
     }
 
     render() {
         const {object_list, auth: {mi_cuenta}} = this.props;
-        const permisos = permisosAdapter( permisos_view);
+        const permisos = permisosAdapter(permisos_view);
         return (
 
             <ListManager permisos={permisos} singular_name='usuario' plural_name='usuarios'>
@@ -105,14 +105,10 @@ class UsuariosList extends Component {
                                         handleModalClose();
                                     }}
                                     onSelectItemEdit={(item) => {
-                                        const {  notificarErrorAction} = this.props;
-
                                         this.props.fetchUsuario(item.id, () => {
                                                 onSelectItem(item);
                                                 handleModalOpen();
-
-                                            },
-                                            notificarErrorAction
+                                            }
                                         )
                                     }}
                                     updateItem={(item) => this.onSubmit(item, list_manager_state.singular_name)}

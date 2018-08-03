@@ -31,7 +31,7 @@ class List extends Component {
     }
 
     onSubmit(item) {
-        const { notificarErrorAction} = this.props;
+
         const {tipo_registro} = this.state;
         const success_method = (response) => {
             this.successSubmitCallback(response);
@@ -43,16 +43,13 @@ class List extends Component {
         } else if (tipo_registro === 'Registro Salida') {
             metodo = this.props.registrarSalidaTercero;
         }
-        metodo(item.id_tercero, item.pin, success_method, notificarErrorAction)
+        metodo(item.id_tercero, item.pin, success_method)
     }
 
     render() {
         const {
             object_list,
             permisos_object,
-            notificarErrorAction,
-
-
             modelosxcategoria,
             colaboradores_presentes
         } = this.props;
@@ -67,7 +64,7 @@ class List extends Component {
                     onClick={() => {
                         this.setState({modal_open: true, tipo_registro: 'Registro Entrada'});
 
-                        this.props.fetchTercerosAusentes(null, notificarErrorAction);
+                        this.props.fetchTercerosAusentes();
                     }}
                 />
                 <ContainerTextButton
@@ -75,7 +72,7 @@ class List extends Component {
                     onClick={() => {
                         this.setState({modal_open: true, tipo_registro: 'Registro Salida'});
 
-                        this.props.fetchTercerosPresentes(null, notificarErrorAction);
+                        this.props.fetchTercerosPresentes();
                     }}
                 />
                 {

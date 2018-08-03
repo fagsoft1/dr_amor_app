@@ -56,58 +56,54 @@ class Detail extends Component {
 
     addPuntoVenta(punto_venta) {
         const {id} = this.props.match.params;
-        const {notificarErrorAction, adicionarPuntoVenta} = this.props;
+        const {adicionarPuntoVenta} = this.props;
 
         adicionarPuntoVenta(
             id,
             punto_venta.id,
             () => {
                 this.cargarPuntosVentasColaborador()
-            },
-            notificarErrorAction
+            }
         )
     }
 
     quitarPuntoVenta(punto_venta) {
         const {id} = this.props.match.params;
-        const {notificarErrorAction, quitarPuntoVenta} = this.props;
-
+        const {quitarPuntoVenta} = this.props;
         quitarPuntoVenta(
             id,
             punto_venta.id,
             () => {
                 this.cargarPuntosVentasColaborador()
-            },
-            notificarErrorAction
+            }
         )
     }
 
     cargarPuntosVentasColaborador(callback = null) {
         const {id} = this.props.match.params;
-        const {notificarErrorAction} = this.props;
         const fetchPuntosVentas = () => this.props.fetchPuntosVentas(() => {
             if (callback) {
                 callback();
             }
-        }, notificarErrorAction);
+        });
         this.props.fetchPuntosVentas_por_colaborador(
             id,
             (puntos_ventas_colaborador) => {
                 this.setState({puntos_ventas_colaborador});
                 fetchPuntosVentas()
-            },
-            notificarErrorAction);
+            }
+        );
     }
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const { notificarErrorAction} = this.props;
+
 
         const success_callback = () => {
 
         };
         const fetchPuntosVentasColaborador = () => this.cargarPuntosVentasColaborador(success_callback);
-        this.props.fetchColaborador(id, fetchPuntosVentasColaborador, notificarErrorAction);
+        this.props.fetchColaborador(id, fetchPuntosVentasColaborador);
 
     }
 

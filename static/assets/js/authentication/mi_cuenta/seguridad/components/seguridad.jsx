@@ -13,10 +13,7 @@ class Seguridad extends Component {
 
     onCambiarPin(values, callback) {
         const {
-
-
             notificarAction,
-            notificarErrorAction,
             cambiarPinUsuario,
             auth: {mi_cuenta}
         } = this.props;
@@ -29,22 +26,14 @@ class Seguridad extends Component {
                 if (response && response.result) {
                     notificarAction(response.result)
                 }
-
                 callback();
-            },
-            (response) => {
-
-                notificarErrorAction(response)
             }
         )
     }
 
     onCambiarPassword(values, callback) {
         const {
-
-
             notificarAction,
-            notificarErrorAction,
             cambiarContrasenaUsuario,
             auth: {mi_cuenta}
         } = this.props;
@@ -60,10 +49,6 @@ class Seguridad extends Component {
                 }
 
                 callback();
-            },
-            (response) => {
-
-                notificarErrorAction(response)
             }
         )
     }

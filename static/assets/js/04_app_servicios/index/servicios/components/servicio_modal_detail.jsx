@@ -28,59 +28,42 @@ class ServicioDetailModal extends Component {
     }
 
     cargarDatos() {
-        const {  notificarErrorAction, servicio} = this.props;
-        this.props.clearCategoriasFraccionesTiemposAcompanantes();
-
-        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(servicio.categoria_id, null, notificarErrorAction)
+        const {servicio} = this.props;
+        this.props.fetchHabitaciones();
+        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(servicio.categoria_id);
 
     }
 
     solicitarAnulacion(values) {
         const {
-
-
-            notificarErrorAction,
-            notificarAction,
             servicio,
             solicitarAnulacionServicio,
             cerraModal,
             auth: {punto_venta}
         } = this.props;
-
         solicitarAnulacionServicio(
             servicio.id,
             values.observacion_anulacion,
             punto_venta.id,
-            (response) => {
-                notificarAction(response.result);
-
+            () => {
                 cerraModal();
-            },
-            notificarErrorAction
+            }
         );
     }
 
     onExtenderTiempo(values) {
         const {
-
-
-            notificarErrorAction,
-            notificarAction,
             servicio,
             cambiarTiempoServicio,
             cerraModal,
             auth: {punto_venta}
         } = this.props;
-
         cambiarTiempoServicio(
             servicio.id,
             {...values, punto_venta_id: punto_venta.id},
-            (response) => {
-                notificarAction(response.result);
-
+            () => {
                 cerraModal();
-            },
-            notificarErrorAction
+            }
         );
     }
 
@@ -89,8 +72,6 @@ class ServicioDetailModal extends Component {
             cambiarHabitacion,
             servicio,
             cerraModal,
-            notificarAction,
-            notificarErrorAction,
             auth: {punto_venta}
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
@@ -99,12 +80,9 @@ class ServicioDetailModal extends Component {
             {...pago, punto_venta_id: punto_venta.id},
             nueva_habitacion_id,
             servicios_array_id,
-            (response) => {
-                const {result} = response;
+            () => {
                 cerraModal();
-                notificarAction(result);
-            },
-            notificarErrorAction
+            }
         );
     }
 

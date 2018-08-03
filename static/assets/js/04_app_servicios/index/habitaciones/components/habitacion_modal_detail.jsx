@@ -35,17 +35,17 @@ class HabitacionDetailModal extends Component {
     }
 
     cargarDatos() {
-        const {habitacion, notificarErrorAction} = this.props;
+        const {habitacion} = this.props;
 
-        const cargarServicios = () => this.props.fetchServicios_por_habitacion(habitacion.id, null, notificarErrorAction);
-        this.props.fetchTercerosPresentes(cargarServicios, notificarErrorAction);
+        const cargarServicios = () => this.props.fetchServicios_por_habitacion(habitacion.id, null);
+        this.props.fetchTercerosPresentes(cargarServicios);
     }
 
     onSelectModelo(categoria_modelo_id) {
-        const {notificarErrorAction} = this.props;
+
         this.props.clearCategoriasFraccionesTiemposAcompanantes();
 
-        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(categoria_modelo_id, null, notificarErrorAction)
+        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(categoria_modelo_id, null)
     }
 
     onAdicionarServicio(valores) {
@@ -92,8 +92,6 @@ class HabitacionDetailModal extends Component {
             cambiarHabitacion,
             habitacion,
             cerraModal,
-            notificarAction,
-            notificarErrorAction,
             auth: {punto_venta}
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
@@ -102,12 +100,9 @@ class HabitacionDetailModal extends Component {
             {...pago, punto_venta_id: punto_venta.id},
             nueva_habitacion_id,
             servicios_array_id,
-            (response) => {
-                const {result} = response;
+            () => {
                 cerraModal();
-                notificarAction(result);
-            },
-            notificarErrorAction
+            }
         );
     }
 
@@ -115,11 +110,7 @@ class HabitacionDetailModal extends Component {
         const {
             terminarServiciosHabitacion,
             fetchHabitacion,
-
-
             habitacion,
-            notificarErrorAction,
-            notificarAction,
             cerraModal,
             auth: {punto_venta}
         } = this.props;
@@ -131,16 +122,12 @@ class HabitacionDetailModal extends Component {
                     terminarServiciosHabitacion(
                         habitacion.id,
                         punto_venta.id,
-                        (response2) => {
-
-                            notificarAction(response2.result);
+                        () => {
                             cerraModal();
-                        },
-                        notificarErrorAction
+                        }
                     )
                 }
-            },
-            notificarErrorAction
+            }
         );
     }
 
@@ -149,11 +136,7 @@ class HabitacionDetailModal extends Component {
         const {
             iniciarServiciosHabitacion,
             habitacion,
-            notificarAction,
-            notificarErrorAction,
             cerraModal,
-
-
             auth: {punto_venta}
         } = this.props;
 
@@ -162,12 +145,10 @@ class HabitacionDetailModal extends Component {
             habitacion.id,
             {...pago, punto_venta_id: punto_venta.id},
             _.map(servicios_nuevos, e => e),
-            response => {
-                notificarAction(response.result);
+            () => {
                 this.cargarDatos();
                 cerraModal();
-            },
-            notificarErrorAction
+            }
         );
     }
 
@@ -263,22 +244,14 @@ class HabitacionDetailModal extends Component {
                                     <span
                                         className='puntero'
                                         onClick={() => {
-                                            const {
-                                                fetchHabitaciones,
-
-
-                                                notificarErrorAction
-                                            } = this.props;
+                                            const {fetchHabitaciones,} = this.props;
                                             fetchHabitaciones(
                                                 () => {
-
                                                     this.setState({
                                                         mostrar_terminar_servicios: false,
                                                         mostrar_cambiar_habitacion: true
                                                     })
-                                                },
-                                                null,
-                                                notificarErrorAction
+                                                }
                                             )
                                         }}
                                     > Cambiar Habitacion</span>

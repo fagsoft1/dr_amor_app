@@ -11,9 +11,9 @@ import validate from './validate';
 
 class Form extends Component {
     componentDidMount() {
-        const {movimiento_inventario_object, notificarErrorAction,} = this.props;
+        const {movimiento_inventario_object} = this.props;
         if (movimiento_inventario_object.motivo === 'saldo_inicial') {
-            this.props.fetchProductosParaSaldoInicial(null, notificarErrorAction);
+            this.props.fetchProductosParaSaldoInicial();
         }
     }
 

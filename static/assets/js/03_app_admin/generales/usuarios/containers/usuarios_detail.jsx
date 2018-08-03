@@ -19,14 +19,9 @@ class UsuariosDetail extends Component {
             todos_los_permisos: {},
         };
         this.cargarDatos = this.cargarDatos.bind(this);
-        this.error_callback = this.error_callback.bind(this);
         this.notificar = this.notificar.bind(this);
         this.actualizarPermiso = this.actualizarPermiso.bind(this);
         this.actualizarGrupo = this.actualizarGrupo.bind(this);
-    }
-
-    error_callback(error) {
-        this.props.notificarErrorAction(error);
     }
 
     notificar(mensaje) {
@@ -35,14 +30,12 @@ class UsuariosDetail extends Component {
 
     componentDidMount() {
         const {
-            notificarErrorAction,
             fetchPermisosActivos
         } = this.props;
         fetchPermisosActivos(
             (response) => {
                 this.setState({todos_los_permisos: _.mapKeys(response, 'id')})
-            }, notificarErrorAction
-        );
+            });
         this.cargarDatos();
     }
 
@@ -52,23 +45,23 @@ class UsuariosDetail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const cargarGruposPermisos = () => this.props.fetchGruposPermisos(null, this.error_callback);
-        const cargarPermisosActivos = () => this.props.fetchPermisosActivos(cargarGruposPermisos, this.error_callback);
-        const cargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id, cargarPermisosActivos, this.error_callback);
-        this.props.fetchUsuario(id, cargarPermisosUsuario, this.error_callback);
+        const cargarGruposPermisos = () => this.props.fetchGruposPermisos();
+        const cargarPermisosActivos = () => this.props.fetchPermisosActivos(cargarGruposPermisos);
+        const cargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id, cargarPermisosActivos);
+        this.props.fetchUsuario(id, cargarPermisosUsuario);
 
     }
 
     actualizarPermiso(permiso) {
         const {id} = this.props.match.params;
-        const CargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id, null, this.error_callback);
-        this.props.addPermisoUsuario(id, permiso.id, CargarPermisosUsuario, this.error_callback)
+        const CargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id);
+        this.props.addPermisoUsuario(id, permiso.id, CargarPermisosUsuario)
     }
 
     actualizarGrupo(grupo) {
         const {id} = this.props.match.params;
-        const CargarUsuario = () => this.props.fetchUsuario(id, null, this.error_callback);
-        this.props.addGrupoUsuario(id, grupo.id, CargarUsuario, this.error_callback)
+        const CargarUsuario = () => this.props.fetchUsuario(id);
+        this.props.addGrupoUsuario(id, grupo.id, CargarUsuario)
     }
 
     render() {

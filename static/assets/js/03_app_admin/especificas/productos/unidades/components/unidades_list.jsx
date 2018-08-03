@@ -35,43 +35,43 @@ class List extends Component {
     }
 
     fetchObjectMethod(item_id, successCallback) {
-        const {  notificarErrorAction} = this.props;
+
         const success_method = (item) => {
             successCallback(item);
 
         };
 
-        this.props.fetchUnidadProducto(item_id, success_method, notificarErrorAction);
+        this.props.fetchUnidadProducto(item_id, success_method);
     }
 
     createObjectMethod(item, successCallback) {
-        const { notificarErrorAction} = this.props;
+        
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
 
-        this.props.createUnidadProducto(item, success_method, notificarErrorAction);
+        this.props.createUnidadProducto(item, success_method);
     }
 
     updateObjectMethod(item, successCallback) {
-        const { notificarErrorAction} = this.props;
+        
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
 
-        this.props.updateUnidadProducto(item.id, item, success_method, notificarErrorAction);
+        this.props.updateUnidadProducto(item.id, item, success_method);
     }
 
     deleteObjectMethod(item, successCallback) {
-        const { notificarErrorAction} = this.props;
+        
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
 
-        this.props.deleteUnidadProducto(item.id, success_method, notificarErrorAction);
+        this.props.deleteUnidadProducto(item.id, success_method);
     }
 
     render() {

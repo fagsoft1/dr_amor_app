@@ -4,14 +4,7 @@ import HabitacionCategoriaList from '../../habitaciones/components/habitaciones_
 class HabitacionList extends Component {
 
     onClickCambiarEstado(estado, habitacion_id) {
-        const {  notificarErrorAction, notificarAction} = this.props;
-
-        const success_callback = (response) => {
-            const {result} = response;
-            notificarAction(result);
-
-        };
-        this.props.cambiarEstadoHabitacion(habitacion_id, estado, success_callback, notificarErrorAction)
+        this.props.cambiarEstadoHabitacion(habitacion_id, estado)
     }
 
     renderHabitaciones() {

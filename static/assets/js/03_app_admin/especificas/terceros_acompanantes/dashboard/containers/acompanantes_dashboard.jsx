@@ -51,16 +51,16 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAction,} = this.props;
+
         let index = value !== null ? value : this.state.slideIndex;
 
         if (index === 0) {
-            const cargarCategorias = this.props.fetchCategoriasAcompanantes(null, notificarErrorAction);
-            this.props.fetchAcompanantes(cargarCategorias, null, notificarErrorAction);
+            const cargarCategorias = this.props.fetchCategoriasAcompanantes();
+            this.props.fetchAcompanantes(cargarCategorias, null);
         } else if (index === 1) {
-            this.props.fetchCategoriasAcompanantes(null, notificarErrorAction);
+            this.props.fetchCategoriasAcompanantes();
         } else if (index === 2) {
-            this.props.fetchFraccionesTiemposAcompanantes(null, notificarErrorAction);
+            this.props.fetchFraccionesTiemposAcompanantes();
         }
     }
 

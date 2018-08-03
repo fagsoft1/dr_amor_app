@@ -35,43 +35,43 @@ class List extends Component {
     }
 
     fetchObjectMethod(item_id, successCallback) {
-        const {  notificarErrorAction} = this.props;
+
         const success_method = (item) => {
             successCallback(item);
 
         };
         
-        this.props.fetchCategoriaFraccionTiempoAcompanante(item_id, success_method, notificarErrorAction);
+        this.props.fetchCategoriaFraccionTiempoAcompanante(item_id, success_method);
     }
 
     createObjectMethod(item, successCallback) {
-        const { notificarErrorAction} = this.props;
+        
         const success_method = (response) => {
             this.successSubmitCallback(response);
             successCallback();
         };
         
-        this.props.createCategoriaFraccionTiempoAcompanante(item, success_method, notificarErrorAction);
+        this.props.createCategoriaFraccionTiempoAcompanante(item, success_method);
     }
 
     updateObjectMethod(item, successCallback) {
-        const { notificarErrorAction} = this.props;
+        
         const success_method = (response) => {
             this.successSubmitCallback(response);
             successCallback();
         };
         
-        this.props.updateCategoriaFraccionTiempoAcompanante(item.id, item, success_method, notificarErrorAction);
+        this.props.updateCategoriaFraccionTiempoAcompanante(item.id, item, success_method);
     }
 
     deleteObjectMethod(item, successCallback) {
-        const { notificarErrorAction} = this.props;
+        
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
         
-        this.props.deleteCategoriaFraccionTiempoAcompanante(item.id, success_method, notificarErrorAction);
+        this.props.deleteCategoriaFraccionTiempoAcompanante(item.id, success_method);
     }
 
     render() {

@@ -19,15 +19,13 @@ class Login extends Component {
     }
 
     cargarPuntosVentasCliente(username) {
-        const {notificarErrorAction, notificarAction, fetchPuntosVentas_por_usuario_username} = this.props;
+        const {fetchPuntosVentas_por_usuario_username} = this.props;
 
         fetchPuntosVentas_por_usuario_username(
             username,
             () => {
                 this.setState({cargando_puntos_ventas: true});
-
-            },
-            notificarErrorAction
+            }
         );
     }
 

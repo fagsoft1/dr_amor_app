@@ -21,57 +21,57 @@ class List extends Component {
 
     successSubmitCallback(item) {
         const nombre = item.producto_nombre;
-        const { notificarAction, notificarErrorAction} = this.props;
+        const { notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        this.props.fetchMovimientoInventario(item.movimiento, null, notificarErrorAction)
+        this.props.fetchMovimientoInventario(item.movimiento, null)
     }
 
 
     successDeleteCallback(item) {
         const nombre = item.producto_nombre;
-        const { notificarAction, notificarErrorAction} = this.props;
+        const { notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        this.props.fetchMovimientoInventario(item.movimiento, null, notificarErrorAction)
+        this.props.fetchMovimientoInventario(item.movimiento, null)
     }
 
     fetchObjectMethod(item_id, successCallback) {
-        const {  notificarErrorAction} = this.props;
+
         const success_method = (item) => {
             successCallback(item);
 
         };
         
-        this.props.fetchMovimientoInventarioDetalle(item_id, success_method, notificarErrorAction);
+        this.props.fetchMovimientoInventarioDetalle(item_id, success_method);
     }
 
     createObjectMethod(item, successCallback) {
-        const { notificarErrorAction} = this.props;
+        
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
         
-        this.props.createMovimientoInventarioDetalle(item, success_method, notificarErrorAction);
+        this.props.createMovimientoInventarioDetalle(item, success_method);
     }
 
     updateObjectMethod(item, successCallback) {
-        const { notificarErrorAction} = this.props;
+        
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
         
-        this.props.updateMovimientoInventarioDetalle(item.id, item, success_method, notificarErrorAction);
+        this.props.updateMovimientoInventarioDetalle(item.id, item, success_method);
     }
 
     deleteObjectMethod(item, successCallback) {
-        const { notificarErrorAction} = this.props;
+        
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
         
-        this.props.deleteMovimientoInventarioDetalle(item.id, success_method, notificarErrorAction);
+        this.props.deleteMovimientoInventarioDetalle(item.id, success_method);
     }
 
     render() {

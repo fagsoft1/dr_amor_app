@@ -24,7 +24,7 @@ const Boton = (props) => {
 
 class IndexApp extends Component {
     render() {
-        const {notificarErrorAction, auth: {punto_venta, mi_cuenta}} = this.props;
+        const {auth: {punto_venta, mi_cuenta}} = this.props;
         const permisos_modulo_acceso = permisosAdapter( TIPOS_REGISTRO_INGRESO);
         return <Loading>
             <div className="mt-3">
@@ -95,8 +95,7 @@ class IndexApp extends Component {
                                         },
                                         () => {
                                             this.props.logout();
-                                        },
-                                        notificarErrorAction
+                                        }
                                     )
                                 }
                                 else {

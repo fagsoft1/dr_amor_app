@@ -25,12 +25,12 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {  notificarAction, notificarErrorAction} = this.props;
+        const {  notificarAction} = this.props;
 
         const success_callback = () => {
 
         };
-        this.props.fetchAlgo(id, success_callback, notificarErrorAction);
+        this.props.fetchAlgo(id, success_callback);
     }
 
     render() {

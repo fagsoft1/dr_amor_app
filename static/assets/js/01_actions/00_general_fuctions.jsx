@@ -1,6 +1,6 @@
 import axios from "axios/index";
 import {LOADING, LOADING_STOP} from "./00_types";
-import {NOTIFICATION_TYPE_ERROR} from 'react-redux-notify';
+import {NOTIFICATION_TYPE_ERROR, NOTIFICATION_TYPE_SUCCESS} from 'react-redux-notify';
 import {createNotification} from 'react-redux-notify';
 import React from 'react';
 import _ from 'lodash'
@@ -16,6 +16,18 @@ const mostrarFunciones = (e) => {
         e()
     }
 };
+
+const notificarAction = (mensaje, tiempo = 5000) => {
+    return {
+        message: mensaje,
+        type: NOTIFICATION_TYPE_SUCCESS,
+        duration: tiempo,
+        position: 'BottomRight',
+        canDimiss: true,
+        icon: <i className="fa fa-check"/>
+    }
+};
+
 
 const notificacion_error = (error, tiempo = 7000) => {
     let mensaje = '';
@@ -98,6 +110,9 @@ export function createRequest(request, options = {}) {
                 callback(response.data)
             }
             if (dispatch_method) {
+                if (response.data && response.data.result) {
+                    dispatch_method(createNotification(notificarAction(response.data.result)));
+                }
                 dispatch_method({type: LOADING_STOP})
             }
         }).catch(error => {

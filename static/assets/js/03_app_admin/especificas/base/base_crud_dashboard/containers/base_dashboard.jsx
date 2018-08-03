@@ -49,13 +49,13 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        const {notificarErrorAction,} = this.props;
+
         let index = value !== null ? value : this.state.slideIndex;
 
         if (index === 0) {
-            this.props.fetchAlgos1(null, notificarErrorAction);
+            this.props.fetchAlgos1();
         } else if (index === 2) {
-            this.props.fetchAlgos2(null, notificarErrorAction);
+            this.props.fetchAlgos2();
         }
     }
 
@@ -69,7 +69,7 @@ class ListadoElementos extends Component {
     }
 
     cargarDatos() {
-        const {notificarErrorAction, cargando} = this.props;
+        const {cargando} = this.props;
 
     }
 
