@@ -20,7 +20,7 @@ export function refreshDeleteMovimientoInventarioDetalle(id) {
     return baseWS(TYPES.delete, id)
 }
 
-export const createMovimientoInventarioDetalle = (values, options_action) => {
+export const createMovimientoInventarioDetalle = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -29,12 +29,12 @@ export const createMovimientoInventarioDetalle = (values, options_action) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteMovimientoInventarioDetalle = (id, callback = null, callback_error = null) => {
+export const deleteMovimientoInventarioDetalle = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -113,7 +113,7 @@ export const clearMovimientosInventariosDetalles = () => {
 
     }
 };
-export const updateMovimientoInventarioDetalle = (id, values, options_action) => {
+export const updateMovimientoInventarioDetalle = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

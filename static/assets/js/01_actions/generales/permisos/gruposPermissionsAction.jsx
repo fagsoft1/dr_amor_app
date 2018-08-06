@@ -22,7 +22,7 @@ export const addPermisoGrupo = (id, permiso_id, callback = null, callback_error 
     }
 };
 
-export const createGrupoPermiso = (values, options_action) => {
+export const createGrupoPermiso = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -31,12 +31,12 @@ export const createGrupoPermiso = (values, options_action) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteGrupoPermiso = (id, callback = null, callback_error = null) => {
+export const deleteGrupoPermiso = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -70,7 +70,7 @@ export const clearGruposPermisos = () => {
 
     }
 };
-export const updateGrupoPermiso = (id, values, options_action) => {
+export const updateGrupoPermiso = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

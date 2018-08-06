@@ -72,11 +72,10 @@ class GruposPermisosList extends Component {
     }
 
     onDelete(grupoPermiso) {
-
-        const success_callback = () => {
+        const callback = () => {
             this.notificar(`Se ha eliminado con éxito el grupo de permisos ${grupoPermiso.name}`)
         };
-        this.props.deleteGrupoPermiso(grupoPermiso.id, success_callback)
+        this.props.deleteGrupoPermiso(grupoPermiso.id, {callback})
     }
 
     render() {

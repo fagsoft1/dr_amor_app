@@ -52,12 +52,10 @@ class UsuariosList extends Component {
     onDelete(item, tipo) {
         const nombre = item.username;
         const {notificarAction} = this.props;
-        const success_callback = () => {
-
+        const callback = () => {
             notificarAction(`Se ha eliminado con éxito ${tipo.toLowerCase()} ${nombre}`)
         };
-
-        this.props.deleteUsuario(item.id, success_callback)
+        this.props.deleteUsuario(item.id, {callback})
     }
 
     render() {

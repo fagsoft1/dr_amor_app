@@ -21,7 +21,7 @@ export function refreshDeleteHabitacion(id) {
     return baseWS(TYPES.delete, id)
 }
 
-export const createHabitacion = (values, options_action) => {
+export const createHabitacion = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -70,12 +70,12 @@ export const cambiarEstadoHabitacion = (id, nuevo_estado, callback = null, callb
     }
 };
 
-export const deleteHabitacion = (id, callback = null, callback_error = null) => {
+export const deleteHabitacion = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.delete, payload: id});
+            dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -109,7 +109,7 @@ export const clearHabitaciones = () => {
         dispatch({type: TYPES.clear});
     }
 };
-export const updateHabitacion = (id, values, options_action) => {
+export const updateHabitacion = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

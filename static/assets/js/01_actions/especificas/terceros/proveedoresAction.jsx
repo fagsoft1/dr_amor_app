@@ -10,7 +10,7 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'proveedores';
-export const createProveedor = (values, options_action) => {
+export const createProveedor = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -19,12 +19,12 @@ export const createProveedor = (values, options_action) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteProveedor = (id, callback = null, callback_error = null) => {
+export const deleteProveedor = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -58,7 +58,7 @@ export const clearProveedores = () => {
 
     }
 };
-export const updateProveedor = (id, values, options_action) => {
+export const updateProveedor = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

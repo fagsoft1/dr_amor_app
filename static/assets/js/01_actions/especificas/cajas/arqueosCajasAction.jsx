@@ -8,7 +8,7 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'arqueos_cajas';
-export const createArqueoCaja = (values, options_action) => {
+export const createArqueoCaja = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -17,12 +17,12 @@ export const createArqueoCaja = (values, options_action) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteArqueoCaja = (id, callback = null, callback_error = null) => {
+export const deleteArqueoCaja = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -56,7 +56,7 @@ export const clearArqueosCajas = () => {
 
     }
 };
-export const updateArqueoCaja = (id, values, options_action) => {
+export const updateArqueoCaja = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

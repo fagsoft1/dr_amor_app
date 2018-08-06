@@ -20,7 +20,7 @@ export function refreshDeleteProducto(id) {
     return baseWS(TYPES.delete, id)
 }
 
-export const createProducto = (values, options_action) => {
+export const createProducto = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -29,12 +29,12 @@ export const createProducto = (values, options_action) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteProducto = (id, callback = null, callback_error = null) => {
+export const deleteProducto = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -83,7 +83,7 @@ export const clearProductos = () => {
 
     }
 };
-export const updateProducto = (id, values, options_action) => {
+export const updateProducto = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

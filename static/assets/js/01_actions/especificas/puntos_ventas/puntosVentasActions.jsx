@@ -53,7 +53,7 @@ export const fetchPuntosVentas_por_colaborador = (colaborador_id, callback = nul
     }
 };
 
-export const createPuntoVenta = (values, options_action) => {
+export const createPuntoVenta = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -62,12 +62,12 @@ export const createPuntoVenta = (values, options_action) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deletePuntoVenta = (id, callback = null, callback_error = null) => {
+export const deletePuntoVenta = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -101,7 +101,7 @@ export const clearPuntosVentas = () => {
 
     }
 };
-export const updatePuntoVenta = (id, values, options_action) => {
+export const updatePuntoVenta = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

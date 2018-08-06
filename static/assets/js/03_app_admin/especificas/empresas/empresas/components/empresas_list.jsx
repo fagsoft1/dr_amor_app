@@ -45,7 +45,7 @@ class List extends Component {
     }
 
     createObjectMethod(item, successCallback) {
-          const callback = (response) => {
+        const callback = (response) => {
             this.successSubmitCallback(response);
             successCallback();
         };
@@ -61,13 +61,11 @@ class List extends Component {
     }
 
     deleteObjectMethod(item, successCallback) {
-
-        const success_method = () => {
+        const callback = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
-
-        this.props.deleteEmpresa(item.id, success_method);
+        this.props.deleteEmpresa(item.id, {callback});
     }
 
     render() {

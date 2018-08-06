@@ -10,7 +10,7 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'productos_categorias_dos';
-export const createCategoriaProductoDos = (values, options_action) => {
+export const createCategoriaProductoDos = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -19,12 +19,12 @@ export const createCategoriaProductoDos = (values, options_action) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteCategoriaProductoDos = (id, callback = null, callback_error = null) => {
+export const deleteCategoriaProductoDos = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -58,7 +58,7 @@ export const clearCategoriasProductosDos = () => {
 
     }
 };
-export const updateCategoriaProductoDos = (id, values, options_action) => {
+export const updateCategoriaProductoDos = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

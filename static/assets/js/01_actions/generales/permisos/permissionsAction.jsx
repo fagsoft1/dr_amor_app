@@ -101,7 +101,7 @@ export const fetchPermisos = (callback = null, callback_error = null, limpiar_co
     }
 };
 
-export const updatePermiso = (id, values, options_action) => {
+export const updatePermiso = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

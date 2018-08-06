@@ -8,7 +8,7 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'fracciones_tiempo_acompanante';
-export const createFraccionTiempoAcompanante = (values, options_action) => {
+export const createFraccionTiempoAcompanante = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -17,12 +17,12 @@ export const createFraccionTiempoAcompanante = (values, options_action) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteFraccionTiempoAcompanante = (id, callback = null, callback_error = null) => {
+export const deleteFraccionTiempoAcompanante = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -56,7 +56,7 @@ export const clearFraccionesTiemposAcompanantes = () => {
 
     }
 };
-export const updateFraccionTiempoAcompanante = (id, values, options_action) => {
+export const updateFraccionTiempoAcompanante = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

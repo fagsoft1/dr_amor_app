@@ -9,7 +9,7 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'categorias_fracciones_tiempo_acompanante';
-export const createCategoriaFraccionTiempoAcompanante = (values, options_action) => {
+export const createCategoriaFraccionTiempoAcompanante = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -18,12 +18,12 @@ export const createCategoriaFraccionTiempoAcompanante = (values, options_action)
         createObject(current_url_api, values, options);
     }
 };
-export const deleteCategoriaFraccionTiempoAcompanante = (id, callback = null, callback_error = null) => {
+export const deleteCategoriaFraccionTiempoAcompanante = (id, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         deleteObject(current_url_api, id, options);
     }
 };
@@ -72,7 +72,7 @@ export const clearCategoriasFraccionesTiemposAcompanantes = () => {
 
     }
 };
-export const updateCategoriaFraccionTiempoAcompanante = (id, values, options_action) => {
+export const updateCategoriaFraccionTiempoAcompanante = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

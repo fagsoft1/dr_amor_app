@@ -61,13 +61,11 @@ class List extends Component {
     }
 
     deleteObjectMethod(item, successCallback) {
-        
-        const success_method = () => {
+        const callback = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
-
-        this.props.deleteProducto(item.id, success_method);
+        this.props.deleteProducto(item.id, {callback});
     }
 
     render() {

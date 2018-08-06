@@ -97,7 +97,7 @@ export const clearTerceros = () => {
 
     }
 };
-export const updateTercero = (id, values, options_action) => {
+export const updateTercero = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
