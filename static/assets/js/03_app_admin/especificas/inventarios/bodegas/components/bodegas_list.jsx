@@ -45,13 +45,11 @@ class List extends Component {
     }
 
     createObjectMethod(item, successCallback) {
-        
-        const success_method = () => {
-            this.successSubmitCallback(item);
+        const callback = (response) => {
+            this.successSubmitCallback(response);
             successCallback();
         };
-
-        this.props.createBodega(item, success_method);
+        this.props.createBodega(item, {callback});
     }
 
     updateObjectMethod(item, successCallback) {

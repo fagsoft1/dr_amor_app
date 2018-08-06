@@ -10,12 +10,12 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'proveedores';
-export const createProveedor = (values, callback = null, callback_error = null) => {
+export const createProveedor = (values, options_action) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         createObject(current_url_api, values, options);
     }
 };

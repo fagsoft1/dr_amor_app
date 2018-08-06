@@ -21,7 +21,7 @@ class List extends Component {
 
     successSubmitCallback(item) {
         const nombre = item.nombre;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
 
     }
@@ -29,7 +29,7 @@ class List extends Component {
 
     successDeleteCallback(item) {
         const nombre = item.nombre;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
 
     }
@@ -45,17 +45,15 @@ class List extends Component {
     }
 
     createObjectMethod(item, successCallback) {
-        
-        const success_method = () => {
-            this.successSubmitCallback(item);
+          const callback = (response) => {
+            this.successSubmitCallback(response);
             successCallback();
         };
-
-        this.props.createEmpresa(item, success_method);
+        this.props.createEmpresa(item, {callback});
     }
 
     updateObjectMethod(item, successCallback) {
-        
+
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
@@ -65,7 +63,7 @@ class List extends Component {
     }
 
     deleteObjectMethod(item, successCallback) {
-        
+
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();

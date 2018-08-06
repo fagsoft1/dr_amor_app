@@ -45,13 +45,11 @@ class List extends Component {
     }
 
     createObjectMethod(item, successCallback) {
-        
-        const success_method = (response) => {
+        const callback = (response) => {
             this.successSubmitCallback(response);
             successCallback();
         };
-        
-        this.props.createCategoriaFraccionTiempoAcompanante(item, success_method);
+        this.props.createCategoriaFraccionTiempoAcompanante(item, {callback});
     }
 
     updateObjectMethod(item, successCallback) {

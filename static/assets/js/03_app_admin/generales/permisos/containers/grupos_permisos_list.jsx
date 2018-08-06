@@ -45,15 +45,13 @@ class GruposPermisosList extends Component {
     }
 
     onSubmit(item) {
-
-        const success_callback = (response) => {
+        const callback = (response) => {
             this.notificar(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito el grupo de permisos ${response.name}`);
         };
-
         if (item.id) {
-            this.props.updateGrupoPermiso(item.id, item, success_callback)
+            this.props.updateGrupoPermiso(item.id, item, callback)
         } else {
-            this.props.createGrupoPermiso(item, success_callback)
+            this.props.createGrupoPermiso(item, {callback})
         }
     }
 

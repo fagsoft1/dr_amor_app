@@ -21,7 +21,7 @@ class List extends Component {
 
     successSubmitCallback(item) {
         const nombre = item.valor;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
 
     }
@@ -29,7 +29,7 @@ class List extends Component {
 
     successDeleteCallback(item) {
         const nombre = item.valor;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
 
     }
@@ -40,37 +40,35 @@ class List extends Component {
             successCallback(item);
 
         };
-        
+
         this.props.fetchBilleteMoneda(item_id, success_method);
     }
 
     createObjectMethod(item, successCallback) {
-        
-        const success_method = () => {
-            this.successSubmitCallback(item);
+        const callback = (response) => {
+            this.successSubmitCallback(response);
             successCallback();
         };
-        
-        this.props.createBilleteMoneda(item, success_method);
+        this.props.createBilleteMoneda(item, {callback});
     }
 
     updateObjectMethod(item, successCallback) {
-        
+
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
-        
+
         this.props.updateBilleteMoneda(item.id, item, success_method);
     }
 
     deleteObjectMethod(item, successCallback) {
-        
+
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
-        
+
         this.props.deleteBilleteMoneda(item.id, success_method);
     }
 

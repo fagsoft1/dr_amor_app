@@ -45,13 +45,11 @@ class List extends Component {
     }
 
     createObjectMethod(item, successCallback) {
-        
-        const success_method = (colaborador) => {
-            this.successSubmitCallback(colaborador);
+        const callback = (response) => {
+            this.successSubmitCallback(response);
             successCallback();
         };
-        
-        this.props.createColaborador(item, success_method);
+        this.props.createColaborador(item, {callback});
     }
 
     updateObjectMethod(item, successCallback) {

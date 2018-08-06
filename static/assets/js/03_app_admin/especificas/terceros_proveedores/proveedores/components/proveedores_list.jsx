@@ -21,17 +21,17 @@ class List extends Component {
 
     successSubmitCallback(item) {
         const nombre = item.nombre;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        
+
     }
 
 
     successDeleteCallback(item) {
         const nombre = item.nombre;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        
+
     }
 
     fetchObjectMethod(item_id, successCallback) {
@@ -40,37 +40,34 @@ class List extends Component {
             successCallback(item);
 
         };
-        
         this.props.fetchProveedor(item_id, success_method);
     }
 
     createObjectMethod(item, successCallback) {
-        
-        const success_method = () => {
-            this.successSubmitCallback(item);
+        const callback = (response) => {
+            this.successSubmitCallback(response);
             successCallback();
         };
-        
-        this.props.createProveedor(item, success_method);
+        this.props.createProveedor(item, {callback});
     }
 
     updateObjectMethod(item, successCallback) {
-        
+
         const success_method = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
-        
+
         this.props.updateProveedor(item.id, item, success_method);
     }
 
     deleteObjectMethod(item, successCallback) {
-        
+
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
-        
+
         this.props.deleteProveedor(item.id, success_method);
     }
 

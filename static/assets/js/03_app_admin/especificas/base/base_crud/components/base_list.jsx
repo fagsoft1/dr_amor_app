@@ -45,13 +45,11 @@ class List extends Component {
     }
 
     createObjectMethod(item, successCallback) {
-
-        const success_method = () => {
-            this.successSubmitCallback(item);
+        const callback = (response) => {
+            this.successSubmitCallback(response);
             successCallback();
         };
-
-        this.props.createAlgo(item, success_method);
+        this.props.createAlgo(item, {callback});
     }
 
     updateObjectMethod(item, successCallback) {

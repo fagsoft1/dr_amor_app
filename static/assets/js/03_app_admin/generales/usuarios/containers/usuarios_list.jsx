@@ -38,15 +38,14 @@ class UsuariosList extends Component {
     onSubmit(item, tipo) {
         const nombre = item.username;
         const {notificarAction} = this.props;
-        const success_callback = () => {
+        const callback = () => {
             notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${tipo.toLowerCase()} ${nombre}`);
-
         };
 
         if (item.id) {
-            this.props.updateUsuario(item.id, item, success_callback);
+            this.props.updateUsuario(item.id, item, callback);
         } else {
-            this.props.createUsuario(item, success_callback);
+            this.props.createUsuario(item, {callback});
         }
     }
 

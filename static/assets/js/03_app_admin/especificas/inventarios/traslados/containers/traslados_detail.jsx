@@ -31,27 +31,24 @@ class Detail extends Component {
     }
 
     updateCantidadTraslado(item) {
-        const {  notificarAction} = this.props;
+        const {notificarAction} = this.props;
 
-        this.props.updateTrasladoInventarioDetalle(item.id, item, null)
+        this.props.updateTrasladoInventarioDetalle(item.id, item)
     }
 
     addItemTraslado(item) {
-        const {  notificarAction} = this.props;
-
-        const cargarTrasladoDetalle = (response) => this.props.fetchTrasladoInventarioDetalle(response.id, null)
-        this.props.createTrasladoInventarioDetalle(item, cargarTrasladoDetalle)
+        const cargarTrasladoDetalle = (response) => this.props.fetchTrasladoInventarioDetalle(response.id);
+        this.props.createTrasladoInventarioDetalle(item, {callback: cargarTrasladoDetalle})
     }
 
     eliminarItem(item_id) {
-        const {  notificarAction} = this.props;
-        this.props.deleteTrasladoInventarioDetalle(item_id, null)
+        this.props.deleteTrasladoInventarioDetalle(item_id)
     }
 
     cargarDatos() {
         const {id} = this.props.match.params;
         let bodega_origen_id = null;
-        const {  notificarAction} = this.props;
+        const {notificarAction} = this.props;
 
         const cargarInventarioBodegaOrigen = () => this.props.fetchMovimientosInventariosSaldosxBodega(bodega_origen_id, null);
         const cargarTrasladoInventarioDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(id, cargarInventarioBodegaOrigen);
@@ -65,7 +62,7 @@ class Detail extends Component {
 
     render() {
         const {object, traslados_inventarios_detalles_list, inventarios_bodega_origen_list} = this.props;
-        const permisos = permisosAdapter( permisos_view);
+        const permisos = permisosAdapter(permisos_view);
 
         if (!object) {
             return <SinObjeto/>
@@ -105,7 +102,7 @@ class Detail extends Component {
                 {
                     !object.trasladado &&
                     <span className='btn btn-primary' onClick={() => {
-                        const { trasladarTrasladoInventario} = this.props;
+                        const {trasladarTrasladoInventario} = this.props;
 
                         const cargarDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(object.id, null);
                         trasladarTrasladoInventario(object.id, cargarDetalles);
