@@ -32,7 +32,7 @@ export const cambiarTiempoServicio = (id, pago, callback = null, callback_error 
 };
 
 
-export const createServicio = (values, options_action={}) => {
+export const createServicio = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -41,7 +41,7 @@ export const createServicio = (values, options_action={}) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteServicio = (id, options_action={}) => {
+export const deleteServicio = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -58,62 +58,61 @@ export const terminarServicio = (id, punto_venta_id, callback = null, callback_e
         callApiMethodPostParameters(current_url_api, id, 'terminar_servicio', params, options)
     }
 };
-export const fetchServicios = (callback = null, callback_error = null, limpiar_coleccion = true) => {
+export const fetchServicios = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
-            clear_action_type: limpiar_coleccion ? TYPES.clear : null,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
         fetchListGet(current_url_api, options);
     }
 };
-export const fetchServicios_en_proceso = (callback = null, callback_error = null, limpiar_coleccion = true, show_cargando = true) => {
+
+export const fetchServicios_en_proceso = (options_action = {}) => {
     return (dispatch) => {
-        console.log('soi')
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null,
-            show_cargando
         };
         fetchListGet(`${current_url_api}/en_proceso`, options);
     }
 };
-export const fetchServicios_por_habitacion = (habitacion_id, callback = null, callback_error = null, limpiar_coleccion = true) => {
+export const fetchServicios_por_habitacion = (habitacion_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
         fetchListGetURLParameters(`${current_url_api}/pendientes_por_habitacion/?habitacion_id=${habitacion_id}`, options);
     }
 };
-export const fetchServicios_por_tercero_cuenta_abierta = (tercero_id, callback = null, callback_error = null, limpiar_coleccion = true) => {
+export const fetchServicios_por_tercero_cuenta_abierta = (tercero_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
@@ -135,7 +134,7 @@ export const clearServicios = () => {
 
     }
 };
-export const updateServicio = (id, values, options_action={}) => {
+export const updateServicio = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

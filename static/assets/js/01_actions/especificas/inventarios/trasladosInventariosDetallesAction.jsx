@@ -9,7 +9,7 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'traslados_inventarios_detalles';
-export const createTrasladoInventarioDetalle = (values, options_action={}) => {
+export const createTrasladoInventarioDetalle = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -18,7 +18,7 @@ export const createTrasladoInventarioDetalle = (values, options_action={}) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteTrasladoInventarioDetalle = (id, options_action={}) => {
+export const deleteTrasladoInventarioDetalle = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -27,21 +27,23 @@ export const deleteTrasladoInventarioDetalle = (id, options_action={}) => {
         deleteObject(current_url_api, id, options);
     }
 };
-export const fetchTrasladosInventariosDetalles = (callback = null, callback_error = null, limpiar_coleccion = true) => {
+
+export const fetchTrasladosInventariosDetalles = (options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
         fetchListGet(current_url_api, options);
     }
 };
+
 export const fetchTrasladosInventariosDetallesxTralado = (traslado_id, callback = null, callback_error = null, limpiar_coleccion = true) => {
     return (dispatch) => {
         const dispatches = (response) => {
@@ -72,7 +74,7 @@ export const clearTrasladosInventariosDetalles = () => {
 
     }
 };
-export const updateTrasladoInventarioDetalle = (id, values, options_action={}) => {
+export const updateTrasladoInventarioDetalle = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

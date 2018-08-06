@@ -50,12 +50,11 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-        
         let index = value !== null ? value : this.state.slideIndex;
         const cargarHabitacionesTipos = () => this.props.fetchTiposHabitaciones();
         if (index === 0) {
-            const cargarEmpresas = () => this.props.fetchEmpresas(cargarHabitacionesTipos);
-            this.props.fetchHabitaciones(cargarEmpresas);
+            const cargarEmpresas = () => this.props.fetchEmpresas({callback: cargarHabitacionesTipos});
+            this.props.fetchHabitaciones({callback: cargarEmpresas});
         } else if (index === 1) {
             cargarHabitacionesTipos();
         }
@@ -123,7 +122,6 @@ class ListadoElementos extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         auth: state.auth,
         bloque_1_list: state.habitaciones,
         bloque_2_list: state.habitaciones_tipos,

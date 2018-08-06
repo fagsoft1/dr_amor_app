@@ -28,21 +28,22 @@ export const deleteUnidadProducto = (id, options_action={}) => {
         deleteObject(current_url_api, id, options);
     }
 };
-export const fetchUnidadesProductos = (callback = null, callback_error = null, limpiar_coleccion = true) => {
+export const fetchUnidadesProductos = (options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
         fetchListGet(current_url_api, options);
     }
 };
+
 export const fetchUnidadProducto = (id, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {

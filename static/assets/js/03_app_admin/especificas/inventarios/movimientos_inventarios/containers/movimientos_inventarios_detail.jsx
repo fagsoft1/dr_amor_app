@@ -88,7 +88,7 @@ class Detail extends Component {
                     <span className='btn btn-primary' onClick={() => {
                         const { cargarInventarioMovimientoInventario} = this.props;
 
-                        const cargarDetalles = () => this.props.fetchMovimientosInventariosDetallesxMovimiento(id, null);
+                        const cargarDetalles = () => this.props.fetchMovimientosInventariosDetallesxMovimiento(id);
                         cargarInventarioMovimientoInventario(id, cargarDetalles);
                     }}>
                     Cargar Inventario

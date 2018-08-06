@@ -35,53 +35,54 @@ export const liquidarCuentaTercero = (id, pago, callback = null, callback_error 
     }
 };
 
-export const fetchTercerosAusentes = (callback = null, callback_error = null, limpiar_coleccion = true) => {
+export const fetchTercerosAusentes = (options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
-            dispatch_method: dispatch,
-            clear_action_type: limpiar_coleccion ? TYPES.clear : null
-        };
-        fetchListGet(`${current_url_api}/listar_ausentes`, options);
-    }
-};
-
-export const fetchTercerosPresentes = (callback = null, callback_error = null, limpiar_coleccion = true) => {
-    return (dispatch) => {
-        const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
-        };
-        const options = {
-            dispatches,
-            callback,
-            callback_error,
-            dispatch_method: dispatch,
-            clear_action_type: limpiar_coleccion ? TYPES.clear : null
-        };
-        fetchListGet(`${current_url_api}/listar_presentes`, options);
-    }
-};
-
-export const fetchTerceros = (callback = null, callback_error = null, limpiar_coleccion = true) => {
-    return (dispatch) => {
-        const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
-        };
-        const options = {
-            dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
         fetchListGet(current_url_api, options);
     }
 };
+
+export const fetchTercerosPresentes = (options_action={}) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        const {limpiar_coleccion = true} = options_action;
+        const options = {
+            dispatches,
+            ...options_action,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGet(current_url_api, options);
+    }
+};
+
+export const fetchTerceros = (options_action={}) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        const {limpiar_coleccion = true} = options_action;
+        const options = {
+            dispatches,
+            ...options_action,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGet(current_url_api, options);
+    }
+};
+
 export const fetchTercero = (id, callback = null, callback_error = null) => {
     return (dispatch) => {
         const dispatches = (response) => {

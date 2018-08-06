@@ -56,7 +56,7 @@ class ListadoElementos extends Component {
 
         if (index === 0) {
             const cargarCategorias = this.props.fetchCategoriasAcompanantes();
-            this.props.fetchAcompanantes(cargarCategorias, null);
+            this.props.fetchAcompanantes({callback: cargarCategorias});
         } else if (index === 1) {
             this.props.fetchCategoriasAcompanantes();
         } else if (index === 2) {

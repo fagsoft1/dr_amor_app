@@ -32,10 +32,7 @@ class UsuariosDetail extends Component {
         const {
             fetchPermisosActivos
         } = this.props;
-        fetchPermisosActivos(
-            (response) => {
-                this.setState({todos_los_permisos: _.mapKeys(response, 'id')})
-            });
+        fetchPermisosActivos({callback: (response) => this.setState({todos_los_permisos: _.mapKeys(response, 'id')})});
         this.cargarDatos();
     }
 
@@ -46,8 +43,8 @@ class UsuariosDetail extends Component {
     cargarDatos() {
         const {id} = this.props.match.params;
         const cargarGruposPermisos = () => this.props.fetchGruposPermisos();
-        const cargarPermisosActivos = () => this.props.fetchPermisosActivos(cargarGruposPermisos);
-        const cargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id, cargarPermisosActivos);
+        const cargarPermisosActivos = () => this.props.fetchPermisosActivos({callback: cargarGruposPermisos});
+        const cargarPermisosUsuario = () => this.props.fetchOtroUsuarioPermisos(id, {callback: cargarPermisosActivos});
         this.props.fetchUsuario(id, cargarPermisosUsuario);
 
     }

@@ -43,7 +43,7 @@ class Detail extends Component {
         const {id} = this.props.match.params;
         this.setState({slideIndex: 1});
         this.props.clearMovimientosInventarios();
-        this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id, null);
+        this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id);
     }
 
     handleChange = (event, value) => {
@@ -61,7 +61,7 @@ class Detail extends Component {
         if (index === 0) {
 
             const {id} = this.props.match.params;
-            this.props.fetchMovimientosInventariosSaldosxBodega(id, null);
+            this.props.fetchMovimientosInventariosSaldosxBodega(id);
         } else if (index === 1) {
 
         }

@@ -28,16 +28,16 @@ class List extends Component {
 
     cargarDatos() {
 
-        
+
         const cargarBodegas = () => this.props.fetchBodegas();
-        const cargarProveedores = () => this.props.fetchProveedores(cargarBodegas);
-        this.props.fetchMovimientosInventarios(cargarProveedores);
+        const cargarProveedores = () => this.props.fetchProveedores({callback: cargarBodegas});
+        this.props.fetchMovimientosInventarios({callback: cargarProveedores});
 
     }
 
     render() {
         const {object_list} = this.props;
-        const bloque_1_list = permisosAdapter( permisos_view);
+        const bloque_1_list = permisosAdapter(permisos_view);
         return (
             <Fragment>
                 <ListCrud

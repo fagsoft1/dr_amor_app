@@ -71,7 +71,6 @@ class List extends Component {
                     text='Registrar Salida'
                     onClick={() => {
                         this.setState({modal_open: true, tipo_registro: 'Registro Salida'});
-
                         this.props.fetchTercerosPresentes();
                     }}
                 />

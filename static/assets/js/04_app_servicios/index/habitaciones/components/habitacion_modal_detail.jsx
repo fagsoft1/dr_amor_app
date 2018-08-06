@@ -36,16 +36,15 @@ class HabitacionDetailModal extends Component {
 
     cargarDatos() {
         const {habitacion} = this.props;
-
-        const cargarServicios = () => this.props.fetchServicios_por_habitacion(habitacion.id, null);
-        this.props.fetchTercerosPresentes(cargarServicios);
+        const cargarServicios = () => this.props.fetchServicios_por_habitacion(habitacion.id);
+        this.props.fetchTercerosPresentes({callback: cargarServicios});
     }
 
     onSelectModelo(categoria_modelo_id) {
 
         this.props.clearCategoriasFraccionesTiemposAcompanantes();
 
-        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(categoria_modelo_id, null)
+        this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(categoria_modelo_id)
     }
 
     onAdicionarServicio(valores) {
@@ -244,15 +243,13 @@ class HabitacionDetailModal extends Component {
                                     <span
                                         className='puntero'
                                         onClick={() => {
-                                            const {fetchHabitaciones,} = this.props;
-                                            fetchHabitaciones(
-                                                () => {
-                                                    this.setState({
-                                                        mostrar_terminar_servicios: false,
-                                                        mostrar_cambiar_habitacion: true
-                                                    })
-                                                }
-                                            )
+                                            const callback = () => {
+                                                this.setState({
+                                                    mostrar_terminar_servicios: false,
+                                                    mostrar_cambiar_habitacion: true
+                                                })
+                                            };
+                                            this.props.fetchHabitaciones(callback);
                                         }}
                                     > Cambiar Habitacion</span>
                                 </div>

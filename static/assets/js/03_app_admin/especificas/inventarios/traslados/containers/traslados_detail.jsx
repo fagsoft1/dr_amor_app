@@ -48,7 +48,7 @@ class Detail extends Component {
         let bodega_origen_id = null;
         const {notificarAction} = this.props;
 
-        const cargarInventarioBodegaOrigen = () => this.props.fetchMovimientosInventariosSaldosxBodega(bodega_origen_id, null);
+        const cargarInventarioBodegaOrigen = () => this.props.fetchMovimientosInventariosSaldosxBodega(bodega_origen_id);
         const cargarTrasladoInventarioDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(id, cargarInventarioBodegaOrigen);
         this.props.fetchTrasladoInventario(id, (e) => {
                 cargarTrasladoInventarioDetalles(e);
@@ -102,7 +102,7 @@ class Detail extends Component {
                     <span className='btn btn-primary' onClick={() => {
                         const {trasladarTrasladoInventario} = this.props;
 
-                        const cargarDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(object.id, null);
+                        const cargarDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(object.id);
                         trasladarTrasladoInventario(object.id, cargarDetalles);
                     }}>
                     Trasladar

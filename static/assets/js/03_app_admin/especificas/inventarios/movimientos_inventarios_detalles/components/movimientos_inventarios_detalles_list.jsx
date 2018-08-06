@@ -23,7 +23,7 @@ class List extends Component {
         const nombre = item.producto_nombre;
         const {notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        this.props.fetchMovimientoInventario(item.movimiento, null)
+        this.props.fetchMovimientoInventario(item.movimiento)
     }
 
 
@@ -31,7 +31,7 @@ class List extends Component {
         const nombre = item.producto_nombre;
         const {notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        this.props.fetchMovimientoInventario(item.movimiento, null)
+        this.props.fetchMovimientoInventario(item.movimiento)
     }
 
     fetchObjectMethod(item_id, successCallback) {

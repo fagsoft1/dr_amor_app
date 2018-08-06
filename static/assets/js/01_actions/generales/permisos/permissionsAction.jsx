@@ -85,15 +85,15 @@ export function fetchOtroUsuarioPermisos(id, callback = null, callback_error = n
     }
 }
 
-export const fetchPermisos = (callback = null, callback_error = null, limpiar_coleccion = true) => {
+export const fetchPermisos = (options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };

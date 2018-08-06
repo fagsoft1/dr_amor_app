@@ -40,8 +40,19 @@ class ServiciosDashboar extends Component {
             modal_servicio_open
         } = this.state;
         if (!(modal_habitacion_open || modal_servicio_open)) {
-            const cargarHabitaciones = () => this.props.fetchHabitaciones(null, null, false, false);
-            this.props.fetchServicios_en_proceso(cargarHabitaciones, null, false, false);
+            const cargarHabitaciones = () => this.props.fetchHabitaciones(
+                {
+                    limpiar_coleccion: false,
+                    show_cargando: false
+                }
+            );
+            this.props.fetchServicios_en_proceso(
+                {
+                    callback: cargarHabitaciones,
+                    limpiar_coleccion: false,
+                    show_cargando: false
+                }
+            );
         }
     }
 
@@ -93,10 +104,10 @@ class ServiciosDashboar extends Component {
     }
 
     abrirModalHabitacion(habitacion) {
-
         this.props.clearServicios();
-        this.props.fetchTercerosPresentes(() => {
-                this.setState({modal_habitacion_open: true, habitacion_id: habitacion.id});
+        this.props.fetchTercerosPresentes(
+            {
+                callback: () => this.setState({modal_habitacion_open: true, habitacion_id: habitacion.id})
             }
         );
     }
