@@ -21,7 +21,7 @@ class List extends Component {
 
     successSubmitCallback(item) {
         const nombre = item.fraccion_tiempo_nombre;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
 
     }
@@ -29,7 +29,7 @@ class List extends Component {
 
     successDeleteCallback(item) {
         const nombre = item.fraccion_tiempo_nombre;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
 
     }
@@ -40,7 +40,7 @@ class List extends Component {
             successCallback(item);
 
         };
-        
+
         this.props.fetchCategoriaFraccionTiempoAcompanante(item_id, success_method);
     }
 
@@ -53,22 +53,20 @@ class List extends Component {
     }
 
     updateObjectMethod(item, successCallback) {
-        
-        const success_method = (response) => {
+        const callback = (response) => {
             this.successSubmitCallback(response);
             successCallback();
         };
-        
-        this.props.updateCategoriaFraccionTiempoAcompanante(item.id, item, success_method);
+        this.props.updateCategoriaFraccionTiempoAcompanante(item.id, item, {callback});
     }
 
     deleteObjectMethod(item, successCallback) {
-        
+
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
-        
+
         this.props.deleteCategoriaFraccionTiempoAcompanante(item.id, success_method);
     }
 

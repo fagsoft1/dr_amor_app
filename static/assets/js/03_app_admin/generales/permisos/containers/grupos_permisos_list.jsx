@@ -49,7 +49,7 @@ class GruposPermisosList extends Component {
             this.notificar(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito el grupo de permisos ${response.name}`);
         };
         if (item.id) {
-            this.props.updateGrupoPermiso(item.id, item, callback)
+            this.props.updateGrupoPermiso(item.id, item, {callback})
         } else {
             this.props.createGrupoPermiso(item, {callback})
         }

@@ -21,17 +21,17 @@ class List extends Component {
 
     successSubmitCallback(item) {
         const nombre = `${item.tipo_habitacion_nombre} ${item.numero}`;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        
+
     }
 
 
     successDeleteCallback(item) {
         const nombre = `${item.tipo_habitacion_nombre} ${item.numero}`;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-        
+
     }
 
     fetchObjectMethod(item_id, successCallback) {
@@ -40,7 +40,7 @@ class List extends Component {
             successCallback(item);
 
         };
-        
+
         this.props.fetchHabitacion(item_id, success_method);
     }
 
@@ -53,13 +53,11 @@ class List extends Component {
     }
 
     updateObjectMethod(item, successCallback) {
-
-        const success_method = () => {
+        const callback = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
-        
-        this.props.updateHabitacion(item.id, item, success_method);
+        this.props.updateHabitacion(item.id, item, {callback});
     }
 
     deleteObjectMethod(item, successCallback) {
@@ -68,7 +66,7 @@ class List extends Component {
             this.successDeleteCallback(item);
             successCallback();
         };
-        
+
         this.props.deleteHabitacion(item.id, success_method);
     }
 

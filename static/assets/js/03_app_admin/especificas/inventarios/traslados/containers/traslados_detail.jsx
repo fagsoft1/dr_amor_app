@@ -31,8 +31,6 @@ class Detail extends Component {
     }
 
     updateCantidadTraslado(item) {
-        const {notificarAction} = this.props;
-
         this.props.updateTrasladoInventarioDetalle(item.id, item)
     }
 

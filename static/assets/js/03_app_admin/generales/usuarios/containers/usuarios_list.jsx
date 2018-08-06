@@ -43,7 +43,7 @@ class UsuariosList extends Component {
         };
 
         if (item.id) {
-            this.props.updateUsuario(item.id, item, callback);
+            this.props.updateUsuario(item.id, item, {callback});
         } else {
             this.props.createUsuario(item, {callback});
         }

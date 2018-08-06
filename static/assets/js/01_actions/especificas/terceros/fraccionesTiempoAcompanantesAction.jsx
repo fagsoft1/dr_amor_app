@@ -46,7 +46,8 @@ export const fetchFraccionTiempoAcompanante = (id, callback = null, callback_err
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};         fetchObject(current_url_api, id, options);
+        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        fetchObject(current_url_api, id, options);
     }
 };
 export const clearFraccionesTiemposAcompanantes = () => {
@@ -55,11 +56,12 @@ export const clearFraccionesTiemposAcompanantes = () => {
 
     }
 };
-export const updateFraccionTiempoAcompanante = (id, values, callback = null, callback_error = null) => {
+export const updateFraccionTiempoAcompanante = (id, values, options_action) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};         updateObject(current_url_api, id, values, options);
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
+        updateObject(current_url_api, id, values, options);
     }
 };

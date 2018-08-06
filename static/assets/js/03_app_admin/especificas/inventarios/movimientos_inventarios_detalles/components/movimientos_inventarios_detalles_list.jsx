@@ -21,7 +21,7 @@ class List extends Component {
 
     successSubmitCallback(item) {
         const nombre = item.producto_nombre;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
         this.props.fetchMovimientoInventario(item.movimiento, null)
     }
@@ -29,7 +29,7 @@ class List extends Component {
 
     successDeleteCallback(item) {
         const nombre = item.producto_nombre;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
         this.props.fetchMovimientoInventario(item.movimiento, null)
     }
@@ -40,12 +40,12 @@ class List extends Component {
             successCallback(item);
 
         };
-        
+
         this.props.fetchMovimientoInventarioDetalle(item_id, success_method);
     }
 
     createObjectMethod(item, successCallback) {
-          const callback = (response) => {
+        const callback = (response) => {
             this.successSubmitCallback(response);
             successCallback();
         };
@@ -53,22 +53,20 @@ class List extends Component {
     }
 
     updateObjectMethod(item, successCallback) {
-        
-        const success_method = () => {
+        const callback = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
-        
-        this.props.updateMovimientoInventarioDetalle(item.id, item, success_method);
+        this.props.updateMovimientoInventarioDetalle(item.id, item, {callback});
     }
 
     deleteObjectMethod(item, successCallback) {
-        
+
         const success_method = () => {
             this.successDeleteCallback(item);
             successCallback();
         };
-        
+
         this.props.deleteMovimientoInventarioDetalle(item.id, success_method);
     }
 

@@ -7,6 +7,9 @@ import {connect} from "react-redux";
 class MenuBase extends Component {
     onSalir() {
         const {auth: {punto_venta}} = this.props;
+        const callback = () => {
+            this.props.logout();
+        };
         if (punto_venta && punto_venta.id) {
             this.props.updatePuntoVenta(
                 punto_venta.id, {
@@ -14,9 +17,7 @@ class MenuBase extends Component {
                     usuario_actual: null,
                     abierto: false
                 },
-                () => {
-                    this.props.logout();
-                }
+                {callback}
             )
         }
         else {

@@ -25,7 +25,7 @@ const Boton = (props) => {
 class IndexApp extends Component {
     render() {
         const {auth: {punto_venta, mi_cuenta}} = this.props;
-        const permisos_modulo_acceso = permisosAdapter( TIPOS_REGISTRO_INGRESO);
+        const permisos_modulo_acceso = permisosAdapter(TIPOS_REGISTRO_INGRESO);
         return <Loading>
             <div className="mt-3">
                 <div className="container text-center">
@@ -87,15 +87,16 @@ class IndexApp extends Component {
                         <div className="col-4 boton-index mt-4">
                             <div className='icono puntero' onClick={() => {
                                 if (punto_venta && punto_venta.id) {
+                                    const callback = () => {
+                                        this.props.logout();
+                                    };
                                     this.props.updatePuntoVenta(
                                         punto_venta.id, {
                                             ...punto_venta,
                                             usuario_actual: null,
                                             abierto: false
                                         },
-                                        () => {
-                                            this.props.logout();
-                                        }
+                                        {callback}
                                     )
                                 }
                                 else {

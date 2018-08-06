@@ -38,14 +38,13 @@ class PermisosList extends Component {
     }
 
     updatePermiso(permiso) {
-
+        const callback = () => {
+            this.notificar(`Se ha actualizado con éxito el permiso ${permiso.codename}`)
+        };
         this.props.updatePermiso(
             permiso.id,
             permiso,
-            () => {
-                this.notificar(`Se ha actualizado con éxito el permiso ${permiso.codename}`)
-            },
-            this.error_callback
+            {callback}
         )
     }
 

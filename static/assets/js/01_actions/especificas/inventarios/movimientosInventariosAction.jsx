@@ -91,12 +91,12 @@ export const clearMovimientosInventarios = () => {
 
     }
 };
-export const updateMovimientoInventario = (id, values, callback = null, callback_error = null) => {
+export const updateMovimientoInventario = (id, values, options_action) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         updateObject(current_url_api, id, values, options);
     }
 };

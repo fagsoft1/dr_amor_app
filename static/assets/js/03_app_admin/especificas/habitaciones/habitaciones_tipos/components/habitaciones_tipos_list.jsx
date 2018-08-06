@@ -53,13 +53,11 @@ class List extends Component {
     }
 
     updateObjectMethod(item, successCallback) {
-
-        const success_method = () => {
+        const callback = () => {
             this.successSubmitCallback(item);
             successCallback();
         };
-
-        this.props.updateTipoHabitacion(item.id, item, success_method);
+        this.props.updateTipoHabitacion(item.id, item, {callback});
     }
 
     deleteObjectMethod(item, successCallback) {
