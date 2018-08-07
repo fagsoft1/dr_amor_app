@@ -34,14 +34,8 @@ class List extends Component {
         this.props.fetchMovimientoInventario(item.movimiento)
     }
 
-    fetchObjectMethod(item_id, successCallback) {
-
-        const success_method = (item) => {
-            successCallback(item);
-
-        };
-
-        this.props.fetchMovimientoInventarioDetalle(item_id, success_method);
+    fetchObjectMethod(item_id, callback) {
+        this.props.fetchMovimientoInventarioDetalle(item_id, {callback});
     }
 
     createObjectMethod(item, successCallback) {

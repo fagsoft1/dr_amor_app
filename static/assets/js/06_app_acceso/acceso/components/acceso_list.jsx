@@ -21,29 +21,23 @@ class List extends Component {
         )
     }
 
-    successSubmitCallback(response) {
-        const {tipo_registro} = this.state;
-        const {result} = response;
-        const { notificarAction} = this.props;
-        notificarAction(result);
-
-        this.setState({modal_open: false, tipo_registro: null});
-    }
-
     onSubmit(item) {
-
         const {tipo_registro} = this.state;
-        const success_method = (response) => {
-            this.successSubmitCallback(response);
-        };
-
         let metodo = null;
         if (tipo_registro === 'Registro Entrada') {
             metodo = this.props.registrarIngresoTercero;
         } else if (tipo_registro === 'Registro Salida') {
             metodo = this.props.registrarSalidaTercero;
         }
-        metodo(item.id_tercero, item.pin, success_method)
+        const callback = () => {
+            this.props.fetchTercerosPresentes({
+                callback: () => this.setState({
+                    modal_open: false,
+                    tipo_registro: null
+                })
+            });
+        };
+        metodo(item.id_tercero, item.pin, {callback})
     }
 
     render() {
@@ -63,7 +57,6 @@ class List extends Component {
                     text='Registrar Entrada'
                     onClick={() => {
                         this.setState({modal_open: true, tipo_registro: 'Registro Entrada'});
-
                         this.props.fetchTercerosAusentes();
                     }}
                 />
@@ -82,7 +75,6 @@ class List extends Component {
                         {...this.props}
                         modal_open={modal_open}
                         onCancel={() => {
-
                             this.setState({modal_open: false, tipo_registro: null});
                         }}
                         onSubmit={this.onSubmit}

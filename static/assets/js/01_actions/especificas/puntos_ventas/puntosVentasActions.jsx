@@ -11,25 +11,25 @@ import {
 
 const current_url_api = 'puntos_ventas';
 
-export const hacerEntregaEfectivoCajaPuntoVenta = (id, cierre, callback = null, callback_error = null) => {
+export const hacerEntregaEfectivoCajaPuntoVenta = (id, cierre, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('cierre', JSON.stringify(cierre));
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'hacer_entrega_efectivo_caja', params, options)
     }
 };
 
 
-export const fetchPuntosVentas_por_usuario_username = (username, callback = null, callback_error = null, limpiar_coleccion = true) => {
+export const fetchPuntosVentas_por_usuario_username = (username, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
@@ -37,15 +37,15 @@ export const fetchPuntosVentas_por_usuario_username = (username, callback = null
     }
 };
 
-export const fetchPuntosVentas_por_colaborador = (colaborador_id, callback = null, callback_error = null, limpiar_coleccion = true) => {
+export const fetchPuntosVentas_por_colaborador = (colaborador_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
@@ -53,7 +53,7 @@ export const fetchPuntosVentas_por_colaborador = (colaborador_id, callback = nul
     }
 };
 
-export const createPuntoVenta = (values, options_action={}) => {
+export const createPuntoVenta = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -62,7 +62,7 @@ export const createPuntoVenta = (values, options_action={}) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deletePuntoVenta = (id, options_action={}) => {
+export const deletePuntoVenta = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -71,7 +71,7 @@ export const deletePuntoVenta = (id, options_action={}) => {
         deleteObject(current_url_api, id, options);
     }
 };
-export const fetchPuntosVentas = (options_action={}) => {
+export const fetchPuntosVentas = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -87,12 +87,12 @@ export const fetchPuntosVentas = (options_action={}) => {
     }
 };
 
-export const fetchPuntoVenta = (id, callback = null, callback_error = null) => {
+export const fetchPuntoVenta = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
     }
 };
@@ -102,7 +102,7 @@ export const clearPuntosVentas = () => {
 
     }
 };
-export const updatePuntoVenta = (id, values, options_action={}) => {
+export const updatePuntoVenta = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

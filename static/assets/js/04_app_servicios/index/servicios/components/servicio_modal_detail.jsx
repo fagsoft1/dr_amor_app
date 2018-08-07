@@ -45,9 +45,7 @@ class ServicioDetailModal extends Component {
             servicio.id,
             values.observacion_anulacion,
             punto_venta.id,
-            () => {
-                cerraModal();
-            }
+            {callback: cerraModal}
         );
     }
 
@@ -61,9 +59,7 @@ class ServicioDetailModal extends Component {
         cambiarTiempoServicio(
             servicio.id,
             {...values, punto_venta_id: punto_venta.id},
-            () => {
-                cerraModal();
-            }
+            {callback: cerraModal}
         );
     }
 
@@ -80,9 +76,7 @@ class ServicioDetailModal extends Component {
             {...pago, punto_venta_id: punto_venta.id},
             nueva_habitacion_id,
             servicios_array_id,
-            () => {
-                cerraModal();
-            }
+            {callback: cerraModal}
         );
     }
 

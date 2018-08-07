@@ -264,17 +264,11 @@ export function callApiMethodPostParametersPDF(url, id, method, parameters, opti
     createRequest(request, {...options, mensaje_cargando});
 }
 
-export function fetchObjectWithParameterPDF(url, dispatches = null, callback = null, callback_error = null, dispatch_method = null) {
+export function fetchObjectWithParameterPDF(url, options) {
     console.log(`%cFETCH LIST PARAMETROS - %c${url.toUpperCase()} PARA PDF`, 'color:red', 'color:blue');
     const mensaje_cargando = `Ejecutando PDF ${method.toUpperCase()} en ${url.toUpperCase()}`;
     const FULL_URL = `${url}&format=json`;
     const request = axios_instance.get(FULL_URL, {responseType: 'arraybuffer'});
-    const options = {
-        dispatches,
-        callback,
-        callback_error,
-        dispatch_method
-    };
     createRequest(request, {...options, mensaje_cargando});
 }
 

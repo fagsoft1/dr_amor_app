@@ -157,20 +157,21 @@ class LiquidarAcompanante extends Component {
                 punto_venta_id: cierre.punto_venta_id
             }
         };
-        const success_callback = (response) => {
+        const callback = (response) => {
             const url = window.URL.createObjectURL(new Blob([response], {type: 'application/pdf'}));
             window.open(url, "_blank");
             localStorage.removeItem('punto_venta');
             this.props.history.push('/app');
 
         };
-        const imprimirEntrega = (arqueo_id) => printEntregasArqueosCajas(arqueo_id, success_callback);
+        const imprimirEntrega = (arqueo_id) => printEntregasArqueosCajas(arqueo_id, {callback});
         const enviarEmail = (arqueo_id) => {
-            envioEmailArqueo(arqueo_id, () => {
-                imprimirEntrega(arqueo_id)
-            })
+            envioEmailArqueo(
+                arqueo_id,
+                {callback: () => imprimirEntrega(arqueo_id)}
+            )
         };
-        hacerEntregaEfectivoCajaPuntoVenta(punto_venta.id, cierre2, res => enviarEmail(res.arqueo_id));
+        hacerEntregaEfectivoCajaPuntoVenta(punto_venta.id, cierre2, {callback: res => enviarEmail(res.arqueo_id)});
     }
 
     render() {

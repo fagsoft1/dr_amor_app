@@ -102,9 +102,12 @@ class UsuariosList extends Component {
                                         handleModalClose();
                                     }}
                                     onSelectItemEdit={(item) => {
-                                        this.props.fetchUsuario(item.id, () => {
-                                                onSelectItem(item);
-                                                handleModalOpen();
+                                        this.props.fetchUsuario(item.id,
+                                            {
+                                                callback: () => {
+                                                    onSelectItem(item);
+                                                    handleModalOpen();
+                                                }
                                             }
                                         )
                                     }}

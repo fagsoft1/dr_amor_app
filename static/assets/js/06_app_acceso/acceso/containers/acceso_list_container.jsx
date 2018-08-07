@@ -26,22 +26,18 @@ class List extends Component {
     }
 
     cargarDatos() {
-
-        
         this.props.fetchTercerosPresentes();
     }
 
     render() {
         const {terceros_list} = this.props;
-        const bloque_1_list = permisosAdapter( permisos_view);
+        const bloque_1_list = permisosAdapter(permisos_view);
         const terceros = _.map(terceros_list, c => {
             return ({
                 id: c.id,
                 nombre: c.full_name_proxy
             })
         });
-
-
         const modelos_presentes = _.pickBy(terceros_list, tercero => {
             return (tercero.es_acompanante & tercero.presente)
         });

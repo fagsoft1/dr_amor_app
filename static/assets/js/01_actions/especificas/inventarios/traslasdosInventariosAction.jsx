@@ -9,23 +9,20 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'traslados_inventarios';
-export const trasladarTrasladoInventario = (id, callback = null, callback_error = null) => {
+export const trasladarTrasladoInventario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch
         };
         callApiMethodPost(current_url_api, id, 'trasladar', options)
     }
 };
-
-
-export const createTrasladoInventario = (values, options_action={}) => {
+export const createTrasladoInventario = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -34,7 +31,7 @@ export const createTrasladoInventario = (values, options_action={}) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteTrasladoInventario = (id, options_action={}) => {
+export const deleteTrasladoInventario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -43,7 +40,7 @@ export const deleteTrasladoInventario = (id, options_action={}) => {
         deleteObject(current_url_api, id, options);
     }
 };
-export const fetchTrasladosInventarios = (options_action={}) => {
+export const fetchTrasladosInventarios = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -59,12 +56,12 @@ export const fetchTrasladosInventarios = (options_action={}) => {
     }
 };
 
-export const fetchTrasladoInventario = (id, callback = null, callback_error = null) => {
+export const fetchTrasladoInventario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
     }
 };
@@ -74,7 +71,7 @@ export const clearTrasladosInventarios = () => {
 
     }
 };
-export const updateTrasladoInventario = (id, values, options_action={}) => {
+export const updateTrasladoInventario = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

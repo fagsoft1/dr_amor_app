@@ -68,37 +68,39 @@ class ServiciosDashboar extends Component {
 
     onClickHabitacion(habitacion_id, callback = null) {
         const {fetchHabitacion} = this.props;
-
         fetchHabitacion(
             habitacion_id,
-            (response) => {
-                const {estado} = response;
-                if (estado === 2 || estado === 3) {
-                    callback();
-                } else if (estado === 0 || estado === 1) {
-                    this.abrirModalHabitacion(response)
-                }
+            {
+                callback:
+                    (response) => {
+                        const {estado} = response;
+                        if (estado === 2 || estado === 3) {
+                            callback();
+                        } else if (estado === 0 || estado === 1) {
+                            this.abrirModalHabitacion(response)
+                        }
 
+                    }
             }
         );
     }
 
     abrirModalServicio(servicio) {
         this.clearDatos();
-        this.props.fetchServicio(
-            servicio.id,
-            (response_servicio) => {
-                if (response_servicio.estado === 1) {
-                    this.setState({modal_servicio_open: true, servicio_id: servicio.id});
-                } else {
-                    this.cargarDatos();
-                }
-
+        const callback = (response_servicio) => {
+            const {estado} = response_servicio;
+            if (estado === 1) {
+                this.setState({modal_servicio_open: true, servicio_id: servicio.id});
+            } else {
+                this.cargarDatos();
             }
-        );
+        };
+        this.props.fetchServicio(servicio.id, {callback});
     }
 
     cerraModalServicio() {
+        const {cargando} = this.props;
+        cargando();
         this.setState({modal_servicio_open: false, servicio_id: null});
         this.cargarDatos();
     }
@@ -113,6 +115,8 @@ class ServiciosDashboar extends Component {
     }
 
     cerraModalHabitacion() {
+        const {cargando} = this.props;
+        cargando();
         this.setState({modal_habitacion_open: false, habitacion_id: null});
         this.cargarDatos();
     }

@@ -93,7 +93,8 @@ export default class ServicioListItem extends Component {
                                 <div className='float-left'>
                                     {
                                         !servicio.termino &&
-                                        <i className="fas fa-cogs puntero p-1" aria-hidden="true"
+                                        <i className="fas fa-cogs puntero p-1"
+                                           aria-hidden="true"
                                            onClick={() => abrirModalServicio(servicio)}></i>
                                     }
                                     {

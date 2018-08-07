@@ -33,9 +33,7 @@ class GruposPermisosList extends Component {
 
     componentDidMount() {
         this.props.fetchPermisosActivos(
-            {
-                callback: (response) => this.setState({todos_los_permisos: _.mapKeys(response, 'id')})
-            });
+            {callback: (response) => this.setState({todos_los_permisos: _.mapKeys(response, 'id')})});
         this.cargarDatos();
     }
 
@@ -55,18 +53,16 @@ class GruposPermisosList extends Component {
     }
 
     cargarDatos() {
-
         this.props.fetchGruposPermisos();
     }
 
     actualizarPermiso(permiso, item) {
-        const {fetchPermisosPorGrupo} = this.props;
-        const success_callback = () => {
+        const callback = () => {
             this.notificar(`Se ha actualizado con éxito el grupo de permisos con el permiso ${permiso.codename}`);
-            fetchPermisosPorGrupo(item.id)
+            this.props.fetchPermisosPorGrupo(item.id)
         };
         if (item) {
-            this.props.addPermisoGrupo(item.id, permiso.id, success_callback);
+            this.props.addPermisoGrupo(item.id, permiso.id, {callback});
         }
     }
 
@@ -131,8 +127,10 @@ class GruposPermisosList extends Component {
                                     onSelectItemDetail={(item) => {
                                         fetchPermisosPorGrupo(
                                             item.id,
-                                            () => {
-                                                onSelectItem(item);
+                                            {
+                                                callback: () => {
+                                                    onSelectItem(item);
+                                                }
                                             }
                                         )
                                     }}

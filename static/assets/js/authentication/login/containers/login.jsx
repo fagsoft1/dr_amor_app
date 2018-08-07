@@ -23,9 +23,7 @@ class Login extends Component {
 
         fetchPuntosVentas_por_usuario_username(
             username,
-            () => {
-                this.setState({cargando_puntos_ventas: true});
-            }
+            {callback: () => this.setState({cargando_puntos_ventas: true})}
         );
     }
 

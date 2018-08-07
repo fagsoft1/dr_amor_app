@@ -11,22 +11,22 @@ import {
 
 const current_url_api = 'servicios';
 
-export const solicitarAnulacionServicio = (id, observacion_anulacion, punto_venta_id, callback = null, callback_error = null) => {
+export const solicitarAnulacionServicio = (id, observacion_anulacion, punto_venta_id, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('observacion_anulacion', observacion_anulacion);
         params.append('punto_venta_id', punto_venta_id);
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'solicitar_anulacion', params, options)
     }
 };
 
 
-export const cambiarTiempoServicio = (id, pago, callback = null, callback_error = null) => {
+export const cambiarTiempoServicio = (id, pago, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pago', JSON.stringify(pago));
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'cambiar_tiempo', params, options)
     }
 };
@@ -50,11 +50,11 @@ export const deleteServicio = (id, options_action = {}) => {
         deleteObject(current_url_api, id, options);
     }
 };
-export const terminarServicio = (id, punto_venta_id, callback = null, callback_error = null) => {
+export const terminarServicio = (id, punto_venta_id, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('punto_venta_id', punto_venta_id);
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'terminar_servicio', params, options)
     }
 };
@@ -119,12 +119,12 @@ export const fetchServicios_por_tercero_cuenta_abierta = (tercero_id, options_ac
         fetchListGetURLParameters(`${current_url_api}/consultar_por_tercero_cuenta_abierta/?tercero_id=${tercero_id}`, options);
     }
 };
-export const fetchServicio = (id, callback = null, callback_error = null) => {
+export const fetchServicio = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
     }
 };

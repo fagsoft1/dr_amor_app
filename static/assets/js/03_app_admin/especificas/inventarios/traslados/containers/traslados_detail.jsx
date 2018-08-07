@@ -46,13 +46,13 @@ class Detail extends Component {
     cargarDatos() {
         const {id} = this.props.match.params;
         let bodega_origen_id = null;
-        const {notificarAction} = this.props;
-
         const cargarInventarioBodegaOrigen = () => this.props.fetchMovimientosInventariosSaldosxBodega(bodega_origen_id);
-        const cargarTrasladoInventarioDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(id, cargarInventarioBodegaOrigen);
-        this.props.fetchTrasladoInventario(id, (e) => {
-                cargarTrasladoInventarioDetalles(e);
-                bodega_origen_id = e.bodega_origen;
+        const cargarTrasladoInventarioDetalles = () => this.props.fetchTrasladosInventariosDetallesxTralado(id, {callback: cargarInventarioBodegaOrigen});
+        this.props.fetchTrasladoInventario(id, {
+                callback: (e) => {
+                    cargarTrasladoInventarioDetalles(e);
+                    bodega_origen_id = e.bodega_origen;
+                }
             }
         );
 

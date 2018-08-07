@@ -13,41 +13,41 @@ import {
 
 const current_url_api = 'usuarios';
 
-export const cambiarContrasenaUsuario = (id, password_old, password, password_2, callback = null, callback_error = null) => {
+export const cambiarContrasenaUsuario = (id, password_old, password, password_2, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('password_old', password_old);
         params.append('password', password);
         params.append('password_2', password_2);
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'cambiar_contrasena', params, options)
     }
 };
 
-export const cambiarPinUsuario = (id, pin, password, callback = null, callback_error = null) => {
+export const cambiarPinUsuario = (id, pin, password, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pin', pin);
         params.append('password', password);
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'cambiar_pin', params, options)
     }
 };
 
-export const addPermisoUsuario = (id, permiso_id, callback = null, callback_error = null) => {
+export const addPermisoUsuario = (id, permiso_id, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('id_permiso', permiso_id);
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'adicionar_permiso', params, options)
     }
 };
 
-export const addGrupoUsuario = (id, grupo_id, callback = null, callback_error = null) => {
+export const addGrupoUsuario = (id, grupo_id, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('id_grupo', grupo_id);
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'adicionar_grupo', params, options)
     }
 };
@@ -67,13 +67,13 @@ export const fetchMiCuenta = (callback = null, callback_error = null) => {
     }
 };
 
-export const fetchUsuario = (id, callback = null, callback_error = null) => {
+export const fetchUsuario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
 
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
     }
 };
@@ -113,7 +113,7 @@ export const updateUsuario = (id, values, options_action = {}) => {
     }
 };
 
-export const fetchUsuarios = (options_action={}) => {
+export const fetchUsuarios = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})

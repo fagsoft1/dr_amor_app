@@ -54,22 +54,15 @@ class LiquidarAcompanante extends Component {
     onPagar(pago) {
         const {
             liquidarCuentaTercero,
-            auth:{punto_venta}
+            auth: {punto_venta}
         } = this.props;
-
-        liquidarCuentaTercero(
-            this.state.id_tercero,
-            {
-                ...pago,
-                punto_venta_id: punto_venta.id
-            },
-            () => {
-
-                this.setState({id_tercero: null});
-                this.props.clearAcompanantes();
-                this.cargarDatos();
-            }
-        )
+        const {id_tercero} = this.state;
+        const callback = () => {
+            this.setState({id_tercero: null});
+            this.props.clearAcompanantes();
+            this.cargarDatos();
+        };
+        liquidarCuentaTercero(id_tercero, {...pago, punto_venta_id: punto_venta.id}, {callback});
     }
 
     render() {

@@ -12,28 +12,12 @@ class Seguridad extends Component {
     }
 
     onCambiarPin(values, callback) {
-        const {
-            notificarAction,
-            cambiarPinUsuario,
-            auth: {mi_cuenta}
-        } = this.props;
-
-        cambiarPinUsuario(
-            mi_cuenta.id,
-            values.pin,
-            values.password,
-            (response) => {
-                if (response && response.result) {
-                    notificarAction(response.result)
-                }
-                callback();
-            }
-        )
+        const {cambiarPinUsuario, auth: {mi_cuenta}} = this.props;
+        cambiarPinUsuario(mi_cuenta.id, values.pin, values.password, {callback});
     }
 
     onCambiarPassword(values, callback) {
         const {
-            notificarAction,
             cambiarContrasenaUsuario,
             auth: {mi_cuenta}
         } = this.props;
@@ -43,13 +27,7 @@ class Seguridad extends Component {
             values.password_old,
             values.password,
             values.password_2,
-            (response) => {
-                if (response && response.result) {
-                    notificarAction(response.result)
-                }
-
-                callback();
-            }
+            {callback}
         )
     }
 

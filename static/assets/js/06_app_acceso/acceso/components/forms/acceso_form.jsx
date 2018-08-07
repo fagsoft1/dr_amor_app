@@ -17,11 +17,6 @@ class Form extends Component {
         this.resetPin = this.resetPin.bind(this);
     }
 
-    componentWillUnmount() {
-        this.props.clearTerceros();
-        this.props.fetchTercerosPresentes();
-    }
-
     setPin(pin) {
         this.setState(function (state, props) {
             return {
@@ -44,7 +39,6 @@ class Form extends Component {
             onCancel,
             handleSubmit,
             modal_open,
-            singular_name,
             list,
             tipo_registro
         } = this.props;

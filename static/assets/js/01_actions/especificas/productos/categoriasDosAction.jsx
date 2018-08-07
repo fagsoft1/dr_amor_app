@@ -44,12 +44,12 @@ export const fetchCategoriasProductosDos = (options_action={}) => {
     }
 };
 
-export const fetchCategoriaProductoDos = (id, callback = null, callback_error = null) => {
+export const fetchCategoriaProductoDos = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
     }
 };

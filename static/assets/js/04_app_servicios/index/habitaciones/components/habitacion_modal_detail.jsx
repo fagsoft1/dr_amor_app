@@ -41,9 +41,7 @@ class HabitacionDetailModal extends Component {
     }
 
     onSelectModelo(categoria_modelo_id) {
-
         this.props.clearCategoriasFraccionesTiemposAcompanantes();
-
         this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(categoria_modelo_id)
     }
 
@@ -99,9 +97,7 @@ class HabitacionDetailModal extends Component {
             {...pago, punto_venta_id: punto_venta.id},
             nueva_habitacion_id,
             servicios_array_id,
-            () => {
-                cerraModal();
-            }
+            {callback: cerraModal}
         );
     }
 
@@ -116,22 +112,23 @@ class HabitacionDetailModal extends Component {
 
         fetchHabitacion(
             habitacion.id,
-            (response) => {
-                if (response.estado === 1) {
-                    terminarServiciosHabitacion(
-                        habitacion.id,
-                        punto_venta.id,
-                        () => {
-                            cerraModal();
+            {
+                callback:
+                    (response) => {
+                        if (response.estado === 1) {
+                            terminarServiciosHabitacion(
+                                habitacion.id,
+                                punto_venta.id,
+                                {callback: cerraModal}
+                            )
                         }
-                    )
-                }
+                    }
             }
         );
     }
 
 
-    onIniciarServicios(pago, servicios) {
+    onIniciarServicios(pago) {
         const {
             iniciarServiciosHabitacion,
             habitacion,
@@ -143,10 +140,13 @@ class HabitacionDetailModal extends Component {
         iniciarServiciosHabitacion(
             habitacion.id,
             {...pago, punto_venta_id: punto_venta.id},
-            _.map(servicios_nuevos, e => e),
-            () => {
-                this.cargarDatos();
-                cerraModal();
+            _.map(_.orderBy(servicios_nuevos, ['tiempo_minutos'], ['desc']), e => e),
+            {
+                callback:
+                    () => {
+                        this.cargarDatos();
+                        cerraModal();
+                    }
             }
         );
     }
@@ -219,7 +219,7 @@ class HabitacionDetailModal extends Component {
                         <Fragment>
                             <i
                                 className={`far fa-${mostrar_avanzado ? 'minus' : 'plus'}-circle puntero`}
-                                onClick={() => this.setState((s) => {
+                                onClick={() => this.setState(s => {
                                     return {
                                         mostrar_avanzado: !s.mostrar_avanzado,
                                         mostrar_terminar_servicios: false,
@@ -233,10 +233,12 @@ class HabitacionDetailModal extends Component {
                                 <div style={{position: 'absolute', left: 50}}>
                             <span
                                 className='puntero'
-                                onClick={() => this.setState({
-                                    mostrar_terminar_servicios: true,
-                                    mostrar_cambiar_habitacion: false
-                                })}
+                                onClick={() => this.setState(
+                                    {
+                                        mostrar_terminar_servicios: true,
+                                        mostrar_cambiar_habitacion: false
+                                    }
+                                )}
                             >
                                 Terminar Servicio
                             </span> |
@@ -244,14 +246,17 @@ class HabitacionDetailModal extends Component {
                                         className='puntero'
                                         onClick={() => {
                                             const callback = () => {
-                                                this.setState({
-                                                    mostrar_terminar_servicios: false,
-                                                    mostrar_cambiar_habitacion: true
-                                                })
+                                                this.setState(
+                                                    {
+                                                        mostrar_terminar_servicios: false,
+                                                        mostrar_cambiar_habitacion: true
+                                                    }
+                                                )
                                             };
-                                            this.props.fetchHabitaciones(callback);
+                                            this.props.fetchHabitaciones({callback, limpiar_coleccion: false});
                                         }}
-                                    > Cambiar Habitacion</span>
+                                    > Cambiar Habitacion
+                            </span>
                                 </div>
                             }
                         </Fragment>
@@ -259,9 +264,8 @@ class HabitacionDetailModal extends Component {
                     <FlatIconModal
                         text='Cerrar'
                         className='btn btn-primary'
-                        //disabled={submitting || pristine}
                         type='submit'
-                        onClick={() => cerraModal()}
+                        onClick={cerraModal}
                     />
                 </DialogActions>
             </Dialog>

@@ -34,14 +34,8 @@ class List extends Component {
 
     }
 
-    fetchObjectMethod(item_id, successCallback) {
-
-        const success_method = (item) => {
-            successCallback(item);
-
-        };
-
-        this.props.fetchCategoriaFraccionTiempoAcompanante(item_id, success_method);
+    fetchObjectMethod(item_id, {callback}) {
+        this.props.fetchCategoriaFraccionTiempoAcompanante(item_id, {callback});
     }
 
     createObjectMethod(item, successCallback) {

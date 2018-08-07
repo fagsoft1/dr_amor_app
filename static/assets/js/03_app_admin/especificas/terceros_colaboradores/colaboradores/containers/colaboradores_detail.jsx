@@ -18,9 +18,10 @@ const TablaPDV = (props) => {
             {
                 pdv_colaborador && pdv_colaborador.length > 0 &&
                 <table className='table table-striped table-responsive'>
+                    <tbody>
                     {
                         pdv_colaborador.map(pdv => {
-                            return <tr>
+                            return <tr key={pdv.id}>
                                 <td>{pdv.nombre}</td>
                                 <td>
                                     <IconButtonTableDelete
@@ -30,6 +31,7 @@ const TablaPDV = (props) => {
                             </tr>
                         })
                     }
+                    </tbody>
                 </table>
             }
         </Fragment>
@@ -42,6 +44,7 @@ class Detail extends Component {
         this.cargarDatos = this.cargarDatos.bind(this);
         this.addPuntoVenta = this.addPuntoVenta.bind(this);
         this.quitarPuntoVenta = this.quitarPuntoVenta.bind(this);
+        this.cargarPuntosVentasColaborador = this.cargarPuntosVentasColaborador.bind(this);
         this.state = {puntos_ventas_colaborador: null}
     }
 
@@ -56,54 +59,31 @@ class Detail extends Component {
 
     addPuntoVenta(punto_venta) {
         const {id} = this.props.match.params;
-        const {adicionarPuntoVenta} = this.props;
-
-        adicionarPuntoVenta(
-            id,
-            punto_venta.id,
-            () => {
-                this.cargarPuntosVentasColaborador()
-            }
-        )
+        this.props.adicionarPuntoVenta(id, punto_venta.id, {callback: this.cargarPuntosVentasColaborador});
     }
 
     quitarPuntoVenta(punto_venta) {
         const {id} = this.props.match.params;
-        const {quitarPuntoVenta} = this.props;
-        quitarPuntoVenta(
-            id,
-            punto_venta.id,
-            () => {
-                this.cargarPuntosVentasColaborador()
-            }
-        )
+        this.props.quitarPuntoVenta(id, punto_venta.id, {callback: this.cargarPuntosVentasColaborador});
     }
 
-    cargarPuntosVentasColaborador(callback = null) {
+    cargarPuntosVentasColaborador() {
         const {id} = this.props.match.params;
-        const fetchPuntosVentas = () => this.props.fetchPuntosVentas(() => {
-            if (callback) {
-                callback();
-            }
-        });
+        const fetchPuntosVentas = () => this.props.fetchPuntosVentas();
         this.props.fetchPuntosVentas_por_colaborador(
             id,
-            (puntos_ventas_colaborador) => {
-                this.setState({puntos_ventas_colaborador});
-                fetchPuntosVentas()
+            {
+                callback: puntos_ventas_colaborador => {
+                    this.setState({puntos_ventas_colaborador});
+                    fetchPuntosVentas()
+                }
             }
         );
     }
 
     cargarDatos() {
         const {id} = this.props.match.params;
-
-
-        const success_callback = () => {
-
-        };
-        const fetchPuntosVentasColaborador = () => this.cargarPuntosVentasColaborador(success_callback);
-        this.props.fetchColaborador(id, fetchPuntosVentasColaborador);
+        this.props.fetchColaborador(id, {callback: this.cargarPuntosVentasColaborador});
 
     }
 

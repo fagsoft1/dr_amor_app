@@ -11,7 +11,7 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'movimiento_inventario';
-export const createMovimientoInventario = (values, options_action={}) => {
+export const createMovimientoInventario = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -20,7 +20,7 @@ export const createMovimientoInventario = (values, options_action={}) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteMovimientoInventario = (id, options_action={}) => {
+export const deleteMovimientoInventario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -30,15 +30,14 @@ export const deleteMovimientoInventario = (id, options_action={}) => {
     }
 };
 
-export const cargarInventarioMovimientoInventario = (id, callback = null, callback_error = null) => {
+export const cargarInventarioMovimientoInventario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})
         };
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch
         };
         callApiMethodPost(current_url_api, id, 'cargar_inventario', options)
@@ -46,7 +45,7 @@ export const cargarInventarioMovimientoInventario = (id, callback = null, callba
 };
 
 
-export const fetchMovimientosInventarios = (options_action={}) => {
+export const fetchMovimientosInventarios = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -62,11 +61,12 @@ export const fetchMovimientosInventarios = (options_action={}) => {
     }
 };
 
-export const fetchMovimientoSaldoInicial = (callback = null, callback_error = null, limpiar_coleccion = true) => {
+export const fetchMovimientoSaldoInicial = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
+        const {limpiar_coleccion = true} = options_action;
         const options = {
             dispatches,
             callback,
@@ -77,12 +77,12 @@ export const fetchMovimientoSaldoInicial = (callback = null, callback_error = nu
         fetchListGet(`${current_url_api}/saldos_iniciales`, options);
     }
 };
-export const fetchMovimientoInventario = (id, callback = null, callback_error = null) => {
+export const fetchMovimientoInventario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
     }
 };
@@ -92,7 +92,7 @@ export const clearMovimientosInventarios = () => {
 
     }
 };
-export const updateMovimientoInventario = (id, values, options_action={}) => {
+export const updateMovimientoInventario = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

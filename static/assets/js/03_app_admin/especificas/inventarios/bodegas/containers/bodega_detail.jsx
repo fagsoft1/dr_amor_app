@@ -38,7 +38,7 @@ class Detail extends Component {
     }
 
     verMovimientoProducto(item_id) {
-        
+
 
         const {id} = this.props.match.params;
         this.setState({slideIndex: 1});
@@ -56,10 +56,8 @@ class Detail extends Component {
     };
 
     cargarElementos(value = null) {
-        
         let index = value !== null ? value : this.state.slideIndex;
         if (index === 0) {
-
             const {id} = this.props.match.params;
             this.props.fetchMovimientosInventariosSaldosxBodega(id);
         } else if (index === 1) {
@@ -78,17 +76,12 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        
-
-        const success_callback = () => {
-            this.cargarElementos();
-        };
-        this.props.fetchBodega(id, success_callback);
+        this.props.fetchBodega(id, {callback: this.cargarElementos});
     }
 
     render() {
         const {object, movimientos_inventarios_detalles_list} = this.props;
-        const permisos = permisosAdapter( permisos_view);
+        const permisos = permisosAdapter(permisos_view);
 
 
         if (!object) {

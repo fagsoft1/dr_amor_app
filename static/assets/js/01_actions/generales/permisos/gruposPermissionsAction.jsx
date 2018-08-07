@@ -13,16 +13,16 @@ import {
 
 const current_url_api = 'grupos_permisos';
 
-export const addPermisoGrupo = (id, permiso_id, callback = null, callback_error = null) => {
+export const addPermisoGrupo = (id, permiso_id, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('id_permiso', permiso_id);
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'adicionar_permiso', params, options)
     }
 };
 
-export const createGrupoPermiso = (values, options_action={}) => {
+export const createGrupoPermiso = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -31,7 +31,7 @@ export const createGrupoPermiso = (values, options_action={}) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteGrupoPermiso = (id, options_action={}) => {
+export const deleteGrupoPermiso = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -40,7 +40,7 @@ export const deleteGrupoPermiso = (id, options_action={}) => {
         deleteObject(current_url_api, id, options);
     }
 };
-export const fetchGruposPermisos = (options_action={}) => {
+export const fetchGruposPermisos = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -56,12 +56,13 @@ export const fetchGruposPermisos = (options_action={}) => {
     }
 };
 
-export const fetchGrupoPermiso = (id, callback = null, callback_error = null) => {
+export const fetchGrupoPermiso = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
     }
 };
@@ -71,7 +72,7 @@ export const clearGruposPermisos = () => {
 
     }
 };
-export const updateGrupoPermiso = (id, values, options_action={}) => {
+export const updateGrupoPermiso = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

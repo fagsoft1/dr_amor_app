@@ -57,7 +57,6 @@ const ResumenCambioHabitacion = (props) => {
                             text='Cambiar Habitación'
                             className='btn btn-primary'
                             onClick={() => onCambiarHabitacion(null, habitacion_nueva.id, servicios)}
-                            //disabled={submitting || pristine}
                             type='submit'
                         />
                     </Fragment>

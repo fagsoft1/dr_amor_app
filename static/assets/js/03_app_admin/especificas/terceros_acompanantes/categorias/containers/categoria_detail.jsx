@@ -30,19 +30,14 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const {  notificarAction} = this.props;
-
-        const success_callback = () => {
-
-        };
-        const cargarCategoriaFraccionTiempo = () => this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(id, success_callback);
-        this.props.fetchCategoriaAcompanante(id, cargarCategoriaFraccionTiempo);
+        const cargarCategoriaFraccionTiempo = () => this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(id);
+        this.props.fetchCategoriaAcompanante(id, {callback: cargarCategoriaFraccionTiempo});
 
     }
 
     render() {
         const {object, categorias_fracciones_tiempo_list, fracciones_tiempo_list} = this.props;
-        const permisos = permisosAdapter( permisos_view);
+        const permisos = permisosAdapter(permisos_view);
 
 
         if (!object) {

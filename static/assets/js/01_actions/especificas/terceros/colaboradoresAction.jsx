@@ -12,25 +12,25 @@ import {
 
 const current_url_api = 'colaboradores';
 
-export const adicionarPuntoVenta = (id, punto_venta_id, callback = null, callback_error = null) => {
+export const adicionarPuntoVenta = (id, punto_venta_id, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('punto_venta_id', punto_venta_id);
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'adicionar_punto_venta', params, options)
     }
 };
 
-export const quitarPuntoVenta = (id, punto_venta_id, callback = null, callback_error = null) => {
+export const quitarPuntoVenta = (id, punto_venta_id, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('punto_venta_id', punto_venta_id);
-        const options = {callback, callback_error, dispatch_method: dispatch};
+        const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'quitar_punto_venta', params, options)
     }
 };
 
-export const createColaborador = (values, options_action={}) => {
+export const createColaborador = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -39,7 +39,7 @@ export const createColaborador = (values, options_action={}) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteColaborador = (id, options_action={}) => {
+export const deleteColaborador = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -48,7 +48,7 @@ export const deleteColaborador = (id, options_action={}) => {
         deleteObject(current_url_api, id, options);
     }
 };
-export const fetchColaboradores = (options_action={}) => {
+export const fetchColaboradores = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -64,12 +64,12 @@ export const fetchColaboradores = (options_action={}) => {
     }
 };
 
-export const fetchColaborador = (id, callback = null, callback_error = null) => {
+export const fetchColaborador = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
-        const options = {dispatches, callback, callback_error, dispatch_method: dispatch};
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
     }
 };
@@ -79,7 +79,7 @@ export const clearColaboradores = () => {
 
     }
 };
-export const updateColaborador = (id, values, options_action={}) => {
+export const updateColaborador = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

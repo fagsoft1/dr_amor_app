@@ -25,14 +25,12 @@ class List extends Component {
     }
 
     cargarDatos() {
-
-        
         this.props.fetchColaboradores();
     }
 
     render() {
         const {object_list} = this.props;
-        const bloque_1_list = permisosAdapter( permisos_view);
+        const bloque_1_list = permisosAdapter(permisos_view);
         return (
             <Fragment>
                 <ListCrud

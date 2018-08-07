@@ -32,12 +32,8 @@ class List extends Component {
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
     }
 
-    fetchObjectMethod(item_id, successCallback) {
-
-        const success_method = (item) => {
-            successCallback(item);
-        };
-        this.props.fetchAcompanante(item_id, success_method);
+    fetchObjectMethod(item_id, callback) {
+        this.props.fetchAcompanante(item_id, {callback});
     }
 
     createObjectMethod(item, successCallback) {

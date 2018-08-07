@@ -30,9 +30,7 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-
-
-        const success_callback = (movimiento) => {
+        const callback = (movimiento) => {
             if (!movimiento.cargado) {
                 if (movimiento.motivo === 'saldo_inicial') {
                     this.props.fetchProductosParaSaldoInicial();
@@ -42,15 +40,15 @@ class Detail extends Component {
             }
 
         };
-        const cargarMovimientoInventario = () => this.props.fetchMovimientoInventario(id, success_callback);
-        this.props.fetchMovimientosInventariosDetallesxMovimiento(id, cargarMovimientoInventario);
+        const cargarMovimientoInventario = () => this.props.fetchMovimientoInventario(id, {callback});
+        this.props.fetchMovimientosInventariosDetallesxMovimiento(id, {callback: cargarMovimientoInventario});
 
     }
 
     render() {
         const {object, movimientos_inventarios_detalles_list} = this.props;
         const {id} = this.props.match.params;
-        const permisos = permisosAdapter( permisos_view);
+        const permisos = permisosAdapter(permisos_view);
 
 
         if (!object) {
@@ -86,10 +84,9 @@ class Detail extends Component {
                     !object.cargado &&
                     _.size(movimientos_inventarios_detalles_list) > 0 &&
                     <span className='btn btn-primary' onClick={() => {
-                        const { cargarInventarioMovimientoInventario} = this.props;
-
+                        const {cargarInventarioMovimientoInventario} = this.props;
                         const cargarDetalles = () => this.props.fetchMovimientosInventariosDetallesxMovimiento(id);
-                        cargarInventarioMovimientoInventario(id, cargarDetalles);
+                        cargarInventarioMovimientoInventario(id, {callback: cargarDetalles});
                     }}>
                     Cargar Inventario
                 </span>

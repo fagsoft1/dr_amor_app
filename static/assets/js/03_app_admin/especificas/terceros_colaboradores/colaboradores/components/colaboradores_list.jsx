@@ -21,7 +21,7 @@ class List extends Component {
 
     successSubmitCallback(item) {
         const nombre = item.full_name_proxy;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
 
     }
@@ -29,19 +29,13 @@ class List extends Component {
 
     successDeleteCallback(item) {
         const nombre = item.full_name_proxy;
-        const { notificarAction} = this.props;
+        const {notificarAction} = this.props;
         notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
 
     }
 
-    fetchObjectMethod(item_id, successCallback) {
-
-        const success_method = (item) => {
-            successCallback(item);
-
-        };
-        
-        this.props.fetchColaborador(item_id, success_method);
+    fetchObjectMethod(item_id, callback) {
+        this.props.fetchColaborador(item_id, {callback});
     }
 
     createObjectMethod(item, successCallback) {
