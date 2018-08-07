@@ -90,8 +90,7 @@ class IndexApp extends Component {
                                     const callback = () => {
                                         this.props.logout();
                                     };
-                                    this.props.updatePuntoVenta(
-                                        punto_venta.id, {
+                                    this.props.updatePuntoVenta(punto_venta.id, {
                                             ...punto_venta,
                                             usuario_actual: null,
                                             abierto: false
