@@ -12,9 +12,9 @@ class BilleteMoneda(models.Model):
         (0, 'BILLETES'),
         (1, 'MONEDAS'),
     )
-    tipo = models.IntegerField()
+    tipo = models.IntegerField(choices=TIPO_CHOICES)
     valor = models.DecimalField(max_digits=10, decimal_places=0)
-    activo = models.BooleanField()
+    activo = models.BooleanField(default=False)
 
     class Meta:
         unique_together = (('valor', 'tipo'))

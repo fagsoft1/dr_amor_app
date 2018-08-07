@@ -15,19 +15,6 @@ import {
 import BloqueHabitaciones from '../../habitaciones/components/habitaciones_list';
 import BloqueHabitacionesTipos from '../../habitaciones_tipos/components/habitaciones_tipos_list';
 
-const styles = {
-    headline: {
-        fontSize: 24,
-        paddingTop: 16,
-        marginBottom: 12,
-        fontWeight: 400,
-    },
-    slide: {
-        padding: 10,
-    },
-};
-
-
 class ListadoElementos extends Component {
     constructor(props) {
         super(props);
@@ -84,6 +71,7 @@ class ListadoElementos extends Component {
             permisos_object_1.list ||
             permisos_object_2.list;
         return (
+
             <ValidarPermisos can_see={can_see} nombre={this.plural_name}>
                 <Titulo>{this.singular_name}</Titulo>
 

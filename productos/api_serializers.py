@@ -4,11 +4,17 @@ from .models import Producto, Categoria, CategoriaDos, UnidadProducto
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.nombre
+
     class Meta:
         model = Categoria
         fields = [
             'url',
             'id',
+            'to_string',
             'nombre',
             'codigo'
         ]
@@ -16,6 +22,10 @@ class CategoriaSerializer(serializers.ModelSerializer):
 
 class CategoriaDosSerializer(serializers.ModelSerializer):
     categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.nombre
 
     class Meta:
         model = CategoriaDos
@@ -26,16 +36,23 @@ class CategoriaDosSerializer(serializers.ModelSerializer):
             'categoria_nombre',
             'codigo',
             'categoria',
+            'to_string',
         ]
 
 
 class UnidadProductoSerializer(serializers.ModelSerializer):
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.nombre
+
     class Meta:
         model = UnidadProducto
         fields = [
             'url',
             'id',
-            'nombre'
+            'nombre',
+            'to_string'
         ]
 
 
@@ -44,6 +61,10 @@ class ProductoSerializer(serializers.ModelSerializer):
     categoria_dos_nombre = serializers.CharField(source='categoria_dos.nombre', read_only=True)
     unidad_producto_nombre = serializers.CharField(source='unidad_producto.nombre', read_only=True)
     empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.nombre
 
     class Meta:
         model = Producto
@@ -51,6 +72,7 @@ class ProductoSerializer(serializers.ModelSerializer):
             'url',
             'id',
             'nombre',
+            'to_string',
             'categoria_nombre',
             'categoria_dos',
             'categoria_dos_nombre',

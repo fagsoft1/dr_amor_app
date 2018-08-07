@@ -5,14 +5,17 @@ from .models import Habitacion, TipoHabitacion
 
 
 class TipoHabitacionSerializer(serializers.ModelSerializer):
-    # valor_antes_impuestos = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=10)
-    # impuesto = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=10)
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.nombre
 
     class Meta:
         model = TipoHabitacion
         fields = (
             'id',
             'nombre',
+            'to_string',
             'valor',
             'porcentaje_impuesto',
             'valor_antes_impuestos',
@@ -35,6 +38,10 @@ class HabitacionSerializer(serializers.ModelSerializer):
     )
     empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)
     tiempo_final_servicio = serializers.DateTimeField(read_only=True)
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return ('%s %s') % (instance.tipo.nombre, instance.numero)
 
     class Meta:
         model = Habitacion
@@ -49,6 +56,7 @@ class HabitacionSerializer(serializers.ModelSerializer):
             'empresa',
             'empresa_nombre',
             'numero',
+            'to_string',
             'tiempo_final_servicio',
             'fecha_ultimo_estado',
             'estado',

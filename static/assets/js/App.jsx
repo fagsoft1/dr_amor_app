@@ -77,18 +77,18 @@ class RootContainerComponent extends Component {
             <BrowserRouter>
                 <Fragment>
                     <Notify/>
-                    <Switch>
-                        <PrivateRoute exact path="/" component={AppIndex}/>
-                        <PrivateRoute exact path='/app' component={AppIndex}/>
-                        <Route path='/app/login' component={Login}/>
-                        <PrivateRoute path='/app/mi_cuenta' component={MiCuenta}/>
-                        <PrivateRoute path='/app/admin' component={AppAdmin}/>
-                        <PrivateRoute path='/app/tienda' component={AppTienda}/>
-                        <PrivateRoute path='/app/servicios' component={AppServicios}/>
-                        <PrivateRoute path='/app/cajas' component={AppCaja}/>
-                        <PrivateRoute path='/app/acceso' component={AppAcceso}/>
-                        <PrivateRoute component={NotFound}/>
-                    </Switch>
+                        <Switch>
+                            <PrivateRoute exact path="/" component={AppIndex}/>
+                            <PrivateRoute exact path='/app' component={AppIndex}/>
+                            <Route path='/app/login' component={Login}/>
+                            <PrivateRoute path='/app/mi_cuenta' component={MiCuenta}/>
+                            <PrivateRoute path='/app/admin' component={AppAdmin}/>
+                            <PrivateRoute path='/app/tienda' component={AppTienda}/>
+                            <PrivateRoute path='/app/servicios' component={AppServicios}/>
+                            <PrivateRoute path='/app/cajas' component={AppCaja}/>
+                            <PrivateRoute path='/app/acceso' component={AppAcceso}/>
+                            <PrivateRoute component={NotFound}/>
+                        </Switch>
                     <div style={{
                         position: 'fixed',
                         left: 10,

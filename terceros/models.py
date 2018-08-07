@@ -73,11 +73,15 @@ class Tercero(models.Model):
             if self.nombre_segundo:
                 nombre_segundo = ' %s' % (self.nombre_segundo)
 
+            apellido = ''
+            if self.apellido_segundo:
+                apellido = ' %s' % (self.apellido)
+
             apellido_segundo = ''
             if self.apellido_segundo:
                 apellido_segundo = ' %s' % (self.apellido_segundo)
 
-            return '%s%s %s%s' % (self.nombre, nombre_segundo, self.apellido, apellido_segundo)
+            return '%s%s %s%s' % (self.nombre, nombre_segundo, apellido, apellido_segundo)
 
     @property
     def full_name(self) -> str:

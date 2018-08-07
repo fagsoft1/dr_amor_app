@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
 import * as actions from "../../../01_actions/01_index";
+import ErrorBoundary from './error_boundary';
 
 const LoadingOverlay = (props) => {
     const {esta_cargando: {cargando, mensaje}} = props;
@@ -25,12 +26,14 @@ const LoadingOverlay = (props) => {
                     </div>
                 </div>
             </div>
-            {props.children}
+            <ErrorBoundary>
+                {props.children}
+            </ErrorBoundary>
         </div>
     )
 };
 
-function mapPropsToState(state, ownProps) {
+function mapPropsToState(state) {
     return {
         esta_cargando: state.esta_cargando,
         isAuthenticated: state.auth.isAuthenticated,

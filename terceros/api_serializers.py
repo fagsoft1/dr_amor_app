@@ -26,6 +26,10 @@ class AcompananteSerializer(serializers.ModelSerializer):
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)
     fecha_nacimiento = serializers.DateTimeField(format="%Y-%m-%d", input_formats=['%Y-%m-%d', 'iso-8601'])
     saldo_final = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.full_name_proxy
 
     class Meta:
         model = Tercero
@@ -33,6 +37,7 @@ class AcompananteSerializer(serializers.ModelSerializer):
             'id',
             'full_name',
             'full_name_proxy',
+            'to_string',
             'nombre',
             'nombre_segundo',
             'apellido',
@@ -107,6 +112,10 @@ class AcompananteSerializer(serializers.ModelSerializer):
 class ColaboradorSerializer(serializers.ModelSerializer):
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)
     fecha_nacimiento = serializers.DateTimeField(format="%Y-%m-%d", input_formats=['%Y-%m-%d', 'iso-8601'])
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.full_name_proxy
 
     class Meta:
         model = Tercero
@@ -115,6 +124,7 @@ class ColaboradorSerializer(serializers.ModelSerializer):
             'full_name',
             'full_name_proxy',
             'nombre',
+            'to_string',
             'nombre_segundo',
             'apellido',
             'apellido_segundo',
@@ -182,6 +192,11 @@ class ColaboradorSerializer(serializers.ModelSerializer):
 
 
 class ProveedorSerializer(serializers.ModelSerializer):
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.full_name_proxy
+
     def create(self, validated_data):
         validated_data.update(es_proveedor=True)
         return super().create(validated_data)
@@ -191,6 +206,7 @@ class ProveedorSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'nombre',
+            'to_string',
             'tipo_documento',
             'es_proveedor',
             'nro_identificacion',

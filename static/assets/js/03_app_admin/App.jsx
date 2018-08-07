@@ -19,7 +19,7 @@ import ColaboradorDetail from "./especificas/terceros_colaboradores/colaboradore
 import ProveedoresList from "./especificas/terceros_proveedores/proveedores/containers/proveedores_list_container";
 import EmpresasList from "./especificas/empresas/empresas/containers/empresas_list_container";
 import HabitacionesList from "./especificas/habitaciones/habitaciones_dashboard/containers/habitaciones_dashboard";
-import ProductosDashboard from "./especificas/productos/productos_dashboard/containers/base_dashboard";
+import ProductosDashboard from "./especificas/productos/productos_dashboard/containers/productos_dashboard";
 import BodegasList from "./especificas/inventarios/bodegas/containers/bodegas_list_container";
 import BodegasDetail from "./especificas/inventarios/bodegas/containers/bodega_detail";
 import MovimientosInventariosList

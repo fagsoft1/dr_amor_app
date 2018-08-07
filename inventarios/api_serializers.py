@@ -6,12 +6,18 @@ from .models import Bodega, MovimientoInventario, MovimientoInventarioDetalle, T
 
 
 class BodegaSerializer(serializers.ModelSerializer):
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.nombre
+
     class Meta:
         model = Bodega
         fields = [
             'url',
             'id',
             'nombre',
+            'to_string',
             'es_principal',
         ]
 

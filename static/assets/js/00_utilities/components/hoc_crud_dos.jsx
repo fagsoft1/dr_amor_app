@@ -18,29 +18,61 @@ function crudHOC(CreateForm, Tabla) {
         }
 
         onDelete(item) {
-            const {method_pool} = this.props;
+            const {
+                method_pool,
+                notificarAction,
+                singular_name,
+                successDeleteCallback = null
+            } = this.props;
             method_pool.deleteObjectMethod(
-                item,
-                () => {
-                    this.setState({modal_open: false, item_seleccionado: null});
+                item.id,
+                {
+                    callback: () => {
+                        const {to_string} = item;
+                        notificarAction(`Se ha eliminado con éxito ${singular_name.toLowerCase()} ${to_string}`);
+                        this.setState({modal_open: false, item_seleccionado: null});
+                        if (successDeleteCallback) {
+                            successDeleteCallback(item);
+                        }
+                    }
                 }
             );
         }
 
         onSubmit(item, uno = null, dos = null, cerrar_modal = true) {
-            const {method_pool} = this.props;
+            const {
+                method_pool,
+                notificarAction,
+                singular_name,
+                successSubmitCallback = null
+            } = this.props;
             if (item.id) {
                 method_pool.updateObjectMethod(
+                    item.id,
                     item,
-                    () => {
-                        this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : item});
+                    {
+                        callback: (response) => {
+                            const {to_string} = response;
+                            notificarAction(`Se ha actualizado con éxito ${singular_name.toLowerCase()} ${to_string}`);
+                            this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : item});
+                            if (successSubmitCallback) {
+                                successSubmitCallback(response);
+                            }
+                        }
                     }
                 );
             } else {
                 method_pool.createObjectMethod(
                     item,
-                    () => {
-                        this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : item});
+                    {
+                        callback: (response) => {
+                            const {to_string} = response;
+                            notificarAction(`Se ha creado con éxito ${singular_name.toLowerCase()} ${to_string}`);
+                            this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : item});
+                            if (successSubmitCallback) {
+                                successSubmitCallback(response);
+                            }
+                        }
                     }
                 );
             }
@@ -50,7 +82,7 @@ function crudHOC(CreateForm, Tabla) {
             const {method_pool} = this.props;
             method_pool.fetchObjectMethod(
                 item.id,
-                () => this.setState({modal_open: true, item_seleccionado: item})
+                {callback: () => this.setState({modal_open: true, item_seleccionado: item})}
             );
         }
 

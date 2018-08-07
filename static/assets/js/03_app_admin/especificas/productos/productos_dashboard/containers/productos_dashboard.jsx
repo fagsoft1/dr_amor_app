@@ -19,19 +19,6 @@ import BloqueCategorias from '../../categorias/components/categorias_list';
 import BloqueCategoriasDos from '../../categorias_dos/components/categorias_dos_list';
 import BloqueUnidadesProductos from '../../unidades/components/unidades_list';
 
-const styles = {
-    headline: {
-        fontSize: 24,
-        paddingTop: 16,
-        marginBottom: 12,
-        fontWeight: 400,
-    },
-    slide: {
-        padding: 10,
-    },
-};
-
-
 class ListadoElementos extends Component {
     constructor(props) {
         super(props);
@@ -54,27 +41,19 @@ class ListadoElementos extends Component {
     };
 
     cargarElementos(value = null) {
-
         let index = value !== null ? value : this.state.slideIndex;
-
-
-        const cargarCategoriasProductosDos = () => this.props.fetchCategoriasProductosDos();
-        const cargarCategoriasProductos = () => this.props.fetchCategoriasProductos();
-        const cargarUnidadesProductos = () => this.props.fetchUnidadesProductos();
-        const cargarEmpresas = () => this.props.fetchEmpresas();
-
         if (index === 0) {
-            cargarUnidadesProductos();
-            cargarCategoriasProductosDos();
-            cargarEmpresas();
-            this.props.fetchProductos();
+            this.props.fetchProductos({
+                callback: () => this.props.fetchEmpresas({
+                    callback: () => this.props.fetchCategoriasProductosDos({callback: this.props.fetchUnidadesProductos})
+                })
+            });
         } else if (index === 1) {
-            cargarCategoriasProductos();
+            this.props.fetchCategoriasProductos();
         } else if (index === 2) {
-            cargarCategoriasProductos();
-            cargarCategoriasProductosDos();
+            this.props.fetchCategoriasProductos({callback: this.props.fetchCategoriasProductosDos});
         } else if (index === 3) {
-            cargarUnidadesProductos();
+            this.props.fetchUnidadesProductos();
         }
     }
 
@@ -97,10 +76,10 @@ class ListadoElementos extends Component {
 
     render() {
         const {bloque_1_list, bloque_2_list, bloque_3_list, bloque_4_list} = this.props;
-        const permisos_object_1 = permisosAdapter( bloque_1_permisos);
-        const permisos_object_2 = permisosAdapter( bloque_2_permisos);
-        const permisos_object_3 = permisosAdapter( bloque_3_permisos);
-        const permisos_object_4 = permisosAdapter( bloque_4_permisos);
+        const permisos_object_1 = permisosAdapter(bloque_1_permisos);
+        const permisos_object_2 = permisosAdapter(bloque_2_permisos);
+        const permisos_object_3 = permisosAdapter(bloque_3_permisos);
+        const permisos_object_4 = permisosAdapter(bloque_4_permisos);
 
         const can_see =
             permisos_object_1.list ||

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import CreateForm from './forms/traslado_form';
 import Tabla from './traslados_tabla';
-import crudHOC from '../../../../../00_utilities/components/hoc_crud';
+import crudHOC from '../../../../../00_utilities/components/hoc_crud_dos';
 
 
 const CRUD = crudHOC(CreateForm, Tabla);
@@ -10,57 +10,13 @@ class List extends Component {
     constructor(props) {
         super(props);
         this.method_pool = {
-            fetchObjectMethod: this.fetchObjectMethod.bind(this),
-            deleteObjectMethod: this.deleteObjectMethod.bind(this),
-            createObjectMethod: this.createObjectMethod.bind(this),
-            updateObjectMethod: this.updateObjectMethod.bind(this),
+            fetchObjectMethod: this.props.fetchTrasladoInventario,
+            deleteObjectMethod: this.props.deleteTrasladoInventario,
+            createObjectMethod: this.props.createTrasladoInventario,
+            updateObjectMethod: this.props.updateTrasladoInventario,
         };
         this.plural_name = 'Traslados Inventarios';
         this.singular_name = 'Traslado Inventario';
-    }
-
-    successSubmitCallback(item) {
-        const nombre = item.nombre;
-        const {notificarAction} = this.props;
-        notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-
-    }
-
-
-    successDeleteCallback(item) {
-        const nombre = item.nombre;
-        const {notificarAction} = this.props;
-        notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-
-    }
-
-    fetchObjectMethod(item_id, callback) {
-        this.props.fetchTrasladoInventario(item_id, {callback});
-    }
-
-    createObjectMethod(item, successCallback) {
-        const callback = (response) => {
-            this.successSubmitCallback(response);
-            successCallback();
-            this.props.history.push(`/app/admin/inventarios/traslados/detail/${response.id}`);
-        };
-        this.props.createTrasladoInventario(item, {callback});
-    }
-
-    updateObjectMethod(item, successCallback) {
-        const callback = () => {
-            this.successSubmitCallback(item);
-            successCallback();
-        };
-        this.props.updateTrasladoInventario(item.id, item, {callback});
-    }
-
-    deleteObjectMethod(item, successCallback) {
-        const callback = () => {
-            this.successDeleteCallback(item);
-            successCallback();
-        };
-        this.props.deleteTrasladoInventario(item.id, {callback});
     }
 
     render() {

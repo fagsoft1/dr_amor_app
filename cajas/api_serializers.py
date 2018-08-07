@@ -1,10 +1,14 @@
-from channels.binding.websockets import WebsocketBinding
 from rest_framework import serializers
 
 from .models import BilleteMoneda, ArqueoCaja
 
 
 class BilleteMonedaSerializer(serializers.ModelSerializer):
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return '%s de %s' % (instance.get_tipo_display(), instance.valor)
+
     class Meta:
         model = BilleteMoneda
         fields = (
@@ -12,6 +16,7 @@ class BilleteMonedaSerializer(serializers.ModelSerializer):
             'tipo',
             'valor',
             'activo',
+            'to_string',
         )
 
 

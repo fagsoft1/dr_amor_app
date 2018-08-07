@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import CreateForm from './forms/productos_form';
 import Tabla from './productos_tabla';
-import crudHOC from '../../../../../00_utilities/components/hoc_crud';
+import crudHOC from '../../../../../00_utilities/components/hoc_crud_dos';
 
 
 const CRUD = crudHOC(CreateForm, Tabla);
@@ -10,56 +10,13 @@ class List extends Component {
     constructor(props) {
         super(props);
         this.method_pool = {
-            fetchObjectMethod: this.fetchObjectMethod.bind(this),
-            deleteObjectMethod: this.deleteObjectMethod.bind(this),
-            createObjectMethod: this.createObjectMethod.bind(this),
-            updateObjectMethod: this.updateObjectMethod.bind(this),
+            fetchObjectMethod: this.props.fetchProducto,
+            deleteObjectMethod: this.props.deleteProducto,
+            createObjectMethod: this.props.createProducto,
+            updateObjectMethod: this.props.updateProducto,
         };
         this.plural_name = 'Productos';
         this.singular_name = 'Producto';
-    }
-
-    successSubmitCallback(item) {
-        const nombre = item.nombre;
-        const { notificarAction} = this.props;
-        notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-
-    }
-
-
-    successDeleteCallback(item) {
-        const nombre = item.nombre;
-        const { notificarAction} = this.props;
-        notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-
-    }
-
-    fetchObjectMethod(item_id, callback) {
-        this.props.fetchProducto(item_id, {callback});
-    }
-
-    createObjectMethod(item, successCallback) {
-        const callback = (response) => {
-            this.successSubmitCallback(response);
-            successCallback();
-        };
-        this.props.createProducto(item, {callback});
-    }
-
-    updateObjectMethod(item, successCallback) {
-        const callback = () => {
-            this.successSubmitCallback(item);
-            successCallback();
-        };
-        this.props.updateProducto(item.id, item, {callback});
-    }
-
-    deleteObjectMethod(item, successCallback) {
-        const callback = () => {
-            this.successDeleteCallback(item);
-            successCallback();
-        };
-        this.props.deleteProducto(item.id, {callback});
     }
 
     render() {

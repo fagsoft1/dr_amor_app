@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import CreateForm from './forms/colaboradores_form';
 import Tabla from './colaboradores_tabla';
-import crudHOC from '../../../../../00_utilities/components/hoc_crud';
+import crudHOC from '../../../../../00_utilities/components/hoc_crud_dos';
 
 
 const CRUD = crudHOC(CreateForm, Tabla);
@@ -10,56 +10,13 @@ class List extends Component {
     constructor(props) {
         super(props);
         this.method_pool = {
-            fetchObjectMethod: this.fetchObjectMethod.bind(this),
-            deleteObjectMethod: this.deleteObjectMethod.bind(this),
-            createObjectMethod: this.createObjectMethod.bind(this),
-            updateObjectMethod: this.updateObjectMethod.bind(this),
+            fetchObjectMethod: this.props.fetchColaborador,
+            deleteObjectMethod: this.props.deleteColaborador,
+            createObjectMethod: this.props.createColaborador,
+            updateObjectMethod: this.props.updateColaborador,
         };
         this.plural_name = 'Colaboradores';
         this.singular_name = 'Colaborador';
-    }
-
-    successSubmitCallback(item) {
-        const nombre = item.full_name_proxy;
-        const {notificarAction} = this.props;
-        notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-
-    }
-
-
-    successDeleteCallback(item) {
-        const nombre = item.full_name_proxy;
-        const {notificarAction} = this.props;
-        notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-
-    }
-
-    fetchObjectMethod(item_id, callback) {
-        this.props.fetchColaborador(item_id, {callback});
-    }
-
-    createObjectMethod(item, successCallback) {
-        const callback = (response) => {
-            this.successSubmitCallback(response);
-            successCallback();
-        };
-        this.props.createColaborador(item, {callback});
-    }
-
-    updateObjectMethod(item, successCallback) {
-        const callback = (colaborador) => {
-            this.successSubmitCallback(colaborador);
-            successCallback();
-        };
-        this.props.updateColaborador(item.id, item, {callback});
-    }
-
-    deleteObjectMethod(item, successCallback) {
-        const callback = () => {
-            this.successDeleteCallback(item);
-            successCallback();
-        };
-        this.props.deleteColaborador(item.id, {callback});
     }
 
     render() {

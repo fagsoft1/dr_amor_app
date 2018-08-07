@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import CreateForm from './forms/movimiento_inventario_form';
 import Tabla from './movimientos_inventarios_tabla';
-import crudHOC from '../../../../../00_utilities/components/hoc_crud';
-import {fechaFormatoUno} from "../../../../../00_utilities/common";
+import crudHOC from '../../../../../00_utilities/components/hoc_crud_dos';
 
 
 const CRUD = crudHOC(CreateForm, Tabla);
@@ -11,57 +10,13 @@ class List extends Component {
     constructor(props) {
         super(props);
         this.method_pool = {
-            fetchObjectMethod: this.fetchObjectMethod.bind(this),
-            deleteObjectMethod: this.deleteObjectMethod.bind(this),
-            createObjectMethod: this.createObjectMethod.bind(this),
-            updateObjectMethod: this.updateObjectMethod.bind(this),
+            fetchObjectMethod: this.props.fetchMovimientoInventario,
+            deleteObjectMethod: this.props.deleteMovimientoInventario,
+            createObjectMethod: this.props.createMovimientoInventario,
+            updateObjectMethod: this.props.updateMovimientoInventario,
         };
         this.plural_name = 'Movimientos Inventarios';
         this.singular_name = 'Movimiento Inventario';
-    }
-
-    successSubmitCallback(item) {
-        const nombre = `de ${fechaFormatoUno(item.fecha)} número ${item.id}`;
-        const {notificarAction} = this.props;
-        notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-
-    }
-
-
-    successDeleteCallback(item) {
-        const nombre = `de ${fechaFormatoUno(item.fecha)} número ${item.id}`;
-        const {notificarAction} = this.props;
-        notificarAction(`Se ha eliminado con éxito ${this.singular_name.toLowerCase()} ${nombre}`);
-
-    }
-
-    fetchObjectMethod(item_id, callback) {
-        this.props.fetchMovimientoInventario(item_id, {callback});
-    }
-
-    createObjectMethod(item, successCallback) {
-        const callback = (response) => {
-            this.successSubmitCallback(response);
-            successCallback();
-            this.props.history.push(`/app/admin/inventarios/movimientos_inventarios/detail/${response.id}`);
-        };
-        this.props.createMovimientoInventario(item, {callback});
-    }
-
-    updateObjectMethod(item, successCallback) {
-        const callback = () => {
-            this.successSubmitCallback(item);
-            successCallback();
-        };
-        this.props.updateMovimientoInventario(item.id, item, {callback});
-    }
-
-    deleteObjectMethod(item, successCallback) {
-        const callback = () => {
-            this.successDeleteCallback(item);
-            successCallback();
-        };
-        this.props.deleteMovimientoInventario(item.id, {callback});
     }
 
     render() {

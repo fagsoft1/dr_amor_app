@@ -6,6 +6,10 @@ from .models import PuntoVenta
 class PuntoVentaSerializer(serializers.ModelSerializer):
     bodega_nombre = serializers.CharField(source='bodega.nombre', read_only=True)
     tipo_nombre = serializers.SerializerMethodField()
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.nombre
 
     class Meta:
         model = PuntoVenta
@@ -13,6 +17,7 @@ class PuntoVentaSerializer(serializers.ModelSerializer):
             'url',
             'id',
             'nombre',
+            'to_string',
             'bodega',
             'bodega_nombre',
             'tipo',
