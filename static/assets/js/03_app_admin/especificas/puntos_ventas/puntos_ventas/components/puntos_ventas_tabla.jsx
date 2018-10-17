@@ -88,16 +88,6 @@ class Tabla extends React.Component {
                                         }}/>
 
                             },
-                            {
-                                Header: "Ver",
-                                show: permisos_object.detail,
-                                maxWidth: 60,
-                                Cell: row =>
-                                    <Link to={`/app/admin/algos/detail/${row.original.id}`}>
-                                        <IconButtonTableSee/>
-                                    </Link>
-
-                            }
                         ]
                     }
                 ]}

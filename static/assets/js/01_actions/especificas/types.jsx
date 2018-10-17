@@ -205,3 +205,21 @@ export const ARQUEO_CAJA_TYPES = {
     clear: 'clear_arqueos_cajas',
     update: 'update_arqueo_caja',
 };
+
+export const CONCEPTO_OPERACION_CAJA_TYPES = {
+    create: 'create_concepto_operacion_caja',
+    delete: 'delete_concepto_operacion_caja',
+    fetch_all: 'fetch_conceptos_operaciones_caja',
+    fetch: 'fetch_concepto_operacion_caja',
+    clear: 'clear_conceptos_operaciones_caja',
+    update: 'update_concepto_operacion_caja',
+};
+
+export const OPERACION_CAJA_TYPES = {
+    create: 'create_operacion_caja',
+    delete: 'delete_operacion_caja',
+    fetch_all: 'fetch_operaciones_caja',
+    fetch: 'fetch_operacion_caja',
+    clear: 'clear_operaciones_caja',
+    update: 'update_operacion_caja',
+};

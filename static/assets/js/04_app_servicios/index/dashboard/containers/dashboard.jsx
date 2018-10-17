@@ -86,7 +86,6 @@ class ServiciosDashboar extends Component {
     }
 
     abrirModalServicio(servicio) {
-        this.clearDatos();
         const callback = (response_servicio) => {
             const {estado} = response_servicio;
             if (estado === 1) {

@@ -7,7 +7,6 @@ import {FlatIconModal} from '../../../00_utilities/components/ui/icon/iconos_bas
 const TablaBilletesMonedas = (props) => {
     const {nombre, styles, lista, onChange, denominaciones} = props;
     const sum = _.map(denominaciones, e => e.total).reduce((acu, ele) => acu + ele, 0);
-
     return (
         <Fragment>
             <h6>{nombre}</h6>

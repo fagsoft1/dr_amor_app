@@ -28,7 +28,8 @@ class ServicioDetailModal extends Component {
     }
 
     cargarDatos() {
-        const {servicio} = this.props;
+        const {servicio,servicios} = this.props;
+        console.log(servicios)
         this.props.fetchHabitaciones();
         this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(servicio.categoria_id);
 

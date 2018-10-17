@@ -31,7 +31,6 @@ class LiquidarAcompanante extends Component {
             fetchServicios_por_tercero_cuenta_abierta
         } = this.props;
         const {id_tercero} = this.state;
-
         fetchServicios_por_tercero_cuenta_abierta(id_tercero);
     }
 
@@ -44,10 +43,7 @@ class LiquidarAcompanante extends Component {
     }
 
     cargarDatos() {
-        const {
-            fetchAcompanantesPresentes,
-        } = this.props;
-
+        const {fetchAcompanantesPresentes} = this.props;
         fetchAcompanantesPresentes();
     }
 

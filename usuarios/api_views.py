@@ -118,10 +118,10 @@ class LoginAPI(generics.GenericAPIView):
         if punto_venta:
             if punto_venta.abierto and not punto_venta.usuario_actual == user:
                 raise serializers.ValidationError(
-                    {'error': ['%s tiene abierto este Punto de Venta!' % punto_venta.usuario_actual.username]}
+                    {'error': [
+                        '%s tiene abierto este Punto de Venta! Debe cerrarlo primero' % punto_venta.usuario_actual.username]}
                 )
             else:
-                punto_venta.abierto = True
                 punto_venta.usuario_actual = user
                 punto_venta.save()
 

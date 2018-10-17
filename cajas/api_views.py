@@ -11,14 +11,56 @@ from rest_framework.response import Response
 from weasyprint import CSS, HTML
 
 from dr_amor_app import settings
-from .api_serializers import BilleteMonedaSerializer, ArqueoCajaSerializer
+from .api_serializers import (
+    BilleteMonedaSerializer,
+    ArqueoCajaSerializer,
+    ConceptoOperacionCajaSerializer,
+    OperacionCajaSerializer
+)
 from .models import (
     BilleteMoneda,
+    OperacionCaja,
+    ConceptoOperacionCaja,
     ArqueoCaja,
     EfectivoEntregaDenominacion,
     BaseDisponibleDenominacion,
-    MovimientoDineroPDV
+    MovimientoDineroPDV,
 )
+
+
+class OperacionCajaViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = OperacionCaja.objects.all()
+    serializer_class = OperacionCajaSerializer
+
+    def perform_create(self, serializer):
+        operacion = serializer.save()
+        tipo_dos_movimiento = 'OPE_CAJ_ING'
+        if operacion.tercero and (operacion.tercero.es_acompanante or operacion.tercero.es_colaborador):
+            operacion.cuenta = operacion.tercero.cuenta_abierta
+            if operacion.concepto.tipo == 'E':
+                operacion.valor *= -1
+                tipo_dos_movimiento = 'OPE_CAJ_EGR'
+            operacion.save()
+        movimiento = MovimientoDineroPDV.objects.create(
+            tipo=operacion.concepto.tipo,
+            tipo_dos=tipo_dos_movimiento,
+            punto_venta_id=operacion.punto_venta_id,
+            concepto=operacion.descripcion,
+            creado_por=self.request.user,
+            valor_tarjeta=0,
+            valor_efectivo=operacion.valor,
+            nro_autorizacion=None,
+            franquicia=None
+        )
+        operacion.movimiento_dinero = movimiento
+        operacion.save()
+
+
+class ConceptoOperacionCajaViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = ConceptoOperacionCaja.objects.all()
+    serializer_class = ConceptoOperacionCajaSerializer
 
 
 class BilleteMonedaViewSet(viewsets.ModelViewSet):

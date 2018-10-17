@@ -32,8 +32,7 @@ class GruposPermisosList extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchPermisosActivos(
-            {callback: (response) => this.setState({todos_los_permisos: _.mapKeys(response, 'id')})});
+        this.props.fetchPermisosActivos({callback: response => this.setState({todos_los_permisos: _.mapKeys(response, 'id')})});
         this.cargarDatos();
     }
 

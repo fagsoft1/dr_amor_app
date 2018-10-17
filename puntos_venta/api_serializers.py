@@ -4,6 +4,7 @@ from .models import PuntoVenta
 
 
 class PuntoVentaSerializer(serializers.ModelSerializer):
+    usuario_actual_nombre = serializers.CharField(source='usuario_actual.username', read_only=True)
     bodega_nombre = serializers.CharField(source='bodega.nombre', read_only=True)
     tipo_nombre = serializers.SerializerMethodField()
     to_string = serializers.SerializerMethodField()
@@ -24,6 +25,7 @@ class PuntoVentaSerializer(serializers.ModelSerializer):
             'tipo_nombre',
             'abierto',
             'usuario_actual',
+            'usuario_actual_nombre',
         ]
 
     def get_tipo_nombre(self, obj):

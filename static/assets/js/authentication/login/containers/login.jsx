@@ -93,7 +93,12 @@ class Login extends Component {
                                     disabled={esta_cargando.cargando}
                                     name='punto_venta'
                                     nombre='Seleccione punto de venta'
-                                    data={_.map(puntos_ventas, p => p)}
+                                    data={_.map(puntos_ventas, p => {
+                                        return {
+                                            nombre: `${p.nombre} ${p.usuario_actual ? `(Actualmente ${p.usuario_actual_nombre})` : ''}`,
+                                            id: p.id
+                                        }
+                                    })}
                                     textField='nombre'
                                     valuesField='id'
                                 />

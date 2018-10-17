@@ -31,7 +31,7 @@ class IndexApp extends Component {
                 <div className="container text-center">
                     <div className="row">
                         <div className="col-12 p-5">
-                            <img className='img-fluid' src={`${img_static_url}/logo.png`} alt=""/>
+                            <img width='400px' className='img-fluid' src={`${img_static_url}/logo.png`} alt=""/>
                         </div>
                         {
                             (mi_cuenta && (mi_cuenta.is_staff || mi_cuenta.is_superuser)) &&
@@ -43,6 +43,7 @@ class IndexApp extends Component {
                         }
                         {
                             punto_venta &&
+                            punto_venta.abierto &&
                             <Fragment>
                                 {
                                     punto_venta.tipo === 2 &&
@@ -87,19 +88,14 @@ class IndexApp extends Component {
                         <div className="col-4 boton-index mt-4">
                             <div className='icono puntero' onClick={() => {
                                 if (punto_venta && punto_venta.id) {
-                                    const callback = () => {
-                                        this.props.logout();
+                                    const callback = (pdv) => {
+                                        if (pdv.abierto) {
+                                            this.props.notificarErrorAction('Debe cerrar caja primero')
+                                        } else {
+                                            this.props.logout();
+                                        }
                                     };
-                                    this.props.updatePuntoVenta(punto_venta.id, {
-                                            ...punto_venta,
-                                            usuario_actual: null,
-                                            abierto: false
-                                        },
-                                        {callback}
-                                    )
-                                }
-                                else {
-                                    this.props.logout();
+                                    this.props.fetchPuntoVenta(punto_venta.id, {callback})
                                 }
                             }}>
                                 <div className="row">

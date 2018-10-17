@@ -21,7 +21,8 @@ from cajas.models import (
 class PuntoVentaViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = PuntoVenta.objects.select_related(
-        'bodega'
+        'bodega',
+        'usuario_actual'
     ).all()
     serializer_class = PuntoVentaSerializer
 

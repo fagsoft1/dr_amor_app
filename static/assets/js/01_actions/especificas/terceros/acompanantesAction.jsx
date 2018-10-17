@@ -10,7 +10,7 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'acompanantes';
-export const createAcompanante = (values, options_action={}) => {
+export const createAcompanante = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -19,7 +19,7 @@ export const createAcompanante = (values, options_action={}) => {
         createObject(current_url_api, values, options);
     }
 };
-export const deleteAcompanante = (id, options_action={}) => {
+export const deleteAcompanante = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -28,15 +28,14 @@ export const deleteAcompanante = (id, options_action={}) => {
         deleteObject(current_url_api, id, options);
     }
 };
-export const fetchAcompanantes = (options_action={}) => {
+export const fetchAcompanantes = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
-            dispatches,
-            ...options_action,
+            dispatches, ...options_action,
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
@@ -44,7 +43,7 @@ export const fetchAcompanantes = (options_action={}) => {
     }
 };
 
-export const fetchAcompanantesPresentes = (options_action={}) => {
+export const fetchAcompanantesPresentes = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -56,7 +55,7 @@ export const fetchAcompanantesPresentes = (options_action={}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(current_url_api, options);
+        fetchListGet(`${current_url_api}/listar_presentes`, options);
     }
 };
 
@@ -75,7 +74,7 @@ export const clearAcompanantes = () => {
 
     }
 };
-export const updateAcompanante = (id, values, options_action={}) => {
+export const updateAcompanante = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

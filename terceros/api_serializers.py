@@ -207,6 +207,7 @@ class ProveedorSerializer(serializers.ModelSerializer):
             'id',
             'nombre',
             'to_string',
+            'full_name_proxy',
             'tipo_documento',
             'es_proveedor',
             'nro_identificacion',

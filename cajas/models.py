@@ -5,6 +5,29 @@ from servicios.models import Servicio
 from puntos_venta.models import PuntoVenta
 from productos.models import Producto
 from liquidaciones.models import LiquidacionCuenta
+from terceros.models import Cuenta, Tercero
+
+
+class ConceptoOperacionCaja(models.Model):
+    TIPO_CHOICES = (
+        ('I', 'Ingreso'),
+        ('E', 'Egreso'),
+    )
+    GRUPO_CHOICES = (
+        ('A', 'Acompañantes'),
+        ('C', 'Colaboradores'),
+        ('P', 'Proveedores'),
+        ('T', 'Taxis'),
+        ('O', 'Otros'),
+    )
+    tipo = models.CharField(choices=TIPO_CHOICES, max_length=3)
+    grupo = models.CharField(choices=GRUPO_CHOICES, max_length=3)
+    descripcion = models.CharField(max_length=300)
+
+    class Meta:
+        permissions = [
+            ['list_conceptooperacioncaja', 'Puede listar Conceptos Operaciones Caja'],
+        ]
 
 
 class BilleteMoneda(models.Model):
@@ -60,6 +83,8 @@ class MovimientoDineroPDV(TimeStampedModel):
         ("LIQ_ACOM", "Liquidacion Acompañante"),
         ("ANU_SER_ACOM", "Anulacion Servicio Acompañante"),
         ("BASE_INI", "Base Inicial"),
+        ("OPE_CAJ_EGR", "Operación Caja Egreso"),
+        ("OPE_CAJ_ING", "Operación Caja Ingreso"),
     )
     punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='movimientos_dinero')
     creado_por = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -85,3 +110,17 @@ class MovimientoDineroPDV(TimeStampedModel):
     valor_tarjeta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     franquicia = models.CharField(max_length=30, null=True)
     nro_autorizacion = models.CharField(max_length=30, null=True)
+
+
+class OperacionCaja(models.Model):
+    concepto = models.ForeignKey(ConceptoOperacionCaja, on_delete=models.PROTECT, related_name='operaciones_caja',
+                                 null=True)
+    cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='operaciones_caja', null=True)
+    tercero = models.ForeignKey(Tercero, on_delete=models.PROTECT, related_name='operaciones_caja', null=True)
+    grupo_operaciones = models.CharField(max_length=300)
+    descripcion = models.CharField(max_length=100)
+    observacion = models.TextField(null=True)
+    punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='operaciones_caja', null=True)
+    movimiento_dinero = models.ForeignKey(MovimientoDineroPDV, on_delete=models.PROTECT,
+                                          related_name='operaciones_caja', null=True)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)

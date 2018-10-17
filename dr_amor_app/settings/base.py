@@ -167,15 +167,3 @@ USE_THOUSAND_SEPARATOR = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = "media"
-STATIC_ROOT = "/static/"
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("localhost", 6379)],
-        },
-        "ROUTING": "dr_amor_app.ws_routing.channel_routing",
-    },
-}

@@ -209,3 +209,18 @@ export const ARQUEOS_CAJAS = {
     list: 'list_arqueocaja',
     detail: 'detail_arqueocaja',
 };
+
+export const CONCEPTOS_OPERACIONES_CAJA = {
+    add: 'add_conceptooperacioncaja',
+    delete: 'delete_conceptooperacioncaja',
+    change: 'change_conceptooperacioncaja',
+    list: 'list_conceptooperacioncaja',
+};
+
+export const OPERACIONES_CAJA = {
+add: 'add_operacioncaja',
+delete: 'delete_operacioncaja',
+change: 'change_operacioncaja',
+list: 'list_operacioncaja',
+detail: 'detail_operacioncaja',
+};

@@ -18,72 +18,39 @@ function crudHOC(CreateForm, Tabla) {
         }
 
         onDelete(item) {
-            const {
-                method_pool,
-                notificarAction,
-                singular_name,
-                successDeleteCallback = null
-            } = this.props;
-            method_pool.deleteObjectMethod(
-                item.id,
-                {
-                    callback: () => {
-                        const {to_string} = item;
-                        notificarAction(`Se ha eliminado con éxito ${singular_name.toLowerCase()} ${to_string}`);
-                        this.setState({modal_open: false, item_seleccionado: null});
-                        if (successDeleteCallback) {
-                            successDeleteCallback(item);
-                        }
-                    }
+            const {method_pool, notificarAction, singular_name, successDeleteCallback = null} = this.props;
+            const callback = () => {
+                const {to_string} = item;
+                notificarAction(`Se ha eliminado con éxito ${singular_name.toLowerCase()} ${to_string}`);
+                this.setState({modal_open: false, item_seleccionado: null});
+                if (successDeleteCallback) {
+                    successDeleteCallback(item);
                 }
-            );
+            };
+            method_pool.deleteObjectMethod(item.id, {callback});
         }
 
         onSubmit(item, uno = null, dos = null, cerrar_modal = true) {
-            const {
-                method_pool,
-                notificarAction,
-                singular_name,
-                successSubmitCallback = null
-            } = this.props;
+            const {method_pool, notificarAction, singular_name, successSubmitCallback = null} = this.props;
+            const callback = (response) => {
+                const {to_string} = response;
+                notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${singular_name.toLowerCase()} ${to_string}`);
+                this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : response});
+                if (successSubmitCallback) {
+                    successSubmitCallback(response);
+                }
+            };
             if (item.id) {
-                method_pool.updateObjectMethod(
-                    item.id,
-                    item,
-                    {
-                        callback: (response) => {
-                            const {to_string} = response;
-                            notificarAction(`Se ha actualizado con éxito ${singular_name.toLowerCase()} ${to_string}`);
-                            this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : item});
-                            if (successSubmitCallback) {
-                                successSubmitCallback(response);
-                            }
-                        }
-                    }
-                );
+                method_pool.updateObjectMethod(item.id, item, {callback});
             } else {
-                method_pool.createObjectMethod(
-                    item,
-                    {
-                        callback: (response) => {
-                            const {to_string} = response;
-                            notificarAction(`Se ha creado con éxito ${singular_name.toLowerCase()} ${to_string}`);
-                            this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : item});
-                            if (successSubmitCallback) {
-                                successSubmitCallback(response);
-                            }
-                        }
-                    }
-                );
+                method_pool.createObjectMethod(item, {callback});
             }
         }
 
         onSelectItemEdit(item) {
             const {method_pool} = this.props;
-            method_pool.fetchObjectMethod(
-                item.id,
-                {callback: () => this.setState({modal_open: true, item_seleccionado: item})}
-            );
+            const callback = () => this.setState({modal_open: true, item_seleccionado: item});
+            method_pool.fetchObjectMethod(item.id, {callback});
         }
 
         setSelectItem(item_seleccionado) {

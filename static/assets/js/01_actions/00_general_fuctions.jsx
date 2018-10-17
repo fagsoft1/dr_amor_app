@@ -10,7 +10,7 @@ const axios_instance = axios.create({
     //contentType: 'application/json; charset=utf-8',
 });
 
-const mostrarFunciones = (e) => {
+const mostrarFunciones = e => {
     const mostrar = true;
     if (mostrar) {
         e()

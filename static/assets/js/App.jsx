@@ -73,6 +73,7 @@ class RootContainerComponent extends Component {
     render() {
         let {PrivateRoute} = this;
         const {auth: {mi_cuenta, punto_venta}} = this.props;
+        console.log(punto_venta)
         return (
             <BrowserRouter>
                 <Fragment>

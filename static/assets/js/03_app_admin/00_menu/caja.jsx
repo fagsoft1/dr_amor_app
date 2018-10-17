@@ -13,6 +13,9 @@ const MenuCaja = (props) => (
             <Link to='/app/admin/cajas/billetes_monedas/list'>
                 <span className="dropdown-item">Billetes y Monedas</span>
             </Link>
+            <Link to='/app/admin/cajas/conceptos_operaciones_caja/list'>
+                <span className="dropdown-item">Conceptos Operaciones Caja</span>
+            </Link>
         </div>
     </li>
 );

@@ -36,6 +36,8 @@ import CategoriaAcompananteDetail
 import PuntosVentasList from "./especificas/puntos_ventas/puntos_ventas/containers/puntos_ventas_list_container";
 
 import BilletesMonedasList from "./especificas/cajas/billetes_monedas/containers/billetes_monedas_list_container";
+import ConceptosOperacionesCajaList
+    from "./especificas/cajas/conceptos_operaciones_cajas/containers/conceptos_operaciones_caja_list_container";
 
 const AdminApp = (props) => {
     return (
@@ -71,8 +73,9 @@ const AdminApp = (props) => {
                                component={CategoriaAcompananteDetail}/>
                         <Route exact path='/app/admin/puntos_ventas/puntos_ventas/list'
                                component={PuntosVentasList}/>
-                        <Route exact path='/app/admin/cajas/billetes_monedas/list'
-                               component={BilletesMonedasList}/>
+                        <Route exact path='/app/admin/cajas/billetes_monedas/list' component={BilletesMonedasList}/>
+                        <Route exact path='/app/admin/cajas/conceptos_operaciones_caja/list'
+                               component={ConceptosOperacionesCajaList}/>
                     </Switch>
                 </div>
             </Fragment>

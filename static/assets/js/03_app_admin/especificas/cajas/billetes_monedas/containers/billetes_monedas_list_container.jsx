@@ -7,8 +7,11 @@ import {
 } from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 
-import ListCrud from '../components/billetes_monedas_list';
+import CreateForm from '../components/forms/billetes_monedas_form';
+import Tabla from '../components/billetes_monedas_tabla';
+import crudHOC from '../../../../../00_utilities/components/hoc_crud';
 
+const CRUD = crudHOC(CreateForm, Tabla);
 
 class List extends Component {
     constructor(props) {
@@ -25,19 +28,26 @@ class List extends Component {
     }
 
     cargarDatos() {
-
-        
         this.props.fetchBilletesMonedas();
     }
 
     render() {
         const {object_list} = this.props;
-        const bloque_1_list = permisosAdapter( permisos_view);
+        const permisos_object = permisosAdapter(permisos_view);
+        const method_pool = {
+            fetchObjectMethod: this.props.fetchBilleteMoneda,
+            deleteObjectMethod: this.props.deleteBilleteMoneda,
+            createObjectMethod: this.props.createBilleteMoneda,
+            updateObjectMethod: this.props.updateBilleteMoneda,
+        };
         return (
             <Fragment>
-                <ListCrud
-                    object_list={object_list}
-                    permisos_object={bloque_1_list}
+                <CRUD
+                    method_pool={method_pool}
+                    list={object_list}
+                    permisos_object={permisos_object}
+                    plural_name='Billetes y Monedas'
+                    singular_name='Billete Moneda'
                     {...this.props}
                 />
                 <CargarDatos

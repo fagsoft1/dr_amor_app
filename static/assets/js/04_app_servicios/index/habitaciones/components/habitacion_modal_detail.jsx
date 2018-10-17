@@ -135,7 +135,6 @@ class HabitacionDetailModal extends Component {
             cerraModal,
             auth: {punto_venta}
         } = this.props;
-
         const {servicios_nuevos} = this.state;
         iniciarServiciosHabitacion(
             habitacion.id,
@@ -144,7 +143,6 @@ class HabitacionDetailModal extends Component {
             {
                 callback:
                     () => {
-                        this.cargarDatos();
                         cerraModal();
                     }
             }

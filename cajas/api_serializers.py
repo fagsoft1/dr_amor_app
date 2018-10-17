@@ -1,6 +1,53 @@
 from rest_framework import serializers
 
-from .models import BilleteMoneda, ArqueoCaja
+from .models import (
+    BilleteMoneda,
+    ArqueoCaja,
+    ConceptoOperacionCaja,
+    OperacionCaja
+)
+
+
+class OperacionCajaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OperacionCaja
+        fields = (
+            'id',
+            'tercero',
+            'concepto',
+            'grupo_operaciones',
+            'punto_venta',
+            'descripcion',
+            'observacion',
+            'valor',
+        )
+
+
+class ConceptoOperacionCajaSerializer(serializers.ModelSerializer):
+    to_string = serializers.SerializerMethodField()
+    tipo_display = serializers.SerializerMethodField()
+    grupo_display = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return '%s de %s' % (instance.get_tipo_display(), instance.descripcion)
+
+    def get_tipo_display(self, instance):
+        return instance.get_tipo_display()
+
+    def get_grupo_display(self, instance):
+        return instance.get_grupo_display()
+
+    class Meta:
+        model = ConceptoOperacionCaja
+        fields = (
+            'id',
+            'tipo',
+            'tipo_display',
+            'grupo',
+            'grupo_display',
+            'descripcion',
+            'to_string',
+        )
 
 
 class BilleteMonedaSerializer(serializers.ModelSerializer):

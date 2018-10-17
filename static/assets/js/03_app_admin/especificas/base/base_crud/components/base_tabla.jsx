@@ -62,7 +62,7 @@ class Tabla extends React.Component {
                                         onDelete={() => {
                                             onDelete(row.original)
                                         }}
-                                        element_name={row.original.nombre}
+                                        element_name={row.original.to_string}
                                         element_type={singular_name}
                                     />
 

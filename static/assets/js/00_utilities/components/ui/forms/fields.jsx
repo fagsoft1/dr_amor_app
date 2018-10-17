@@ -10,6 +10,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Select from 'react-select';
 
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import Combobox from 'react-widgets/lib/Combobox';
@@ -267,3 +268,105 @@ MyRadioButtonGroup.propTypes = {
     nombre: PropTypes.string,
     options: PropTypes.any
 };
+
+
+const renderSelect = (
+    {
+        input,
+        options,
+        meta: {touched, error, warning},
+        nombre,
+        valueKey = 'value',
+        labelKey = 'label',
+        isDisabled = false
+    }) => {
+    return (
+        <Fragment>
+            <Select
+                value={input.value}
+                onChange={input.onChange}
+                onBlur={() => input.onBlur(input.value)}
+                options={options}
+                placeholder={nombre}
+                valueKey={valueKey}
+                labelKey={labelKey}
+                isDisabled={isDisabled}
+                simpleValue
+            />
+            {touched && ((error && <span className='form-field-error'>{error}</span>) || (warning &&
+                <span>{warning}</span>))}
+        </Fragment>
+    )
+};
+
+export const MySelect = (props) => {
+    const {data, name, nombre, onChangeMethod = null, className = 'col-12'} = props;
+    return (
+        <div className={className}>
+            <Field
+                {...props}
+                autoComplete={props.autoComplete ? props.autoComplete : props.name}
+                onChangeMethod={onChangeMethod}
+                nombre={nombre}
+                name={name}
+                options={data}
+                component={renderSelect}
+            />
+        </div>
+    )
+};
+
+const renderSelectAsync = (
+    {
+        input,
+        options,
+        meta: {
+            touched,
+            error,
+            warning
+        },
+        nombre,
+        valueKey = "id",
+        labelKey = "name",
+        loadOptions,
+        filterOptions = null
+    }) => {
+    return (
+        <Fragment>
+            <Select.Async
+                value={input.value}
+                onChange={input.onChange}
+                onSelectResetsInput={false}
+                onBlurResetsInput={false}
+                onCloseResetsInput={false}
+
+                valueKey={valueKey}
+                labelKey={labelKey}
+                loadOptions={loadOptions}
+                backspaceRemoves={true}
+                filterOptions={filterOptions}
+
+                onBlur={() => input.onBlur(input.value)}
+                placeholder={nombre}
+                simpleValue
+            />
+            {touched && ((error && <span className='form-field-error'>{error}</span>) || (warning &&
+                <span>{warning}</span>))}
+        </Fragment>
+    )
+};
+
+export const MySelectAsync = (props) => {
+    const {name, nombre = null, className = 'col-12'} = props;
+    return (
+        <div className={className}>
+            <Field
+                autoComplete={props.autoComplete ? props.autoComplete : props.name}
+                nombre={nombre}
+                name={name}
+                {...props}
+                component={renderSelectAsync}
+            />
+        </div>
+    )
+}

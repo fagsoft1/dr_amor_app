@@ -6,9 +6,11 @@ import {
     EMPRESAS as permisos_view
 } from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
+import CreateForm from '../components/forms/empresa_form';
+import Tabla from '../components/empresas_tabla';
+import crudHOC from '../../../../../00_utilities/components/hoc_crud';
 
-import ListCrud from '../components/empresas_list';
-
+const CRUD = crudHOC(CreateForm, Tabla);
 
 class List extends Component {
     constructor(props) {
@@ -26,18 +28,27 @@ class List extends Component {
 
     cargarDatos() {
 
-        
+
         this.props.fetchEmpresas();
     }
 
     render() {
         const {object_list} = this.props;
-        const bloque_1_list = permisosAdapter( permisos_view);
+        const permisos_object = permisosAdapter(permisos_view);
+        const method_pool = {
+            fetchObjectMethod: this.props.fetchEmpresa,
+            deleteObjectMethod: this.props.deleteEmpresa,
+            createObjectMethod: this.props.createEmpresa,
+            updateObjectMethod: this.props.updateEmpresa,
+        };
         return (
             <Fragment>
-                <ListCrud
-                    object_list={object_list}
-                    permisos_object={bloque_1_list}
+                <CRUD
+                    method_pool={method_pool}
+                    list={object_list}
+                    permisos_object={permisos_object}
+                    plural_name='Empresas'
+                    singular_name='Empresa'
                     {...this.props}
                 />
                 <CargarDatos

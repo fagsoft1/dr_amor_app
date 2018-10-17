@@ -24,22 +24,22 @@ const Menu = () => {
                         <MenuCaja/>
                         <Link to='/app/admin/empresas/empresas/list'>
                             <div style={iconStyles}>
-                                <Icon style={iconStyles} className="fas fa-building"/>
+                                <Icon className="fas fa-building"/>
                             </div>
                         </Link>
                         <Link to='/app/admin/habitaciones/dashboard'>
                             <div style={iconStyles}>
-                                <Icon style={iconStyles} className="fas fa-bed"/>
+                                <Icon className="fas fa-bed"/>
                             </div>
                         </Link>
                         <Link to='/app/admin/productos/dashboard'>
                             <div style={iconStyles}>
-                                <Icon style={iconStyles} className="fas fa-glass-martini"/>
+                                <Icon className="fas fa-glass-martini"/>
                             </div>
                         </Link>
                         <Link to='/app/admin/puntos_ventas/puntos_ventas/list'>
                             <div style={iconStyles}>
-                                <Icon style={iconStyles} className="fas fa-desktop"/>
+                                <Icon className="fas fa-desktop"/>
                             </div>
                         </Link>
                     </Fragment>

@@ -7,8 +7,11 @@ import {
 } from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 
-import ListCrud from '../components/base_list';
+import CreateForm from '../components/forms/base_form';
+import Tabla from '../components/base_tabla';
+import crudHOC from '../../../../../00_utilities/components/hoc_crud';
 
+const CRUD = crudHOC(CreateForm, Tabla);
 
 class List extends Component {
     constructor(props) {
@@ -25,20 +28,26 @@ class List extends Component {
     }
 
     cargarDatos() {
-
-        
         this.props.fetchAlgos();
-
     }
 
     render() {
         const {object_list} = this.props;
-        const bloque_1_list = permisosAdapter( permisos_view);
+        const permisos = permisosAdapter(permisos_view);
+        const method_pool = {
+            fetchObjectMethod: this.props.fetchAlgo,
+            deleteObjectMethod: this.props.deleteAlgo,
+            createObjectMethod: this.props.createAlgo,
+            updateObjectMethod: this.props.updateAlgo,
+        };
         return (
             <Fragment>
-                <ListCrud
-                    object_list={object_list}
-                    permisos_object={bloque_1_list}
+                <CRUD
+                    method_pool={method_pool}
+                    list={object_list}
+                    permisos_object={permisos}
+                    plural_name='Nombre Plural'
+                    singular_name='Nombre Singular'
                     {...this.props}
                 />
                 <CargarDatos
@@ -52,7 +61,7 @@ class List extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         auth: state.auth,
-        object_list: state.usuarios
+        object_list: state.algos
     }
 }
 

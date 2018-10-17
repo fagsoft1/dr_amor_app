@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import CreateForm from './forms/movimiento_inventario_form';
 import Tabla from './movimientos_inventarios_tabla';
-import crudHOC from '../../../../../00_utilities/components/hoc_crud_dos';
+import crudHOC from '../../../../../00_utilities/components/hoc_crud';
 
 
 const CRUD = crudHOC(CreateForm, Tabla);

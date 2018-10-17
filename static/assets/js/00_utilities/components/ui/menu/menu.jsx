@@ -26,7 +26,7 @@ class MenuBase extends Component {
     }
 
     render() {
-        const {auth: {mis_permisos, mi_cuenta}} = this.props;
+        const {auth: {mis_permisos, mi_cuenta}, auth} = this.props;
         return (
             <nav className="navbar sticky-top navbar-expand-lg navbar-light bg-light mt-0 mb-0 pt-0 pb-0">
                 <Link to='/app/'>
@@ -40,7 +40,7 @@ class MenuBase extends Component {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
-                        {this.props.children(mis_permisos)}
+                        {this.props.children(auth)}
                     </ul>
                     <ul className="navbar-nav">
                         <span className="navbar-text">{mi_cuenta.username} | <span className='puntero'

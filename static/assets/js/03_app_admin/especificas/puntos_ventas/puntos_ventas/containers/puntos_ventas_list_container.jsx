@@ -6,8 +6,11 @@ import {
     PUNTOS_VENTAS as permisos_view
 } from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
+import crudHOC from '../../../../../00_utilities/components/hoc_crud';
+import CreateForm from '../components/forms/punto_venta_form';
+import Tabla from '../components/puntos_ventas_tabla';
 
-import ListCrud from '../components/punto_venta_list';
+const CRUD = crudHOC(CreateForm, Tabla);
 
 
 class List extends Component {
@@ -26,20 +29,26 @@ class List extends Component {
     }
 
     cargarDatos() {
-
-        
         this.props.fetchPuntosVentas();
-
     }
 
     render() {
         const {object_list} = this.props;
-        const bloque_1_list = permisosAdapter( permisos_view);
+        const permisos_object = permisosAdapter(permisos_view);
+        const method_pool = {
+            fetchObjectMethod: this.props.fetchPuntoVenta,
+            deleteObjectMethod: this.props.deletePuntoVenta,
+            createObjectMethod: this.props.createPuntoVenta,
+            updateObjectMethod: this.props.updatePuntoVenta,
+        };
         return (
             <Fragment>
-                <ListCrud
-                    object_list={object_list}
-                    permisos_object={bloque_1_list}
+                <CRUD
+                    method_pool={method_pool}
+                    list={object_list}
+                    permisos_object={permisos_object}
+                    plural_name='Puntos de Ventas'
+                    singular_name='Punto Venta'
                     {...this.props}
                 />
                 <CargarDatos
