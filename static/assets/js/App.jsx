@@ -1,4 +1,4 @@
-import React, {Fragment, Component} from 'react';
+import React, {Fragment, Component, Suspense, lazy} from 'react';
 import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
@@ -78,6 +78,7 @@ class RootContainerComponent extends Component {
             <BrowserRouter>
                 <Fragment>
                     <Notify/>
+                    <Suspense fallback={<div>Loading...</div>}>
                         <Switch>
                             <PrivateRoute exact path="/" component={AppIndex}/>
                             <PrivateRoute exact path='/app' component={AppIndex}/>
@@ -90,6 +91,7 @@ class RootContainerComponent extends Component {
                             <PrivateRoute path='/app/acceso' component={AppAcceso}/>
                             <PrivateRoute component={NotFound}/>
                         </Switch>
+                    </Suspense>
                     <div style={{
                         position: 'fixed',
                         left: 10,

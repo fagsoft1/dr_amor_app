@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from "react";
 import {connect} from "react-redux";
-import {reduxForm, SubmissionError} from 'redux-form';
+import {reduxForm} from 'redux-form';
 
 import {Redirect} from "react-router-dom";
 import * as actions from "../../../01_actions/01_index";

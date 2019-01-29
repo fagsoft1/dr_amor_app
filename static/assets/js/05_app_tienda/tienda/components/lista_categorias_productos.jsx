@@ -1,6 +1,6 @@
 import React from 'react';
-import Drawer from 'material-ui/Drawer';
-import RaisedButton from 'material-ui/RaisedButton';
+import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
 import ListaMenuProductos from './lista_productos';
 
 const ListaCategoriasItem = (props) => {
@@ -47,13 +47,13 @@ export default class ListaMenuCategorias extends React.Component {
 
         return (
             <div>
-                <RaisedButton
+                <IconButton
                     label="Toggle Drawer"
                     onClick={this.handleToggle}
                 />
                 <Drawer open={this.state.open} width='100%'>
                     <div className="p-4">
-                        <RaisedButton
+                        <IconButton
                             label="Toggle Drawer"
                             onClick={this.handleToggle}
                         />

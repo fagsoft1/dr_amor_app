@@ -56,7 +56,7 @@ class LectorCedulaForm extends Component {
                             className='col-12'
                             name="lector_barras"
                             nombre='Lector Cédula'
-                            floatingLabelText="Escaner aquí"
+                            floatinglabeltext="Escaner aquí"
                             onBlur={(e) => {
                                 this.validarLector(e);
                                 this.setState({
