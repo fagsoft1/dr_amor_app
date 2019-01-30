@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {omit, mapKeys} from 'lodash';
 
 const mostrarLogs = (tipo) => {
     const mostrar = true;
@@ -15,10 +15,10 @@ export default function (actions_types, state = [], action, id = 'id') {
             return {...state, [action.payload.data.id]: action.payload.data};
         case actions_types.delete:
             mostrarLogs('delete');
-            return _.omit(state, action.payload);
+            return omit(state, action.payload);
         case actions_types.fetch_all:
             mostrarLogs('fetch_all');
-            return _.mapKeys(action.payload.data, id);
+            return mapKeys(action.payload.data, id);
         case actions_types.fetch:
             mostrarLogs('fetch');
             return {...state, [action.payload.data.id]: action.payload.data};

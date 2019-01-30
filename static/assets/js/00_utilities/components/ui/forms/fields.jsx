@@ -231,7 +231,7 @@ MyDateTimePickerField.propTypes = {
     nombre: PropTypes.string
 };
 
-const renderRadioGroup = ({input, ...rest, nombre, meta, options, required = false, meta: {touched, error}}) => {
+const renderRadioGroup = ({input, nombre, meta, options, required = false, meta: {touched, error}, ...rest}) => {
     return (
         <FormControl component="fieldset" error={error && touched} required={required}>
             <FormLabel component="legend">{nombre}</FormLabel>

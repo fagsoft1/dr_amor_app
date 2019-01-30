@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import _ from 'lodash';
 import HabitacionCategoriaListItem from './habitacion_categorias_list_item';
 import Typography from '@material-ui/core/Typography';
 

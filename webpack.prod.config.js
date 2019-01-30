@@ -1,35 +1,44 @@
 var path = require('path');
 var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
+var TerserPlugin = require('terser-webpack-plugin');
 var config = require('./webpack.base.config.js');
+var OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 config.output.path = path.resolve(__dirname, './static/assets/bundles/dist');
 config.output.filename = "[name]-[hash].js";
+config.mode = "production";
 config.plugins = config.plugins.concat([
     new BundleTracker({filename: './webpack-stats-prod.json'}),
     // removes a lot of debugging code in React
-    new webpack.DefinePlugin({
-        'process.env': {
-            'NODE_ENV': JSON.stringify('production')
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+            compress: true,
+            output: {
+                comments: false
+            }
         }
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new UglifyJsPlugin({uglifyOptions: {compress: true}}),
-    new ExtractTextPlugin('webpack-style-[hash].css')
-
+    new MiniCssExtractPlugin({
+        filename: "[name]-[hash].css",
+        chunkFilename: "[id].css"
+    }),
+    new OptimizeCSSAssetsPlugin({})
 ]);
 
-config.module.loaders.push(
+
+config.module.rules.push(
     {
-        test: /\.css$/, loader:
-            ExtractTextPlugin.extract({
-                use: [
-                    {loader: 'css-loader', options: {minimize: true}}
-                ]
-            })
+        test: /\.css$/,
+        use: [
+            {
+                loader: MiniCssExtractPlugin.loader,
+            },
+            "css-loader"
+        ]
     }
 );
 

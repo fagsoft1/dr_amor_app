@@ -3,7 +3,6 @@ import {LOADING, LOADING_STOP} from "./00_types";
 import {NOTIFICATION_TYPE_ERROR, NOTIFICATION_TYPE_SUCCESS} from 'react-redux-notify';
 import {createNotification} from 'react-redux-notify';
 import React from 'react';
-import _ from 'lodash'
 
 const axios_instance = axios.create({
     baseURL: '/api/',

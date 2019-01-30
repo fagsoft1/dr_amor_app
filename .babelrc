@@ -1,22 +1,15 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/env",
       {
         "modules": false
       }
     ],
-    "stage-1",
-    "react"
+    "@babel/react"
   ],
   "plugins": [
+    "@babel/plugin-proposal-class-properties",
     "react-hot-loader/babel"
-  ],
-  "env": {
-    "production": {
-      "plugins": [
-        "transform-remove-console"
-      ]
-    }
-  }
+  ]
 }

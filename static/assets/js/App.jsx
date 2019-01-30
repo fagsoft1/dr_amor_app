@@ -1,4 +1,5 @@
-import React, {Fragment, Component, Suspense, lazy} from 'react';
+import React, {Fragment, Component} from 'react';
+import {hot} from 'react-hot-loader'
 import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
@@ -14,9 +15,6 @@ import 'react-redux-notify/dist/ReactReduxNotify.css';
 import "react-table/react-table.css";
 import 'react-widgets/dist/css/react-widgets.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import 'jquery/dist/jquery.js';
-import 'popper.js/dist/popper.js';
-import 'tether/dist/js/tether';
 import 'bootstrap/dist/js/bootstrap';
 import './../../css/custom.css';
 
@@ -67,6 +65,7 @@ function configureStore() {
     const store = createStoreWithMiddleware(reducers);
     if (module.hot) {
         // Enable Webpack hot module replacement for reducers
+        console.log('entro aqui')
         module.hot.accept('./02_reducers', () => {
             const nextRootReducer = require('./02_reducers/index').default;
             store.replaceReducer(nextRootReducer);
@@ -106,25 +105,22 @@ class RootContainerComponent extends Component {
     render() {
         let {PrivateRoute} = this;
         const {auth: {mi_cuenta, punto_venta}} = this.props;
-        console.log(punto_venta)
         return (
             <BrowserRouter>
                 <Fragment>
                     <Notify/>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <Switch>
-                            <PrivateRoute exact path="/" component={AppIndex}/>
-                            <PrivateRoute exact path='/app' component={AppIndex}/>
-                            <Route path='/app/login' component={Login}/>
-                            <PrivateRoute path='/app/mi_cuenta' component={MiCuenta}/>
-                            <PrivateRoute path='/app/admin' component={AppAdmin}/>
-                            <PrivateRoute path='/app/tienda' component={AppTienda}/>
-                            <PrivateRoute path='/app/servicios' component={AppServicios}/>
-                            <PrivateRoute path='/app/cajas' component={AppCaja}/>
-                            <PrivateRoute path='/app/acceso' component={AppAcceso}/>
-                            <PrivateRoute component={NotFound}/>
-                        </Switch>
-                    </Suspense>
+                    <Switch>
+                        <PrivateRoute exact path="/" component={AppIndex}/>
+                        <PrivateRoute exact path='/app' component={AppIndex}/>
+                        <Route path='/app/login' component={Login}/>
+                        <PrivateRoute path='/app/mi_cuenta' component={MiCuenta}/>
+                        <PrivateRoute path='/app/admin' component={AppAdmin}/>
+                        <PrivateRoute path='/app/tienda' component={AppTienda}/>
+                        <PrivateRoute path='/app/servicios' component={AppServicios}/>
+                        <PrivateRoute path='/app/cajas' component={AppCaja}/>
+                        <PrivateRoute path='/app/acceso' component={AppAcceso}/>
+                        <PrivateRoute component={NotFound}/>
+                    </Switch>
                     <div style={{
                         position: 'fixed',
                         left: 10,
@@ -163,8 +159,9 @@ function mapPropsToState(state, ownProps) {
     }
 }
 
-let RootContainer = connect(mapPropsToState, actions)(RootContainerComponent);
-import Checkbox from '@material-ui/core/Checkbox';
+let RootContainer = hot(module)(connect(mapPropsToState, actions)(RootContainerComponent));
+
+
 export default class App extends Component {
     render() {
         return (
