@@ -6,6 +6,7 @@ import validate from './validate_anular';
 import {formValueSelector} from 'redux-form';
 import {connect} from "react-redux";
 import {pesosColombianos} from "../../../../../00_utilities/common";
+import Typography from '@material-ui/core/Typography';
 
 
 class ServicioAnularForm extends Component {
@@ -20,7 +21,9 @@ class ServicioAnularForm extends Component {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="row p-1">
                     <div className="col-12">
-                        <h5>Petición de Anulación de Servicio</h5>
+                        <Typography variant="h5" gutterBottom color="primary">
+                            Petición de Anulación de Servicio
+                        </Typography>
                     </div>
                     <div className='col-12'>
                         <MyTextFieldSimple

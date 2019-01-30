@@ -1,4 +1,6 @@
 import React from 'react';
+import Typography from '@material-ui/core/Typography';
+import Badge from '@material-ui/core/Badge';
 
 function renderModelo(modelo) {
     return (
@@ -12,11 +14,12 @@ export default (props) => {
     const {categoria} = props;
     return (
         <div className="col-12 categoria">
-            <h3>{categoria.categoria}
-                <span className="badge badge-pill badge-dr-amor">
-                                {categoria.modelos.length}
-                                </span>
-            </h3>
+
+            <Badge color="secondary" badgeContent={categoria.modelos.length}>
+                <Typography variant="h3" gutterBottom color="primary">
+                    {categoria.categoria}
+                </Typography>
+            </Badge>
             <div className="row">
                 {categoria.modelos.map(modelo => renderModelo(modelo))}
             </div>

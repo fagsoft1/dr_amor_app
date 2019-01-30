@@ -1,5 +1,6 @@
 import React, {Fragment} from 'react';
 import {pesosColombianos, fechaFormatoUno, horaFormatoUno} from "../../../00_utilities/common";
+import Typography from '@material-ui/core/Typography';
 
 const TablaServicioItem = (props) => {
     const {
@@ -52,7 +53,9 @@ const TablaServicios = (props) => {
                 servicios &&
                 servicios.length > 0 &&
                 <Fragment>
-                    <h6>Servicios</h6>
+                    <Typography variant="h6" gutterBottom color="primary">
+                        Servicios
+                    </Typography>
                     <table className='table table-responsive table-striped'>
                         <thead>
                         <tr>

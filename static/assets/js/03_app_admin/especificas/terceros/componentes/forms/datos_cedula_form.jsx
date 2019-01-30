@@ -1,4 +1,5 @@
 import React, {Component, Fragment} from 'react';
+import Typography from '@material-ui/core/Typography';
 
 import {
     MyCombobox,
@@ -12,7 +13,9 @@ export default class DatosCedulaForm extends Component {
         return (
             <Fragment>
                 <div className="col-12">
-                    <h4>Información Personal</h4>
+                    <Typography variant="h4" gutterBottom color="primary">
+                        Información Personal
+                    </Typography>
                 </div>
 
                 <MyTextFieldSimple

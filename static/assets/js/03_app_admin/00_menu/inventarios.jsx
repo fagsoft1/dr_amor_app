@@ -7,7 +7,7 @@ const MenuTerceros = (props) => (
     <li className="nav-item dropdown">
         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
-            <Icon className="fas fa-warehouse-alt"/>
+            <Icon className="fas fa-warehouse"/>
         </a>
         <div className="dropdown-menu" aria-labelledby="navbarDropdown">
             <Link to='/app/admin/inventarios/bodegas/list'>

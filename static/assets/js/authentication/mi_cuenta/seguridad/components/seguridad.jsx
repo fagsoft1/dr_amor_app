@@ -3,6 +3,7 @@ import CambiarPinForm from './forms/cambiar_pin_form'
 import CambiarContrasenaForm from './forms/cambiar_contrasena_form'
 import {connect} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
+import Typography from '@material-ui/core/Typography';
 
 class Seguridad extends Component {
     constructor(props) {
@@ -38,12 +39,16 @@ class Seguridad extends Component {
                 {
                     mi_cuenta.tercero &&
                     <div className="col-12">
-                        <h4>Cambiar Pin</h4>
+                        <Typography variant="h4" gutterBottom color="primary">
+                            Cambiar Pin
+                        </Typography>
                         <CambiarPinForm onSubmit={this.onCambiarPin}/>
                     </div>
                 }
                 <div className="col-12 mt-3">
-                    <h4>Cambiar Contraseña</h4>
+                    <Typography variant="h4" gutterBottom color="primary">
+                        Cambiar Contraseña
+                    </Typography>
                     <CambiarContrasenaForm onSubmit={this.onCambiarPassword}/>
                 </div>
             </div>

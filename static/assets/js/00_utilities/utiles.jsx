@@ -1,11 +1,14 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from "prop-types";
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 export const ListaTitulo = (props) => {
     return (
         <div>
-            <h3 className="h3-responsive">{props.titulo}</h3>
+            <Typography variant="h2" gutterBottom color="primary">
+                {props.titulo}
+            </Typography>
             {
                 props.can_add &&
                 <button

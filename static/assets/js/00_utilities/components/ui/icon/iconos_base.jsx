@@ -52,7 +52,7 @@ IconButtonContainer.propTypes = {
 
 
 export const FlatIconModal = (props) => {
-    const {onClick, text, disabled, className = 'btn btn-primary ml-3'} = props;
+    const {onClick, text, disabled, className = 'ml-3'} = props;
     return (
         <Button
             className={className}

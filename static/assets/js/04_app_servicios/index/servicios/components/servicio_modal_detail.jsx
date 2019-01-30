@@ -7,6 +7,7 @@ import ServicioCambiarTiempoList from './forms/servicio_modal_cambiar_tiempo_for
 import ServicioAnularForm from './forms/servicio_anular_form';
 import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
 import CambioHabitacion from '../../habitaciones/components/habitacion_cambio_habitacion';
+import Typography from '@material-ui/core/Typography';
 
 class ServicioDetailModal extends Component {
     constructor(props) {
@@ -28,7 +29,7 @@ class ServicioDetailModal extends Component {
     }
 
     cargarDatos() {
-        const {servicio,servicios} = this.props;
+        const {servicio, servicios} = this.props;
         console.log(servicios)
         this.props.fetchHabitaciones();
         this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(servicio.categoria_id);
@@ -116,7 +117,9 @@ class ServicioDetailModal extends Component {
                 <DialogContent>
                     <div className="row">
                         <div className="col-12">
-                            <h3>Información</h3>
+                            <Typography variant="h3" gutterBottom color="primary">
+                                Información
+                            </Typography>
                             <div className="row">
                                 <div className="col-4">
                                     <strong>Habitacion: </strong>

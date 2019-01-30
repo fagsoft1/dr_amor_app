@@ -26,6 +26,7 @@ class IndexApp extends Component {
     render() {
         const {auth: {punto_venta, mi_cuenta}} = this.props;
         const permisos_modulo_acceso = permisosAdapter(TIPOS_REGISTRO_INGRESO);
+        console.log(punto_venta)
         return <Loading>
             <div className="mt-3">
                 <div className="container text-center">
@@ -43,7 +44,7 @@ class IndexApp extends Component {
                         }
                         {
                             punto_venta &&
-                            punto_venta.abierto &&
+                            //punto_venta.abierto &&
                             <Fragment>
                                 {
                                     punto_venta.tipo === 2 &&

@@ -72,7 +72,7 @@ export default class HabitacionCategoriaListItem extends Component {
                 }}
                      className={`habitacion-tipo-list-item habitacion est-${estado} puntero`}
                 >
-                    <i className="far fa-bed" aria-hidden="true">
+                    <i className="fas fa-bed" aria-hidden="true">
                     </i>
                     <span className="habitacion numero"> {numero}</span>
                     {

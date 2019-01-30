@@ -1,11 +1,12 @@
 import React, {Fragment} from 'react';
 import PropTypes from "prop-types";
+import Typography from '@material-ui/core/Typography';
 
 export const Titulo = (props) => {
     return (
-        <h3>
+        <Typography variant="h4" gutterBottom color="primary">
             {props.children}
-        </h3>
+        </Typography>
     );
 };
 
@@ -14,7 +15,9 @@ export const AtributoTexto = (props) => {
     const {label, texto, className} = props;
     return (
         <div className={className}>
-            <h5><strong>{label}:</strong> {texto}</h5>
+            <Typography variant="h5" gutterBottom color="primary">
+                <strong>{label}:</strong> {texto}
+            </Typography>
         </div>
     );
 };
@@ -30,12 +33,12 @@ export const AtributoBooleano = (props) => {
     const {label, icono_no, icono_si, className, booleano} = props;
     return (
         <div className={className}>
-            <h5>
+            <Typography variant="h5" gutterBottom color="primary">
                 <strong>{label}: </strong>
                 <i className={booleano ? icono_si : icono_no}
                 >
                 </i>
-            </h5>
+            </Typography>
         </div>
     );
 };

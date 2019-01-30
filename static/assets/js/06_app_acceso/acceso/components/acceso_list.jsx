@@ -3,6 +3,7 @@ import {ContainerTextButton} from '../../../00_utilities/components/ui/icon/icon
 import ValidarPermisos from "../../../00_utilities/permisos/validar_permisos";
 import CreateForm from './forms/acceso_form';
 import CategoriaModelo from '../components/catetgoria_modelo';
+import Typography from '@material-ui/core/Typography';
 
 class List extends Component {
     constructor(props) {
@@ -85,7 +86,9 @@ class List extends Component {
                     return this.renderCategoria(categoria)
                 })}
                 <div className="col-12">
-                    <h4>Colaboradores</h4>
+                    <Typography variant="h4" gutterBottom color="primary">
+                        Colaboradores
+                    </Typography>
                     <div className="row">
                         {_.map(colaboradores_presentes, colaborador => {
                             return <div key={colaborador.id} className="col-12 col-md-4 col-xl-3">

@@ -158,6 +158,7 @@ const renderCheckbox = ({input, label}) => (
         control={
             <Checkbox
                 checked={input.value}
+                color='primary'
                 onChange={(event, value) => input.onChange(value)}
             />
         }

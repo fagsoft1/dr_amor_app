@@ -18,6 +18,8 @@ const BotoneriaModalForm = (props) => {
             {
                 mostrar_submit &&
                 <FlatIconModal
+                    variant="contained"
+                    color="primary"
                     text={initialValues ? 'Editar ' : 'Crear '}
                     disabled={submitting || pristine}
                     type='submit'
@@ -26,6 +28,8 @@ const BotoneriaModalForm = (props) => {
             {
                 mostrar_limpiar &&
                 <FlatIconModal
+                    variant="contained"
+                    color="secondary"
                     text="Limpiar"
                     disabled={submitting || pristine}
                     onClick={reset}
@@ -34,6 +38,8 @@ const BotoneriaModalForm = (props) => {
             {
                 mostrar_cancelar &&
                 <FlatIconModal
+                    variant="contained"
+                    color="secondary"
                     text={submitting || pristine ? 'Cerrar' : 'Cancelar'}
                     onClick={
                         () => {

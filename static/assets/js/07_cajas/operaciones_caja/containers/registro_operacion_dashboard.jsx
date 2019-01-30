@@ -6,7 +6,7 @@ import {
     COLABORADORES as permisos_view
 } from "../../../00_utilities/permisos/types";
 import {permisosAdapter, pesosColombianos} from "../../../00_utilities/common";
-
+import Typography from '@material-ui/core/Typography';
 import RegistroOperacionForm from '../components/forms/registro_operacion_form';
 
 class OperacionesCaja extends Component {
@@ -20,7 +20,9 @@ class OperacionesCaja extends Component {
     render() {
         return (
             <div>
-                <h4>Registrar Operación Caja</h4>
+                <Typography variant="h4" gutterBottom color="primary">
+                    Registrar Operación Caja
+                </Typography>
                 <RegistroOperacionForm {...this.props}/>
             </div>
         )

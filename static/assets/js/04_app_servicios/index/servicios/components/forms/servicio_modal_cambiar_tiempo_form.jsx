@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {pesosColombianos} from "../../../../../00_utilities/common";
 import FormaPago from '../../../movimiento_dinero/components/forms/forma_pago';
 import DropdownList from 'react-widgets/lib/DropdownList';
+import Typography from '@material-ui/core/Typography';
 
 
 class modeloServicioForm extends Component {
@@ -34,7 +35,9 @@ class modeloServicioForm extends Component {
         return (
             <div className="row">
                 <div className="col-12">
-                    <h5>Cambio en tiempo de servicio</h5>
+                    <Typography variant="h5" gutterBottom color="primary">
+                        Cambio en tiempo de servicio
+                    </Typography>
                 </div>
                 {
                     _.size(categorias_fracciones_tiempo_list) > 0 &&

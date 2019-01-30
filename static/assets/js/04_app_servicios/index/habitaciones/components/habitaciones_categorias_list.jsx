@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
 import HabitacionCategoriaListItem from './habitacion_categorias_list_item';
+import Typography from '@material-ui/core/Typography';
 
 export default class CategoriaHabitacionList extends Component {
     render() {
@@ -8,7 +9,9 @@ export default class CategoriaHabitacionList extends Component {
         const habitaciones_ordenadas = _.orderBy(habitaciones, ['numero'], ['asc']);
         return (
             <div className="col-12 col-sm-6 habitacion-tipo-list">
-                <h4>{tipo}</h4>
+                <Typography variant="h6" gutterBottom color="primary">
+                    {tipo}
+                </Typography>
                 <div className="row">
                     {habitaciones_ordenadas.map(habitacion => {
                         return (

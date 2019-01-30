@@ -9,7 +9,7 @@ import ListManager from "../../../../00_utilities/components/CRUDTableManager";
 import {
     GROUPS as permisos_view_groups
 } from '../../../../00_utilities/permisos/types';
-
+import Typography from '@material-ui/core/Typography';
 import Tabla from '../components/grupos_permisos_tabla';
 import PermisosGrupo from '../components/permisos_select_permisos';
 
@@ -139,7 +139,9 @@ class GruposPermisosList extends Component {
                                     list_manager_state.item_seleccionado &&
                                     (permisos_view.change || permisos_view.detail) &&
                                     <Fragment>
-                                        <h5>{list_manager_state.item_seleccionado.name}</h5>
+                                        <Typography variant="h5" gutterBottom color="primary">
+                                            {list_manager_state.item_seleccionado.name}
+                                        </Typography>
                                         <PermisosGrupo
                                             can_change={permisos_view.change}
                                             actualizarPermiso={

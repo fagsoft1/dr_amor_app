@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {ContainerNuevoButton} from './ui/icon/iconos';
 import ValidarPermisos from "../permisos/validar_permisos";
 import PropTypes from "prop-types";
+import Typography from '@material-ui/core/Typography';
 
 function crudHOC(CreateForm, Tabla) {
     class CRUD extends Component {
@@ -71,7 +72,9 @@ function crudHOC(CreateForm, Tabla) {
 
             return (
                 <ValidarPermisos can_see={permisos_object.list} nombre={plural_name}>
-                    <h2>{plural_name}</h2>
+                    <Typography variant="h5" gutterBottom color="primary">
+                        {plural_name}
+                    </Typography>
                     {
                         permisos_object.add &&
                         <ContainerNuevoButton

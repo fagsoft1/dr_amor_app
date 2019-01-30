@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 
 import BaseFormaPagoCamposForm from './base_forma_pago_form';
+import Typography from '@material-ui/core/Typography';
 
 
 class FormaPago extends Component {
@@ -27,7 +28,9 @@ class FormaPago extends Component {
         return (
             <div className="row">
                 <div className="col-12">
-                    <h5>Forma de Pago</h5>
+                    <Typography variant="h5" gutterBottom color="primary">
+                        Forma de Pago
+                    </Typography>
                     {this.props.children}
                     <BaseFormaPagoCamposForm
                         onSubmit={onSubmit}

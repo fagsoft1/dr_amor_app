@@ -9,6 +9,7 @@ import {permisosAdapter, pesosColombianos} from "../../../00_utilities/common";
 import SelectAcompanante from "../components/liquidacion_caja_select_acompanante";
 import TablaServicios from "../components/tabla_servicios";
 import FormaPago from '../components/forms/forma_pago'
+import Typography from '@material-ui/core/Typography';
 
 class LiquidarAcompanante extends Component {
     constructor(props) {
@@ -72,7 +73,9 @@ class LiquidarAcompanante extends Component {
         const total_a_pagar = total_servicios + saldo_anterior;
         return (
             <div className='liquidacion_acompanantes'>
-                <h4>Liquidaciones</h4>
+                <Typography variant="h4" gutterBottom color="primary">
+                    Liquidaciones
+                </Typography>
                 <SelectAcompanante
                     acompanantes={acompanantes}
                     onSubmit={this.efectuarConsulta}

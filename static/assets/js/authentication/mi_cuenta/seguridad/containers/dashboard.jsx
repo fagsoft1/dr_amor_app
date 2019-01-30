@@ -75,7 +75,7 @@ class ResponsiveDrawer extends React.Component {
                     <Link to='/app/mi_cuenta/seguridad'>
                         <ListItem button>
                             <ListItemIcon>
-                                <i className='far fa-shield'></i>
+                                <i className='fas fa-shield-check'></i>
                             </ListItemIcon>
                             <ListItemText inset primary="Seguridad"/>
                         </ListItem>

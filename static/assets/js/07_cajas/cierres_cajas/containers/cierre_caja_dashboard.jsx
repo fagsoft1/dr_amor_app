@@ -3,13 +3,16 @@ import {connect} from "react-redux";
 import * as actions from "../../../01_actions/01_index";
 import {pesosColombianos} from "../../../00_utilities/common";
 import {FlatIconModal} from '../../../00_utilities/components/ui/icon/iconos_base';
+import Typography from '@material-ui/core/Typography';
 
 const TablaBilletesMonedas = (props) => {
     const {nombre, styles, lista, onChange, denominaciones} = props;
     const sum = _.map(denominaciones, e => e.total).reduce((acu, ele) => acu + ele, 0);
     return (
         <Fragment>
-            <h6>{nombre}</h6>
+            <Typography variant="h6" gutterBottom color="primary">
+                {nombre}
+            </Typography>
             <table className='table table-responsive' style={styles.table}>
                 <thead>
                 <tr>
@@ -57,7 +60,9 @@ const GrupoTablaDinero = (props) => {
     const sum = _.map(denominaciones, e => e.total).reduce((acu, ele) => acu + ele, 0);
     return (
         <Fragment>
-            <h5 style={styles.titulo}>{titulo}</h5>
+            <Typography variant="h5" gutterBottom color="primary">
+                {titulo}
+            </Typography>
             <div className="row pl-2">
                 <div className="col-12 col-md-6">
                     <TablaBilletesMonedas
@@ -212,10 +217,14 @@ class LiquidarAcompanante extends Component {
 
         return (
             <div>
-                <h4>Cierre Caja</h4>
+                <Typography variant="h4" gutterBottom color="primary">
+                    Cierre Caja
+                </Typography>
                 <div className="row">
                     <div className="col-12 col-md-6 card p-2 mt-2">
-                        <h5 style={styles.titulo}>Tarjeta de Crédito</h5>
+                        <Typography variant="h5" gutterBottom color="primary">
+                            Tarjeta de Crédito
+                        </Typography>
                         <table className='table table-responsive' style={styles.table}>
                             <tbody>
                             <tr>
@@ -250,7 +259,9 @@ class LiquidarAcompanante extends Component {
                         </table>
                     </div>
                     <div className="col-12 col-md-6 card p-2 mt-2">
-                        <h5 style={styles.titulo}>Dolares</h5>
+                        <Typography variant="h5" gutterBottom color="primary">
+                            Dolares
+                        </Typography>
                         <table className='table table-responsive' style={styles.table}>
                             <tbody>
                             <tr>

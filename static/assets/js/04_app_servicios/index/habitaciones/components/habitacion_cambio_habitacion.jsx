@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import DropdownList from 'react-widgets/lib/DropdownList';
 import ResumenCambioHabitacion from './habitacion_cambio_habitacion_resumen';
+import Typography from '@material-ui/core/Typography';
 
 class CambioHabitacion extends Component {
     constructor(props) {
@@ -26,7 +27,9 @@ class CambioHabitacion extends Component {
                     cantidad_servicios > 0 &&
                     <Fragment>
                         <div className="col-12">
-                            <h4>Cambio Habitación</h4>
+                            <Typography variant="h4" gutterBottom color="primary">
+                                Cambio Habitación
+                            </Typography>
                         </div>
                         <DropdownList
                             data={_.map(habitaciones, c => c)}
