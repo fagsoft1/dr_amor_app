@@ -5,6 +5,7 @@ import Loading from "./00_utilities/components/system/loading_overlay";
 import {Link} from 'react-router-dom'
 import {TIPOS_REGISTRO_INGRESO} from './00_utilities/permisos/types';
 import {permisosAdapter} from "./00_utilities/common";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const Boton = (props) => {
     const {nombre, icono, link} = props;
@@ -13,7 +14,9 @@ const Boton = (props) => {
             <Link to={link}>
                 <div className='icono'>
                     <div className="row">
-                        <div className="col-12"><i className={`fas ${icono} fa-3x`}></i></div>
+                        <div className="col-12">
+                            <FontAwesomeIcon icon={['fas', icono]} size='3x'/>
+                        </div>
                         <div className="col-12">{nombre}</div>
                     </div>
                 </div>
@@ -38,7 +41,7 @@ class IndexApp extends Component {
                             <Boton
                                 nombre='Admin'
                                 link='/app/admin/'
-                                icono='fa-cogs'
+                                icono='cogs'
                             />
                         }
                         {
@@ -50,7 +53,7 @@ class IndexApp extends Component {
                                     <Boton
                                         nombre='Tienda'
                                         link='/app/tienda/'
-                                        icono='fa-shopping-cart'
+                                        icono='shopping-cart'
                                     />
                                 }
                                 {
@@ -58,7 +61,7 @@ class IndexApp extends Component {
                                     <Boton
                                         nombre='Servicios'
                                         link='/app/servicios/'
-                                        icono='fa-bed'
+                                        icono='bed'
                                     />
                                 }
                             </Fragment>
@@ -68,20 +71,20 @@ class IndexApp extends Component {
                             <Boton
                                 nombre='Acceso'
                                 link='/app/acceso/'
-                                icono='fa-user-lock'
+                                icono='user-lock'
                             />
                         }
                         <Boton
                             nombre='Mi Cuenta'
                             link='/app/mi_cuenta/'
-                            icono='fa-sliders-h'
+                            icono='sliders-h'
                         />
                         {
                             punto_venta &&
                             <Boton
                                 nombre='Caja'
                                 link='/app/cajas/'
-                                icono='fa-money-check-alt'
+                                icono='money-check-alt'
                             />
                         }
                         <div className="col-4"></div>

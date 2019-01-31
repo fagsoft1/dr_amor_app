@@ -17,12 +17,21 @@ import 'react-widgets/dist/css/react-widgets.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap';
 import './../../css/custom.css';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faCheckSquare, faCoffee, far} from '@fortawesome/pro-regular-svg-icons';
+import {library} from '@fortawesome/fontawesome-svg-core'
+import {fas} from '@fortawesome/pro-solid-svg-icons';
+import {fal} from '@fortawesome/pro-light-svg-icons';
+import {fab} from '@fortawesome/free-brands-svg-icons';
+
+library.add(fab, fal, far, fas);
 
 import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
 
 import indigo from '@material-ui/core/colors/indigo';
 import pink from '@material-ui/core/colors/pink';
 import red from '@material-ui/core/colors/red';
+import green from '@material-ui/core/colors/green';
 
 const theme = createMuiTheme({
     typography: {
@@ -42,7 +51,7 @@ const theme = createMuiTheme({
         fontSize: 12,
     },
     palette: {
-        primary: indigo,
+        primary: green,
         secondary: pink,
         error: red,
         // Used by `getContrastText()` to maximize the contrast between the background and

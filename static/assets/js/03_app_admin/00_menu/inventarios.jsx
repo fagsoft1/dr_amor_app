@@ -1,27 +1,32 @@
 import React from 'react';
-import Icon from '@material-ui/core/Icon';
-import {Link} from 'react-router-dom'
+import DrawerListItem from './../../00_utilities/components/ui/drawer/drawer_list_item';
+import ListCollapse from './../../00_utilities/components/ui/drawer/drawer_list_collapse';
 
 
-const MenuTerceros = (props) => (
-    <li className="nav-item dropdown">
-        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false">
-            <Icon className="fas fa-warehouse"/>
-        </a>
-        <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-            <Link to='/app/admin/inventarios/bodegas/list'>
-                <span className="dropdown-item">Bodegas</span>
-            </Link>
-            <Link to='/app/admin/inventarios/movimientos_inventarios/list'>
-                <span className="dropdown-item">Kardex</span>
-            </Link>
-            <Link to='/app/admin/inventarios/traslados/list'>
-                <span className="dropdown-item">Kardex Traslados</span>
-            </Link>
-        </div>
-    </li>
+const MenuInventarios = (props) => (
+    <ListCollapse icono='warehouse' texto='Inventarios'>
+        <DrawerListItem
+            size='1x'
+            link='/app/admin/inventarios/bodegas/list'
+            texto='Bodegas'
+            icono='warehouse'
+            type='nested'
+        />
+        <DrawerListItem
+            size='1x'
+            link='/app/admin/inventarios/movimientos_inventarios/list'
+            texto='Kardex'
+            icono='inventory'
+            type='nested'
+        />
+        <DrawerListItem
+            size='1x'
+            link='/app/admin/inventarios/traslados/list'
+            texto='Kardex Traslados'
+            icono='exchange'
+            type='nested'
+        />
+    </ListCollapse>
 );
 
-
-export default MenuTerceros;
+export default MenuInventarios;

@@ -1,8 +1,13 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, Component} from 'react';
 import {Route, Switch} from 'react-router-dom';
 import Loading from '../00_utilities/components/system/loading_overlay';
+import DrawerListItem from '../00_utilities/components/ui/drawer/drawer_list_item';
+import DrawerMenu from '../00_utilities/components/ui/drawer/drawer_menu';
 
-import Menu from './00_menu/index';
+import MenuTerceros from './00_menu/terceros';
+import MenuPermisos from './00_menu/permisos';
+import MenuInventarios from './00_menu/inventarios';
+import MenuCaja from "./00_menu/caja";
 
 import App1 from "./index";
 import PermisosList from "./generales/permisos/containers/permisos_list";
@@ -39,26 +44,59 @@ import BilletesMonedasList from "./especificas/cajas/billetes_monedas/containers
 import ConceptosOperacionesCajaList
     from "./especificas/cajas/conceptos_operaciones_cajas/containers/conceptos_operaciones_caja_list_container";
 
-const AdminApp = (props) => {
-    return (
-        <Loading>
-            <Fragment>
-                <Menu/>
-                <div className="p-3">
+const ListadoMenu = () => <Fragment>
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/empresas/empresas/list'
+        texto='Empresas'
+        icono='building'
+    />
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/habitaciones/dashboard'
+        texto='Habitaciones'
+        icono='bed'
+    />
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/productos/dashboard'
+        texto='Productos'
+        icono='glass-martini'
+    />
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/puntos_ventas/puntos_ventas/list'
+        texto='Puntos de Venta'
+        icono='cash-register'
+    />
+    <MenuPermisos/>
+    <MenuTerceros/>
+    <MenuInventarios/>
+    <MenuCaja/>
+</Fragment>;
+
+
+class AdminApp extends Component {
+    render() {
+        return (
+            <Loading>
+                <DrawerMenu lista_menu={<ListadoMenu/>} titulo='Admin'>
                     <Switch>
                         <Route exact path='/app/admin/' component={App1}/>
                         <Route exact path='/app/admin/permisos/list' component={PermisosList}/>
                         <Route exact path='/app/admin/grupos_permisos/list' component={GruposPermisosList}/>
                         <Route exact path='/app/admin/usuarios/list' component={UsuariosList}/>
                         <Route exact path='/app/admin/usuarios/colaboradores/list' component={ColaboradorList}/>
-                        <Route exact path='/app/admin/usuarios/colaboradores/detail/:id' component={ColaboradorDetail}/>
+                        <Route exact path='/app/admin/usuarios/colaboradores/detail/:id'
+                               component={ColaboradorDetail}/>
                         <Route exact path='/app/admin/terceros/proveedores/list' component={ProveedoresList}/>
                         <Route exact path='/app/admin/empresas/empresas/list' component={EmpresasList}/>
                         <Route exact path='/app/admin/habitaciones/dashboard' component={HabitacionesList}/>
                         <Route exact path='/app/admin/productos/dashboard' component={ProductosDashboard}/>
                         <Route exact path='/app/admin/usuarios/detail/:id' component={UsuariosDetail}/>
                         <Route exact path='/app/admin/inventarios/bodegas/list' component={BodegasList}/>
-                        <Route exact path='/app/admin/inventarios/bodegas/detail/:id' component={BodegasDetail}/>
+                        <Route exact path='/app/admin/inventarios/bodegas/detail/:id'
+                               component={BodegasDetail}/>
                         <Route exact path='/app/admin/inventarios/movimientos_inventarios/list'
                                component={MovimientosInventariosList}/>
                         <Route exact path='/app/admin/inventarios/movimientos_inventarios/detail/:id'
@@ -73,14 +111,14 @@ const AdminApp = (props) => {
                                component={CategoriaAcompananteDetail}/>
                         <Route exact path='/app/admin/puntos_ventas/puntos_ventas/list'
                                component={PuntosVentasList}/>
-                        <Route exact path='/app/admin/cajas/billetes_monedas/list' component={BilletesMonedasList}/>
+                        <Route exact path='/app/admin/cajas/billetes_monedas/list'
+                               component={BilletesMonedasList}/>
                         <Route exact path='/app/admin/cajas/conceptos_operaciones_caja/list'
                                component={ConceptosOperacionesCajaList}/>
                     </Switch>
-                </div>
-            </Fragment>
-        </Loading>
-    )
+                </DrawerMenu>
+            </Loading>
+        )
+    }
 };
-
 export default AdminApp;

@@ -1,24 +1,25 @@
 import React from 'react';
-import Icon from '@material-ui/core/Icon';
-import {Link} from 'react-router-dom'
+import DrawerListItem from './../../00_utilities/components/ui/drawer/drawer_list_item';
+import ListCollapse from './../../00_utilities/components/ui/drawer/drawer_list_collapse';
 
 
 const MenuCaja = (props) => (
-    <li className="nav-item dropdown">
-        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false">
-            <Icon className="far fa-money-bill-alt"/>
-        </a>
-        <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-            <Link to='/app/admin/cajas/billetes_monedas/list'>
-                <span className="dropdown-item">Billetes y Monedas</span>
-            </Link>
-            <Link to='/app/admin/cajas/conceptos_operaciones_caja/list'>
-                <span className="dropdown-item">Conceptos Operaciones Caja</span>
-            </Link>
-        </div>
-    </li>
+    <ListCollapse icono='money-bill-alt' texto='Inventarios'>
+        <DrawerListItem
+            size='1x'
+            link='/app/admin/cajas/billetes_monedas/list'
+            texto='Billetes y Monedas'
+            icono='money-bill-alt'
+            type='nested'
+        />
+        <DrawerListItem
+            size='1x'
+            link='/app/admin/cajas/conceptos_operaciones_caja/list'
+            texto='Conceptos Operaciones Caja'
+            icono='list'
+            type='nested'
+        />
+    </ListCollapse>
 );
-
 
 export default MenuCaja;

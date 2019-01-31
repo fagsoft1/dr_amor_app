@@ -1,11 +1,11 @@
 import React, {Fragment} from 'react';
 import MenuBase from '../../00_utilities/components/ui/menu/menu';
 import {Link} from 'react-router-dom'
-import Icon from '@material-ui/core/Icon';
 import MenuInventarios from './inventarios';
 import MenuPermisos from './permisos';
 import MenuTerceros from './terceros';
 import MenuCaja from './caja';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const iconStyles = {
     paddingTop: 8,
@@ -24,22 +24,22 @@ const Menu = () => {
                         <MenuCaja/>
                         <Link to='/app/admin/empresas/empresas/list'>
                             <div style={iconStyles}>
-                                <Icon className="fas fa-building"/>
+                                <FontAwesomeIcon icon={['fas', 'building']} size='2x'/>
                             </div>
                         </Link>
                         <Link to='/app/admin/habitaciones/dashboard'>
                             <div style={iconStyles}>
-                                <Icon className="fas fa-bed"/>
+                                <FontAwesomeIcon icon={['fas', 'bed']} size='2x'/>
                             </div>
                         </Link>
                         <Link to='/app/admin/productos/dashboard'>
                             <div style={iconStyles}>
-                                <Icon className="fas fa-glass-martini"/>
+                                <FontAwesomeIcon icon={['fas', 'glass-martini']} size='2x'/>
                             </div>
                         </Link>
                         <Link to='/app/admin/puntos_ventas/puntos_ventas/list'>
                             <div style={iconStyles}>
-                                <Icon className="fas fa-desktop"/>
+                                <FontAwesomeIcon icon={['fas', 'desktop']} size='2x'/>
                             </div>
                         </Link>
                     </Fragment>
