@@ -1,7 +1,8 @@
 import React from "react";
 import Checkbox from '@material-ui/core/Checkbox';
-import {MyDialogButtonDelete} from '../../../../00_utilities/components/ui/dialog';
-import {IconButtonTableEdit, IconButtonTableSee} from '../../../../00_utilities/components/ui/icon/iconos';
+import MyDialogButtonDelete from '../../../../00_utilities/components/ui/dialog/delete_dialog';
+import IconButtonTableSee from '../../../../00_utilities/components/ui/icon/table_icon_button_detail';
+import IconButtonTableEdit from '../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 import {Link} from 'react-router-dom'
 
 import ReactTable from "react-table";
@@ -69,45 +70,57 @@ class Tabla extends React.Component {
                                     Header: "Activo",
                                     accessor: "is_active",
                                     show: permisos.make_user_active,
-                                    maxWidth: 60,
+                                    maxWidth: 50,
                                     Cell: row => (
                                         mi_cuenta.id !== row.original.id &&
-                                        <Checkbox
-                                            checked={row.value}
-                                            onChange={() => updateItem({...row.original, is_active: !row.value})}
-                                        />
+                                        <div className='text-center' style={{width: '100%'}}>
+                                            <Checkbox
+                                                style={{margin: 0, padding: 0}}
+                                                color='primary'
+                                                checked={row.value}
+                                                onChange={() => updateItem({...row.original, is_active: !row.value})}
+                                            />
+                                        </div>
                                     )
                                 },
                                 {
                                     Header: "Admin",
                                     accessor: "is_superuser",
                                     show: permisos.make_user_superuser,
-                                    maxWidth: 60,
+                                    maxWidth: 50,
                                     Cell: row => (
                                         mi_cuenta.id !== row.original.id &&
-                                        <Checkbox
-                                            checked={row.value}
-                                            onChange={() => updateItem({...row.original, is_superuser: !row.value})}
-                                        />
+                                        <div className='text-center' style={{width: '100%'}}>
+                                            <Checkbox
+                                                style={{margin: 0, padding: 0}}
+                                                color='primary'
+                                                checked={row.value}
+                                                onChange={() => updateItem({...row.original, is_superuser: !row.value})}
+                                            />
+                                        </div>
                                     )
                                 },
                                 {
                                     Header: "Staff",
                                     accessor: "is_staff",
                                     show: permisos.make_user_staff,
-                                    maxWidth: 60,
+                                    maxWidth: 50,
                                     Cell: row => (
                                         mi_cuenta.id !== row.original.id &&
-                                        <Checkbox
-                                            checked={row.value}
-                                            onChange={() => updateItem({...row.original, is_staff: !row.value})}
-                                        />
+                                        <div className='text-center' style={{width: '100%'}}>
+                                            <Checkbox
+                                                style={{margin: 0, padding: 0}}
+                                                color='primary'
+                                                checked={row.value}
+                                                onChange={() => updateItem({...row.original, is_staff: !row.value})}
+                                            />
+                                        </div>
                                     )
                                 },
                                 {
                                     Header: "Elimi.",
                                     show: permisos.delete,
-                                    maxWidth: 60,
+                                    maxWidth: 50,
                                     Cell: row =>
                                         mi_cuenta.id !== row.original.id &&
                                         (
@@ -127,7 +140,7 @@ class Tabla extends React.Component {
                                 {
                                     Header: "Editar",
                                     show: permisos.change,
-                                    maxWidth: 60,
+                                    maxWidth: 50,
                                     Cell: row =>
                                         <IconButtonTableEdit
                                             onClick={() => {
@@ -138,7 +151,7 @@ class Tabla extends React.Component {
                                 {
                                     Header: "Ver",
                                     show: permisos.detail,
-                                    maxWidth: 60,
+                                    maxWidth: 50,
                                     Cell: row =>
                                         <Link to={`/app/admin/usuarios/detail/${row.original.id}`}>
                                             <IconButtonTableSee/>

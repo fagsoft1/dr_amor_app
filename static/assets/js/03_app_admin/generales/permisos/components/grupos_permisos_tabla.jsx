@@ -1,7 +1,8 @@
 import React from 'react';
 import {ListaBusqueda} from '../../../../00_utilities/utiles';
-import {MyDialogButtonDelete} from '../../../../00_utilities/components/ui/dialog';
-import {IconButtonTableEdit, IconButtonTableSee} from '../../../../00_utilities/components/ui/icon/iconos';
+import MyDialogButtonDelete from '../../../../00_utilities/components/ui/dialog/delete_dialog';
+import IconButtonTableSee from '../../../../00_utilities/components/ui/icon/table_icon_button_detail';
+import IconButtonTableEdit from '../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 
 const ItemTabla = (props) => {
     const {

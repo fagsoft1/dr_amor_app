@@ -6,7 +6,7 @@ import {Titulo, SinObjeto} from "../../../../../00_utilities/templates/fragmento
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 import AddPuntoVenta from '../components/add_punto_venta';
-import {IconButtonTableDelete} from '../../../../../00_utilities/components/ui/icon/iconos_table';
+import IconButtonTableDelete from '../../../../../00_utilities/components/ui/icon/table_icon_button_delete';
 import {
     COLABORADORES as permisos_view
 } from "../../../../../00_utilities/permisos/types";

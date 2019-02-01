@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
 import validate from "./validate_cambiar_pin_form";
 import {MyTextFieldSimple} from '../../../../../00_utilities/components/ui/forms/fields';
-import {FlatIconModal} from '../../../../../00_utilities/components/ui/icon/iconos_base';
+import Button from '@material-ui/core/Button';
 
 class Form extends Component {
     constructor(props) {
@@ -44,16 +44,24 @@ class Form extends Component {
                 />
 
                 <div className="col-12">
-                    <FlatIconModal
-                        text='Cambiar Pin'
-                        disabled={submitting || pristine}
+                    <Button
+                        color="primary"
                         type='submit'
-                    />
-                    <FlatIconModal
-                        text="Limpiar"
+                        variant="contained"
+                        className='ml-3'
+                        disabled={submitting || pristine}
+                    >
+                        Cambiar Pin
+                    </Button>
+                    <Button
+                        color="secondary"
+                        variant="contained"
+                        className='ml-3'
                         disabled={submitting || pristine}
                         onClick={reset}
-                    />
+                    >
+                        Limpiar
+                    </Button>
                 </div>
             </form>
         )

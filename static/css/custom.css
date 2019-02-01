@@ -1,11 +1,3 @@
-.btn-primary {
-  background-color: #f00;
-  border-color: #f00;
-}
-.btn-primary:hover {
-  background-color: #211915;
-  border-color: #211915;
-}
 .tabla-maestra {
   font-size: 11px;
 }
@@ -52,56 +44,11 @@ form .btn {
 .puntero {
   cursor: pointer;
 }
-.loading-overload-uno {
-  position: relative;
-}
-.loading-overload-dos:before {
-  content: '';
-  background: rgba(255,255,255,0.5);
-  width: 100%;
-  height: 100%;
-  opacity: 0.9;
-  position: absolute;
-  z-index: 1400;
-}
-.loading-overload-tres {
-  border-radius: 10px;
-  font-size: 2rem;
-  position: fixed;
-  text-align: center;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1400;
-  background-color: #f00;
-  padding: 0.5rem;
-  color: #fff;
-}
 .left-icon {
   margin: 0 0 0 12px !important;
 }
 .right-icon {
   margin: 0 12px 0 0 !important;
-}
-.boton-index a {
-  color: #f00;
-}
-.boton-index a :hover {
-  background-color: #000;
-  color: #fff !important;
-  border: 2px solid #000 !important;
-}
-.boton-index a :active {
-  text-decoration: none;
-}
-.boton-index a :visit {
-  text-decoration: none;
-}
-.boton-index a .icono {
-  border-radius: 25px;
-  border: 2px solid #f00;
-  padding: 1rem;
-  width: 100%;
 }
 .texto-cita {
   font-size: 10px;

@@ -15,6 +15,9 @@ const styles = theme => ({
     nested: {
         paddingLeft: theme.spacing.unit * 4,
     },
+    iconColor: {
+        color: theme.palette.primary.dark
+    }
 });
 
 class ListCollapse extends Component {
@@ -25,20 +28,20 @@ class ListCollapse extends Component {
 
     render() {
         const {open} = this.state;
-        const {icono, texto, children} = this.props;
+        const {icono, texto, children, classes} = this.props;
         return (
             <Fragment>
                 <ListItem button
                           onClick={() => this.setState(state => ({open: !state.open}))}>
                     <Tooltip title={texto}>
                         <ListItemIcon>
-                            <FontAwesomeIcon icon={['fas', icono]} size='lg'/>
+                            <FontAwesomeIcon icon={['fas', icono]} size='lg' className={classes.iconColor}/>
                         </ListItemIcon>
                     </Tooltip>
                     <ListItemText inset primary={texto}/>
                     {open ?
-                        <FontAwesomeIcon icon={['fas', 'angle-up']}/> :
-                        <FontAwesomeIcon icon={['fas', 'angle-down']}/>}
+                        <FontAwesomeIcon icon={['fas', 'angle-up']} className={classes.iconColor}/> :
+                        <FontAwesomeIcon icon={['fas', 'angle-down']} className={classes.iconColor}/>}
                 </ListItem>
                 <Collapse in={open} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>

@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import {ContainerTextButton} from '../../../00_utilities/components/ui/icon/iconos';
 import ValidarPermisos from "../../../00_utilities/permisos/validar_permisos";
 import CreateForm from './forms/acceso_form';
 import CategoriaModelo from '../components/catetgoria_modelo';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 class List extends Component {
     constructor(props) {
@@ -54,20 +54,26 @@ class List extends Component {
         } = this.state;
         return (
             <ValidarPermisos can_see={permisos_object.list} nombre='Modelos Presentes'>
-                <ContainerTextButton
-                    text='Registrar Entrada'
+                <Button
+                    color='primary'
+                    className='ml-3'
                     onClick={() => {
                         this.setState({modal_open: true, tipo_registro: 'Registro Entrada'});
                         this.props.fetchTercerosAusentes();
                     }}
-                />
-                <ContainerTextButton
-                    text='Registrar Salida'
+                >
+                    Registrar Entrada
+                </Button>
+                <Button
+                    color='primary'
+                    className='ml-3'
                     onClick={() => {
                         this.setState({modal_open: true, tipo_registro: 'Registro Salida'});
                         this.props.fetchTercerosPresentes();
                     }}
-                />
+                >
+                    Registrar Salida
+                </Button>
                 {
                     modal_open &&
                     <CreateForm

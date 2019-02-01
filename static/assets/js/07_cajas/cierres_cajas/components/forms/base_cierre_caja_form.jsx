@@ -1,11 +1,8 @@
-import React, {Component, Fragment} from 'react';
-import {MyTextFieldSimple, MyDropdownList} from '../../../../00_utilities/components/ui/forms/fields';
+import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {reduxForm, formValueSelector} from 'redux-form'
-import {pesosColombianos} from "../../../../00_utilities/common";
-import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
+import {reduxForm} from 'redux-form'
 import validate from './validate';
-
+import Button from '@material-ui/core/Button';
 
 class BaseCierreCajaForm extends Component {
     render() {
@@ -20,18 +17,15 @@ class BaseCierreCajaForm extends Component {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="row p-1">
                     <div className='col-12'>
-
-                        <Fragment>
-
-                        </Fragment>
-                        <FlatIconModal
-                            text='Cerrar Caja'
-                            className='btn btn-primary'
-                            //disabled={submitting || pristine}
+                        <Button
+                            color="secondary"
+                            variant="contained"
+                            className='ml-3'
                             type='submit'
-                        />
+                        >
+                            Cerrar Caja
+                        </Button>
                     </div>
-
                 </div>
             </form>
         )

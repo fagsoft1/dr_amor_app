@@ -3,8 +3,8 @@ import {MyTextFieldSimple, MyDropdownList} from '../../../../00_utilities/compon
 import {connect} from "react-redux";
 import {reduxForm, formValueSelector} from 'redux-form'
 import {pesosColombianos} from "../../../../00_utilities/common";
-import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
 import validate from './validate';
+import Button from '@material-ui/core/Button';
 
 
 class BaseFormaPagoForm extends Component {
@@ -47,8 +47,8 @@ class BaseFormaPagoForm extends Component {
                                         </tr>
                                         <tr>
 
-                                            <td style={{fontSize:'1rem'}}><strong>LO QUE SE PAGARÁ</strong></td>
-                                            <td style={{backgroundColor: 'green', color:'white', fontSize:'1rem'}}>
+                                            <td style={{fontSize: '1rem'}}><strong>LO QUE SE PAGARÁ</strong></td>
+                                            <td style={{backgroundColor: 'green', color: 'white', fontSize: '1rem'}}>
                                                 {pesosColombianos(valor_a_pagar)}</td>
                                         </tr>
                                         </tbody>
@@ -63,12 +63,14 @@ class BaseFormaPagoForm extends Component {
                                 </div>
                             </div>
                         </Fragment>
-                        <FlatIconModal
-                            text={`Pagar ${pesosColombianos(valor_a_pagar)}`}
-                            className='btn btn-primary'
-                            //disabled={submitting || pristine}
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            className='ml-3'
                             type='submit'
-                        />
+                        >
+                            {`Pagar ${pesosColombianos(valor_a_pagar)}`}
+                        </Button>
                     </div>
 
                 </div>

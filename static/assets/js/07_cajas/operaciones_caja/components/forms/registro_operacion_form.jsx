@@ -3,8 +3,8 @@ import {MyTextFieldSimple, MySelect} from '../../../../00_utilities/components/u
 import {connect} from "react-redux";
 import {reduxForm, formValueSelector} from 'redux-form'
 import {pesosColombianos} from "../../../../00_utilities/common";
-import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
 import validate from './validate';
+import Button from '@material-ui/core/Button';
 
 
 class RegistroOperacionForm extends Component {
@@ -29,11 +29,11 @@ class RegistroOperacionForm extends Component {
         );
         const grupos_conceptos = form_values && form_values.tipo ? _.unionBy(
             _.map(
-            _.pickBy(conceptos_operaciones_caja, e => e.tipo === form_values.tipo.value),
-            e => {
-                return {value: e.grupo, label: e.grupo_display}
-            }
-        ),'label') : null;
+                _.pickBy(conceptos_operaciones_caja, e => e.tipo === form_values.tipo.value),
+                e => {
+                    return {value: e.grupo, label: e.grupo_display}
+                }
+            ), 'label') : null;
         const conceptos = form_values && form_values.grupo ? _.map(
             _.pickBy(
                 conceptos_operaciones_caja, e => e.grupo === form_values.grupo.value && e.tipo === form_values.tipo.value
@@ -141,16 +141,24 @@ class RegistroOperacionForm extends Component {
                         rowsMax={2}
                     />
                 </div>
-                <FlatIconModal
-                    text='Guardar'
+                <Button
+                    color="secondary"
+                    variant="contained"
+                    className='ml-3'
                     disabled={submitting || pristine}
                     type='submit'
-                />
-                <FlatIconModal
-                    text="Limpiar"
-                    disabled={submitting || pristine}
+                >
+                    Guardar
+                </Button>
+                <Button
+                    color="secondary"
+                    variant="contained"
+                    className='ml-3'
                     onClick={reset}
-                />
+                    disabled={submitting || pristine}
+                >
+                    Limpiar
+                </Button>
             </form>
         )
     }

@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import {ContainerNuevoButton} from './ui/icon/iconos';
 import ValidarPermisos from "../permisos/validar_permisos";
 import PropTypes from "prop-types";
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 function crudHOC(CreateForm, Tabla) {
     class CRUD extends Component {
@@ -77,11 +77,16 @@ function crudHOC(CreateForm, Tabla) {
                     </Typography>
                     {
                         permisos_object.add &&
-                        <ContainerNuevoButton
+                        <Button
+                            color='primary'
+                            className='ml-3'
                             onClick={() => {
                                 this.setState({item_seleccionado: null, modal_open: true});
                             }}
-                        />
+                        >
+                            Nuevo
+                        </Button>
+
                     }
                     {
                         modal_open &&

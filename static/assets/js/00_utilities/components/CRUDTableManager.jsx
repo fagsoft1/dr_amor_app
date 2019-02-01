@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import {ContainerNuevoButton} from './ui/icon/iconos';
 import ValidarPermisos from "../permisos/validar_permisos";
 import PropTypes from "prop-types";
+import Button from '@material-ui/core/Button';
 
 class CRUDTableManager extends Component {
     constructor(props) {
@@ -51,12 +51,16 @@ class CRUDTableManager extends Component {
             <ValidarPermisos can_see={permisos.list} nombre={plural_name}>
                 {
                     permisos.add &&
-                    <ContainerNuevoButton
+                    <Button
+                        color='primary'
+                        className='ml-3'
                         onClick={() => {
                             this.setState({item_seleccionado: null});
                             this.handleModalOpen();
                         }}
-                    />
+                    >
+                        Nuevo
+                    </Button>
                 }
                 {this.props.children
                 (

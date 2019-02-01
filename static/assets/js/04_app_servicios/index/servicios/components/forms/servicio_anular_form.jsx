@@ -1,12 +1,12 @@
 import React, {Component, Fragment} from 'react';
 import {MyTextFieldSimple} from '../../../../../00_utilities/components/ui/forms/fields';
 import {reduxForm} from 'redux-form'
-import {FlatIconModal} from '../../../../../00_utilities/components/ui/icon/iconos_base';
 import validate from './validate_anular';
 import {formValueSelector} from 'redux-form';
 import {connect} from "react-redux";
 import {pesosColombianos} from "../../../../../00_utilities/common";
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 
 class ServicioAnularForm extends Component {
@@ -36,12 +36,15 @@ class ServicioAnularForm extends Component {
                         {
                             valores.observacion_anulacion &&
                             <Fragment>
-                                <FlatIconModal
-                                    text='Solicitar Anulación'
-                                    className='btn btn-primary col-md-4'
-                                    //disabled={submitting || pristine}
+                                <Button
+                                    color="primary"
+                                    variant="contained"
+                                    className='ml-3'
                                     type='submit'
-                                />
+                                >
+                                    Solicitar Anulación
+                                </Button>
+
                                 <div className='col-12'>
                                     <strong>Valor a devolver: </strong> {pesosColombianos(servicio.valor_total)}
                                 </div>

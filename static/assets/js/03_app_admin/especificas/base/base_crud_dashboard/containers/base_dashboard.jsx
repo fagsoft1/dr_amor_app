@@ -75,8 +75,8 @@ class ListadoElementos extends Component {
 
     render() {
         const {bloque_1_list, bloque_2_list} = this.props;
-        const permisos_object_1 = permisosAdapter( bloque_1_permisos);
-        const permisos_object_2 = permisosAdapter( bloque_2_permisos);
+        const permisos_object_1 = permisosAdapter(bloque_1_permisos);
+        const permisos_object_2 = permisosAdapter(bloque_2_permisos);
 
         const can_see =
             permisos_object_1.list ||
@@ -85,9 +85,10 @@ class ListadoElementos extends Component {
             <ValidarPermisos can_see={can_see} nombre={this.plural_name}>
                 <Titulo>{this.singular_name}</Titulo>
 
-                <Tabs
-                    onChange={this.handleChange}
-                    value={this.state.slideIndex}
+                <Tabs indicatorColor="primary"
+                      textColor="primary"
+                      onChange={this.handleChange}
+                      value={this.state.slideIndex}
                 >
                     <Tab label="Bloques 1" value={0}/>
                     <Tab label="Bloques 2" value={1}/>

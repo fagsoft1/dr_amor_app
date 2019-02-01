@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {MyTextFieldSimple} from '../../../../00_utilities/components/ui/forms/fields';
 import {reduxForm} from 'redux-form'
-import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
 import validate from './validate';
+import Button from '@material-ui/core/Button';
 
 
 class AbrirCajaForm extends Component {
@@ -23,16 +23,26 @@ class AbrirCajaForm extends Component {
                         className='col-12 col-md-4'
                     />
                 </div>
-                <FlatIconModal
-                    text='Guardar'
-                    disabled={submitting || pristine}
+                <Button
+                    color="primary"
+                    variant="contained"
+                    className='ml-3'
                     type='submit'
-                />
-                <FlatIconModal
-                    text="Limpiar"
+                    disabled={submitting || pristine}
+                >
+                    Guardar
+                </Button>
+
+                <Button
+                    color="secondary"
+                    variant="contained"
+                    className='ml-3'
                     disabled={submitting || pristine}
                     onClick={reset}
-                />
+                >
+                    Limpiar
+                </Button>
+
             </form>
         )
     }

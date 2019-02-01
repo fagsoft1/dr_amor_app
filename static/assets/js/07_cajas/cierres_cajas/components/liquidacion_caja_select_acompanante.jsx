@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import DropdownList from 'react-widgets/lib/DropdownList';
-import {FlatIconModal} from '../../../00_utilities/components/ui/icon/iconos_base';
+import Button from '@material-ui/core/Button';
 
 class HabitacionSelectModeloServicio extends Component {
     render() {
@@ -22,13 +22,14 @@ class HabitacionSelectModeloServicio extends Component {
                 />
                 {
                     id_tercero &&
-                    <FlatIconModal
-                        text='Consultar'
-                        className='btn btn-primary'
-                        //disabled={submitting || pristine}
-                        type='submit'
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        className='ml-3'
                         onClick={() => onSubmit(this.state)}
-                    />
+                    >
+                        Consultar
+                    </Button>
                 }
 
             </div>

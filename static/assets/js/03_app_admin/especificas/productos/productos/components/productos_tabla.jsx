@@ -1,7 +1,7 @@
 import React from "react";
-import {MyDialogButtonDelete} from '../../../../../00_utilities/components/ui/dialog';
+import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
 import {pesosColombianos} from '../../../../../00_utilities/common';
-import {IconButtonTableEdit} from '../../../../../00_utilities/components/ui/icon/iconos';
+import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 
 import ReactTable from "react-table";
 

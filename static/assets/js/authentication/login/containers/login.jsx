@@ -5,9 +5,12 @@ import {reduxForm} from 'redux-form';
 import {Redirect} from "react-router-dom";
 import * as actions from "../../../01_actions/01_index";
 import {MyTextFieldSimple, MyDropdownList} from '../../../00_utilities/components/ui/forms/fields';
-import {FlatIconModal} from '../../../00_utilities/components/ui/icon/iconos_base';
 import validate from '../components/forms/validate';
 import asyncValidate from "../components/forms/asyncValidate";
+import Typography from '@material-ui/core/Typography';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {withStyles} from "@material-ui/core/styles/index";
+import Button from '@material-ui/core/Button';
 
 class Login extends Component {
     constructor(props) {
@@ -48,7 +51,8 @@ class Login extends Component {
             puntos_ventas,
             auth,
             error,
-            esta_cargando
+            esta_cargando,
+            classes
         } = this.props;
         const {cargando_puntos_ventas} = this.state;
 
@@ -60,7 +64,11 @@ class Login extends Component {
         const mensaje_error = error_login && error_login.error ? error_login.error[0] : null;
         return (
             <div className="container form-signin pt-3 text-center" style={{width: '400px'}}>
-                <i className="fas fa-lock fa-5x"></i>
+                <FontAwesomeIcon
+                    className={classes.iconoMain}
+                    icon={['fas', 'lock']}
+                    size='5x'
+                />
                 <form onSubmit={handleSubmit(this.onSubmit)}>
                     <MyTextFieldSimple
                         name='username'
@@ -108,25 +116,32 @@ class Login extends Component {
                     {
                         mensaje_error &&
                         <div className='mt-3'>
-                            <strong className='form-field-error'>{mensaje_error}</strong>
+                            <Typography variant="caption" gutterBottom color="error">
+                                {mensaje_error}
+                            </Typography>
                         </div>
 
                     }
-                    {/*<p>*/}
-                    {/*Don't have an account? <Link to="/register">Register</Link>*/}
-                    {/*</p>*/}
 
-                    <FlatIconModal
-                        text='Ingresar'
+                    <Button
+                        variant="contained"
+                        className='ml-3'
+                        color='primary'
                         disabled={submitting || pristine || esta_cargando.cargando}
                         type='submit'
-                    />
+                    >
+                        Ingresar
+                    </Button>
 
-                    <FlatIconModal
-                        text="Limpiar"
-                        disabled={submitting || pristine || esta_cargando.cargando}
+                    <Button
+                        color="secondary"
+                        variant="contained"
+                        className='ml-3'
                         onClick={reset}
-                    />
+                        disabled={submitting || pristine || esta_cargando.cargando}
+                    >
+                        Limpiar
+                    </Button>
                 </form>
             </div>
         )
@@ -149,6 +164,12 @@ Login = reduxForm({
     enableReinitialize: true
 })(Login);
 
-Login = (connect(mapPropsToState, actions)(Login));
+const styles = theme => (
+    {
+        iconoMain: {
+            color: theme.palette.primary.dark
+        },
+    })
+;
 
-export default Login;
+export default withStyles(styles, {withTheme: true})(connect(mapPropsToState, actions)(Login));

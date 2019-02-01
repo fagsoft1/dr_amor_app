@@ -5,7 +5,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ServicioHabitacionList from './habitacion_servicios_list'
 import SelectModeloServicio from '../../dashboard/components/forms/habitacion_detail_select_acompanante_servicio'
-import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
+import Button from '@material-ui/core/Button';
 
 class HabitacionDetailModal extends Component {
     constructor(props) {
@@ -259,12 +259,15 @@ class HabitacionDetailModal extends Component {
                             }
                         </Fragment>
                     }
-                    <FlatIconModal
-                        text='Cerrar'
-                        className='btn btn-primary'
-                        type='submit'
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        className='ml-3'
                         onClick={cerraModal}
-                    />
+                    >
+                        Cerrar
+                    </Button>
+
                 </DialogActions>
             </Dialog>
         )

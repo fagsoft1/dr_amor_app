@@ -6,18 +6,24 @@ import {Link} from 'react-router-dom'
 import {TIPOS_REGISTRO_INGRESO} from './00_utilities/permisos/types';
 import {permisosAdapter} from "./00_utilities/common";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {withStyles} from "@material-ui/core/styles/index";
+import Typography from '@material-ui/core/Typography';
 
 const Boton = (props) => {
-    const {nombre, icono, link} = props;
+    const {nombre, icono, link, classes} = props;
     return (
-        <div className='col-6 col-md-4 mt-3 boton-index'>
+        <div className={'col-6 col-md-4 mt-3'}>
             <Link to={link}>
-                <div className='icono'>
+                <div className={classes.bordeBoton}>
                     <div className="row">
                         <div className="col-12">
-                            <FontAwesomeIcon icon={['fas', icono]} size='3x'/>
+                            <FontAwesomeIcon icon={['fas', icono]} size='3x' className={classes.iconoBoton}/>
                         </div>
-                        <div className="col-12">{nombre}</div>
+                        <div className="col-12">
+                            <Typography variant="h6" color="primary" noWrap>
+                                {nombre}
+                            </Typography>
+                        </div>
                     </div>
                 </div>
             </Link>
@@ -27,7 +33,7 @@ const Boton = (props) => {
 
 class IndexApp extends Component {
     render() {
-        const {auth: {punto_venta, mi_cuenta}} = this.props;
+        const {auth: {punto_venta, mi_cuenta}, classes} = this.props;
         const permisos_modulo_acceso = permisosAdapter(TIPOS_REGISTRO_INGRESO);
         return <Loading>
             <div className="mt-3">
@@ -42,6 +48,7 @@ class IndexApp extends Component {
                                 nombre='Admin'
                                 link='/app/admin/'
                                 icono='cogs'
+                                classes={classes}
                             />
                         }
                         {
@@ -54,6 +61,7 @@ class IndexApp extends Component {
                                         nombre='Tienda'
                                         link='/app/tienda/'
                                         icono='shopping-cart'
+                                        classes={classes}
                                     />
                                 }
                                 {
@@ -62,8 +70,15 @@ class IndexApp extends Component {
                                         nombre='Servicios'
                                         link='/app/servicios/'
                                         icono='bed'
+                                        classes={classes}
                                     />
                                 }
+                                <Boton
+                                    nombre='Servicios'
+                                    link='/app/servicios/'
+                                    icono='bed'
+                                    classes={classes}
+                                />
                             </Fragment>
                         }
                         {
@@ -72,12 +87,14 @@ class IndexApp extends Component {
                                 nombre='Acceso'
                                 link='/app/acceso/'
                                 icono='user-lock'
+                                classes={classes}
                             />
                         }
                         <Boton
                             nombre='Mi Cuenta'
                             link='/app/mi_cuenta/'
                             icono='sliders-h'
+                            classes={classes}
                         />
                         {
                             punto_venta &&
@@ -85,6 +102,7 @@ class IndexApp extends Component {
                                 nombre='Caja'
                                 link='/app/cajas/'
                                 icono='money-check-alt'
+                                classes={classes}
                             />
                         }
                         <div className="col-4"></div>
@@ -102,8 +120,17 @@ class IndexApp extends Component {
                                 }
                             }}>
                                 <div className="row">
-                                    <div className="col-12"><i className={`fas fa-sign-out-alt`}></i></div>
-                                    <div className="col-12">Salir</div>
+                                    <div className="col-12">
+                                        <FontAwesomeIcon
+                                            icon={['fas', 'sign-out-alt']}
+                                            className={classes.iconoBoton}
+                                        />
+                                    </div>
+                                    <div className="col-12">
+                                        <Typography variant="h6" color="primary" noWrap>
+                                            Salir
+                                        </Typography>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -121,4 +148,17 @@ function mapPropsToState(state, ownProps) {
     }
 }
 
-export default connect(mapPropsToState, actions)(IndexApp);
+const styles = theme => (
+    {
+        iconoBoton: {
+            color: theme.palette.primary.dark
+        },
+        bordeBoton: {
+            borderRadius: '25px',
+            border: `2px solid ${theme.palette.primary.dark}`,
+            padding: '1rem',
+            width: '100%'
+        }
+    })
+;
+export default withStyles(styles, {withTheme: true})(connect(mapPropsToState, actions)(IndexApp));

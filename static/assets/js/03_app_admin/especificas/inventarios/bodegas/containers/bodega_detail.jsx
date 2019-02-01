@@ -91,9 +91,10 @@ class Detail extends Component {
         return (
             <ValidarPermisos can_see={permisos.detail} nombre='detalles de bodega'>
                 <Titulo>Detalle {object.nombre}</Titulo>
-                <Tabs
-                    onChange={this.handleChange}
-                    value={this.state.slideIndex}
+                <Tabs indicatorColor="primary"
+                      textColor="primary"
+                      onChange={this.handleChange}
+                      value={this.state.slideIndex}
                 >
                     <Tab label="Inventario Actual" value={0}/>
                     <Tab label="Moviemiento Inventario" value={1}/>

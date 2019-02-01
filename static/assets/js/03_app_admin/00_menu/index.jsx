@@ -1,52 +1,40 @@
 import React, {Fragment} from 'react';
-import MenuBase from '../../00_utilities/components/ui/menu/menu';
-import {Link} from 'react-router-dom'
-import MenuInventarios from './inventarios';
-import MenuPermisos from './permisos';
+import DrawerListItem from '../../00_utilities/components/ui/drawer/drawer_list_item';
+
 import MenuTerceros from './terceros';
-import MenuCaja from './caja';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import MenuPermisos from './permisos';
+import MenuInventarios from './inventarios';
+import MenuCaja from "./caja";
 
-const iconStyles = {
-    paddingTop: 8,
-    paddingRight: 8
-};
-
-const Menu = () => {
-    return (
-        <MenuBase>
-            {mis_permisos => {
-                return (
-                    <Fragment>
-                        <MenuTerceros/>
-                        <MenuPermisos/>
-                        <MenuInventarios/>
-                        <MenuCaja/>
-                        <Link to='/app/admin/empresas/empresas/list'>
-                            <div style={iconStyles}>
-                                <FontAwesomeIcon icon={['fas', 'building']} size='2x'/>
-                            </div>
-                        </Link>
-                        <Link to='/app/admin/habitaciones/dashboard'>
-                            <div style={iconStyles}>
-                                <FontAwesomeIcon icon={['fas', 'bed']} size='2x'/>
-                            </div>
-                        </Link>
-                        <Link to='/app/admin/productos/dashboard'>
-                            <div style={iconStyles}>
-                                <FontAwesomeIcon icon={['fas', 'glass-martini']} size='2x'/>
-                            </div>
-                        </Link>
-                        <Link to='/app/admin/puntos_ventas/puntos_ventas/list'>
-                            <div style={iconStyles}>
-                                <FontAwesomeIcon icon={['fas', 'desktop']} size='2x'/>
-                            </div>
-                        </Link>
-                    </Fragment>
-                )
-            }}
-        </MenuBase>
-    )
-};
+const Menu = () => <Fragment>
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/empresas/empresas/list'
+        texto='Empresas'
+        icono='building'
+    />
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/habitaciones/dashboard'
+        texto='Habitaciones'
+        icono='bed'
+    />
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/productos/dashboard'
+        texto='Productos'
+        icono='glass-martini'
+    />
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/puntos_ventas/puntos_ventas/list'
+        texto='Puntos de Venta'
+        icono='cash-register'
+    />
+    <MenuPermisos/>
+    <MenuTerceros/>
+    <MenuInventarios/>
+    <MenuCaja/>
+</Fragment>;
 
 export default Menu;

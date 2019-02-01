@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
 import validate from "./validate_cambiar_contrasena_form";
 import {MyTextFieldSimple} from '../../../../../00_utilities/components/ui/forms/fields';
-import {FlatIconModal} from '../../../../../00_utilities/components/ui/icon/iconos_base';
+import Button from '@material-ui/core/Button';
 
 class Form extends Component {
     constructor(props) {
@@ -44,16 +44,25 @@ class Form extends Component {
                 />
 
                 <div className="col-12">
-                    <FlatIconModal
-                        text='Cambiar Contraseña'
-                        disabled={submitting || pristine}
+                    <Button
+                        color="primary"
+                        variant="contained"
                         type='submit'
-                    />
-                    <FlatIconModal
-                        text="Limpiar"
+                        className='ml-3'
                         disabled={submitting || pristine}
+                    >
+                        Cambiar Contraseña
+                    </Button>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        type='submit'
                         onClick={reset}
-                    />
+                        className='ml-3'
+                        disabled={submitting || pristine}
+                    >
+                        Limpiar
+                    </Button>
                 </div>
             </form>
         )

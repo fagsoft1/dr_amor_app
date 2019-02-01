@@ -5,9 +5,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ServicioCambiarTiempoList from './forms/servicio_modal_cambiar_tiempo_form'
 import ServicioAnularForm from './forms/servicio_anular_form';
-import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
 import CambioHabitacion from '../../habitaciones/components/habitacion_cambio_habitacion';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 class ServicioDetailModal extends Component {
     constructor(props) {
@@ -212,13 +212,14 @@ class ServicioDetailModal extends Component {
                             > Cambiar Habitación</span>
                         </div>
                     }
-                    <FlatIconModal
-                        text='Cerrar'
-                        className='btn btn-primary'
-                        //disabled={submitting || pristine}
-                        type='submit'
+                    <Button
+                        color="secondary"
+                        variant="contained"
+                        className='ml-3'
                         onClick={() => cerraModal()}
-                    />
+                    >
+                        Cerrar
+                    </Button>
                 </DialogActions>
             </Dialog>
         )

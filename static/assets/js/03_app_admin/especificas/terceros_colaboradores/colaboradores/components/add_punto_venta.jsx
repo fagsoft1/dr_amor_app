@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import DropdownList from 'react-widgets/lib/DropdownList';
-import {ContainerTextButton} from '../../../../../00_utilities/components/ui/icon/iconos';
+import Button from '@material-ui/core/Button';
 
 class AddPuntoVenta extends Component {
     constructor(props) {
@@ -29,13 +29,15 @@ class AddPuntoVenta extends Component {
                         <div className="col-12 col-md-2">
                             {
                                 punto_venta &&
-                                <ContainerTextButton
-                                    className='btn btn-primary'
-                                    text='Adicionar'
+                                <Button
+                                    color='primary'
+                                    className='ml-3'
                                     onClick={() => {
                                         addPuntoVenta(punto_venta)
                                     }}
-                                />
+                                >
+                                    Adicionar
+                                </Button>
                             }
                         </div>
                     </div>

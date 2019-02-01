@@ -1,8 +1,8 @@
 import React, {Component, Fragment} from 'react';
 import {pesosColombianos, horaFormatoUno} from "../../../../00_utilities/common";
 import FormaPago from '../../movimiento_dinero/components/forms/forma_pago';
-import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
 import CambioHabitacion from './habitacion_cambio_habitacion';
+import Button from '@material-ui/core/Button';
 
 const Item = (props) => {
     const {servicio, onDeleteServicio} = props;
@@ -133,13 +133,14 @@ class ServicioHabitacionList extends Component {
                 {
                     mostrar_terminar_servicios &&
                     servicios_para_terminar_array.length > 0 &&
-                    <FlatIconModal
-                        text='Terminar Todos'
-                        className='btn btn-primary'
-                        //disabled={submitting || pristine}
-                        type='submit'
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        className='ml-3'
                         onClick={() => onTerminarServicios()}
-                    />
+                    >
+                        Terminar Todos
+                    </Button>
                 }
             </Fragment>
         )

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import {FlatIconModal} from '../icon/iconos_base';
+import Button from '@material-ui/core/Button';
 
 const BotoneriaModalForm = (props) => {
     const {
@@ -17,36 +17,38 @@ const BotoneriaModalForm = (props) => {
         <div>
             {
                 mostrar_submit &&
-                <FlatIconModal
-                    variant="contained"
+                <Button
                     color="primary"
-                    text={initialValues ? 'Editar ' : 'Crear '}
-                    disabled={submitting || pristine}
+                    variant="contained"
                     type='submit'
-                />
+                    className='ml-3'
+                    disabled={submitting || pristine}
+                >
+                    {initialValues ? 'Editar ' : 'Crear '}
+                </Button>
             }
             {
                 mostrar_limpiar &&
-                <FlatIconModal
-                    variant="contained"
+                <Button
                     color="secondary"
-                    text="Limpiar"
-                    disabled={submitting || pristine}
+                    variant="contained"
+                    className='ml-3'
                     onClick={reset}
-                />
+                    disabled={submitting || pristine}
+                >
+                    Limpiar
+                </Button>
             }
             {
                 mostrar_cancelar &&
-                <FlatIconModal
-                    variant="contained"
+                <Button
                     color="secondary"
-                    text={submitting || pristine ? 'Cerrar' : 'Cancelar'}
-                    onClick={
-                        () => {
-                            onCancel();
-                        }
-                    }
-                />
+                    variant="contained"
+                    className='ml-3'
+                    onClick={() => onCancel()}
+                >
+                    {submitting || pristine ? 'Cerrar' : 'Cancelar'}
+                </Button>
             }
         </div>
     )

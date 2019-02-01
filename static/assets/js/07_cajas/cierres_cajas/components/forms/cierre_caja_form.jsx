@@ -1,13 +1,10 @@
 import React, {Component, Fragment} from 'react';
-import {Field, FieldArray, reduxForm, formValueSelector, getFormValues} from 'redux-form';
+import {Field, reduxForm, getFormValues} from 'redux-form';
 
-import {MyTextFieldSimple, MyDropdownList} from '../../../../00_utilities/components/ui/forms/fields';
-
-import BaseCierreCajaForm from './base_cierre_caja_form';
-import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
 import {connect} from "react-redux";
 import {pesosColombianos} from "../../../../00_utilities/common";
 import validate from './validate';
+import Button from '@material-ui/core/Button';
 
 
 class CierreCaja extends Component {
@@ -65,13 +62,14 @@ class CierreCaja extends Component {
                     </tr>
                     </tfoot>
                 </table>
-                <FlatIconModal
-                    text='Cerrar Caja'
-                    className='btn btn-primary'
+                <Button
+                    color="primary"
+                    variant="contained"
+                    className='ml-3'
                     onClick={v => console.log(v)}
-                    //disabled={submitting || pristine}
-                    type='submit'
-                />
+                >
+                    Cerrar Caja
+                </Button>
             </Fragment>
         )
     };

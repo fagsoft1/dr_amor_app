@@ -1,13 +1,9 @@
-import React, {Fragment, Component} from 'react';
+import React, {Component} from 'react';
 import {Route, Switch} from 'react-router-dom';
 import Loading from '../00_utilities/components/system/loading_overlay';
-import DrawerListItem from '../00_utilities/components/ui/drawer/drawer_list_item';
 import DrawerMenu from '../00_utilities/components/ui/drawer/drawer_menu';
 
-import MenuTerceros from './00_menu/terceros';
-import MenuPermisos from './00_menu/permisos';
-import MenuInventarios from './00_menu/inventarios';
-import MenuCaja from "./00_menu/caja";
+import Menu from './00_menu/index';
 
 import App1 from "./index";
 import PermisosList from "./generales/permisos/containers/permisos_list";
@@ -44,43 +40,11 @@ import BilletesMonedasList from "./especificas/cajas/billetes_monedas/containers
 import ConceptosOperacionesCajaList
     from "./especificas/cajas/conceptos_operaciones_cajas/containers/conceptos_operaciones_caja_list_container";
 
-const ListadoMenu = () => <Fragment>
-    <DrawerListItem
-        size='lg'
-        link='/app/admin/empresas/empresas/list'
-        texto='Empresas'
-        icono='building'
-    />
-    <DrawerListItem
-        size='lg'
-        link='/app/admin/habitaciones/dashboard'
-        texto='Habitaciones'
-        icono='bed'
-    />
-    <DrawerListItem
-        size='lg'
-        link='/app/admin/productos/dashboard'
-        texto='Productos'
-        icono='glass-martini'
-    />
-    <DrawerListItem
-        size='lg'
-        link='/app/admin/puntos_ventas/puntos_ventas/list'
-        texto='Puntos de Venta'
-        icono='cash-register'
-    />
-    <MenuPermisos/>
-    <MenuTerceros/>
-    <MenuInventarios/>
-    <MenuCaja/>
-</Fragment>;
-
-
 class AdminApp extends Component {
     render() {
         return (
             <Loading>
-                <DrawerMenu lista_menu={<ListadoMenu/>} titulo='Admin'>
+                <DrawerMenu lista_menu={<Menu/>} titulo='Admin'>
                     <Switch>
                         <Route exact path='/app/admin/' component={App1}/>
                         <Route exact path='/app/admin/permisos/list' component={PermisosList}/>
@@ -120,5 +84,5 @@ class AdminApp extends Component {
             </Loading>
         )
     }
-};
+}
 export default AdminApp;

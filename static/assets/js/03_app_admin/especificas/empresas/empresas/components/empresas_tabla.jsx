@@ -1,6 +1,6 @@
 import React from "react";
-import {MyDialogButtonDelete} from '../../../../../00_utilities/components/ui/dialog';
-import {IconButtonTableEdit} from '../../../../../00_utilities/components/ui/icon/iconos';
+import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
+import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 
 import ReactTable from "react-table";
 

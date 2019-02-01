@@ -90,9 +90,10 @@ class ListadoElementos extends Component {
             <ValidarPermisos can_see={can_see} nombre={this.plural_name}>
                 <Titulo>{this.singular_name}</Titulo>
 
-                <Tabs
-                    onChange={this.handleChange}
-                    value={this.state.slideIndex}
+                <Tabs indicatorColor="primary"
+                      textColor="primary"
+                      onChange={this.handleChange}
+                      value={this.state.slideIndex}
                 >
                     <Tab label="Productos" value={0}/>
                     <Tab label="Categorias" value={1}/>

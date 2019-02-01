@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import {MyDialogCreate} from '../../../../00_utilities/components/ui/dialog';
+import MyDialogCreate from '../../../../00_utilities/components/ui/dialog/create_dialog';
 import BotoneriaModalForm from '../../../../00_utilities/components/ui/forms/botoneria_modal_form';
 
 export const MyFormTagModal = (props) => {
@@ -26,20 +26,22 @@ export const MyFormTagModal = (props) => {
             fullScreen={fullScreen}
             modelStyle={modelStyle}
         >
-            <form className="card" onSubmit={onSubmit}>
+            <form onSubmit={onSubmit}>
                 <div className="row pl-3 pr-5">
                     {props.children}
                 </div>
-                <BotoneriaModalForm
-                    mostrar_submit={mostrar_submit}
-                    mostrar_limpiar={mostrar_limpiar}
-                    mostrar_cancelar={mostrar_cancelar}
-                    onCancel={onCancel}
-                    pristine={pristine}
-                    reset={reset}
-                    submitting={submitting}
-                    initialValues={initialValues}
-                />
+                <div className='p-3'>
+                    <BotoneriaModalForm
+                        mostrar_submit={mostrar_submit}
+                        mostrar_limpiar={mostrar_limpiar}
+                        mostrar_cancelar={mostrar_cancelar}
+                        onCancel={onCancel}
+                        pristine={pristine}
+                        reset={reset}
+                        submitting={submitting}
+                        initialValues={initialValues}
+                    />
+                </div>
             </form>
         </MyDialogCreate>
     )

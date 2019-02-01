@@ -14,6 +14,9 @@ const styles = theme => ({
     nested: {
         paddingLeft: theme.spacing.unit * 4,
     },
+    iconColor: {
+        color: theme.palette.primary.dark
+    }
 });
 
 class DrawerListItem extends Component {
@@ -24,7 +27,7 @@ class DrawerListItem extends Component {
                 <ListItem button className={type === 'main' ? classes.main : classes.nested}>
                     <Tooltip title={texto}>
                         <ListItemIcon>
-                            <FontAwesomeIcon icon={['fas', icono]} size={size}/>
+                            <FontAwesomeIcon className={classes.iconColor} icon={['fas', icono]} size={size}/>
                         </ListItemIcon>
                     </Tooltip>
                     <ListItemText inset primary={texto}/>

@@ -16,7 +16,7 @@ const MenuTerceros = (props) => (
             size='1x'
             link='/app/admin/usuarios/acompanantes/dashboard'
             texto='Acompañante'
-            icono='female'
+            icono='user-nurse'
             type='nested'
         />
         <DrawerListItem

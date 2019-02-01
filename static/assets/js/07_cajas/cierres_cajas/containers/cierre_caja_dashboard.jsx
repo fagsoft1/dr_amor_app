@@ -2,8 +2,8 @@ import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../01_actions/01_index";
 import {pesosColombianos} from "../../../00_utilities/common";
-import {FlatIconModal} from '../../../00_utilities/components/ui/icon/iconos_base';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 const TablaBilletesMonedas = (props) => {
     const {nombre, styles, lista, onChange, denominaciones} = props;
@@ -320,12 +320,16 @@ class LiquidarAcompanante extends Component {
                     Efectivo Entrega: {pesosColombianos(parseFloat(total_efectivo_entrega))}<br/>
                     Efectivo Base que pasa: {pesosColombianos(parseFloat(total_efectivo_base))}<br/>
                     <strong>Total: {pesosColombianos(parseFloat(total_dolares) + parseFloat(total_efectivo) + parseFloat(valor_tarjeta))}</strong><br/>
-                    <FlatIconModal
-                        text={`Cerrar Caja ${pesosColombianos(parseFloat(total_dolares) + parseFloat(total_efectivo) + parseFloat(valor_tarjeta))}`}
-                        className='btn btn-primary'
+
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        className='ml-3'
                         onClick={() => this.onCerrarCajaPuntoVenta()}
-                        type='submit'
-                    />
+                        disabled={submitting || pristine}
+                    >
+                        {`Cerrar Caja ${pesosColombianos(parseFloat(total_dolares) + parseFloat(total_efectivo) + parseFloat(valor_tarjeta))}`}
+                    </Button>
                 </div>
             </div>
         )

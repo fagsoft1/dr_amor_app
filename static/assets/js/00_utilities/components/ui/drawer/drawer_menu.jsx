@@ -1,4 +1,4 @@
-import React, {Fragment, Component} from 'react';
+import React, {Component} from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -81,6 +81,9 @@ const styles = theme => ({
     nested: {
         paddingLeft: theme.spacing.unit * 4,
     },
+    iconColor: {
+        color: theme.palette.primary.dark
+    }
 });
 
 class DrawerMenu extends Component {
@@ -166,8 +169,8 @@ class DrawerMenu extends Component {
                     <div className={classes.toolbar}>
                         <IconButton onClick={this.handleDrawerClose}>
                             {theme.direction === 'rtl' ?
-                                <FontAwesomeIcon icon={['fas', 'angle-right']}/> :
-                                <FontAwesomeIcon icon={['fas', 'angle-left']}/>}
+                                <FontAwesomeIcon icon={['fas', 'angle-right']} className={classes.iconColor}/> :
+                                <FontAwesomeIcon icon={['fas', 'angle-left']} className={classes.iconColor}/>}
                         </IconButton>
                     </div>
                     <Divider/>

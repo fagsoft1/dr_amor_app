@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import {pesosColombianos} from "../../../../00_utilities/common";
 import FormaPago from '../../movimiento_dinero/components/forms/forma_pago';
-import {FlatIconModal} from '../../../../00_utilities/components/ui/icon/iconos_base';
+import Button from '@material-ui/core/Button';
 
 const ResumenCambioHabitacion = (props) => {
     const {
@@ -53,12 +53,14 @@ const ResumenCambioHabitacion = (props) => {
                         </FormaPago>
                     </Fragment> :
                     <Fragment>
-                        <FlatIconModal
-                            text='Cambiar Habitación'
-                            className='btn btn-primary'
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            className='ml-3'
                             onClick={() => onCambiarHabitacion(null, habitacion_nueva.id, servicios)}
-                            type='submit'
-                        />
+                        >
+                            Cambiar Habitación
+                        </Button>
                     </Fragment>
             }
         </Fragment>
