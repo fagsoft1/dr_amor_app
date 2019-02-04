@@ -68,12 +68,12 @@ export function fetchPermisosPorGrupo(grupo_id, options_action = {}) {
     }
 }
 
-export function fetchOtroUsuarioPermisos(id, options_action = {}) {
+export function fetchPermisosxUsuario(id, options_action = {}) {
     return function (dispatch) {
         const SUB_URL = `/permiso_x_usuario/?user_id=${id}`;
         const FULL_URL = `${current_url_api}${SUB_URL}`;
         const dispatches = (response) => {
-            dispatch({type: FETCH_OTRO_USUARIO_PERMISOS, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: response})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {

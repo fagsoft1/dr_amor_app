@@ -105,14 +105,14 @@ export function createRequest(request, options = {}) {
             if (dispatches) {
                 dispatches(response)
             }
-            if (callback) {
-                callback(response.data)
-            }
             if (dispatch_method) {
                 if (response.data && response.data.result) {
                     dispatch_method(createNotification(notificarAction(response.data.result)));
                 }
                 dispatch_method({type: LOADING_STOP})
+            }
+            if (callback) {
+                callback(response.data)
             }
         }).catch(error => {
                 if (callback_error) {

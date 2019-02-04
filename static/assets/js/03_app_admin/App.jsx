@@ -7,9 +7,9 @@ import Menu from './00_menu/index';
 
 import App1 from "./index";
 import PermisosList from "./generales/permisos/containers/permisos_list";
-import GruposPermisosList from "./generales/permisos/containers/grupos_permisos_list";
-import UsuariosList from "./generales/usuarios/containers/usuarios_list";
-import UsuariosDetail from "./generales/usuarios/containers/usuarios_detail";
+import GruposPermisosList from "./generales/permisos/containers/grupos_permisos_list_container";
+import UsuariosList from "./generales/usuarios/containers/usuarios_list_container";
+import UsuariosDetail from "./generales/usuarios/containers/usuarios_detail_container";
 import AcompanantesDashboard from "./especificas/terceros_acompanantes/dashboard/containers/acompanantes_dashboard";
 
 import ColaboradorList
@@ -85,4 +85,5 @@ class AdminApp extends Component {
         )
     }
 }
+
 export default AdminApp;

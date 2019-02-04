@@ -1,5 +1,4 @@
 export const FETCH_MIS_PERMISOS = 'fetch_mis_permisos';
-export const FETCH_OTRO_USUARIO_PERMISOS = 'fetch_otro_usuario_permisos';
 
 ////cargando
 export const LOADING = 'is_loading';

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
 import CargarDatos from "../../../../00_utilities/components/system/cargar_datos";
-import {Titulo} from "../../../../00_utilities/templates/fragmentos";
+import Typography from '@material-ui/core/Typography';
 import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
 import {tengoPermiso, permisosAdapter} from "../../../../00_utilities/common";
 import {
@@ -53,7 +53,9 @@ class PermisosList extends Component {
         return (
             <ValidarPermisos can_see={permisos_this_view.list}
                              nombre='listas de permisos'>
-                <Titulo>Lista de Permisos</Titulo>
+                <Typography variant="h5" gutterBottom color="primary">
+                    Lista de Permisos
+                </Typography>
                 <Tabla
                     permisos={permisos}
                     updatePermiso={this.updatePermiso}

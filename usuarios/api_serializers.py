@@ -4,6 +4,8 @@ from rest_framework import serializers
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
+    to_string = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = [
@@ -19,8 +21,15 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'date_joined',
             'is_superuser',
             'tercero',
+            'to_string',
             'groups'
         ]
+        extra_kwargs = {
+            'tercero': {'read_only': True}
+        }
+
+    def get_to_string(self, instance):
+        return ('%s %s' % (instance.first_name, instance.last_name)).title()
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)

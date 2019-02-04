@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from "prop-types";
 import IconButton from '@material-ui/core/IconButton';
 import {withStyles} from "@material-ui/core/styles/index";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 export const IconButtonTableDelete = (props) => {
     const {onClick, classes} = props;

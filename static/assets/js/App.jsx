@@ -73,7 +73,6 @@ function configureStore() {
     const store = createStoreWithMiddleware(reducers);
     if (module.hot) {
         // Enable Webpack hot module replacement for reducers
-        console.log('entro aqui')
         module.hot.accept('./02_reducers', () => {
             const nextRootReducer = require('./02_reducers/index').default;
             store.replaceReducer(nextRootReducer);

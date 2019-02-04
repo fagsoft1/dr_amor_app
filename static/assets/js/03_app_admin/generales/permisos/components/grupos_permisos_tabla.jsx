@@ -8,7 +8,7 @@ const ItemTabla = (props) => {
     const {
         item,
         item: {name},
-        permisos,
+        permisos_object,
         onSelectItemEdit,
         onDelete,
         onSelectItemDetail,
@@ -16,19 +16,19 @@ const ItemTabla = (props) => {
     return (
         <tr>
             <td>{name}</td>
-            {permisos.change && <td>
+            {permisos_object.change && <td>
                 <IconButtonTableEdit
                     onClick={() => {
                         onSelectItemEdit(item);
                     }}/>
             </td>}
-            {permisos.delete && <td>
+            {permisos_object.delete && <td>
                 <MyDialogButtonDelete
                     element_name={item.name}
                     element_type='Grupo Permisos'
                     onDelete={() => onDelete(item)}/>
             </td>}
-            {permisos.detail && <td>
+            {permisos_object.detail && <td>
                 <IconButtonTableSee
                     onClick={() => {
                         onSelectItemDetail(item)
@@ -48,7 +48,7 @@ const buscarBusqueda = (lista, busqueda) => {
 };
 
 const Tabla = (props) => {
-    const {data, permisos} = props;
+    const {data, permisos_object} = props;
     return (
         <ListaBusqueda>
             {busqueda => {
@@ -58,9 +58,9 @@ const Tabla = (props) => {
                         <thead>
                         <tr>
                             <th>Nombre</th>
-                            {permisos.change && <th>Editar</th>}
-                            {permisos.delete && <th>Eliminar</th>}
-                            {permisos.detail && <th>Ver Permisos</th>}
+                            {permisos_object.change && <th>Editar</th>}
+                            {permisos_object.delete && <th>Eliminar</th>}
+                            {permisos_object.detail && <th>Ver Permisos</th>}
                         </tr>
                         </thead>
                         <tbody>

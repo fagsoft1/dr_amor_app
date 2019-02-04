@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
 import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
-import {Titulo, SinObjeto, AtributoTexto, AtributoBooleano} from "../../../../../00_utilities/templates/fragmentos";
+import {SinObjeto} from "../../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
+import Typography from '@material-ui/core/Typography';
 import {
     TRASLADOS_INVENTARIOS as permisos_view
 } from "../../../../../00_utilities/permisos/types";
@@ -68,7 +69,9 @@ class Detail extends Component {
 
         return (
             <ValidarPermisos can_see={permisos.detail} nombre='detalles de algo'>
-                <Titulo>Detalle {object.username}</Titulo>
+                <Typography variant="h5" gutterBottom color="primary">
+                    Detalle {object.username}
+                </Typography>
                 <div className="row">
                     <div className="col-12"><strong>Bodega Origen: </strong>{object.bodega_origen_nombre}</div>
                     <div className="col-12"><strong>Bodega Destino: </strong>{object.bodega_destino_nombre}</div>

@@ -13,10 +13,11 @@ class Tabla extends React.Component {
         const data = this.props.data;
         const {
             updateItem,
+            singular_name,
             mi_cuenta,
             onDelete,
             onSelectItemEdit,
-            permisos
+            permisos_object
         } = this.props;
 
 
@@ -24,6 +25,7 @@ class Tabla extends React.Component {
             <div>
                 <ReactTable
                     data={data}
+                    noDataText={`No hay elementos para mostrar tipo ${singular_name}`}
                     columns={[
                         {
                             Header: "Personal",
@@ -69,7 +71,7 @@ class Tabla extends React.Component {
                                 {
                                     Header: "Activo",
                                     accessor: "is_active",
-                                    show: permisos.make_user_active,
+                                    show: permisos_object.make_user_active,
                                     maxWidth: 50,
                                     Cell: row => (
                                         mi_cuenta.id !== row.original.id &&
@@ -86,7 +88,7 @@ class Tabla extends React.Component {
                                 {
                                     Header: "Admin",
                                     accessor: "is_superuser",
-                                    show: permisos.make_user_superuser,
+                                    show: permisos_object.make_user_superuser,
                                     maxWidth: 50,
                                     Cell: row => (
                                         mi_cuenta.id !== row.original.id &&
@@ -103,7 +105,7 @@ class Tabla extends React.Component {
                                 {
                                     Header: "Staff",
                                     accessor: "is_staff",
-                                    show: permisos.make_user_staff,
+                                    show: permisos_object.make_user_staff,
                                     maxWidth: 50,
                                     Cell: row => (
                                         mi_cuenta.id !== row.original.id &&
@@ -119,7 +121,7 @@ class Tabla extends React.Component {
                                 },
                                 {
                                     Header: "Elimi.",
-                                    show: permisos.delete,
+                                    show: permisos_object.delete,
                                     maxWidth: 50,
                                     Cell: row =>
                                         mi_cuenta.id !== row.original.id &&
@@ -133,13 +135,13 @@ class Tabla extends React.Component {
                                                 onDelete(row.original)
                                             }}
                                             element_name={row.original.username}
-                                            element_type='Usuario'
+                                            element_type={singular_name}
                                         />
 
                                 },
                                 {
                                     Header: "Editar",
-                                    show: permisos.change,
+                                    show: permisos_object.change,
                                     maxWidth: 50,
                                     Cell: row =>
                                         <IconButtonTableEdit
@@ -150,7 +152,7 @@ class Tabla extends React.Component {
                                 },
                                 {
                                     Header: "Ver",
-                                    show: permisos.detail,
+                                    show: permisos_object.detail,
                                     maxWidth: 50,
                                     Cell: row =>
                                         <Link to={`/app/admin/usuarios/detail/${row.original.id}`}>

@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
 import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
-import {Titulo, SinObjeto} from "../../../../../00_utilities/templates/fragmentos";
+import {SinObjeto} from "../../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 import AddPuntoVenta from '../components/add_punto_venta';
@@ -10,6 +10,7 @@ import IconButtonTableDelete from '../../../../../00_utilities/components/ui/ico
 import {
     COLABORADORES as permisos_view
 } from "../../../../../00_utilities/permisos/types";
+import Typography from '@material-ui/core/Typography';
 
 const TablaPDV = (props) => {
     const {pdv_colaborador, quitarPuntoVenta} = props;
@@ -97,7 +98,9 @@ class Detail extends Component {
         }
         return (
             <ValidarPermisos can_see={permisos.detail} nombre='detalles de Colaborador'>
-                <Titulo>Detalle Colaborador {object.full_name_proxy}</Titulo>
+                <Typography variant="h5" gutterBottom color="primary">
+                    Detalle Colaborador {object.full_name_proxy}
+                </Typography>
                 <div className="row">
                     <div className="col-12">
                         Puntos de Venta

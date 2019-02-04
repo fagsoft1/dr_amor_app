@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
 import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
-import {Titulo} from "../../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
+import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import {
@@ -83,7 +83,9 @@ class ListadoElementos extends Component {
             permisos_object_2.list;
         return (
             <ValidarPermisos can_see={can_see} nombre={this.plural_name}>
-                <Titulo>{this.singular_name}</Titulo>
+                <Typography variant="h5" gutterBottom color="primary">
+                    {this.singular_name}
+                </Typography>
 
                 <Tabs indicatorColor="primary"
                       textColor="primary"
