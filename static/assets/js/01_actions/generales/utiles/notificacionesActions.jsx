@@ -1,6 +1,7 @@
 import {NOTIFICATION_TYPE_SUCCESS, NOTIFICATION_TYPE_ERROR} from 'react-redux-notify';
 import {createNotification} from 'react-redux-notify';
 import React from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 export function notificarAction(mensaje, tipo = 'success', tiempo = 5000) {
     return function (dispatch) {
@@ -19,7 +20,7 @@ export function notificarAction(mensaje, tipo = 'success', tiempo = 5000) {
             duration: tiempo,
             position: 'BottomRight',
             canDimiss: true,
-            icon: <i className="fa fa-check"/>
+            icon: <FontAwesomeIcon icon={['fas', 'check']}/>
         };
         dispatch(createNotification(mySuccessNotification));
     }
@@ -33,7 +34,7 @@ export function notificarErrorAction(error, tiempo = 7000) {
             duration: tiempo,
             position: 'BottomRight',
             canDimiss: true,
-            icon: <i className="fa fa-exclamation"/>
+            icon: <FontAwesomeIcon icon={['fas', 'exclamation']}/>
         };
         dispatch(createNotification(mySuccessNotification));
     }

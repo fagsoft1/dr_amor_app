@@ -17,15 +17,6 @@ class PermissionSerializer(serializers.ModelSerializer):
         return instance.name.title()
 
     class Meta:
-        model = Group
-        fields = [
-            'id',
-            'name',
-            'permissions',
-            'to_string'
-        ]
-
-    class Meta:
         model = Permission
         fields = [
             'id',

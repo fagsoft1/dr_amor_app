@@ -3,6 +3,7 @@ import {LOADING, LOADING_STOP} from "./00_types";
 import {NOTIFICATION_TYPE_ERROR, NOTIFICATION_TYPE_SUCCESS} from 'react-redux-notify';
 import {createNotification} from 'react-redux-notify';
 import React from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const axios_instance = axios.create({
     baseURL: '/api/',
@@ -23,7 +24,7 @@ const notificarAction = (mensaje, tiempo = 5000) => {
         duration: tiempo,
         position: 'BottomRight',
         canDimiss: true,
-        icon: <i className="fa fa-check"/>
+        icon: <FontAwesomeIcon icon={['fas', 'check']}/>
     }
 };
 
@@ -32,8 +33,6 @@ const notificacion_error = (error, tiempo = 7000) => {
     let mensaje = '';
     let mensaje_final = '';
     const {type_error} = error;
-
-    console.log(error)
 
     if (error.response) {
         mensaje_final += `Error ${error.response.status} ${error.response.statusText}`
@@ -79,7 +78,7 @@ const notificacion_error = (error, tiempo = 7000) => {
         duration: tiempo,
         position: 'BottomRight',
         canDimiss: true,
-        icon: <i className="fa fa-exclamation"/>
+        icon: <FontAwesomeIcon icon={['fas', 'exclamation']}/>
     };
 };
 
