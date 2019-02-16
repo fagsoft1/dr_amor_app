@@ -22,6 +22,32 @@ import moment from 'moment-timezone';
 moment.tz.setDefault("America/Bogota");
 momentLocaliser(moment);
 
+const renderInputFileField = (field) => {
+    return (
+        <Fragment>
+            <input
+                {...field.input}
+                type="file"
+                value={null}
+            />
+            {field.meta.touched && field.meta.error &&
+            <span className='form-field-error'>{field.meta.error}</span>}
+        </Fragment>
+    )
+};
+
+export const MyFileFieldInput = (props) => {
+    return (
+        <div className={props.className}>
+            <Field
+                {...props}
+                component={renderInputFileField}
+            />
+        </div>
+    )
+};
+
+
 const renderTextField = ({input, label, meta: {touched, error, warning}, ...custom}) => {
     let new_custom = custom;
     if (touched && error) {
@@ -164,7 +190,7 @@ const renderCheckbox = ({input, label}) => (
         }
         label={label}
     />
-)
+);
 
 export const MyCheckboxSimple = (props) => {
     const {onClick} = props;

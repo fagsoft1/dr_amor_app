@@ -20,8 +20,8 @@ const LoadingOverlay = (props) => {
     return (
         <div className={classes.loadingOverloadUno}>
             <div className={classes.loadingOverloadDos} style={style}>
-                <div className={classes.loadingOverloadTres}>
-                    <FontAwesomeIcon icon={['fas', 'spinner-third']} size='2x' spin/>
+                <div className={classes.loadingOverloadTres} style={{maxWidth: '500px', wordBreak: 'break-all'}}>
+                    <FontAwesomeIcon icon={['far', 'spinner-third']} size='2x' spin/>
                     <Typography variant="h4" color="inherit" noWrap>
                         Procesando...
                     </Typography>

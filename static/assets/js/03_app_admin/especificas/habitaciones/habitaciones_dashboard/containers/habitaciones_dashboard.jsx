@@ -48,7 +48,7 @@ class ListadoElementos extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([bloque_1_permisos, bloque_2_permisos], {callback: () => this.cargarDatos()});
     }
 
 
@@ -63,9 +63,9 @@ class ListadoElementos extends Component {
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list} = this.props;
-        const permisos_object_1 = permisosAdapter(bloque_1_permisos);
-        const permisos_object_2 = permisosAdapter(bloque_2_permisos);
+        const {bloque_1_list, bloque_2_list, mis_permisos} = this.props;
+        const permisos_object_1 = permisosAdapter(mis_permisos, bloque_1_permisos);
+        const permisos_object_2 = permisosAdapter(mis_permisos, bloque_2_permisos);
 
         const can_see =
             permisos_object_1.list ||
@@ -115,6 +115,7 @@ function mapPropsToState(state, ownProps) {
     return {
         auth: state.auth,
         bloque_1_list: state.habitaciones,
+        mis_permisos: state.mis_permisos,
         bloque_2_list: state.habitaciones_tipos,
         empresas_list: state.empresas,
     }

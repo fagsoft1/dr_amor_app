@@ -3,11 +3,13 @@ import {connect} from "react-redux";
 import * as actions from "./01_actions/01_index";
 import Loading from "./00_utilities/components/system/loading_overlay";
 import {Link} from 'react-router-dom'
-import {TIPOS_REGISTRO_INGRESO} from './00_utilities/permisos/types';
+import {TIPOS_REGISTRO_INGRESO as permisos_view} from './00_utilities/permisos/types';
 import {permisosAdapter} from "./00_utilities/common";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {withStyles} from "@material-ui/core/styles/index";
 import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
 
 const Boton = (props) => {
     const {nombre, icono, link, classes} = props;
@@ -17,7 +19,7 @@ const Boton = (props) => {
                 <div className={classes.bordeBoton}>
                     <div className="row">
                         <div className="col-12">
-                            <FontAwesomeIcon icon={['fas', icono]} size='3x' className={classes.iconoBoton}/>
+                            <FontAwesomeIcon icon={['far', icono]} size='3x' className={classes.iconoBoton}/>
                         </div>
                         <div className="col-12">
                             <Typography variant="h6" color="primary" noWrap>
@@ -32,12 +34,31 @@ const Boton = (props) => {
 };
 
 class IndexApp extends Component {
+    componentDidMount() {
+        this.props.fetchMisPermisosxListado([permisos_view])
+    }
+
     render() {
-        const {auth: {punto_venta, mi_cuenta}, classes} = this.props;
-        const permisos_modulo_acceso = permisosAdapter(TIPOS_REGISTRO_INGRESO);
+        const {classes, auth: {mi_cuenta}, mis_permisos} = this.props;
+        const permisos_modulo_acceso = permisosAdapter(mis_permisos, permisos_view);
+        const punto_venta = JSON.parse(localStorage.getItem('punto_venta'));
         return <Loading>
             <div className="mt-3">
                 <div className="container text-center">
+                    {
+                        mi_cuenta &&
+                        mi_cuenta.imagen_perfil_url &&
+                        <div style={{
+                            position: 'absolute',
+                            top: -10,
+                            right: 10
+                        }}>
+                            <Grid container justify="center" alignItems="center">
+                                <Avatar alt="Remy Sharp" src={mi_cuenta.imagen_perfil_url}
+                                        className={classes.bigAvatar}/>
+                            </Grid>
+                        </div>
+                    }
                     <div className="row">
                         <div className="col-12 p-5">
                             <img width='400px' className='img-fluid' src={`${img_static_url}/logo.png`} alt=""/>
@@ -122,7 +143,7 @@ class IndexApp extends Component {
                                 <div className="row">
                                     <div className="col-12">
                                         <FontAwesomeIcon
-                                            icon={['fas', 'sign-out-alt']}
+                                            icon={['far', 'sign-out-alt']}
                                             className={classes.iconoBoton}
                                         />
                                     </div>
@@ -145,6 +166,7 @@ class IndexApp extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         auth: state.auth,
+        mis_permisos: state.mis_permisos,
     }
 }
 
@@ -158,6 +180,11 @@ const styles = theme => (
             border: `2px solid ${theme.palette.primary.dark}`,
             padding: '1rem',
             width: '100%'
+        },
+        bigAvatar: {
+            width: 75,
+            height: 75,
+            border: `2px solid ${theme.palette.primary.main}`
         }
     })
 ;

@@ -29,7 +29,7 @@ class List extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view_groups], {callback: () => this.cargarDatos()});
     }
 
     componentWillUnmount() {
@@ -49,13 +49,13 @@ class List extends Component {
     }
 
     cargarDatos() {
-        this.props.fetchGruposPermisos();
-        this.props.fetchPermisosActivos({
+        const cargarPermisosActivos = () => this.props.fetchPermisosActivos({
             callback: response => this.setState({
                 todos_los_permisos: _.mapKeys(response, 'id'),
                 id_grupo_actual: null
             })
-        })
+        });
+        this.props.fetchGruposPermisos({callback: cargarPermisosActivos});
     }
 
     onSelectItemDetail(item) {
@@ -77,12 +77,12 @@ class List extends Component {
     };
 
     render() {
-        const {object_list, permisos} = this.props;
+        const {object_list, permisos, mis_permisos} = this.props;
         const {
             todos_los_permisos,
             id_grupo_actual
         } = this.state;
-        const permisos_object = permisosAdapter(permisos_view_groups);
+        const permisos_object = permisosAdapter(mis_permisos, permisos_view_groups);
         const grupo_seleccionado = id_grupo_actual ? object_list[id_grupo_actual] : null;
         const method_pool = {
             fetchObjectMethod: this.props.fetchGrupoPermiso,
@@ -150,6 +150,7 @@ function mapPropsToState(state, ownProps) {
         auth: state.auth,
         object_list: state.grupos_permisos,
         permisos: state.permisos,
+        mis_permisos: state.mis_permisos
     }
 }
 

@@ -1,8 +1,12 @@
 import crypt
+import random
 
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
+
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFit, ResizeCanvas
 
 from model_utils.models import TimeStampedModel
 
@@ -10,6 +14,10 @@ from terceros_acompanantes.models import CategoriaAcompanante
 
 
 class Tercero(models.Model):
+    def imagen_perfil_upload_to(instance, filename):
+        nro_random = random.randint(1111, 9999)
+        return "img/usuarios/perfil/%s01j%sj10%s.%s" % (instance.id, nro_random, instance.id, filename.split('.')[-1])
+
     CHOICES_TIPO_DOCUMENTO = (
         ('CC', 'Cédula Ciudadanía'),
         ('CE', 'Cédula Extrangería'),
@@ -43,6 +51,14 @@ class Tercero(models.Model):
     es_proveedor = models.BooleanField(default=False)
     presente = models.BooleanField(default=False)
     pin = models.CharField(max_length=128, null=True)
+    imagen_perfil = ProcessedImageField(
+        processors=[ResizeToFit(300, 300)],
+        format='PNG',
+        options={'quality': 100},
+        null=True,
+        blank=True,
+        upload_to=imagen_perfil_upload_to
+    )
     # campo para acompañante
     alias_modelo = models.CharField(max_length=120, blank=True, null=True, unique=True)
     categoria_modelo = models.ForeignKey(CategoriaAcompanante, on_delete=models.PROTECT, blank=True, null=True,

@@ -1,5 +1,3 @@
-export const PERMISO_CHANGE_PERMISSION_PLUS = 'change_permissionplus';
-
 export const GROUPS = {
     add: 'add_group',
     delete: 'delete_group',
@@ -10,7 +8,8 @@ export const GROUPS = {
 
 export const PERMISSION = {
     change: 'change_permission',
-    list: 'list_permission'
+    list: 'list_permission',
+    change_plus:'change_permissionplus'
 };
 
 export const USUARIOS = {

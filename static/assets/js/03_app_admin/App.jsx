@@ -50,8 +50,8 @@ class AdminApp extends Component {
                         <Route exact path='/app/admin/permisos/list' component={PermisosList}/>
                         <Route exact path='/app/admin/grupos_permisos/list' component={GruposPermisosList}/>
                         <Route exact path='/app/admin/usuarios/list' component={UsuariosList}/>
-                        <Route exact path='/app/admin/usuarios/colaboradores/list' component={ColaboradorList}/>
-                        <Route exact path='/app/admin/usuarios/colaboradores/detail/:id'
+                        <Route exact path='/app/admin/terceros/colaboradores/list' component={ColaboradorList}/>
+                        <Route exact path='/app/admin/terceros/colaboradores/detail/:id'
                                component={ColaboradorDetail}/>
                         <Route exact path='/app/admin/terceros/proveedores/list' component={ProveedoresList}/>
                         <Route exact path='/app/admin/empresas/empresas/list' component={EmpresasList}/>

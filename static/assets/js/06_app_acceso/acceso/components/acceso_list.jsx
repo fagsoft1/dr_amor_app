@@ -83,6 +83,7 @@ class List extends Component {
                         modal_open={modal_open}
                         onCancel={() => {
                             this.setState({modal_open: false, tipo_registro: null});
+                            this.props.fetchTercerosPresentes();
                         }}
                         onSubmit={this.onSubmit}
                         setSelectItem={this.setSelectItem}

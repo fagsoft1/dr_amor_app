@@ -12,6 +12,16 @@ const validate = values => {
         }
     });
 
+    const tamanos = {
+        nombre: 40
+    };
+
+    _.mapKeys(tamanos, (v, k) => {
+        if (values[k] && values[k].length > parseInt(v)) {
+            errors[k] = `No debe tener más de ${v} caracteres!`
+        }
+    });
+
     return errors;
 };
 

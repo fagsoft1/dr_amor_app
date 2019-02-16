@@ -22,6 +22,7 @@ class Form extends Component {
         } = this.props;
         return (
             <MyFormTagModal
+                fullScreen = {false}
                 onCancel={onCancel}
                 onSubmit={handleSubmit(onSubmit)}
                 reset={reset}
@@ -32,7 +33,7 @@ class Form extends Component {
                 element_type={singular_name}
             >
                 <MyTextFieldSimple
-                    className="col-12 col-md-6"
+                    className="col-12"
                     nombre='Nombre'
                     name='nombre'
                     case='U'/>
@@ -43,7 +44,7 @@ class Form extends Component {
                     case='U'/>
 
                 <MyCombobox
-                    className="col-12 col-md-4"
+                    className="col-12 col-md-8"
                     nombre='Categoría'
                     name='categoria'
                     textField='nombre'

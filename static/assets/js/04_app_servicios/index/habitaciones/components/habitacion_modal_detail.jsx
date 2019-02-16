@@ -6,6 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import ServicioHabitacionList from './habitacion_servicios_list'
 import SelectModeloServicio from '../../dashboard/components/forms/habitacion_detail_select_acompanante_servicio'
 import Button from '@material-ui/core/Button';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 class HabitacionDetailModal extends Component {
     constructor(props) {
@@ -215,8 +216,9 @@ class HabitacionDetailModal extends Component {
                     {
                         habitacion.estado === 1 &&
                         <Fragment>
-                            <i
-                                className={`far fa-${mostrar_avanzado ? 'minus' : 'plus'}-circle puntero`}
+                            <FontAwesomeIcon
+                                className='puntero'
+                                icon={['far', `${mostrar_avanzado ? 'minus' : 'plus'}-circle`]}
                                 onClick={() => this.setState(s => {
                                     return {
                                         mostrar_avanzado: !s.mostrar_avanzado,
@@ -224,8 +226,8 @@ class HabitacionDetailModal extends Component {
                                         mostrar_cambiar_habitacion: false
                                     }
                                 })}
-                                style={{position: 'absolute', left: 10}}>
-                            </i>
+                                style={{position: 'absolute', left: 10}}
+                            />
                             {
                                 mostrar_avanzado &&
                                 <div style={{position: 'absolute', left: 50}}>

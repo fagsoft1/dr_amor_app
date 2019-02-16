@@ -1,3 +1,4 @@
+from channels.binding.websockets import WebsocketBinding
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
@@ -19,6 +20,23 @@ class TerceroSerializer(serializers.ModelSerializer):
             'presente',
             'estado',
         ]
+
+
+class TercerosBinding(WebsocketBinding):
+    model = Tercero
+    stream = "terceros"
+    fields = ["id", ]
+
+    def serialize_data(self, instance):
+        serializado = TerceroSerializer(instance, context={'request': None})
+        return serializado.data
+
+    @classmethod
+    def group_names(cls, *args, **kwargs):
+        return ["binding.pos_servicios"]
+
+    def has_permission(self, user, action, pk):
+        return True
 
 
 class AcompananteSerializer(serializers.ModelSerializer):
@@ -113,6 +131,12 @@ class ColaboradorSerializer(serializers.ModelSerializer):
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)
     fecha_nacimiento = serializers.DateTimeField(format="%Y-%m-%d", input_formats=['%Y-%m-%d', 'iso-8601'])
     to_string = serializers.SerializerMethodField()
+    imagen_perfil_url = serializers.SerializerMethodField()
+
+    def get_imagen_perfil_url(self, obj):
+        if obj.imagen_perfil:
+            return obj.imagen_perfil.url
+        return None
 
     def get_to_string(self, instance):
         return instance.full_name_proxy
@@ -124,6 +148,7 @@ class ColaboradorSerializer(serializers.ModelSerializer):
             'full_name',
             'full_name_proxy',
             'nombre',
+            'imagen_perfil_url',
             'to_string',
             'nombre_segundo',
             'apellido',

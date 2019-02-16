@@ -2,7 +2,6 @@ import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
 import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
-import {SinObjeto} from "../../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 import AddPuntoVenta from '../components/add_punto_venta';
@@ -50,7 +49,7 @@ class Detail extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
     }
 
     componentWillUnmount() {
@@ -89,12 +88,14 @@ class Detail extends Component {
     }
 
     render() {
-        const {object, puntos_ventas} = this.props;
-        const permisos = permisosAdapter(permisos_view);
+        const {object, puntos_ventas, mis_permisos} = this.props;
+        const permisos = permisosAdapter(mis_permisos, permisos_view);
         const {puntos_ventas_colaborador} = this.state;
         const puntos_venta_para_adicionar = puntos_ventas_colaborador ? _.pickBy(puntos_ventas, pv => !_.map(puntos_ventas_colaborador, pv => pv.id).includes(pv.id)) : null;
         if (!object) {
-            return <SinObjeto/>
+            return <Typography variant="overline" gutterBottom color="primary">
+                Cargando...
+            </Typography>
         }
         return (
             <ValidarPermisos can_see={permisos.detail} nombre='detalles de Colaborador'>
@@ -126,6 +127,7 @@ function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
         auth: state.auth,
+        mis_permisos: state.mis_permisos,
         object: state.colaboradores[id],
         puntos_ventas: state.puntos_ventas,
     }

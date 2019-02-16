@@ -1,5 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {Field, reduxForm, getFormValues} from 'redux-form';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import {connect} from "react-redux";
 import {pesosColombianos} from "../../../../00_utilities/common";
@@ -40,8 +41,7 @@ class CierreCaja extends Component {
                             <tr key={d.id}>
                                 <td className='text-right'>
                                     {pesosColombianos(d.valor)}
-                                    <i className={`far fa-${d.tipo === 0 ? 'money-bill-wave' : 'coins'}`}>
-                                    </i>
+                                    <FontAwesomeIcon icon={['far', d.tipo === 0 ? 'money-bill-wave' : 'coins']}/>
                                 </td>
                                 <td>
                                     <Field

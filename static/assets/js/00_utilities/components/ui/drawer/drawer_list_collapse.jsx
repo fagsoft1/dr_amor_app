@@ -7,6 +7,8 @@ import Collapse from '@material-ui/core/Collapse';
 import {withStyles} from "@material-ui/core/styles/index";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Tooltip from '@material-ui/core/Tooltip';
+import {connect} from "react-redux";
+import * as actions from "../../../../01_actions/01_index";
 
 const styles = theme => ({
     main: {
@@ -31,17 +33,31 @@ class ListCollapse extends Component {
         const {icono, texto, children, classes} = this.props;
         return (
             <Fragment>
-                <ListItem button
-                          onClick={() => this.setState(state => ({open: !state.open}))}>
+                <ListItem
+                    button
+                    onClick={() => {
+                        this.setState(state => {
+                                if (state.open) {
+                                    this.props.closeTMenu();
+                                } else {
+                                    this.props.openTMenu();
+                                }
+                                return (
+                                    {open: !state.open}
+                                )
+                            }
+                        );
+                    }}
+                >
                     <Tooltip title={texto}>
                         <ListItemIcon>
-                            <FontAwesomeIcon icon={['fas', icono]} size='lg' className={classes.iconColor}/>
+                            <FontAwesomeIcon icon={['far', icono]} size='lg' className={classes.iconColor}/>
                         </ListItemIcon>
                     </Tooltip>
                     <ListItemText inset primary={texto}/>
                     {open ?
-                        <FontAwesomeIcon icon={['fas', 'angle-up']} className={classes.iconColor}/> :
-                        <FontAwesomeIcon icon={['fas', 'angle-down']} className={classes.iconColor}/>}
+                        <FontAwesomeIcon icon={['far', 'angle-up']} className={classes.iconColor}/> :
+                        <FontAwesomeIcon icon={['far', 'angle-down']} className={classes.iconColor}/>}
                 </ListItem>
                 <Collapse in={open} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
@@ -53,4 +69,10 @@ class ListCollapse extends Component {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(ListCollapse);
+function mapPropsToState(state, ownProps) {
+    return {
+        menu_status: state.menu_status
+    }
+}
+
+export default withStyles(styles, {withTheme: true})(connect(mapPropsToState, actions)(ListCollapse));

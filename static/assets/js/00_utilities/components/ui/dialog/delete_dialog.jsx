@@ -56,7 +56,7 @@ class MyDialogButtonDelete extends Component {
                     >
                         <FontAwesomeIcon
                             className={classes.iconoDelete}
-                            icon={['fas', 'trash']}
+                            icon={['far', 'trash']}
                             size='xs'
                         />
                     </IconButton>

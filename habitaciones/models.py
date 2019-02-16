@@ -37,8 +37,9 @@ class Habitacion(models.Model):
     numero = models.PositiveIntegerField()
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=0)
     empresa = models.ForeignKey(Empresa, related_name='mis_habitaciones', on_delete=models.PROTECT)
-    activa = models.BooleanField(default=1)
+    activa = models.BooleanField(default=False)
     fecha_ultimo_estado = models.DateTimeField(null=True, blank=True)
+
 
     def iniciar_servicios(self, usuario, servicios, punto_venta):
         self.save()

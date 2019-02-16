@@ -1,14 +1,14 @@
-export const FETCH_MIS_PERMISOS = 'fetch_mis_permisos';
-
-////cargando
-export const LOADING = 'is_loading';
-export const LOADING_STOP = 'in_not_loading';
+export const LOADING = {
+    loading: 'is_loading',
+    stop: 'in_not_loading'
+};
 
 export const PERMISO_TYPES = {
     fetch_all: 'fetch_permisos',
     fetch: 'fetch_permiso',
     clear: 'clear_permisos',
     update: 'update_permiso',
+    mis_permisos: 'fetch_mis_permisos'
 };
 
 export const GRUPO_PERMISO_TYPES = {
@@ -28,4 +28,12 @@ export const USUARIO_TYPES = {
     clear: 'clear_usuarios',
     update: 'update_usuario',
     cuenta: 'fetch_mi_cuenta'
+};
+
+export const MENU_TYPES = {
+    open: 'open_menu',
+    close: 'close_menu',
+    open_submenu: 'open_submenu',
+    close_submentu: 'close_submenu',
+    reset: 'reset_menu',
 };

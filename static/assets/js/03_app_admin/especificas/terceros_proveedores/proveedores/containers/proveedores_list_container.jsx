@@ -17,7 +17,7 @@ class List extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
     }
 
     componentWillUnmount() {
@@ -25,15 +25,12 @@ class List extends Component {
     }
 
     cargarDatos() {
-
-        
         this.props.fetchProveedores();
-
     }
 
     render() {
-        const {object_list} = this.props;
-        const bloque_1_list = permisosAdapter( permisos_view);
+        const {object_list, mis_permisos} = this.props;
+        const bloque_1_list = permisosAdapter(mis_permisos, permisos_view);
         return (
             <Fragment>
                 <ListCrud
@@ -52,7 +49,8 @@ class List extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         auth: state.auth,
-        object_list: state.proveedores
+        object_list: state.proveedores,
+        mis_permisos: state.mis_permisos
     }
 }
 

@@ -28,7 +28,7 @@ class Tabla extends React.Component {
                             {
                                 Header: "Nombre",
                                 accessor: "nombre",
-                                maxWidth: 150,
+                                maxWidth: 350,
                                 filterable: true,
                                 filterMethod: (filter, row) => {
                                     return row[filter.id].includes(filter.value.toUpperCase())

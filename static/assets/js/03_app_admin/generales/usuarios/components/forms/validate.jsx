@@ -29,6 +29,18 @@ const validate = values => {
             errors.password = `La contraseña debe tener entre 8 y 20 caracteres. Esta tiene ${values.password.length} caracteres`;
         }
     }
+
+    const tamanos = {
+        username: 30,
+        first_name: 30,
+        last_name: 40
+    };
+
+    _.mapKeys(tamanos, (v, k) => {
+        if (values[k] && values[k].length > parseInt(v)) {
+            errors[k] = `No debe tener más de ${v} caracteres!`
+        }
+    });
     return errors;
 };
 

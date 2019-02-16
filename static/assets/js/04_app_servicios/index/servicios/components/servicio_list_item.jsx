@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Cronometer from '../../dashboard/components/cronometer';
-import {Link} from 'react-router-dom';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const TerminarSiNo = (props) => {
     const {onSiTerminarServicioClick, onNoTerminarServicioClick} = props;
@@ -69,9 +69,7 @@ export default class ServicioListItem extends Component {
     render() {
         const {servicio, abrirModalServicio} = this.props;
         const cronometro = servicio.en_espera ?
-            <i className="fas fa-spinner fa-spin">
-            </i> :
-            <Cronometer hora_final={servicio.hora_final}/>;
+            <FontAwesomeIcon icon={['far', 'spinner']} spin/> : <Cronometer hora_final={servicio.hora_final}/>;
 
         return (
             <div className="col-12">
@@ -93,16 +91,20 @@ export default class ServicioListItem extends Component {
                                 <div className='float-left'>
                                     {
                                         !servicio.termino &&
-                                        <i className="fas fa-cogs puntero p-1"
-                                           aria-hidden="true"
-                                           onClick={() => abrirModalServicio(servicio)}></i>
+                                        <FontAwesomeIcon
+                                            className="puntero p-1"
+                                            icon={['far', 'cogs']}
+                                            onClick={() => abrirModalServicio(servicio)}
+                                        />
                                     }
                                     {
                                         (!servicio.servicio_siguiente || servicio.termino) &&
                                         !servicio.en_espera &&
-                                        <i onClick={() => this.onTerminarServicioClick()}
-                                           className="fas fa-hand-paper puntero  p-1" aria-hidden="true">
-                                        </i>
+                                        <FontAwesomeIcon
+                                            className="puntero p-1"
+                                            icon={['far', 'hand-paper']}
+                                            onClick={() => this.onTerminarServicioClick()}
+                                        />
                                     }
                                 </div>
                                 <div className='float-right pr-2'>

@@ -6,6 +6,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Tooltip from '@material-ui/core/Tooltip';
+import {connect} from "react-redux";
+import * as actions from "../../../../01_actions/01_index";
 
 const styles = theme => ({
     main: {
@@ -25,11 +27,14 @@ class DrawerListItem extends Component {
         return (
             <Link to={link}>
                 <ListItem button className={type === 'main' ? classes.main : classes.nested}>
-                    <Tooltip title={texto}>
-                        <ListItemIcon>
-                            <FontAwesomeIcon className={classes.iconColor} icon={['fas', icono]} size={size}/>
-                        </ListItemIcon>
-                    </Tooltip>
+                    {
+                        icono &&
+                        <Tooltip title={texto}>
+                            <ListItemIcon>
+                                <FontAwesomeIcon className={classes.iconColor} icon={['far', icono]} size={size}/>
+                            </ListItemIcon>
+                        </Tooltip>
+                    }
                     <ListItemText inset primary={texto}/>
                 </ListItem>
             </Link>
@@ -37,4 +42,10 @@ class DrawerListItem extends Component {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(DrawerListItem);
+function mapPropsToState(state, ownProps) {
+    return {
+        menu_status: state.menu_status
+    }
+}
+
+export default withStyles(styles, {withTheme: true})(connect(mapPropsToState, actions)(DrawerListItem));

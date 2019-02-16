@@ -1,5 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {REGEX_SOLO_NUMEROS, numerosFormato} from "../../../../../00_utilities/common";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 export default class TablaProcesoTrasladoItem extends Component {
     constructor(props) {
@@ -64,7 +65,11 @@ export default class TablaProcesoTrasladoItem extends Component {
                             {item.cantidad_destino ? Number(item.cantidad_destino) + Number(this.state.cantidad) : Number(this.state.cantidad)}
                         </td>
                         <td>
-                            <i onClick={() => this.props.eliminarItem(item.id)} className='far fa-trash puntero'></i>
+                            <FontAwesomeIcon
+                                className='puntero'
+                                icon={['far', 'trash']}
+                                onClick={() => this.props.eliminarItem(item.id)}
+                            />
                         </td>
                     </Fragment>
                 }

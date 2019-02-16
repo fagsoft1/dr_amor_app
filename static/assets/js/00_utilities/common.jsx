@@ -18,18 +18,10 @@ export const horaFormatoUno = (date) => moment.tz(date, "America/Bogota").format
 export const upper = value => value && value.toUpperCase();
 export const lower = value => value && value.toLowerCase();
 
-export const tengoPermiso = (permisos, tipo = 'and') => {
-    const mi_cuenta = JSON.parse(localStorage.getItem('mi_cuenta'));
-    if (mi_cuenta.is_superuser) {
-        return true
-    }
-    const mis_permisos = _.map(JSON.parse(localStorage.getItem('mis_permisos')), e => e.codename);
+export const tengoPermiso = (mis_permisos, permisos, tipo = 'and') => {
     let permisos_a_validar_array = permisos;
     if (!Array.isArray(permisos)) {
         permisos_a_validar_array = [permisos]
-    }
-    if (!Array.isArray(mis_permisos)) {
-        permisos_a_validar_array = [mis_permisos]
     }
     const mis_permisos_array = _.map(mis_permisos, permiso => {
         return permiso
@@ -45,6 +37,6 @@ export const tengoPermiso = (permisos, tipo = 'and') => {
 };
 
 
-export const permisosAdapter = (permisos_view) => {
-    return _.mapValues(permisos_view, p => tengoPermiso(p));
+export const permisosAdapter = (mis_permisos, permisos_view) => {
+    return _.mapValues(permisos_view, p => tengoPermiso(mis_permisos, p));
 };

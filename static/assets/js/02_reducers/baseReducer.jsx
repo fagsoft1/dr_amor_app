@@ -8,7 +8,7 @@ const mostrarLogs = (tipo) => {
     }
 };
 
-export default function (actions_types, state = [], action, id = 'id') {
+export default function (actions_types, state = {}, action, id = 'id') {
     switch (action.type) {
         case actions_types.create:
             mostrarLogs('create');

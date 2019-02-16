@@ -32,7 +32,7 @@ const asyncValidateFunction = (values, dispatch, props, blurredField, URL) => {
                 resolve(request.data);
             })
             .catch(errors => {
-                reject(errors);
+                reject(errors.response.data);
             })
 
     });

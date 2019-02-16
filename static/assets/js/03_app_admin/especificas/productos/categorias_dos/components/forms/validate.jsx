@@ -12,7 +12,18 @@ const validate = values => {
         }
     });
 
-    if (values.codigo && values.codigo.length!==3) {
+    const tamanos = {
+        nombre: 40,
+        codigo: 3
+    };
+
+    _.mapKeys(tamanos, (v, k) => {
+        if (values[k] && values[k].length > parseInt(v)) {
+            errors[k] = `No debe tener más de ${v} caracteres!`
+        }
+    });
+
+    if (values.codigo && values.codigo.length !== 3) {
         errors.codigo = 'Debe tener 3 letras el código de la categoría';
     }
     return errors;

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Cronometer from '../../dashboard/components/cronometer';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 export default class HabitacionCategoriaListItem extends Component {
 
@@ -28,12 +29,12 @@ export default class HabitacionCategoriaListItem extends Component {
         }
         return (
             <div className="m-1 col-3">
-                <i
+                <FontAwesomeIcon
+                    className={`est-${estado} habitacion icon puntero`}
+                    icon={['far', 'circle']}
+                    size='2x'
                     onClick={() => this.onClickCambiarEstado(estado)}
-                    className={`fa fa-circle fa-2x habitacion est-${estado} icon puntero`}
-                    aria-hidden="true"
-                >
-                </i>
+                />
             </div>
         )
     }
@@ -72,8 +73,7 @@ export default class HabitacionCategoriaListItem extends Component {
                 }}
                      className={`habitacion-tipo-list-item habitacion est-${estado} puntero`}
                 >
-                    <i className="fas fa-bed" aria-hidden="true">
-                    </i>
+                    <FontAwesomeIcon icon={['far', 'bed']}/>
                     <span className="habitacion numero"> {numero}</span>
                     {
                         (estado === 1 || estado === 2 || estado === 3) &&

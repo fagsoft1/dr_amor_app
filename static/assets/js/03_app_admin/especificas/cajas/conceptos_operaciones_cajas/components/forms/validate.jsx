@@ -1,5 +1,3 @@
-import {REGEX_CORREO_ELECTRONICO} from "../../../../../../00_utilities/common";
-
 const validate = values => {
     const errors = {};
 
@@ -11,6 +9,15 @@ const validate = values => {
     requiredFields.map(field => {
         if (!values[field]) {
             errors[field] = 'Requerido'
+        }
+    });
+    const tamanos = {
+        descripcion: 60
+    };
+
+    _.mapKeys(tamanos, (v, k) => {
+        if (values[k] && values[k].length > parseInt(v)) {
+            errors[k] = `No debe tener más de ${v} caracteres!`
         }
     });
     return errors;

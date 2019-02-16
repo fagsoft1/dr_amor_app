@@ -1,8 +1,8 @@
 import {
-    PERMISO_TYPES as TYPES,
-    FETCH_MIS_PERMISOS,
-    FETCH_OTRO_USUARIO_PERMISOS,
+    PERMISO_TYPES as TYPES
 } from '../../00_types';
+
+import {mapKeys} from 'lodash';
 
 import {
     fetchListGet,
@@ -13,12 +13,37 @@ import {
 
 const current_url_api = 'permisos';
 
+export const fetchMisPermisosxListado = (listados_permisos = [], options_action = {}) => {
+    let permisos_listado_consulta = '';
+    listados_permisos.map(lista => {
+        mapKeys(lista, (v) => {
+            permisos_listado_consulta = permisos_listado_consulta.concat(`${v},`);
+        });
+    });
+    return function (dispatch) {
+        const SUB_URL = '/tengo_permisos';
+        const FULL_URL = `${current_url_api}${SUB_URL}/?listado_permisos=${permisos_listado_consulta}`;
+        const dispatches = (response) => {
+            dispatch({type: TYPES.mis_permisos, payload: response})
+        };
+        const {limpiar_coleccion = true} = options_action;
+        const options = {
+            dispatches,
+            ...options_action,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGetURLParameters(FULL_URL, options);
+    }
+};
+
+
 export function fetchMisPermisos(options_action = {}) {
     return function (dispatch) {
         const SUB_URL = '/mis_permisos';
         const FULL_URL = `${current_url_api}${SUB_URL}`;
         const dispatches = (response) => {
-            dispatch({type: FETCH_MIS_PERMISOS, payload: response})
+            dispatch({type: TYPES.mis_permisos, payload: response})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {

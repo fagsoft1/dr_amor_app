@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 export default class Cronometer extends Component {
     constructor(props) {
@@ -46,7 +47,7 @@ export default class Cronometer extends Component {
     render() {
         return (
             <div className={`servicio clock-${this.state.termino}`}>
-                <i className="far fa-clock" aria-hidden="true"></i> {this.state.tiempo_faltante}
+                <FontAwesomeIcon icon={['far', 'clock']}/> {this.state.tiempo_faltante}
             </div>
         )
     }

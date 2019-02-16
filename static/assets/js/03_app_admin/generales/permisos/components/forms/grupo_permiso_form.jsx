@@ -25,6 +25,7 @@ class Form extends Component {
         } = this.props;
         return (
             <MyFormTagModal
+                fullScreen={false}
                 onCancel={() => {
                     onCancel();
                     reset()

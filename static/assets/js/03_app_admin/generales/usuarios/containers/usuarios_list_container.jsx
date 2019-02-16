@@ -19,7 +19,7 @@ class List extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view_groups], {callback: () => this.cargarDatos()})
     }
 
     componentWillUnmount() {
@@ -31,8 +31,8 @@ class List extends Component {
     }
 
     render() {
-        const {object_list, auth: {mi_cuenta}} = this.props;
-        const permisos_object = permisosAdapter(permisos_view_groups);
+        const {object_list, mis_permisos} = this.props;
+        const permisos_object = permisosAdapter(mis_permisos, permisos_view_groups);
         const method_pool = {
             fetchObjectMethod: this.props.fetchUsuario,
             deleteObjectMethod: this.props.deleteUsuario,
@@ -44,7 +44,6 @@ class List extends Component {
                 <CRUD
                     method_pool={method_pool}
                     list={object_list}
-                    mi_cuenta={mi_cuenta}
                     permisos_object={permisos_object}
                     plural_name='Usuarios'
                     singular_name='Usuario'
@@ -61,6 +60,7 @@ class List extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         auth: state.auth,
+        mis_permisos: state.mis_permisos,
         object_list: state.usuarios
     }
 }

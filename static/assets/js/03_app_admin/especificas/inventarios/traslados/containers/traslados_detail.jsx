@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
 import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
-import {SinObjeto} from "../../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 import Typography from '@material-ui/core/Typography';
@@ -22,7 +21,7 @@ class Detail extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
     }
 
     componentWillUnmount() {
@@ -60,11 +59,18 @@ class Detail extends Component {
     }
 
     render() {
-        const {object, traslados_inventarios_detalles_list, inventarios_bodega_origen_list} = this.props;
-        const permisos = permisosAdapter(permisos_view);
+        const {
+            object,
+            traslados_inventarios_detalles_list,
+            inventarios_bodega_origen_list,
+            mis_permisos
+        } = this.props;
+        const permisos = permisosAdapter(mis_permisos, permisos_view);
 
         if (!object) {
-            return <SinObjeto/>
+            return <Typography variant="overline" gutterBottom color="primary">
+                Cargando...
+            </Typography>
         }
 
         return (
@@ -122,6 +128,7 @@ function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
         auth: state.auth,
+        mis_permisos: state.mis_permisos,
         object: state.traslados_inventarios[id],
         traslados_inventarios_detalles_list: state.traslados_inventarios_detalles,
         inventarios_bodega_origen_list: state.movimientos_inventarios_detalles,

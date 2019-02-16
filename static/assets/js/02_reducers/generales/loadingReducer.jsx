@@ -1,16 +1,15 @@
 import {
-    LOADING_STOP,
-    LOADING
+    LOADING as TYPES
 } from '../../01_actions/00_types';
 
 export default function (state = false, action) {
     switch (action.type) {
-        case LOADING:
+        case TYPES.loading:
             return {
                 cargando: true,
                 mensaje: action.message ? action.message : ''
             };
-        case LOADING_STOP:
+        case TYPES.stop:
             return {
                 cargando: false,
                 mensaje: null

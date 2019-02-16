@@ -5,6 +5,16 @@ from rest_framework import serializers
 
 class UsuarioSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
+    imagen_perfil_url = serializers.SerializerMethodField()
+
+    def get_imagen_perfil_url(self, obj):
+        if hasattr(obj, 'tercero'):
+            if obj.tercero.imagen_perfil:
+                return obj.tercero.imagen_perfil.url
+        return None
+
+    def get_to_string(self, instance):
+        return ('%s %s' % (instance.first_name, instance.last_name)).title()
 
     class Meta:
         model = User
@@ -20,6 +30,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'last_login',
             'date_joined',
             'is_superuser',
+            'imagen_perfil_url',
             'tercero',
             'to_string',
             'groups'
@@ -27,9 +38,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'tercero': {'read_only': True}
         }
-
-    def get_to_string(self, instance):
-        return ('%s %s' % (instance.first_name, instance.last_name)).title()
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)

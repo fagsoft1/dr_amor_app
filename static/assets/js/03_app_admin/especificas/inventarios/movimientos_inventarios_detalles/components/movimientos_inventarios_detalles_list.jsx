@@ -15,17 +15,17 @@ class List extends Component {
             createObjectMethod: this.props.createMovimientoInventarioDetalle,
             updateObjectMethod: this.props.updateMovimientoInventarioDetalle,
         };
-        this.successDeleteCallback = this.successDeleteCallback.bind(this);
-        this.successSubmitCallback = this.successSubmitCallback.bind(this);
+        this.posDeleteMethod = this.posDeleteMethod.bind(this);
+        this.posSummitMethod = this.posSummitMethod.bind(this);
         this.plural_name = 'Items';
         this.singular_name = 'Item';
     }
 
-    successSubmitCallback(item) {
+    posSummitMethod(item) {
         this.props.fetchMovimientoInventario(item.movimiento)
     }
 
-    successDeleteCallback(item) {
+    posDeleteMethod(item) {
         this.props.fetchMovimientoInventario(item.movimiento)
     }
 
@@ -33,8 +33,8 @@ class List extends Component {
         const {object_list, permisos_object} = this.props;
         return (
             <CRUD
-                successDeleteCallback={this.successDeleteCallback}
-                successSubmitCallback={this.successSubmitCallback}
+                posDeleteMethod={this.posDeleteMethod}
+                posSummitMethod={this.posSummitMethod}
                 method_pool={this.method_pool}
                 list={object_list}
                 permisos_object={permisos_object}

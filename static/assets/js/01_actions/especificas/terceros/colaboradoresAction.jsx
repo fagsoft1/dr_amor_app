@@ -7,7 +7,8 @@ import {
     fetchObject,
     deleteObject,
     createObject,
-    callApiMethodPostParameters
+    callApiMethodPostParameters,
+    uploadArchivo
 } from '../../00_general_fuctions'
 
 const current_url_api = 'colaboradores';
@@ -86,5 +87,12 @@ export const updateColaborador = (id, values, options_action = {}) => {
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         updateObject(current_url_api, id, values, options);
+    }
+};
+
+export const uploadColaboradorFoto = (id, values, options_action = {}) => {
+    return (dispatch) => {
+        const options = {...options_action, dispatch_method: dispatch};
+        uploadArchivo(current_url_api, id, 'upload_archivo', values, options)
     }
 };

@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {MyTextFieldSimple} from '../../../../../00_utilities/components/ui/forms/fields';
 import moment from 'moment-timezone';
 import momentLocaliser from 'react-widgets-moment';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 moment.tz.setDefault("America/Bogota");
 momentLocaliser(moment);
@@ -43,12 +44,16 @@ class LectorCedulaForm extends Component {
         return (
             <Fragment>
                 <div className="col-12 mt-2">
-                    <i className="fa fa-barcode fa-2x" onClick={() => {
-                        this.setState(prevState => ({
-                            con_codigo_barras: !prevState.con_codigo_barras
-                        }));
-                    }}>
-                    </i>
+                    <FontAwesomeIcon
+                        className='puntero'
+                        icon={['far', 'barcode']}
+                        size='2x'
+                        onClick={() => {
+                            this.setState(prevState => ({
+                                con_codigo_barras: !prevState.con_codigo_barras
+                            }));
+                        }}
+                    />
                 </div>
                 {
                     con_codigo_barras ?

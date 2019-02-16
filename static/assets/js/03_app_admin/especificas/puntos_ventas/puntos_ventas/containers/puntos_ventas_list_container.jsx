@@ -20,7 +20,7 @@ class List extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
     }
 
     componentWillUnmount() {
@@ -33,8 +33,8 @@ class List extends Component {
     }
 
     render() {
-        const {object_list} = this.props;
-        const permisos_object = permisosAdapter(permisos_view);
+        const {object_list, mis_permisos} = this.props;
+        const permisos_object = permisosAdapter(mis_permisos, permisos_view);
         const method_pool = {
             fetchObjectMethod: this.props.fetchPuntoVenta,
             deleteObjectMethod: this.props.deletePuntoVenta,
@@ -63,6 +63,7 @@ function mapPropsToState(state, ownProps) {
     return {
         auth: state.auth,
         object_list: state.puntos_ventas,
+        mis_permisos: state.mis_permisos,
         bodegas_list: state.bodegas,
     }
 }

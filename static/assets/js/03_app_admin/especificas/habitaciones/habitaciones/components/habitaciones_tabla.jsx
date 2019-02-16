@@ -4,6 +4,7 @@ import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dial
 import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 import {Link} from 'react-router-dom'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import ReactTable from "react-table";
 
@@ -50,6 +51,21 @@ class Tabla extends React.Component {
                                 filterMethod: (filter, row) => {
                                     return row[filter.id].includes(filter.value.toUpperCase())
                                 }
+                            },
+                            {
+                                Header: "Activo",
+                                accessor: "activa",
+                                maxWidth: 50,
+                                Cell: row => <div className='text-center'>
+                                    {
+                                        row.value ?
+                                            <FontAwesomeIcon
+                                                icon={['far', 'check']}
+                                                size='xs'
+                                            /> :
+                                            ''
+                                    }
+                                </div>
                             },
                         ]
                     },

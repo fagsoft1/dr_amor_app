@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import TextField from '@material-ui/core/TextField';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 export default class NumericPad extends Component {
     constructor(props) {
@@ -86,8 +87,11 @@ export default class NumericPad extends Component {
                         pin.length > 0 &&
                         <div className="col-1">
                             <a onClick={() => resetPin()}>
-                                <i className="fa fa-eraser fa-3x puntero" aria-hidden="true">
-                                </i>
+                                <FontAwesomeIcon
+                                    className='puntero'
+                                    icon={['far', 'eraser']}
+                                    size='3x'
+                                />
                             </a>
                         </div>
                     }
@@ -100,8 +104,11 @@ export default class NumericPad extends Component {
                     {
                         pin.length === 4 &&
                         <div className="col-8 btn-group" role="group">
-                            <button type="submit" className="btn btn-light-green"><i className="fa fa-check"
-                                                                                     aria-hidden="true"></i></button>
+                            <button type="submit" className="btn btn-light-green">
+                                <FontAwesomeIcon
+                                    icon={['far', 'check']}
+                                />
+                            </button>
                         </div>
                     }
                 </div>

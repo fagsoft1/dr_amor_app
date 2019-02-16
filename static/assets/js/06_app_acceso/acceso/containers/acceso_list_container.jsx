@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../01_actions/01_index";
 import CargarDatos from "../../../00_utilities/components/system/cargar_datos";
@@ -17,21 +17,30 @@ class List extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
+        this.interval = setInterval(
+            () => {
+                this.cargarDatos();
+            }, 15000
+        );
     }
 
     componentWillUnmount() {
         this.props.clearColaboradores();
         this.props.clearAcompanantes();
+        clearInterval(this.interval);
     }
 
     cargarDatos() {
-        this.props.fetchTercerosPresentes();
+        this.props.fetchTercerosPresentes({
+            show_cargando: false,
+            limpiar_coleccion: false
+        });
     }
 
     render() {
-        const {terceros_list} = this.props;
-        const bloque_1_list = permisosAdapter(permisos_view);
+        const {terceros_list, mis_permisos} = this.props;
+        const bloque_1_list = permisosAdapter(mis_permisos, permisos_view);
         const terceros = _.map(terceros_list, c => {
             return ({
                 id: c.id,
@@ -72,6 +81,7 @@ class List extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         auth: state.auth,
+        mis_permisos: state.mis_permisos,
         terceros_list: state.terceros
     }
 }

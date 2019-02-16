@@ -3,10 +3,20 @@ import {
     fetchListGet,
     updateObject,
     fetchObject,
-    callApiMethodPostParameters
+    callApiMethodPostParameters,
+    baseWS
 } from '../../00_general_fuctions'
 
 const current_url_api = 'terceros';
+
+export function refreshUpdateTercero(payload) {
+    return baseWS(TYPES.update, payload)
+}
+
+export function refreshDeleteTercero(id) {
+    return baseWS(TYPES.delete, id)
+}
+
 
 export const registrarIngresoTercero = (id, pin, options_action = {}) => {
     return (dispatch) => {

@@ -53,6 +53,23 @@ class PermissionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(permissions_list, many=True)
         return Response(serializer.data)
 
+    @list_route(methods=['get'])
+    def tengo_permisos(self, request):
+        listado_split = request.GET.get('listado_permisos').split(',')[0:-1]
+        if request.user.is_superuser:
+            permissions_list = Permission.objects.all().filter(codename__in=listado_split)
+            serializer = self.get_serializer(permissions_list, many=True)
+            return Response(serializer.data)
+        permissions_list = self.queryset.filter(
+            Q(codename__in=listado_split) &
+            (
+                    Q(user=request.user) |
+                    Q(group__user=request.user)
+            )
+        ).distinct()
+        serializer = self.get_serializer(permissions_list, many=True)
+        return Response(serializer.data)
+
 
 class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]

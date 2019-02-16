@@ -11,7 +11,7 @@ import {
     PRODUCTOS as bloque_1_permisos,
     CATEGORIAS_PRODUCTOS as bloque_2_permisos,
     CATEGORIAS_PRODUCTOS_DOS as bloque_3_permisos,
-    UNIDADES_PRODUCTOS as bloque_4_permisos,
+    UNIDADES_PRODUCTOS as bloque_4_permisos
 } from "../../../../../00_utilities/permisos/types";
 
 import BloqueProductos from '../../productos/components/productos_list';
@@ -58,7 +58,7 @@ class ListadoElementos extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([bloque_2_permisos, bloque_1_permisos, bloque_3_permisos, bloque_4_permisos], {callback: () => this.cargarDatos()});
     }
 
 
@@ -75,11 +75,11 @@ class ListadoElementos extends Component {
     }
 
     render() {
-        const {bloque_1_list, bloque_2_list, bloque_3_list, bloque_4_list} = this.props;
-        const permisos_object_1 = permisosAdapter(bloque_1_permisos);
-        const permisos_object_2 = permisosAdapter(bloque_2_permisos);
-        const permisos_object_3 = permisosAdapter(bloque_3_permisos);
-        const permisos_object_4 = permisosAdapter(bloque_4_permisos);
+        const {bloque_1_list, bloque_2_list, bloque_3_list, bloque_4_list, mis_permisos} = this.props;
+        const permisos_object_1 = permisosAdapter(mis_permisos, bloque_1_permisos);
+        const permisos_object_2 = permisosAdapter(mis_permisos, bloque_2_permisos);
+        const permisos_object_3 = permisosAdapter(mis_permisos, bloque_3_permisos);
+        const permisos_object_4 = permisosAdapter(mis_permisos, bloque_4_permisos);
 
         const can_see =
             permisos_object_1.list ||
@@ -154,6 +154,7 @@ function mapPropsToState(state, ownProps) {
         bloque_3_list: state.productos_categorias_dos,
         bloque_4_list: state.productos_unidades,
         empresas_list: state.empresas,
+        mis_permisos: state.mis_permisos
     }
 }
 

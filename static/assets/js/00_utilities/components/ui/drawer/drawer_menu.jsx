@@ -10,11 +10,13 @@ import IconButton from '@material-ui/core/IconButton';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
-import * as actions from "../../../../01_actions/01_index";
-import {connect} from "react-redux";
 import Button from '@material-ui/core/Button';
 import {Link} from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
+import {connect} from "react-redux";
+import * as actions from "../../../../01_actions/01_index";
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
 
 
 const drawerWidth = 240;
@@ -83,96 +85,112 @@ const styles = theme => ({
     },
     iconColor: {
         color: theme.palette.primary.dark
-    }
+    },
+    bigAvatar: {
+        width: 75,
+        height: 75,
+        border: `3px solid ${theme.palette.primary.main}`
+    },
 });
 
 class DrawerMenu extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            drawer_open: false
+            menu_status: false
         }
     }
 
-    onSalir() {
-        const {auth: {punto_venta}} = this.props;
-        const callback = () => {
-            this.props.logout();
-        };
-        if (punto_venta && punto_venta.id) {
-            this.props.updatePuntoVenta(
-                punto_venta.id, {
-                    ...punto_venta,
-                    usuario_actual: null,
-                    abierto: false
-                },
-                {callback}
-            )
-        }
-        else {
-            this.props.logout();
-        }
+    componentDidMount() {
+        this.props.resetMenu();
     }
-
-    handleDrawerOpen = () => {
-        this.setState({drawer_open: true});
-    };
-
-    handleDrawerClose = () => {
-        this.setState({drawer_open: false});
-    };
 
     render() {
-        const {classes, theme, lista_menu, titulo = 'Colocar Titulo'} = this.props;
+        const {
+            classes,
+            theme,
+            lista_menu = null,
+            titulo = 'Colocar Titulo',
+            menu_status: {open_menu, submenu_abiertos},
+            auth: {mi_cuenta}
+        } = this.props;
+        const menu_abierto = submenu_abiertos > 0 || open_menu;
         return (
             <div className={classes.root}>
                 <CssBaseline/>
                 <AppBar
                     position="fixed"
                     className={classNames(classes.appBar, {
-                        [classes.appBarShift]: this.state.drawer_open,
+                        [classes.appBarShift]: menu_abierto,
                     })}
                 >
-                    <Toolbar disableGutters={!this.state.drawer_open}>
-                        <IconButton
-                            color="inherit"
-                            aria-label="Open drawer"
-                            onClick={this.handleDrawerOpen}
-                            className={classNames(classes.menuButton, {
-                                [classes.hide]: this.state.drawer_open,
-                            })}
-                        >
-                            <FontAwesomeIcon icon={['fas', 'bars']}/>
-                        </IconButton>
-                        <Typography variant="h6" color="inherit" noWrap>
+                    <Toolbar disableGutters={!menu_abierto}>
+                        {
+                            lista_menu &&
+                            <IconButton
+                                color="inherit"
+                                aria-label="Open drawer"
+                                onClick={() => this.props.openMenu()}
+                                className={classNames(classes.menuButton, {
+                                    [classes.hide]: menu_abierto,
+                                })}
+                            >
+                                <FontAwesomeIcon icon={['far', 'bars']}/>
+                            </IconButton>
+                        }
+                        <Typography className={lista_menu ? '' : 'pl-5'} variant="h6" color="inherit" noWrap>
                             {titulo}
                         </Typography>
-                        <div className='text-right' style={{position: 'absolute', right: 0}}>
-                            <Button color="inherit" onClick={() => this.onSalir()}>Salir</Button>
+                        {
+                            mi_cuenta &&
+                            mi_cuenta.imagen_perfil_url &&
+                            <div style={{
+                                position: 'absolute',
+                                bottom: -10,
+                                right: 0
+                            }}>
+                                <Grid container justify="center" alignItems="center">
+                                    <Avatar alt="Remy Sharp" src={mi_cuenta.imagen_perfil_url}
+                                            className={classes.bigAvatar}/>
+                                </Grid>
+                            </div>
+                        }
+
+                        <div className='text-right' style={{position: 'absolute', right: 80}}>
+                            <Button
+                                color="inherit"
+                                onClick={() => this.props.logout()}
+                            >
+                                Salir
+                            </Button>
                         </div>
                     </Toolbar>
                 </AppBar>
                 <Drawer
                     variant="permanent"
                     className={classNames(classes.drawer, {
-                        [classes.drawerOpen]: this.state.drawer_open,
-                        [classes.drawerClose]: !this.state.drawer_open,
+                        [classes.drawerOpen]: menu_abierto,
+                        [classes.drawerClose]: !menu_abierto,
                     })}
                     classes={{
                         paper: classNames({
-                            [classes.drawerOpen]: this.state.drawer_open,
-                            [classes.drawerClose]: !this.state.drawer_open,
+                            [classes.drawerOpen]: menu_abierto,
+                            [classes.drawerClose]: !menu_abierto,
                         }),
                     }}
-                    open={this.state.drawer_open}
+                    open={menu_abierto}
                 >
                     <div className={classes.toolbar}>
-                        <IconButton onClick={this.handleDrawerClose}>
-                            {theme.direction === 'rtl' ?
-                                <FontAwesomeIcon icon={['fas', 'angle-right']} className={classes.iconColor}/> :
-                                <FontAwesomeIcon icon={['fas', 'angle-left']} className={classes.iconColor}/>}
-                        </IconButton>
+                        {
+                            lista_menu &&
+                            <IconButton onClick={() => this.props.closeMenu()}>
+                                {theme.direction === 'rtl' ?
+                                    <FontAwesomeIcon icon={['far', 'angle-right']} className={classes.iconColor}/> :
+                                    <FontAwesomeIcon icon={['far', 'angle-left']} className={classes.iconColor}/>}
+                            </IconButton>
+                        }
                     </div>
+
                     <Divider/>
                     <List>
                         {lista_menu}
@@ -180,7 +198,9 @@ class DrawerMenu extends Component {
                             <ListItem>
                                 <img src={`${img_static_url}/logo.png`} width="40"
                                      className="d-inline-block align-top mr-2"
-                                     alt=""/>
+                                     alt=""
+                                     style={{position: 'relative', right: 10}}
+                                />
                             </ListItem>
                         </Link>
                     </List>
@@ -196,7 +216,8 @@ class DrawerMenu extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
+        menu_status: state.menu_status,
+        auth: state.auth
     }
 }
 

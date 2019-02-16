@@ -24,12 +24,28 @@ const validate = values => {
         }
     });
 
+    const tamanos = {
+        nombre: 60,
+        nombre_segundo: 30,
+        codigo: 3,
+        alias_modelo: 30,
+        apellido: 20,
+        apellido_segundo: 20,
+        nro_identificacion: 30,
+    };
+
+    _.mapKeys(tamanos, (v, k) => {
+        if (values[k] && values[k].length > parseInt(v)) {
+            errors[k] = `No debe tener más de ${v} caracteres!`
+        }
+    });
+
     if (values.fecha_nacimiento) {
         const now = moment();
         const fechaHoy = moment(now, "YYYY MM DD", "es");
         const fecha_nacimiento = moment(values.fecha_nacimiento, "YYYY MM DD", "es").tz('America/Bogota');
         const diferencia = fechaHoy.diff(fecha_nacimiento, "years");
-        if(diferencia<18){
+        if (diferencia < 18) {
             errors.fecha_nacimiento = 'Debe ser mayor a 18 años'
         }
     }

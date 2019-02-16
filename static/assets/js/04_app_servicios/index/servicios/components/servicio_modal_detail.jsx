@@ -8,6 +8,7 @@ import ServicioAnularForm from './forms/servicio_anular_form';
 import CambioHabitacion from '../../habitaciones/components/habitacion_cambio_habitacion';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 class ServicioDetailModal extends Component {
     constructor(props) {
@@ -170,8 +171,8 @@ class ServicioDetailModal extends Component {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <i
-                        className={`far fa-${mostrar_avanzado ? 'minus' : 'plus'}-circle puntero`}
+                    <FontAwesomeIcon
+                        className='puntero'
                         onClick={() => this.setState((s) => {
                             return {
                                 mostrar_avanzado: !s.mostrar_avanzado,
@@ -179,8 +180,11 @@ class ServicioDetailModal extends Component {
                                 mostrar_cambiar_tiempo: false
                             }
                         })}
-                        style={{position: 'absolute', left: 10}}>
-                    </i>
+                        icon={['far', `${mostrar_avanzado ? 'minus' : 'plus'}-circle`]}
+                        style={{position: 'absolute', left: 10}}
+                    />
+
+
                     {
                         mostrar_avanzado &&
                         <div style={{position: 'absolute', left: 50}}>

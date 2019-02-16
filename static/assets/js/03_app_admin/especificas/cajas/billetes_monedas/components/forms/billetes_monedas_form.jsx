@@ -25,6 +25,7 @@ class Form extends Component {
         } = this.props;
         return (
             <MyFormTagModal
+                fullScreen={false}
                 onCancel={onCancel}
                 onSubmit={handleSubmit(onSubmit)}
                 reset={reset}
@@ -43,16 +44,16 @@ class Form extends Component {
                         {id: 1, name: 'MONEDAS'},
                     ]}
                     nombre='Tipo'
-                    className='col-md-3 col-lg-2'
+                    className='col-12'
                 />
                 <MyTextFieldSimple
-                    className="col-12 col-md-4"
+                    className="col-12"
                     nombre='Valor'
                     name='valor'
                     type='number'
                 />
                 <MyCheckboxSimple
-                    className="col-12 col-md-4"
+                    className="col-12"
                     nombre='Activo'
                     name='activo'
                 />

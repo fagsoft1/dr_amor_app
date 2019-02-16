@@ -14,6 +14,16 @@ const validate = values => {
         }
     });
 
+    const tamanos = {
+        numero: 4
+    };
+
+    _.mapKeys(tamanos, (v, k) => {
+        if (values[k] && values[k].length > parseInt(v)) {
+            errors[k] = `No debe tener más de ${v} caracteres!`
+        }
+    });
+
     if (values.numero && !REGEX_SOLO_NUMEROS.test(values.numero)) {
         errors.numero = 'Debe ser un número entero';
     }

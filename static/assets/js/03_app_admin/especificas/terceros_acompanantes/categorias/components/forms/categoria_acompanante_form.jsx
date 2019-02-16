@@ -29,6 +29,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
+                fullScreen={false}
             >
                 <MyTextFieldSimple
                     className="col-12"
@@ -53,7 +54,7 @@ function mapPropsToState(state, ownProps) {
 }
 
 Form = reduxForm({
-    form: "algoForm",
+    form: "categoriaForm",
     validate,
     enableReinitialize: true
 })(Form);

@@ -19,7 +19,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def mi_cuenta(self, request):
-        qs = self.get_queryset().filter(
+        qs = self.get_queryset().select_related('tercero').filter(
             id=request.user.id
         ).distinct()
         serializer = self.get_serializer(qs, many=True)
@@ -89,7 +89,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         validacion_reponse = {}
         username = self.request.GET.get('username', None)
         if username and qs.filter(username=username).exists():
-            validacion_reponse.update({'username': 'Ya exite'})
+            raise serializers.ValidationError({'username': 'Ya exite'})
         return Response(validacion_reponse)
 
     @list_route(methods=['get'], permission_classes=[permissions.AllowAny])
@@ -98,7 +98,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         validacion_reponse = {}
         username = self.request.GET.get('username', None)
         if username and not qs.filter(username=username).exists():
-            validacion_reponse.update({'username': 'Este usuario no existe'})
+            raise serializers.ValidationError({'username': 'Este usuario no existe'})
         return Response(validacion_reponse)
 
 
@@ -128,21 +128,10 @@ class LoginAPI(generics.GenericAPIView):
         tokens = AuthToken.objects.filter(user=user)
         tokens.delete()
 
-        if user.is_superuser:
-            permissions_list = None
-        else:
-            permissions_list = Permission.objects.filter(
-                Q(user=user) |
-                Q(group__user=user)
-            ).distinct()
-
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user),
             "punto_venta": PuntoVentaSerializer(punto_venta, context=self.get_serializer_context()).data,
-            "mi_cuenta": UsuarioSerializer(user, context=self.get_serializer_context()).data,
-            "mis_permisos": PermissionSerializer(permissions_list, context=self.get_serializer_context(),
-                                                 many=True).data,
         })
 
 

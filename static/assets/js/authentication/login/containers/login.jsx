@@ -66,7 +66,7 @@ class Login extends Component {
             <div className="container form-signin pt-3 text-center" style={{width: '400px'}}>
                 <FontAwesomeIcon
                     className={classes.iconoMain}
-                    icon={['fas', 'lock']}
+                    icon={['far', 'lock']}
                     size='5x'
                 />
                 <form onSubmit={handleSubmit(this.onSubmit)}>

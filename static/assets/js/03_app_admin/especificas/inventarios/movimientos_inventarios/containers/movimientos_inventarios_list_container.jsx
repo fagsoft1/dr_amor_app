@@ -17,7 +17,7 @@ class List extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
     }
 
     componentWillUnmount() {
@@ -27,8 +27,6 @@ class List extends Component {
     }
 
     cargarDatos() {
-
-
         const cargarBodegas = () => this.props.fetchBodegas();
         const cargarProveedores = () => this.props.fetchProveedores({callback: cargarBodegas});
         this.props.fetchMovimientosInventarios({callback: cargarProveedores});
@@ -36,8 +34,8 @@ class List extends Component {
     }
 
     render() {
-        const {object_list} = this.props;
-        const bloque_1_list = permisosAdapter(permisos_view);
+        const {object_list, mis_permisos} = this.props;
+        const bloque_1_list = permisosAdapter(mis_permisos, permisos_view);
         return (
             <Fragment>
                 <ListCrud
@@ -59,6 +57,7 @@ function mapPropsToState(state, ownProps) {
         object_list: _.orderBy(state.movimientos_inventarios, ['fecha'], ['asc']),
         proveedores_list: state.proveedores,
         bodegas_list: state.bodegas,
+        mis_permisos: state.mis_permisos
     }
 }
 

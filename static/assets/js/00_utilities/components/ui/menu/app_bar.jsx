@@ -9,7 +9,6 @@ import {withStyles} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {Link} from 'react-router-dom';
 
-
 class AppBarMenu extends Component {
     render() {
         const {classes, titulo} = this.props;

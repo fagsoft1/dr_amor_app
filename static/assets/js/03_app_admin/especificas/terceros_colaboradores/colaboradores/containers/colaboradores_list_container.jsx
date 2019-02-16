@@ -2,9 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
 import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
-import {
-    COLABORADORES as permisos_view
-} from "../../../../../00_utilities/permisos/types";
+import {COLABORADORES as permisos_view} from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 
 import CreateForm from '../components/forms/colaboradores_form';
@@ -19,10 +17,11 @@ class List extends Component {
     constructor(props) {
         super(props);
         this.cargarDatos = this.cargarDatos.bind(this);
+        this.uploadFotoPerfil = this.uploadFotoPerfil.bind(this);
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
     }
 
     componentWillUnmount() {
@@ -33,9 +32,15 @@ class List extends Component {
         this.props.fetchColaboradores();
     }
 
+    uploadFotoPerfil(id_colaborador, file) {
+        let formData = new FormData();
+        formData.append('archivo', file);
+        this.props.uploadColaboradorFoto(id_colaborador, formData, {callback: () => this.props.fetchColaborador(id_colaborador)})
+    }
+
     render() {
-        const {object_list} = this.props;
-        const permisos_object = permisosAdapter(permisos_view);
+        const {object_list, mis_permisos} = this.props;
+        const permisos_object = permisosAdapter(mis_permisos, permisos_view);
         const method_pool = {
             fetchObjectMethod: this.props.fetchColaborador,
             deleteObjectMethod: this.props.deleteColaborador,
@@ -50,6 +55,7 @@ class List extends Component {
                     permisos_object={permisos_object}
                     plural_name='Colaboradores'
                     singular_name='Colaborador'
+                    uploadFotoPerfil={this.uploadFotoPerfil.bind(this)}
                     {...this.props}
                 />
                 <CargarDatos
@@ -63,7 +69,8 @@ class List extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         auth: state.auth,
-        object_list: state.colaboradores
+        object_list: state.colaboradores,
+        mis_permisos: state.mis_permisos
     }
 }
 

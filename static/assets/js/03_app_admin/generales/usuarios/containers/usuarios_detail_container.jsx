@@ -2,7 +2,6 @@ import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
 import CargarDatos from "../../../../00_utilities/components/system/cargar_datos";
-import {SinObjeto} from "../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 import {ListaBusqueda} from '../../../../00_utilities/utiles';
@@ -27,11 +26,7 @@ class UsuariosDetail extends Component {
     }
 
     componentDidMount() {
-        const {
-            fetchPermisosActivos
-        } = this.props;
-        fetchPermisosActivos({callback: (response) => this.setState({todos_los_permisos: _.mapKeys(response, 'id')})});
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
     }
 
     componentWillUnmount() {
@@ -44,7 +39,7 @@ class UsuariosDetail extends Component {
         const {id} = this.props.match.params;
         const cargarPermisosUsuario = () => this.props.fetchPermisosxUsuario(id);
         const cargarGruposPermisos = () => this.props.fetchGruposPermisos({callback: cargarPermisosUsuario});
-        const cargarPermisos = () => this.props.fetchPermisosActivos({
+        const cargarPermisosActivos = () => this.props.fetchPermisosActivos({
             callback: response => {
                 this.setState({
                     todos_los_permisos: _.mapKeys(response, 'id')
@@ -52,8 +47,13 @@ class UsuariosDetail extends Component {
                 cargarGruposPermisos();
             },
         });
-        this.props.fetchUsuario(id, {callback: cargarPermisos});
-
+        const fetchUsuario = () => this.props.fetchUsuario(id, {callback: cargarPermisosActivos});
+        this.props.fetchPermisosActivos({
+            callback: (response) => {
+                this.setState({todos_los_permisos: _.mapKeys(response, 'id')});
+                fetchUsuario()
+            }
+        });
     }
 
     actualizarPermiso(permiso) {
@@ -79,10 +79,10 @@ class UsuariosDetail extends Component {
     };
 
     render() {
-        const {usuario, grupos_permisos} = this.props;
+        const {usuario, grupos_permisos, mis_permisos} = this.props;
         let {permisos_usuario} = this.props;
         const {todos_los_permisos} = this.state;
-        const permisos = permisosAdapter(permisos_view);
+        const permisos = permisosAdapter(mis_permisos, permisos_view);
 
         const grupos_con_permisos = _.map(grupos_permisos, g => {
             const permisos_grupo = g.permissions.map(p => todos_los_permisos[p]);
@@ -101,7 +101,9 @@ class UsuariosDetail extends Component {
 
 
         if (!usuario) {
-            return <SinObjeto/>
+            return <Typography variant="overline" gutterBottom color="primary">
+                Cargando...
+            </Typography>
         }
 
         return (
@@ -123,19 +125,19 @@ class UsuariosDetail extends Component {
                     <div className="col-md-4">
                         <Typography variant="body1" gutterBottom color="primary">
                             Activo <FontAwesomeIcon
-                            icon={['fas', `${usuario.is_active ? 'check-circle' : 'times'}`]}/>
+                            icon={['far', `${usuario.is_active ? 'check-circle' : 'times'}`]}/>
                         </Typography>
                     </div>
                     <div className="col-md-4">
                         <Typography variant="body1" gutterBottom color="primary">
                             Es Staff <FontAwesomeIcon
-                            icon={['fas', `${usuario.is_staff ? 'check-circle' : 'times'}`]}/>
+                            icon={['far', `${usuario.is_staff ? 'check-circle' : 'times'}`]}/>
                         </Typography>
                     </div>
                     <div className="col-md-4">
                         <Typography variant="body1" gutterBottom color="primary">
                             Es Super Usuario <FontAwesomeIcon
-                            icon={['fas', `${usuario.is_superuser ? 'check-circle' : 'times'}`]}/>
+                            icon={['far', `${usuario.is_superuser ? 'check-circle' : 'times'}`]}/>
                         </Typography>
                     </div>
                 </div>
@@ -240,6 +242,7 @@ function mapPropsToState(state, ownProps) {
         usuario: state.usuarios[id],
         grupos_permisos: state.grupos_permisos,
         permisos_usuario: state.permisos,
+        mis_permisos: state.mis_permisos
     }
 }
 

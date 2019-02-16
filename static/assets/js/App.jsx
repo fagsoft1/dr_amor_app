@@ -17,14 +17,13 @@ import 'react-widgets/dist/css/react-widgets.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap';
 import './../../css/custom.css';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCheckSquare, faCoffee, far} from '@fortawesome/pro-regular-svg-icons';
+import {far} from '@fortawesome/pro-regular-svg-icons';
 import {library} from '@fortawesome/fontawesome-svg-core'
-import {fas} from '@fortawesome/pro-solid-svg-icons';
-import {fal} from '@fortawesome/pro-light-svg-icons';
-import {fab} from '@fortawesome/free-brands-svg-icons';
+//import {fas} from '@fortawesome/pro-solid-svg-icons';
+//import {fal} from '@fortawesome/pro-light-svg-icons';
+//import {fab} from '@fortawesome/free-brands-svg-icons';
 
-library.add(fab, fal, far, fas);
+library.add(far);
 
 import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
 
@@ -111,7 +110,8 @@ class RootContainerComponent extends Component {
 
     render() {
         let {PrivateRoute} = this;
-        const {auth: {mi_cuenta, punto_venta}} = this.props;
+        const {auth: {mi_cuenta}} = this.props;
+        const punto_venta = JSON.parse(localStorage.getItem('punto_venta'));
         return (
             <BrowserRouter>
                 <Fragment>
@@ -130,7 +130,7 @@ class RootContainerComponent extends Component {
                     </Switch>
                     <div style={{
                         position: 'fixed',
-                        left: 10,
+                        right: 10,
                         bottom: 10,
                         borderRadius: '10px',
                         border: 'solid black 2px',
@@ -162,7 +162,7 @@ class RootContainerComponent extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
+        auth: state.auth
     }
 }
 

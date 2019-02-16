@@ -5,6 +5,8 @@ import {pesosColombianos} from '../../../../../../00_utilities/common';
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
+import Typography from '@material-ui/core/Typography';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 
 class Form extends Component {
@@ -23,8 +25,10 @@ class Form extends Component {
         } = this.props;
         const {porcentaje_impuesto, valor} = valores;
         const valor_sin_iva = (valor / (1 + (porcentaje_impuesto / 100)));
+        const iva = valor - valor_sin_iva;
         return (
             <MyFormTagModal
+                fullScreen = {false}
                 onCancel={onCancel}
                 onSubmit={handleSubmit(onSubmit)}
                 reset={reset}
@@ -35,22 +39,34 @@ class Form extends Component {
                 element_type={singular_name}
             >
                 <MyTextFieldSimple
-                    className="col-12 col-md-4"
+                    className="col-12"
                     nombre='Nombre'
                     name='nombre'
-                    case='U'/>
+                    case='U'
+                />
                 <MyTextFieldSimple
-                    className="col-12 col-md-4"
+                    className="col-12 col-md-7"
                     nombre='Valor'
                     name='valor'
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
                 />
                 <MyTextFieldSimple
-                    className="col-12 col-md-4"
+                    className="col-12 col-md-3 pl-md-3"
                     nombre='% Impuesto'
                     name='porcentaje_impuesto'
+                    InputProps={{
+                        startAdornment: <InputAdornment position="end">%</InputAdornment>,
+                    }}
                 />
                 <div className="col-12">
-                    <span><strong>Valor sin Iva: </strong>{pesosColombianos(valor_sin_iva)}</span>
+                    <Typography variant="body1" gutterBottom>
+                        <strong>Valor sin Iva: </strong>{pesosColombianos(valor_sin_iva)}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                        <strong>Iva: </strong>{pesosColombianos(iva)}
+                    </Typography>
                 </div>
             </MyFormTagModal>
         )

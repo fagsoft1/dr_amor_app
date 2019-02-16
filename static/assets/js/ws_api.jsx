@@ -47,6 +47,14 @@ export const WebSocketAPI = {
         baseDemultiplexer(store, _socket, demul_actions);
 
         demul_actions = {
+            stream: 'terceros',
+            update: actions.refreshUpdateTercero,
+            create: actions.refreshUpdateTercero,
+            delete: actions.refreshDeleteTercero,
+        };
+        baseDemultiplexer(store, _socket, demul_actions);
+
+        demul_actions = {
             stream: 'movimientos_inventarios_detalles',
             update: actions.refreshUpdateMovimientoInventarioDetalle,
             create: actions.refreshUpdateMovimientoInventarioDetalle,

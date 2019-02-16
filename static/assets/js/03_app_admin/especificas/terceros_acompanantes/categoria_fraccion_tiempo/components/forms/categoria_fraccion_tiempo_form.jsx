@@ -4,6 +4,7 @@ import {MyTextFieldSimple, MyDropdownList} from '../../../../../../00_utilities/
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 
 class Form extends Component {
@@ -63,6 +64,9 @@ class Form extends Component {
                     className="col-12"
                     nombre='Valor'
                     name='valor'
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
                 />
             </MyFormTagModal>
         )

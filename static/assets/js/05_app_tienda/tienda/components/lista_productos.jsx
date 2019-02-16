@@ -1,5 +1,6 @@
 import React, {Fragment} from 'react';
 import {numerosFormato} from '../../../00_utilities/common';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const ListaProductosItem = (props) => {
     const {item} = props;
@@ -22,11 +23,12 @@ export default class ListaMenuProductos extends React.Component {
         return (
             <Fragment>
                 <div className='col-12'>
-                    <i
-                        className='fas fa-arrow-circle-left fa-3x puntero'
+                    <FontAwesomeIcon
+                        className='puntero'
                         onClick={() => mostrarProductos(false)}
-                    >
-                    </i>
+                        icon={['far', 'arrow-circle-left']}
+                        size='3x'
+                    />
                 </div>
                 {
                     _.orderBy(productos, ['producto_nombre'], ['asc']).map(p =>

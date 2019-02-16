@@ -124,6 +124,15 @@ class ColaboradorViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
                 usuario.mis_puntos_venta.remove(punto_venta_id)
         return Response({'result': 'se ha retirado correctamente el punto de venta'})
 
+    @detail_route(methods=['post'])
+    def upload_archivo(self, request, pk=None):
+        colaborador = self.get_object()
+        archivo = self.request.FILES['archivo']
+        colaborador.imagen_perfil = archivo
+        colaborador.save()
+        serializer = self.get_serializer(colaborador)
+        return Response(serializer.data)
+
 
 class ProveedorViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]

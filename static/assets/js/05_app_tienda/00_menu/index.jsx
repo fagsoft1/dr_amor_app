@@ -1,19 +1,11 @@
-import React, {Fragment} from 'react';
-import MenuBase from '../../00_utilities/components/ui/menu/menu';
+import React from 'react';
+
 
 const Menu = () => {
     return (
-        <MenuBase>
-            {mis_permisos => {
-                return (
-                    <Fragment>
-                        {/*<Link to='/app/proyectos/colaboradores/colaboradores/list'>*/}
-                            {/*<FontIcon className="fas fa-user" style={iconStyles}/>*/}
-                        {/*</Link>*/}
-                    </Fragment>
-                )
-            }}
-        </MenuBase>
+        <div>
+            No hay nada
+        </div>
     )
 };
 

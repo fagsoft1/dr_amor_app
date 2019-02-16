@@ -15,15 +15,22 @@ const MenuTerceros = (props) => (
         <DrawerListItem
             size='1x'
             link='/app/admin/usuarios/acompanantes/dashboard'
-            texto='Acompañante'
+            texto='Acompañantes'
             icono='user-nurse'
             type='nested'
         />
         <DrawerListItem
             size='1x'
-            link='/app/admin/terceros/proveedores/list'
-            texto='Colaborador'
+            link='/app/admin/terceros/colaboradores/list'
+            texto='Colaboradores'
             icono='user-hard-hat'
+            type='nested'
+        />
+        <DrawerListItem
+            size='1x'
+            link='/app/admin/terceros/proveedores/list'
+            texto='Proveedores'
+            icono='user-tie'
             type='nested'
         />
     </ListCollapse>

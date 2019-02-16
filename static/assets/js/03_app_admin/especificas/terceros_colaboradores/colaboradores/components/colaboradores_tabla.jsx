@@ -1,22 +1,37 @@
 import React from "react";
-import Checkbox from '@material-ui/core/Checkbox';
 import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
 import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 import {Link} from 'react-router-dom'
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
+import {withStyles} from '@material-ui/core/styles';
 
 import ReactTable from "react-table";
 
+const styles = {
+    avatar: {
+        margin: 10,
+    },
+    bigAvatar: {
+        margin: 10,
+        width: 60,
+        height: 60,
+    },
+};
+
+
 class Tabla extends React.Component {
     render() {
-
         const data = this.props.data;
         const {
             updateItem,
             singular_name,
+            uploadFotoPerfil,
             onDelete,
             onSelectItemEdit,
-            permisos_object
+            permisos_object,
+            classes
         } = this.props;
 
 
@@ -115,6 +130,25 @@ class Tabla extends React.Component {
                                         <IconButtonTableSee/>
                                     </Link>
 
+                            },
+                            {
+                                Header: "Prueba",
+                                maxWidth: 150,
+                                Cell: row =>
+                                    <input
+                                        type="file"
+                                        onChange={(e) => uploadFotoPerfil(row.original.id, e.target.files[0])}
+                                        accept=".jpg, .jpeg, .png"
+                                    />
+                            },
+                            {
+                                Header: "Prueba2",
+                                maxWidth: 150,
+                                accessor: 'imagen_perfil_url',
+                                Cell: row =>
+                                    <Grid container justify="center" alignItems="center">
+                                        <Avatar alt="Remy Sharp" src={row.value} className={classes.bigAvatar}/>
+                                    </Grid>
                             }
                         ]
                     }
@@ -126,4 +160,4 @@ class Tabla extends React.Component {
     }
 }
 
-export default Tabla;
+export default withStyles(styles)(Tabla);

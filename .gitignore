@@ -6,3 +6,4 @@ secretsLocal.json
 db.sqlite3
 node_modules/**
 cositas.txt
+.npmrc

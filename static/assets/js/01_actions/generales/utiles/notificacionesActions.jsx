@@ -20,7 +20,7 @@ export function notificarAction(mensaje, tipo = 'success', tiempo = 5000) {
             duration: tiempo,
             position: 'BottomRight',
             canDimiss: true,
-            icon: <FontAwesomeIcon icon={['fas', 'check']}/>
+            icon: <FontAwesomeIcon icon={['far', 'check']}/>
         };
         dispatch(createNotification(mySuccessNotification));
     }
@@ -34,7 +34,7 @@ export function notificarErrorAction(error, tiempo = 7000) {
             duration: tiempo,
             position: 'BottomRight',
             canDimiss: true,
-            icon: <FontAwesomeIcon icon={['fas', 'exclamation']}/>
+            icon: <FontAwesomeIcon icon={['far', 'exclamation']}/>
         };
         dispatch(createNotification(mySuccessNotification));
     }

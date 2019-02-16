@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
-import {MyTextFieldSimple, MyCombobox} from '../../../../../../00_utilities/components/ui/forms/fields';
+import {
+    MyTextFieldSimple,
+    MyCombobox,
+    MyCheckboxSimple
+} from '../../../../../../00_utilities/components/ui/forms/fields';
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
@@ -23,6 +27,7 @@ class Form extends Component {
         } = this.props;
         return (
             <MyFormTagModal
+                fullScreen = {false}
                 onCancel={onCancel}
                 onSubmit={handleSubmit(onSubmit)}
                 reset={reset}
@@ -64,6 +69,11 @@ class Form extends Component {
                             nombre: h.nombre
                         })
                     })}
+                />
+                <MyCheckboxSimple
+                    nombre='Activo'
+                    className="col-12"
+                    name='activa'
                 />
             </MyFormTagModal>
         )

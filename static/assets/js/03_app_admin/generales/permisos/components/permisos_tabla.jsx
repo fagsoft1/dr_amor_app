@@ -1,5 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {ListaBusqueda} from '../../../../00_utilities/utiles';
+import Checkbox from '@material-ui/core/Checkbox';
 
 class ItemTabla extends Component {
     constructor(props) {
@@ -21,12 +22,15 @@ class ItemTabla extends Component {
                     can_change &&
                     <Fragment>
                         <td>
-                            <i className={`${activo ? 'fas fa-check' : 'fal fa'}-square`}
-                               onClick={() => {
-                                   updatePermiso({...item, activo: !activo});
-                                   this.setState({cambiar_nombre: false})
-                               }}>
-                            </i>
+                            <Checkbox
+                                style={{margin: 0, padding: 0}}
+                                color='primary'
+                                checked={activo}
+                                onClick={() => {
+                                    updatePermiso({...item, activo: !activo});
+                                    this.setState({cambiar_nombre: false})
+                                }}
+                            />
                         </td>
                         <td onClick={() => {
                             activo && this.setState({cambiar_nombre: true, nombre_permiso: nombre})

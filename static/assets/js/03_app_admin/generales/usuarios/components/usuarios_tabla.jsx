@@ -14,13 +14,11 @@ class Tabla extends React.Component {
         const {
             updateItem,
             singular_name,
-            mi_cuenta,
             onDelete,
             onSelectItemEdit,
-            permisos_object
+            permisos_object,
+            auth: {mi_cuenta}
         } = this.props;
-
-
         return (
             <div>
                 <ReactTable

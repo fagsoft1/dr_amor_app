@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
 import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
-import {SinObjeto} from "../../../../../00_utilities/templates/fragmentos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
-import {permisosAdapter, numerosFormato} from "../../../../../00_utilities/common";
+import {permisosAdapter} from "../../../../../00_utilities/common";
 import Typography from '@material-ui/core/Typography';
 import {
     MOVIMIENTOS_INVENTARIOS as permisos_view
@@ -19,7 +18,7 @@ class Detail extends Component {
     }
 
     componentDidMount() {
-        this.cargarDatos();
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
     }
 
     componentWillUnmount() {
@@ -47,13 +46,15 @@ class Detail extends Component {
     }
 
     render() {
-        const {object, movimientos_inventarios_detalles_list} = this.props;
+        const {object, movimientos_inventarios_detalles_list, mis_permisos} = this.props;
         const {id} = this.props.match.params;
-        const permisos = permisosAdapter(permisos_view);
+        const permisos = permisosAdapter(mis_permisos, permisos_view);
 
 
         if (!object) {
-            return <SinObjeto/>
+            return <Typography variant="overline" gutterBottom color="primary">
+                Cargando...
+            </Typography>
         }
 
         return (
@@ -106,6 +107,7 @@ function mapPropsToState(state, ownProps) {
         auth: state.auth,
         movimientos_inventarios_detalles_list: state.movimientos_inventarios_detalles,
         object: state.movimientos_inventarios[id],
+        mis_permisos: state.mis_permisos,
         productos_list: state.productos,
     }
 }

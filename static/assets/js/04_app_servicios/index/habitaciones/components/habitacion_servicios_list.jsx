@@ -3,6 +3,7 @@ import {pesosColombianos, horaFormatoUno} from "../../../../00_utilities/common"
 import FormaPago from '../../movimiento_dinero/components/forms/forma_pago';
 import CambioHabitacion from './habitacion_cambio_habitacion';
 import Button from '@material-ui/core/Button';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const Item = (props) => {
     const {servicio, onDeleteServicio} = props;
@@ -20,10 +21,11 @@ const Item = (props) => {
             <td>
                 {
                     servicio.nuevo &&
-                    <i className='fas fa-trash puntero'
-                       onClick={() => onDeleteServicio(servicio.id)}
-                    >
-                    </i>
+                    <FontAwesomeIcon
+                        className='puntero'
+                        icon={['far', 'trash']}
+                        onClick={() => onDeleteServicio(servicio.id)}
+                    />
                 }
             </td>
         </tr>

@@ -1,5 +1,5 @@
 import axios from "axios/index";
-import {LOADING, LOADING_STOP} from "./00_types";
+import {LOADING as LOADING_TYPES} from "./00_types";
 import {NOTIFICATION_TYPE_ERROR, NOTIFICATION_TYPE_SUCCESS} from 'react-redux-notify';
 import {createNotification} from 'react-redux-notify';
 import React from 'react';
@@ -10,13 +10,6 @@ const axios_instance = axios.create({
     //contentType: 'application/json; charset=utf-8',
 });
 
-const mostrarFunciones = e => {
-    const mostrar = true;
-    if (mostrar) {
-        e()
-    }
-};
-
 const notificarAction = (mensaje, tiempo = 5000) => {
     return {
         message: mensaje,
@@ -24,7 +17,7 @@ const notificarAction = (mensaje, tiempo = 5000) => {
         duration: tiempo,
         position: 'BottomRight',
         canDimiss: true,
-        icon: <FontAwesomeIcon icon={['fas', 'check']}/>
+        icon: <FontAwesomeIcon icon={['far', 'check']}/>
     }
 };
 
@@ -78,7 +71,7 @@ const notificacion_error = (error, tiempo = 7000) => {
         duration: tiempo,
         position: 'BottomRight',
         canDimiss: true,
-        icon: <FontAwesomeIcon icon={['fas', 'exclamation']}/>
+        icon: <FontAwesomeIcon icon={['far', 'exclamation']}/>
     };
 };
 
@@ -97,7 +90,7 @@ export function createRequest(request, options = {}) {
         dispatch_method({type: clear_action_type})
     }
     if (dispatch_method && show_cargando) {
-        dispatch_method({type: LOADING, message: mensaje_cargando})
+        dispatch_method({type: LOADING_TYPES.loading, message: mensaje_cargando})
     }
     return request
         .then(response => {
@@ -108,7 +101,7 @@ export function createRequest(request, options = {}) {
                 if (response.data && response.data.result) {
                     dispatch_method(createNotification(notificarAction(response.data.result)));
                 }
-                dispatch_method({type: LOADING_STOP})
+                dispatch_method({type: LOADING_TYPES.stop})
             }
             if (callback) {
                 callback(response.data)
@@ -133,7 +126,7 @@ export function createRequest(request, options = {}) {
 }
 
 export function fetchListGet(url, options) {
-    mostrarFunciones(() => console.log(`%cFETCH LIST - %c${url.toUpperCase()}`, 'color:red', 'color:blue'));
+    console.log(`%cFETCH LIST - %c${url.toUpperCase()}`, 'color:red', 'color:blue');
     const mensaje_cargando = `Consultando ${url.toUpperCase()}`;
     const FULL_URL = `${url}/?format=json`;
     const headers = {"Content-Type": "application/json"};
@@ -146,7 +139,7 @@ export function fetchListGet(url, options) {
 }
 
 export function fetchListGetURLParameters(url, options) {
-    mostrarFunciones(() => console.log(`%cFETCH LIST PARAMETROS - %c${url.toUpperCase()}`, 'color:red', 'color:blue'));
+    console.log(`%cFETCH LIST PARAMETROS - %c${url.toUpperCase()}`, 'color:red', 'color:blue');
     const mensaje_cargando = `Consultando ${url.toUpperCase()}`;
     const FULL_URL = `${url}&format=json`;
     const headers = {"Content-Type": "application/json"};
@@ -159,7 +152,7 @@ export function fetchListGetURLParameters(url, options) {
 }
 
 export function fetchObject(url, id, options) {
-    mostrarFunciones(() => console.log(`%cFETCH OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
+    console.log(`%cFETCH OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
     const mensaje_cargando = `Consultando elemento en ${url.toUpperCase()}`;
     const FULL_URL = `${url}/${id}/?format=json`;
     const request = axios_instance.get(FULL_URL);
@@ -172,7 +165,7 @@ export function fetchObject(url, id, options) {
 }
 
 export function updateObject(url, id, values, options, config = null) {
-    mostrarFunciones(() => console.log(`%cUPDATE OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
+    console.log(`%cUPDATE OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
     const mensaje_cargando = `Actualizando elemento en ${url.toUpperCase()}`;
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
@@ -188,7 +181,7 @@ export function updateObject(url, id, values, options, config = null) {
 }
 
 export function createObject(url, values, options) {
-    mostrarFunciones(() => console.log(`%cCREATE OBJETO - %c${url.toUpperCase()}`, 'color:red', 'color:blue'));
+    console.log(`%cCREATE OBJETO - %c${url.toUpperCase()}`, 'color:red', 'color:blue');
     const mensaje_cargando = `Creando elemento en ${url.toUpperCase()}`;
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
@@ -203,7 +196,7 @@ export function createObject(url, values, options) {
 }
 
 export function deleteObject(url, id, options) {
-    mostrarFunciones(() => console.log(`%cDELETE OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
+    console.log(`%cDELETE OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
     const mensaje_cargando = `Eliminando elemento en ${url.toUpperCase()}`;
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
@@ -221,7 +214,7 @@ export function deleteObject(url, id, options) {
 
 
 export function callApiMethodPost(url, id, method, options) {
-    mostrarFunciones(() => console.log(`%cAPI METODO ${method.toUpperCase()} - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
+    console.log(`%cAPI METODO ${method.toUpperCase()} - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
     const mensaje_cargando = `Ejecutando ${method.toUpperCase()} en ${url.toUpperCase()}`;
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
@@ -237,7 +230,7 @@ export function callApiMethodPost(url, id, method, options) {
 
 
 export function callApiMethodPostParameters(url, id, method, values, options) {
-    mostrarFunciones(() => console.log(`%cAPI METODO ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green'));
+    console.log(`%cAPI METODO ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
     const mensaje_cargando = `Ejecutando ${method.toUpperCase()} en ${url.toUpperCase()}`;
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
@@ -270,10 +263,26 @@ export function fetchObjectWithParameterPDF(url, options) {
     createRequest(request, {...options, mensaje_cargando});
 }
 
+
+export function uploadArchivo(url, id, method, values, options) {
+    console.log(`%cAPI UPLOAD Archivo ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
+    const mensaje_cargando = `Ejecutando ${method.toUpperCase()} en ${url.toUpperCase()}`;
+    axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    axios_instance.defaults.xsrfCookieName = "csrftoken";
+    const headers = {};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+        headers["Content-Type"] = 'application/x-www-form-urlencoded;charset=UTF-8';
+    }
+    axios_instance.defaults.headers = headers;
+    const FULL_URL = `${url}/${id}/${method}/`;
+    const request = axios_instance.post(FULL_URL, values, {responseType: 'arraybuffer'});
+    createRequest(request, {...options, mensaje_cargando});
+}
+
 export function baseWS(type, payload) {
     return {
         type: type,
         payload: payload
     }
 }
-

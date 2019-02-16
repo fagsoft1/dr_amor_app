@@ -19,39 +19,70 @@ function crudHOC(CreateForm, Tabla) {
         }
 
         onDelete(item) {
-            const {method_pool, notificarAction, singular_name, successDeleteCallback = null} = this.props;
-            const callback = () => {
-                const {to_string} = item;
-                notificarAction(`Se ha eliminado con éxito ${singular_name.toLowerCase()} ${to_string}`);
-                this.setState({modal_open: false, item_seleccionado: null});
-                if (successDeleteCallback) {
-                    successDeleteCallback(item);
-                }
-            };
-            method_pool.deleteObjectMethod(item.id, {callback});
+            const {method_pool, notificarAction, singular_name, posDeleteMethod = null} = this.props;
+            if (method_pool.deleteObjectMethod === null) {
+                console.log('No se ha asignado ningún método para DELETE')
+            } else {
+                const callback = () => {
+                    const {to_string} = item;
+                    notificarAction(`Se ha eliminado con éxito ${singular_name.toLowerCase()} ${to_string}`);
+                    this.setState({modal_open: false, item_seleccionado: null});
+                    if (posDeleteMethod) {
+                        posDeleteMethod(item);
+                    }
+                };
+                method_pool.deleteObjectMethod(item.id, {callback});
+            }
         }
 
         onSubmit(item, uno = null, dos = null, cerrar_modal = true) {
-            const {method_pool, notificarAction, singular_name, successSubmitCallback = null} = this.props;
+            const {
+                method_pool,
+                notificarAction,
+                singular_name,
+                posCreateMethod = null,
+                posUpdateMethod = null,
+                posSummitMethod = null
+            } = this.props;
             const callback = (response) => {
                 const {to_string} = response;
                 notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${singular_name.toLowerCase()} ${to_string}`);
                 this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : response});
-                if (successSubmitCallback) {
-                    successSubmitCallback(response);
+
+                if (item.id && posUpdateMethod) {
+                    posUpdateMethod(response);
+                }
+                if (!item.id && posCreateMethod) {
+                    posCreateMethod(response);
+                }
+                if (posSummitMethod) {
+                    posSummitMethod(response)
                 }
             };
             if (item.id) {
-                method_pool.updateObjectMethod(item.id, item, {callback});
+                if (method_pool.updateObjectMethod === null) {
+                    console.log('No se ha asignado ningún método para UPDATE')
+                } else {
+                    method_pool.updateObjectMethod(item.id, item, {callback});
+                }
             } else {
-                method_pool.createObjectMethod(item, {callback});
+                if (method_pool.createObjectMethod === null) {
+                    console.log('No se ha asignado ningún método para CREATE')
+                } else {
+                    method_pool.createObjectMethod(item, {callback});
+                }
             }
         }
 
         onSelectItemEdit(item) {
             const {method_pool} = this.props;
             const callback = () => this.setState({modal_open: true, item_seleccionado: item});
-            method_pool.fetchObjectMethod(item.id, {callback});
+            if (method_pool.fetchObjectMethod === null) {
+                console.log('No se ha asignado ningún método para FETCH OBJECT')
+            } else {
+
+                method_pool.fetchObjectMethod(item.id, {callback});
+            }
         }
 
         setSelectItem(item_seleccionado) {

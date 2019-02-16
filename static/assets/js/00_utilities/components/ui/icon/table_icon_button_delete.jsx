@@ -17,7 +17,7 @@ export const IconButtonTableDelete = (props) => {
             >
                 <FontAwesomeIcon
                     className={classes.icono}
-                    icon={['fas', 'trash']}
+                    icon={['far', 'trash']}
                     size='xs'
                 />
             </IconButton>

@@ -4,6 +4,7 @@ import * as actions from "../../../01_actions/01_index";
 import {pesosColombianos} from "../../../00_utilities/common";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const TablaBilletesMonedas = (props) => {
     const {nombre, styles, lista, onChange, denominaciones} = props;
@@ -27,8 +28,9 @@ const TablaBilletesMonedas = (props) => {
                         <tr key={d.id}>
                             <td className='text-right' style={styles.table.td}>
                                 <span>{pesosColombianos(d.valor)} </span>
-                                <i className={`far fa-${d.tipo === 0 ? 'money-bill-wave' : 'coins'}`}>
-                                </i>
+                                <FontAwesomeIcon
+                                    icon={['far', d.tipo === 0 ? 'money-bill-wave' : 'coins']}
+                                />
                             </td>
                             <td style={styles.table.td}>
                                 <input

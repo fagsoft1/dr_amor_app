@@ -1,5 +1,5 @@
 import React, {Fragment} from "react";
-import Checkbox from '@material-ui/core/Checkbox';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
 import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
@@ -43,9 +43,14 @@ class Tabla extends React.Component {
                                 maxWidth: 80,
                                 Cell: row => {
                                     return (
-                                        row.value ?
-                                            <div className='text-center'><i className='fas fa-check-circle'></i></div> :
-                                            <Fragment></Fragment>
+                                        <div className='text-center'>
+                                            {
+                                                row.value &&
+                                                <FontAwesomeIcon
+                                                    icon={['far', 'check-circle']}
+                                                />
+                                            }
+                                        </div>
                                     )
                                 }
                             },

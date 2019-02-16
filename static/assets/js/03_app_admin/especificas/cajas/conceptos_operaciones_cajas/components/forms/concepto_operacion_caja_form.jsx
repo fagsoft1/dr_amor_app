@@ -29,6 +29,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
+                fullScreen = {false}
             >
                 <MyTextFieldSimple
                     className="col-12"
@@ -36,7 +37,7 @@ class Form extends Component {
                     name='descripcion'
                     case='U'/>
                 <MyCombobox
-                    className="col-12 col-md-6"
+                    className="col-12"
                     name="tipo"
                     nombre='Tipo'
                     data={[
@@ -49,7 +50,7 @@ class Form extends Component {
 
                 />
                 <MyCombobox
-                    className="col-12 col-md-6"
+                    className="col-12"
                     name="grupo"
                     nombre='Grupo'
                     data={[

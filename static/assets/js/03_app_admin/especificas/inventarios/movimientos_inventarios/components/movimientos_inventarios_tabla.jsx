@@ -1,9 +1,7 @@
-import React, {Fragment} from "react";
-import Checkbox from '@material-ui/core/Checkbox';
+import React from "react";
 import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
 import {fechaFormatoUno} from '../../../../../00_utilities/common';
 import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
-import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 import {Link} from 'react-router-dom'
 
 import ReactTable from "react-table";
@@ -64,7 +62,10 @@ class Tabla extends React.Component {
                                         <div className='text-center'>
                                             {
                                                 row.value &&
-                                                <i className='fas fa-check-circle' style={{color: 'green'}}></i>
+                                                <FontAwesomeIcon
+                                                    icon={['far', 'check-circle']}
+                                                    style={{color: 'green'}}
+                                                />
                                             }
                                         </div>
                                     )
