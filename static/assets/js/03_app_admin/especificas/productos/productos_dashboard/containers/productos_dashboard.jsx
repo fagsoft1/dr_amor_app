@@ -91,7 +91,6 @@ class ListadoElementos extends Component {
                 <Typography variant="h5" gutterBottom color="primary">
                     {this.singular_name}
                 </Typography>
-
                 <Tabs indicatorColor="primary"
                       textColor="primary"
                       onChange={this.handleChange}
@@ -102,45 +101,49 @@ class ListadoElementos extends Component {
                     <Tab label="Categorias Dos" value={2}/>
                     <Tab label="Unidades" value={3}/>
                 </Tabs>
-
-                {
-                    this.state.slideIndex === 0 &&
-                    <BloqueProductos
-                        object_list={bloque_1_list}
-                        permisos_object={permisos_object_1}
-                        {...this.props}
-                        categorias_dos_list={bloque_3_list}
-                        unidades_list={bloque_4_list}
-                    />
-                }
-                {
-                    this.state.slideIndex === 1 &&
-                    <BloqueCategorias
-                        object_list={bloque_2_list}
-                        permisos_object={permisos_object_2}
-                        {...this.props}
-                    />
-                }
-                {
-                    this.state.slideIndex === 2 &&
-                    <BloqueCategoriasDos
-                        object_list={bloque_3_list}
-                        permisos_object={permisos_object_3}
-                        {...this.props}
-                        categorias_list={bloque_2_list}
-                    />
-                }
-                {
-                    this.state.slideIndex === 3 &&
-                    <BloqueUnidadesProductos
-                        object_list={bloque_4_list}
-                        permisos_object={permisos_object_4}
-                        {...this.props}
-                    />
-                }
+                <div className="row">
+                    <div className="col-12">
+                        {
+                            this.state.slideIndex === 0 &&
+                            <BloqueProductos
+                                object_list={bloque_1_list}
+                                permisos_object={permisos_object_1}
+                                {...this.props}
+                                categorias_dos_list={bloque_3_list}
+                                unidades_list={bloque_4_list}
+                            />
+                        }
+                        {
+                            this.state.slideIndex === 1 &&
+                            <BloqueCategorias
+                                object_list={bloque_2_list}
+                                permisos_object={permisos_object_2}
+                                {...this.props}
+                            />
+                        }
+                        {
+                            this.state.slideIndex === 2 &&
+                            <BloqueCategoriasDos
+                                object_list={bloque_3_list}
+                                permisos_object={permisos_object_3}
+                                {...this.props}
+                                categorias_list={bloque_2_list}
+                            />
+                        }
+                        {
+                            this.state.slideIndex === 3 &&
+                            <BloqueUnidadesProductos
+                                object_list={bloque_4_list}
+                                permisos_object={permisos_object_4}
+                                {...this.props}
+                            />
+                        }
+                    </div>
+                </div>
                 <CargarDatos
                     cargarDatos={this.cargarDatos}
                 />
+
             </ValidarPermisos>
         )
     }

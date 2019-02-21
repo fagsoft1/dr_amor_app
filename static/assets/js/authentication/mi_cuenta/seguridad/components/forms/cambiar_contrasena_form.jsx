@@ -25,19 +25,19 @@ class Form extends Component {
         return (
             <form onSubmit={handleSubmit(this.cambiarPin)}>
                 <MyTextFieldSimple
-                    className='col-4'
+                    className='col-12 col-lg-4'
                     nombre='Contraseña Actual'
                     name='password_old'
                     type='password'
                 />
                 <MyTextFieldSimple
-                    className='col-4'
+                    className='col-12 col-md-6 col-lg-4'
                     nombre='Contraseña Nueva'
                     name='password'
                     type='password'
                 />
                 <MyTextFieldSimple
-                    className='col-12 col-md-3'
+                    className='col-12 col-md-6 col-lg-4'
                     nombre='Confirmar Contraseña Nueva'
                     name='password_2'
                     type='password'
