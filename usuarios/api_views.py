@@ -19,10 +19,10 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def mi_cuenta(self, request):
-        qs = self.get_queryset().select_related('tercero').filter(
+        qs = self.get_queryset().select_related('tercero', 'punto_venta_actual').filter(
             id=request.user.id
-        ).distinct()
-        serializer = self.get_serializer(qs, many=True)
+        ).distinct().first()
+        serializer = self.get_serializer(qs)
         return Response(serializer.data)
 
     @detail_route(methods=['post'])
@@ -130,8 +130,7 @@ class LoginAPI(generics.GenericAPIView):
 
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "token": AuthToken.objects.create(user),
-            "punto_venta": PuntoVentaSerializer(punto_venta, context=self.get_serializer_context()).data,
+            "token": AuthToken.objects.create(user)
         })
 
 

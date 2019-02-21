@@ -121,7 +121,6 @@ function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
         movimientos_inventarios_detalles_list: state.movimientos_inventarios_detalles,
-        auth: state.auth,
         mis_permisos: state.mis_permisos,
         object: state.bodegas[id]
     }

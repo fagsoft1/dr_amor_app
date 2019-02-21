@@ -60,7 +60,6 @@ class List extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         mis_permisos: state.mis_permisos,
         object_list: state.conceptos_operaciones_caja
     }

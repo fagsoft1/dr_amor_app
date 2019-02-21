@@ -26,8 +26,6 @@ class List extends Component {
     }
 
     cargarDatos() {
-
-
         const cargarBodegas = () => this.props.fetchBodegas();
         this.props.fetchTrasladosInventarios({callback: cargarBodegas});
 
@@ -53,7 +51,6 @@ class List extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         object_list: state.traslados_inventarios,
         bodegas_list: state.bodegas,
         mis_permisos: state.mis_permisos

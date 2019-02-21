@@ -39,7 +39,6 @@ class App extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         puntos_ventas: _.pickBy(state.puntos_ventas, e => e.tipo === 1)
     }
 }

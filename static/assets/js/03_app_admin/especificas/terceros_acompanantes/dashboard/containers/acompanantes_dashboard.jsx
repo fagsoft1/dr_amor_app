@@ -124,7 +124,6 @@ class ListadoElementos extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         bloque_1_list: state.acompanantes,
         bloque_2_list: state.categorias_acompanantes,
         bloque_3_list: state.fracciones_tiempos_acompanantes,

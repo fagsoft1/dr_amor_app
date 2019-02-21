@@ -52,15 +52,14 @@ export const addGrupoUsuario = (id, grupo_id, options_action = {}) => {
     }
 };
 
-export const fetchMiCuenta = (callback = null, callback_error = null) => {
+export const fetchMiCuenta = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.cuenta, payload: response})
         };
         const options = {
             dispatches,
-            callback,
-            callback_error,
+            ...options_action,
             dispatch_method: dispatch,
         };
         fetchListGet(`${current_url_api}/mi_cuenta`, options);

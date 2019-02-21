@@ -67,10 +67,4 @@ const styles = theme => ({
     },
 });
 
-function mapPropsToState(state, ownProps) {
-    return {
-        auth: state.auth,
-    }
-}
-
-export default withStyles(styles, {withTheme: true})(connect(mapPropsToState, actions)(AppBarMenu));
+export default withStyles(styles, {withTheme: true})(connect(null, actions)(AppBarMenu));

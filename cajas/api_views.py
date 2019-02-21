@@ -56,6 +56,13 @@ class OperacionCajaViewSet(viewsets.ModelViewSet):
         operacion.movimiento_dinero = movimiento
         operacion.save()
 
+    @list_route(methods=['get'])
+    def consultar_por_tercero_cuenta_abierta(self, request):
+        tercero_id = request.GET.get('tercero_id', None)
+        qs = self.queryset.filter(cuenta__propietario__tercero=tercero_id, cuenta__liquidada=False)
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
 
 class ConceptoOperacionCajaViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]

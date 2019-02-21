@@ -12,14 +12,14 @@ class RegistroOperacionForm extends Component {
         const {
             handleSubmit,
             conceptos_operaciones_caja,
-            form_values,
             acompanantes,
+            proveedores,
+            colaboradores,
+            form_values,
             submitting,
             pristine,
             reset,
-            proveedores,
-            colaboradores,
-            auth,
+            mi_cuenta: {punto_venta_actual},
         } = this.props;
         const tipos_conceptos = _.unionBy(
             _.map(conceptos_operaciones_caja, e => {
@@ -65,7 +65,7 @@ class RegistroOperacionForm extends Component {
                 concepto: v.concepto.value,
                 valor: v.valor,
                 tercero: v.tercero ? v.tercero.value : null,
-                punto_venta: auth.punto_venta.id
+                punto_venta: punto_venta_actual.id
             }))}>
                 <div className="row p-1">
                     {
@@ -169,7 +169,7 @@ const selector = formValueSelector('registroOperacionForm');
 function mapPropsToState(state, ownProps) {
     const form_values = selector(state, 'tipo', 'grupo', 'tercero', 'concepto', 'valor');
     return {
-        auth: state.auth,
+        mi_cuenta: state.mi_cuenta,
         form_values
     }
 }

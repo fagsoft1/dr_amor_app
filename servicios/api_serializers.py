@@ -14,6 +14,8 @@ class ServicioSerializer(serializers.ModelSerializer):
     termino = serializers.SerializerMethodField()
     en_espera = serializers.SerializerMethodField()
     cuenta_liquidada = serializers.BooleanField(read_only=True, source='cuenta.liquidada')
+    tiempo_nombre = serializers.SerializerMethodField()
+    anulado = serializers.SerializerMethodField()
 
     def get_termino(self, obj):
         if obj.estado == 1:
@@ -27,12 +29,22 @@ class ServicioSerializer(serializers.ModelSerializer):
         else:
             return False
 
+    def get_tiempo_nombre(self, obj):
+        tiempo = '%s min.' % obj.tiempo_minutos
+        if obj.tiempo_minutos > 59:
+            tiempo = '%s hora' % int(int(obj.tiempo_minutos) / 60)
+        return tiempo
+
+    def get_anulado(self, obj):
+        return obj.estado == 4
+
     class Meta:
         model = Servicio
         fields = (
             'id',
             'servicio_siguiente',
             'cuenta',
+            'anulado',
             'cuenta_liquidada',
             'empresa',
             'habitacion_nombre',
@@ -43,6 +55,7 @@ class ServicioSerializer(serializers.ModelSerializer):
             'hora_final_real',
             'hora_anulacion',
             'tiempo_minutos',
+            'tiempo_nombre',
             'termino',
             'en_espera',
             'categoria',

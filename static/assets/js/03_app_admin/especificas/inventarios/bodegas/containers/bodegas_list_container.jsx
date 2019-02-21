@@ -23,7 +23,7 @@ class List extends Component {
     }
 
     cargarDatos() {
-        const cargarBodegas = () => this.props.fetchBodegas();
+        this.props.fetchBodegas();
     }
 
     render() {
@@ -46,7 +46,6 @@ class List extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         object_list: state.bodegas,
         mis_permisos: state.mis_permisos
     }

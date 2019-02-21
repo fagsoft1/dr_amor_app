@@ -51,7 +51,7 @@ class LiquidarAcompanante extends Component {
     onPagar(pago) {
         const {
             liquidarCuentaTercero,
-            auth: {punto_venta}
+            mi_cuenta: {punto_venta_actual}
         } = this.props;
         const {id_tercero} = this.state;
         const callback = () => {
@@ -59,7 +59,7 @@ class LiquidarAcompanante extends Component {
             this.props.clearAcompanantes();
             this.cargarDatos();
         };
-        liquidarCuentaTercero(id_tercero, {...pago, punto_venta_id: punto_venta.id}, {callback});
+        liquidarCuentaTercero(id_tercero, {...pago, punto_venta_id: punto_venta_actual.id}, {callback});
     }
 
     render() {
@@ -125,7 +125,7 @@ class LiquidarAcompanante extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
+        mi_cuenta: state.mi_cuenta,
         acompanantes: state.acompanantes,
         servicios: state.servicios,
     }

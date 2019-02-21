@@ -104,7 +104,6 @@ class Detail extends Component {
 function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
-        auth: state.auth,
         movimientos_inventarios_detalles_list: state.movimientos_inventarios_detalles,
         object: state.movimientos_inventarios[id],
         mis_permisos: state.mis_permisos,

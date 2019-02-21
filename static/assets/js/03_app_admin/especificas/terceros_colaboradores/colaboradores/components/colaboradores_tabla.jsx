@@ -126,7 +126,7 @@ class Tabla extends React.Component {
                                 show: permisos_object.detail,
                                 maxWidth: 60,
                                 Cell: row =>
-                                    <Link to={`/app/admin/usuarios/colaboradores/detail/${row.original.id}`}>
+                                    <Link to={`/app/admin/terceros/colaboradores/detail/${row.original.id}`}>
                                         <IconButtonTableSee/>
                                     </Link>
 

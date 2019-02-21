@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from puntos_venta.api_serializers import PuntoVentaSerializer
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
     imagen_perfil_url = serializers.SerializerMethodField()
+    punto_venta_actual = PuntoVentaSerializer(read_only=True)
 
     def get_imagen_perfil_url(self, obj):
         if hasattr(obj, 'tercero'):
@@ -21,6 +23,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'first_name',
+            'punto_venta_actual',
             'last_name',
             'email',
             'is_active',
@@ -36,7 +39,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'groups'
         ]
         extra_kwargs = {
-            'tercero': {'read_only': True}
+            'tercero': {'read_only': True},
+            'punto_venta_actual': {'read_only': True}
         }
 
     def create(self, validated_data):

@@ -9,6 +9,8 @@ from .models import (
 
 
 class OperacionCajaSerializer(serializers.ModelSerializer):
+    tipo_operacion = serializers.CharField(source='concepto.tipo', read_only=True)
+
     class Meta:
         model = OperacionCaja
         fields = (
@@ -18,6 +20,7 @@ class OperacionCajaSerializer(serializers.ModelSerializer):
             'grupo_operaciones',
             'punto_venta',
             'descripcion',
+            'tipo_operacion',
             'observacion',
             'valor',
         )

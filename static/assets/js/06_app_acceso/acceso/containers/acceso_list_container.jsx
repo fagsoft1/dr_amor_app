@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../01_actions/01_index";
-import CargarDatos from "../../../00_utilities/components/system/cargar_datos";
 import {
-    COLABORADORES as permisos_view
+    TIPOS_REGISTRO_INGRESO as permisos_view
 } from "../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../00_utilities/common";
 
@@ -11,32 +10,10 @@ import ListCrud from '../components/acceso_list';
 
 
 class List extends Component {
-    constructor(props) {
-        super(props);
-        this.cargarDatos = this.cargarDatos.bind(this);
-    }
-
     componentDidMount() {
-        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
-        this.interval = setInterval(
-            () => {
-                this.cargarDatos();
-            }, 15000
-        );
+        this.props.fetchMisPermisosxListado([permisos_view]);
     }
 
-    componentWillUnmount() {
-        this.props.clearColaboradores();
-        this.props.clearAcompanantes();
-        clearInterval(this.interval);
-    }
-
-    cargarDatos() {
-        this.props.fetchTercerosPresentes({
-            show_cargando: false,
-            limpiar_coleccion: false
-        });
-    }
 
     render() {
         const {terceros_list, mis_permisos} = this.props;
@@ -70,9 +47,6 @@ class List extends Component {
                     colaboradores_presentes={colaboradores_presentes}
                     {...this.props}
                 />
-                <CargarDatos
-                    cargarDatos={this.cargarDatos}
-                />
             </div>
         )
     }
@@ -80,7 +54,6 @@ class List extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         mis_permisos: state.mis_permisos,
         terceros_list: state.terceros
     }

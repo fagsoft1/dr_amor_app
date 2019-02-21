@@ -30,8 +30,7 @@ class ServicioDetailModal extends Component {
     }
 
     cargarDatos() {
-        const {servicio, servicios} = this.props;
-        console.log(servicios)
+        const {servicio} = this.props;
         this.props.fetchHabitaciones();
         this.props.fetchCategoriasFraccionesTiemposAcompanantes_x_categoria(servicio.categoria_id);
 
@@ -42,12 +41,12 @@ class ServicioDetailModal extends Component {
             servicio,
             solicitarAnulacionServicio,
             cerraModal,
-            auth: {punto_venta}
+            mi_cuenta: {punto_venta_actual}
         } = this.props;
         solicitarAnulacionServicio(
             servicio.id,
             values.observacion_anulacion,
-            punto_venta.id,
+            punto_venta_actual.id,
             {callback: cerraModal}
         );
     }
@@ -57,11 +56,11 @@ class ServicioDetailModal extends Component {
             servicio,
             cambiarTiempoServicio,
             cerraModal,
-            auth: {punto_venta}
+            mi_cuenta: {punto_venta_actual}
         } = this.props;
         cambiarTiempoServicio(
             servicio.id,
-            {...values, punto_venta_id: punto_venta.id},
+            {...values, punto_venta_id: punto_venta_actual.id},
             {callback: cerraModal}
         );
     }
@@ -71,12 +70,12 @@ class ServicioDetailModal extends Component {
             cambiarHabitacion,
             servicio,
             cerraModal,
-            auth: {punto_venta}
+            mi_cuenta: {punto_venta_actual}
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
         cambiarHabitacion(
             servicio.habitacion,
-            {...pago, punto_venta_id: punto_venta.id},
+            {...pago, punto_venta_id: punto_venta_actual.id},
             nueva_habitacion_id,
             servicios_array_id,
             {callback: cerraModal}

@@ -22,12 +22,7 @@ class Login extends Component {
     }
 
     cargarPuntosVentasCliente(username) {
-        const {fetchPuntosVentas_por_usuario_username} = this.props;
-
-        fetchPuntosVentas_por_usuario_username(
-            username,
-            {callback: () => this.setState({cargando_puntos_ventas: true})}
-        );
+        this.props.fetchPuntosVentas_por_usuario_username(username, {callback: () => this.setState({cargando_puntos_ventas: true})});
     }
 
     componentWillUnmount() {
@@ -37,9 +32,8 @@ class Login extends Component {
 
     onSubmit(e) {
         const {username, password, punto_venta = null} = e;
-        const {noCargando, cargando} = this.props;
-        cargando();
-        this.props.login(username, password, punto_venta, () => noCargando());
+        const callback = () => this.props.fetchMiCuenta();
+        this.props.login(username, password, punto_venta, {callback});
     }
 
     render() {

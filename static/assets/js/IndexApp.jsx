@@ -10,6 +10,8 @@ import {withStyles} from "@material-ui/core/styles/index";
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
+import QrReaderComponent from './00_utilities/components/system/qrreader';
+import QRCode from 'qrcode-react';
 
 const Boton = (props) => {
     const {nombre, icono, link, classes} = props;
@@ -39,11 +41,12 @@ class IndexApp extends Component {
     }
 
     render() {
-        const {classes, auth: {mi_cuenta}, mis_permisos} = this.props;
+        const {classes, mi_cuenta, mi_cuenta: {punto_venta_actual}, mis_permisos} = this.props;
         const permisos_modulo_acceso = permisosAdapter(mis_permisos, permisos_view);
-        const punto_venta = JSON.parse(localStorage.getItem('punto_venta'));
         return <Loading>
             <div className="mt-3">
+                <QRCode value="marioalbertoyepessanchez"/>
+                <QrReaderComponent/>
                 <div className="container text-center">
                     {
                         mi_cuenta &&
@@ -73,11 +76,11 @@ class IndexApp extends Component {
                             />
                         }
                         {
-                            punto_venta &&
-                            //punto_venta.abierto &&
+                            punto_venta_actual &&
+                            //punto_venta_actual.abierto &&
                             <Fragment>
                                 {
-                                    punto_venta.tipo === 2 &&
+                                    punto_venta_actual.tipo === 2 &&
                                     <Boton
                                         nombre='Tienda'
                                         link='/app/tienda/'
@@ -86,7 +89,7 @@ class IndexApp extends Component {
                                     />
                                 }
                                 {
-                                    punto_venta.tipo === 1 &&
+                                    punto_venta_actual.tipo === 1 &&
                                     <Boton
                                         nombre='Servicios'
                                         link='/app/servicios/'
@@ -94,12 +97,6 @@ class IndexApp extends Component {
                                         classes={classes}
                                     />
                                 }
-                                <Boton
-                                    nombre='Servicios'
-                                    link='/app/servicios/'
-                                    icono='bed'
-                                    classes={classes}
-                                />
                             </Fragment>
                         }
                         {
@@ -118,7 +115,7 @@ class IndexApp extends Component {
                             classes={classes}
                         />
                         {
-                            punto_venta &&
+                            punto_venta_actual &&
                             <Boton
                                 nombre='Caja'
                                 link='/app/cajas/'
@@ -128,18 +125,7 @@ class IndexApp extends Component {
                         }
                         <div className="col-4"></div>
                         <div className="col-4 boton-index mt-4">
-                            <div className='icono puntero' onClick={() => {
-                                if (punto_venta && punto_venta.id) {
-                                    const callback = (pdv) => {
-                                        if (pdv.abierto) {
-                                            this.props.notificarErrorAction('Debe cerrar caja primero')
-                                        } else {
-                                            this.props.logout();
-                                        }
-                                    };
-                                    this.props.fetchPuntoVenta(punto_venta.id, {callback})
-                                }
-                            }}>
+                            <div className='icono puntero' onClick={() => this.props.logout()}>
                                 <div className="row">
                                     <div className="col-12">
                                         <FontAwesomeIcon
@@ -165,7 +151,7 @@ class IndexApp extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
+        mi_cuenta: state.mi_cuenta,
         mis_permisos: state.mis_permisos,
     }
 }

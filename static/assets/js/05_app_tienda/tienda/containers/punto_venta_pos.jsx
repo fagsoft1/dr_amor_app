@@ -18,16 +18,6 @@ class App extends Component {
 
     componentDidMount() {
         this.props.fetchPuntosVentas();
-        // this.props.fetchPuntosVentas(() => {
-        //     const puntos_ventas = _.map(this.props.puntos_ventas, e => e);
-        //     if (puntos_ventas.length > 0) {
-        //         const punto_venta = puntos_ventas[0];
-        //         this.props.fetchBodega(punto_venta.bodega, (bodega => {
-        //             this.props.fetchMovimientosInventariosSaldosxBodega(bodega.id, null);
-        //             this.setState({punto_venta, bodega})
-        //         }));
-        //     }
-        // });
     }
 
     componentWillUnmount() {
@@ -35,7 +25,7 @@ class App extends Component {
     }
 
     render() {
-        const {inventario_list, auth: {punto_venta}} = this.props;
+        const {inventario_list, auth: {punto_venta_actual}} = this.props;
         return (
             <div className="p-3">
                 <div className="row">
@@ -53,7 +43,6 @@ class App extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         puntos_ventas: _.pickBy(state.puntos_ventas, e => e.tipo === 1),
         inventario_list: state.movimientos_inventarios_detalles,
     }

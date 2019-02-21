@@ -68,7 +68,6 @@ class Detail extends Component {
 function mapPropsToState(state, ownProps) {
     const {id} = ownProps.match.params;
     return {
-        auth: state.auth,
         mis_permisos: state.mis_permisos,
         object: state.categorias_acompanantes[id],
         categorias_fracciones_tiempo_list: state.categorias_fracciones_tiempos_acompanantes,

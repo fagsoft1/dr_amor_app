@@ -94,6 +94,7 @@ export default class ServicioListItem extends Component {
                                         <FontAwesomeIcon
                                             className="puntero p-1"
                                             icon={['far', 'cogs']}
+                                            size='lg'
                                             onClick={() => abrirModalServicio(servicio)}
                                         />
                                     }
@@ -103,6 +104,7 @@ export default class ServicioListItem extends Component {
                                         <FontAwesomeIcon
                                             className="puntero p-1"
                                             icon={['far', 'hand-paper']}
+                                            size='lg'
                                             onClick={() => this.onTerminarServicioClick()}
                                         />
                                     }

@@ -11,10 +11,10 @@ import RegistroOperacionForm from '../components/forms/registro_operacion_form';
 
 class OperacionesCaja extends Component {
     componentDidMount() {
-        this.props.fetchConceptosOperacionesCajas();
-        this.props.fetchProveedores();
-        this.props.fetchColaboradores();
-        this.props.fetchAcompanantesPresentes();
+        const cargarConceptosOperacionesCaja = () => this.props.fetchConceptosOperacionesCajas();
+        const cargarProveedores = () => this.props.fetchProveedores({callback: cargarConceptosOperacionesCaja});
+        const cargarColaboradores = () => this.props.fetchColaboradores({callback: cargarProveedores});
+        this.props.fetchAcompanantesPresentes({callback: cargarColaboradores});
     }
 
     render() {
@@ -31,7 +31,6 @@ class OperacionesCaja extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         conceptos_operaciones_caja: state.conceptos_operaciones_caja,
         acompanantes: state.acompanantes,
         proveedores: state.proveedores,

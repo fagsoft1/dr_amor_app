@@ -48,7 +48,6 @@ class List extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         object_list: state.proveedores,
         mis_permisos: state.mis_permisos
     }

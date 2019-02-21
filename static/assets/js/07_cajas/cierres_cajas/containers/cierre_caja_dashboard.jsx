@@ -110,8 +110,8 @@ class LiquidarAcompanante extends Component {
     }
 
     componentDidMount() {
-        const {auth: {punto_venta}} = this.props;
-        this.setState({punto_venta_id: punto_venta.id});
+        const {mi_cuenta: {punto_venta_actual}} = this.props;
+        this.setState({punto_venta_id: punto_venta_actual.id});
         this.cargarDatos();
     }
 
@@ -144,7 +144,7 @@ class LiquidarAcompanante extends Component {
             hacerEntregaEfectivoCajaPuntoVenta,
             printEntregasArqueosCajas,
             envioEmailArqueo,
-            auth: {punto_venta}
+            mi_cuenta: {punto_venta_actual}
         } = this.props;
 
         const cierre = this.state;
@@ -166,7 +166,6 @@ class LiquidarAcompanante extends Component {
         const callback = (response) => {
             const url = window.URL.createObjectURL(new Blob([response], {type: 'application/pdf'}));
             window.open(url, "_blank");
-            localStorage.removeItem('punto_venta');
             this.props.history.push('/app');
 
         };
@@ -177,7 +176,7 @@ class LiquidarAcompanante extends Component {
                 {callback: () => imprimirEntrega(arqueo_id)}
             )
         };
-        hacerEntregaEfectivoCajaPuntoVenta(punto_venta.id, cierre2, {callback: res => enviarEmail(res.arqueo_id)});
+        hacerEntregaEfectivoCajaPuntoVenta(punto_venta_actual.id, cierre2, {callback: res => enviarEmail(res.arqueo_id)});
     }
 
     render() {
@@ -340,7 +339,7 @@ class LiquidarAcompanante extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
+        mi_cuenta: state.mi_cuenta,
         billetes_monedas: state.billetes_monedas,
     }
 }

@@ -16,12 +16,12 @@ class ServicioList extends Component {
             fetchServicios_en_proceso,
             terminarServicio,
             fetchHabitaciones,
-            auth: {punto_venta}
+            mi_cuenta: {punto_venta_actual}
         } = this.props;
 
         const cargarHabitaciones = () => fetchHabitaciones();
         const cargarServiciosEnProceso = () => fetchServicios_en_proceso({callback: cargarHabitaciones});
-        terminarServicio(servicio_id, punto_venta.id, {callback: cargarServiciosEnProceso});
+        terminarServicio(servicio_id, punto_venta_actual.id, {callback: cargarServiciosEnProceso});
     }
 
     onBusquedaChange(event) {

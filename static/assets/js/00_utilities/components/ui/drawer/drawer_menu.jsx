@@ -112,7 +112,7 @@ class DrawerMenu extends Component {
             lista_menu = null,
             titulo = 'Colocar Titulo',
             menu_status: {open_menu, submenu_abiertos},
-            auth: {mi_cuenta}
+            mi_cuenta
         } = this.props;
         const menu_abierto = submenu_abiertos > 0 || open_menu;
         return (
@@ -217,7 +217,7 @@ class DrawerMenu extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         menu_status: state.menu_status,
-        auth: state.auth
+        mi_cuenta: state.mi_cuenta
     }
 }
 

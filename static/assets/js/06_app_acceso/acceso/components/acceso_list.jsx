@@ -4,6 +4,7 @@ import CreateForm from './forms/acceso_form';
 import CategoriaModelo from '../components/catetgoria_modelo';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import CargarDatos from "../../../00_utilities/components/system/cargar_datos";
 
 class List extends Component {
     constructor(props) {
@@ -14,6 +15,32 @@ class List extends Component {
             tipo_registro: null,
         });
         this.onSubmit = this.onSubmit.bind(this);
+        this.cargarDatos = this.cargarDatos.bind(this);
+    }
+
+    componentDidMount() {
+        this.cargarDatos();
+        this.interval = setInterval(
+            () => {
+                this.cargarDatos();
+            }, 5000
+        );
+    }
+
+    componentWillUnmount() {
+        this.props.clearColaboradores();
+        this.props.clearAcompanantes();
+        clearInterval(this.interval);
+    }
+
+    cargarDatos() {
+        const {modal_open} = this.state;
+        if (!modal_open) {
+            this.props.fetchTercerosPresentes({
+                show_cargando: false,
+                limpiar_coleccion: false
+            });
+        }
     }
 
     renderCategoria(categoria) {
@@ -53,7 +80,7 @@ class List extends Component {
             tipo_registro
         } = this.state;
         return (
-            <ValidarPermisos can_see={permisos_object.list} nombre='Modelos Presentes'>
+            <ValidarPermisos can_see={permisos_object.add} nombre='Acceso'>
                 <Button
                     color='primary'
                     className='ml-3'
@@ -104,6 +131,9 @@ class List extends Component {
                         })}
                     </div>
                 </div>
+                <CargarDatos
+                    cargarDatos={this.cargarDatos}
+                />
             </ValidarPermisos>
         )
     }

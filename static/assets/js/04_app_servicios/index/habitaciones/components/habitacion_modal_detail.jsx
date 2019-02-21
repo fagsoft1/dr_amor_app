@@ -90,12 +90,12 @@ class HabitacionDetailModal extends Component {
             cambiarHabitacion,
             habitacion,
             cerraModal,
-            auth: {punto_venta}
+            mi_cuenta: {punto_venta_actual}
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
         cambiarHabitacion(
             habitacion.id,
-            {...pago, punto_venta_id: punto_venta.id},
+            {...pago, punto_venta_id: punto_venta_actual.id},
             nueva_habitacion_id,
             servicios_array_id,
             {callback: cerraModal}
@@ -108,7 +108,7 @@ class HabitacionDetailModal extends Component {
             fetchHabitacion,
             habitacion,
             cerraModal,
-            auth: {punto_venta}
+            mi_cuenta: {punto_venta_actual}
         } = this.props;
 
         fetchHabitacion(
@@ -119,7 +119,7 @@ class HabitacionDetailModal extends Component {
                         if (response.estado === 1) {
                             terminarServiciosHabitacion(
                                 habitacion.id,
-                                punto_venta.id,
+                                punto_venta_actual.id,
                                 {callback: cerraModal}
                             )
                         }
@@ -128,18 +128,17 @@ class HabitacionDetailModal extends Component {
         );
     }
 
-
     onIniciarServicios(pago) {
         const {
             iniciarServiciosHabitacion,
             habitacion,
             cerraModal,
-            auth: {punto_venta}
+            mi_cuenta: {punto_venta_actual}
         } = this.props;
         const {servicios_nuevos} = this.state;
         iniciarServiciosHabitacion(
             habitacion.id,
-            {...pago, punto_venta_id: punto_venta.id},
+            {...pago, punto_venta_id: punto_venta_actual.id},
             _.map(_.orderBy(servicios_nuevos, ['tiempo_minutos'], ['desc']), e => e),
             {
                 callback:

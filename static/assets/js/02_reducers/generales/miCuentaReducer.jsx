@@ -5,8 +5,7 @@ import {
 export default function (state = {}, action) {
     switch (action.type) {
         case TYPES.cuenta:
-            return action.payload.data[0];
-            break;
+            return action.payload.data;
         default:
             return state;
     }

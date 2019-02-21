@@ -13,17 +13,13 @@ class Seguridad extends Component {
     }
 
     onCambiarPin(values, callback) {
-        const {cambiarPinUsuario, auth: {mi_cuenta}} = this.props;
-        cambiarPinUsuario(mi_cuenta.id, values.pin, values.password, {callback});
+        const {mi_cuenta} = this.props;
+        this.props.cambiarPinUsuario(mi_cuenta.id, values.pin, values.password, {callback});
     }
 
     onCambiarPassword(values, callback) {
-        const {
-            cambiarContrasenaUsuario,
-            auth: {mi_cuenta}
-        } = this.props;
-
-        cambiarContrasenaUsuario(
+        const {mi_cuenta} = this.props;
+        this.props.cambiarContrasenaUsuario(
             mi_cuenta.id,
             values.password_old,
             values.password,
@@ -33,7 +29,7 @@ class Seguridad extends Component {
     }
 
     render() {
-        const {auth: {mi_cuenta}} = this.props;
+        const {mi_cuenta} = this.props;
         return (
             <div className="row">
                 {
@@ -58,7 +54,7 @@ class Seguridad extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
+        mi_cuenta: state.mi_cuenta
     }
 }
 

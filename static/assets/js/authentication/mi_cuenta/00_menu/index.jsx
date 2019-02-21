@@ -8,6 +8,12 @@ const Menu = () => <Fragment>
         texto='Seguridad'
         icono='shield-check'
     />
+    <DrawerListItem
+        size='lg'
+        link='/app/mi_cuenta/financiero'
+        texto='Financiero'
+        icono='shield-check'
+    />
 </Fragment>;
 
 export default Menu;

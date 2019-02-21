@@ -65,6 +65,7 @@ class Form extends Component {
                     className="col-12 col-md-4"
                     textField='nombre'
                     valuesField='id'
+                    filter='contains'
                 />
                 <NumericPad pin={pin} setPin={this.setPin} resetPin={this.resetPin}/>
             </MyFormTagModal>

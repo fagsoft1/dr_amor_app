@@ -89,11 +89,11 @@ import AppServicios from './04_app_servicios/App';
 import AppCaja from './07_cajas/App';
 import AppAcceso from './06_app_acceso/App';
 import Login from './authentication/login/containers/login';
-import MiCuenta from './authentication/mi_cuenta/seguridad/containers/dashboard';
+import MiCuenta from './08_app_mi_cuenta/App';
 
 class RootContainerComponent extends Component {
     componentDidMount() {
-        this.props.loadUser();
+        this.props.loadUser({callback: () => this.props.fetchMiCuenta()});
     }
 
     PrivateRoute = ({component: ChildComponent, ...rest}) => {
@@ -110,8 +110,7 @@ class RootContainerComponent extends Component {
 
     render() {
         let {PrivateRoute} = this;
-        const {auth: {mi_cuenta}} = this.props;
-        const punto_venta = JSON.parse(localStorage.getItem('punto_venta'));
+        const {mi_cuenta, mi_cuenta: {punto_venta_actual}} = this.props;
         return (
             <BrowserRouter>
                 <Fragment>
@@ -138,11 +137,11 @@ class RootContainerComponent extends Component {
                         backgroundColor: 'white'
                     }}>
                         {
-                            punto_venta &&
-                            punto_venta.nombre &&
+                            punto_venta_actual &&
+                            punto_venta_actual.nombre &&
                             <Fragment>
                                 <strong>Punto de Venta: </strong>
-                                <small>{punto_venta.nombre}</small>
+                                <small>{punto_venta_actual.nombre}</small>
                                 <br/>
                             </Fragment>
                         }
@@ -162,7 +161,8 @@ class RootContainerComponent extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth
+        auth: state.auth,
+        mi_cuenta: state.mi_cuenta
     }
 }
 

@@ -17,7 +17,7 @@ class Tabla extends React.Component {
             onDelete,
             onSelectItemEdit,
             permisos_object,
-            auth: {mi_cuenta}
+            mi_cuenta
         } = this.props;
         return (
             <div>

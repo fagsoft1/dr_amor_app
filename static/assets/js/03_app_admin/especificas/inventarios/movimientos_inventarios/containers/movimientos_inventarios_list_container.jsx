@@ -53,7 +53,6 @@ class List extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         object_list: _.orderBy(state.movimientos_inventarios, ['fecha'], ['asc']),
         proveedores_list: state.proveedores,
         bodegas_list: state.bodegas,

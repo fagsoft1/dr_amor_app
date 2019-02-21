@@ -6,6 +6,10 @@ import CargarDatos from "../../../../00_utilities/components/system/cargar_datos
 import {connect} from "react-redux";
 import HabitacionDetailModal from '../../habitaciones/components/habitacion_modal_detail';
 import ServicioDetailModal from '../../servicios/components/servicio_modal_detail';
+import RegistroOperacionContable
+    from '../../../../07_cajas/operaciones_caja/components/forms/registro_operacion_dos_form';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import Button from '@material-ui/core/Button';
 
 class ServiciosDashboar extends Component {
     constructor(props) {
@@ -15,12 +19,14 @@ class ServiciosDashboar extends Component {
             servicio_id: null,
             modal_habitacion_open: false,
             modal_servicio_open: false,
+            modal_operacion_caja_open: false
         });
         this.cerraModalHabitacion = this.cerraModalHabitacion.bind(this);
         this.abrirModalHabitacion = this.abrirModalHabitacion.bind(this);
         this.abrirModalServicio = this.abrirModalServicio.bind(this);
         this.cerraModalServicio = this.cerraModalServicio.bind(this);
         this.onClickHabitacion = this.onClickHabitacion.bind(this);
+        this.cerraModalRegistroOperacionCaja = this.cerraModalRegistroOperacionCaja.bind(this);
         this.cargarDatos = this.cargarDatos.bind(this);
         this.clearDatos = this.clearDatos.bind(this);
     }
@@ -37,9 +43,10 @@ class ServiciosDashboar extends Component {
     cargarDatos() {
         const {
             modal_habitacion_open,
-            modal_servicio_open
+            modal_servicio_open,
+            modal_operacion_caja_open
         } = this.state;
-        if (!(modal_habitacion_open || modal_servicio_open)) {
+        if (!(modal_habitacion_open || modal_servicio_open || modal_operacion_caja_open)) {
             const cargarHabitaciones = () => this.props.fetchHabitaciones(
                 {
                     limpiar_coleccion: false,
@@ -98,8 +105,6 @@ class ServiciosDashboar extends Component {
     }
 
     cerraModalServicio() {
-        const {cargando} = this.props;
-        cargando();
         this.setState({modal_servicio_open: false, servicio_id: null});
         this.cargarDatos();
     }
@@ -114,9 +119,12 @@ class ServiciosDashboar extends Component {
     }
 
     cerraModalHabitacion() {
-        const {cargando} = this.props;
-        cargando();
         this.setState({modal_habitacion_open: false, habitacion_id: null});
+        this.cargarDatos();
+    }
+
+    cerraModalRegistroOperacionCaja() {
+        this.setState({modal_operacion_caja_open: false});
         this.cargarDatos();
     }
 
@@ -130,10 +138,19 @@ class ServiciosDashboar extends Component {
             modal_habitacion_open,
             habitacion_id,
             modal_servicio_open,
-            servicio_id
+            modal_operacion_caja_open,
+            servicio_id,
         } = this.state;
         return (
             <div className="row">
+                {
+                    modal_operacion_caja_open &&
+                    <RegistroOperacionContable
+                        {...this.props}
+                        cerrarModal={this.cerraModalRegistroOperacionCaja}
+                        modal_open={modal_operacion_caja_open}
+                    />
+                }
                 {
                     modal_habitacion_open &&
                     <HabitacionDetailModal
@@ -172,12 +189,21 @@ class ServiciosDashboar extends Component {
                                 {...this.props}
                                 onClickHabitacion={this.onClickHabitacion}
                             />
-                            <CargarDatos
-                                cargarDatos={this.cargarDatos}
-                            />
                         </div>
                     </div>
                 </div>
+                <div className="col-12 text-center mt-3">
+                    <Button variant="contained" color="secondary">
+                        <FontAwesomeIcon
+                            icon={['far', 'cash-register']}
+                            size='4x'
+                            onClick={() => this.setState({modal_operacion_caja_open: true})}
+                        />
+                    </Button>
+                </div>
+                <CargarDatos
+                    cargarDatos={this.cargarDatos}
+                />
             </div>
         )
     }
@@ -185,8 +211,8 @@ class ServiciosDashboar extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
         terceros: state.terceros,
+        mi_cuenta: state.mi_cuenta,
         habitaciones: state.habitaciones,
         servicios: state.servicios,
         categorias_fracciones_tiempo_list: state.categorias_fracciones_tiempos_acompanantes
