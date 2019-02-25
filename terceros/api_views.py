@@ -25,6 +25,16 @@ class TerceroViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
     ).all()
     serializer_class = TerceroSerializer
 
+    @list_route(methods=['post'])
+    def buscar_por_qr(self, request):
+        codigo_qr = request.POST.get('codigo_qr')
+        qs = self.get_queryset().filter(
+            qr_acceso=codigo_qr,
+            qr_acceso__isnull=False
+        ).first()
+        serializer = self.get_serializer(qs)
+        return Response(serializer.data)
+
     @list_route(methods=['get'])
     def listar_presentes(self, request) -> Response:
         qs = self.get_queryset().filter(
@@ -43,6 +53,13 @@ class TerceroViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
             Q(presente=False) & Q(usuario__is_active=True) & (Q(es_acompanante=True) | Q(es_colaborador=True))
         )
         serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
+    @detail_route(methods=['post'])
+    def generar_qr(self, request, pk=None):
+        tercero = self.get_object()
+        tercero.generarQR()
+        serializer = self.get_serializer(tercero)
         return Response(serializer.data)
 
     @detail_route(methods=['post'])

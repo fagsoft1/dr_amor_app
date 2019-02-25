@@ -22,7 +22,7 @@ class Tabla extends React.Component {
                             },
                             {
                                 Header: "Fecha",
-                                accessor: "modified",
+                                accessor: "movimiento_fecha",
                                 maxWidth: 150,
                                 Cell: row => fechaFormatoUno(row.value)
                             },

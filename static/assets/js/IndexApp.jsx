@@ -10,8 +10,7 @@ import {withStyles} from "@material-ui/core/styles/index";
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
-import QrReaderComponent from './00_utilities/components/system/qrreader';
-import QRCode from 'qrcode-react';
+import QrIdentificacion from './00_utilities/components/system/modal_qr_acceso';
 
 const Boton = (props) => {
     const {nombre, icono, link, classes} = props;
@@ -45,8 +44,10 @@ class IndexApp extends Component {
         const permisos_modulo_acceso = permisosAdapter(mis_permisos, permisos_view);
         return <Loading>
             <div className="mt-3">
-                <QRCode value="marioalbertoyepessanchez"/>
-                <QrReaderComponent/>
+                {
+                    mi_cuenta.tercero &&
+                    <QrIdentificacion/>
+                }
                 <div className="container text-center">
                     {
                         mi_cuenta &&
@@ -83,7 +84,7 @@ class IndexApp extends Component {
                                     punto_venta_actual.tipo === 2 &&
                                     <Boton
                                         nombre='Tienda'
-                                        link='/app/tienda/'
+                                        link={`/app/tienda/${punto_venta_actual.id}`}
                                         icono='shopping-cart'
                                         classes={classes}
                                     />

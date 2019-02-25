@@ -55,6 +55,7 @@ class Form extends Component {
                             nombre: h.nombre
                         })
                     })}
+                    filter='contains'
                 />
                 <MyCombobox
                     className="col-12 col-md-5"
@@ -69,6 +70,7 @@ class Form extends Component {
                             nombre: h.nombre
                         })
                     })}
+                    filter='contains'
                 />
                 <MyCheckboxSimple
                     nombre='Activo'

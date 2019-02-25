@@ -64,7 +64,7 @@ class Form extends Component {
                         textField='nombre'
                         valuesField='id'
                         placeholder='Categoría Modelo...'
-
+                        filter='contains'
                     />
                 </LectorCedula>
             </MyFormTagModal>

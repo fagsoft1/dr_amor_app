@@ -7,9 +7,18 @@ import {
     createObject,
     fetchListGetURLParameters,
     callApiMethodPostParameters,
+    baseWS
 } from '../../00_general_fuctions'
 
 const current_url_api = 'servicios';
+
+export const refreshUpdateServicio = (payload) => {
+    return baseWS(TYPES.update, payload)
+};
+
+export const refreshDeleteServicio = (id) => {
+    return baseWS(TYPES.delete, id)
+};
 
 export const solicitarAnulacionServicio = (id, observacion_anulacion, punto_venta_id, options_action = {}) => {
     return (dispatch) => {

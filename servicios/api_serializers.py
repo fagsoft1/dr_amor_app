@@ -1,3 +1,4 @@
+from channels.binding.websockets import WebsocketBinding
 from rest_framework import serializers
 from django.utils.timezone import now
 
@@ -13,7 +14,9 @@ class ServicioSerializer(serializers.ModelSerializer):
                                                       read_only=True)
     termino = serializers.SerializerMethodField()
     en_espera = serializers.SerializerMethodField()
-    cuenta_liquidada = serializers.BooleanField(read_only=True, source='cuenta.liquidada')
+    cuenta_liquidada = serializers.NullBooleanField(read_only=True, source='cuenta.liquidada')
+    cuenta_usuario = serializers.PrimaryKeyRelatedField(source='cuenta.propietario', read_only=True, allow_null=True)
+    cuenta_tipo = serializers.IntegerField(source='cuenta.tipo', read_only=True, allow_null=True)
     tiempo_nombre = serializers.SerializerMethodField()
     anulado = serializers.SerializerMethodField()
 
@@ -43,9 +46,11 @@ class ServicioSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'servicio_siguiente',
-            'cuenta',
             'anulado',
+            'cuenta',
             'cuenta_liquidada',
+            'cuenta_usuario',
+            'cuenta_tipo',
             'empresa',
             'habitacion_nombre',
             'habitacion',
@@ -71,3 +76,20 @@ class ServicioSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'valor_total': {'read_only': True},
         }
+
+
+class ServicioBinding(WebsocketBinding):
+    model = Servicio
+    stream = "servicios"
+    fields = ["id", ]
+
+    def serialize_data(self, instance):
+        serializado = ServicioSerializer(instance, context={'request': None})
+        return serializado.data
+
+    @classmethod
+    def group_names(cls, *args, **kwargs):
+        return ["binding.pos_servicios"]
+
+    def has_permission(self, user, action, pk):
+        return True

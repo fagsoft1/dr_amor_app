@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
 
-from terceros.models import Tercero
+from terceros.models import Tercero, Cuenta
 from productos.models import Producto
 
 
@@ -22,15 +22,15 @@ class Bodega(models.Model):
 
 class MovimientoInventario(TimeStampedModel):
     fecha = models.DateField()
-    creado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
-    proveedor = models.ForeignKey(Tercero, related_name='movimientos_inventarios', on_delete=models.PROTECT, null=True,
-                                  blank=True)
+    creado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    proveedor = models.ForeignKey(Tercero, related_name='movimientos_inventarios', on_delete=models.PROTECT, null=True)
     bodega = models.ForeignKey(Bodega, on_delete=models.PROTECT, related_name='movimientos')
-    motivo = models.TextField()
-    detalle = models.TextField(null=True, blank=True)
-    tipo = models.CharField(max_length=2, null=True, blank=True)
+    motivo = models.TextField(null=True)
+    detalle = models.TextField(null=True)
+    tipo = models.CharField(max_length=2, null=True)
     cargado = models.BooleanField(default=False)
-    observacion = models.TextField(blank=True, null=True)
+    observacion = models.TextField(null=True)
+    cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='compra_tienda', null=True)
 
     def cargar_inventario(self):
         if not self.cargado:
@@ -57,6 +57,7 @@ class MovimientoInventarioDetalle(TimeStampedModel):
     saldo_cantidad = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     saldo_costo = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     es_ultimo_saldo = models.BooleanField(default=False)
+    precio_venta_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
     class Meta:
         unique_together = [('movimiento', 'producto')]
@@ -69,39 +70,44 @@ class MovimientoInventarioDetalle(TimeStampedModel):
             producto=self.producto,
             movimiento__bodega=self.movimiento.bodega
         )
-        movimiento = qs.last()
-        saldo_cantidad = 0
-        saldo_costo = 0
-        costo_unitario = 0
+        ultimo_movimiento = qs.last()
+        saldo_cantidad_nuevo = 0
+        saldo_costo_nuevo = 0
+        costo_unitario_nuevo = 0
 
         if self.movimiento.tipo == 'EA':
-            if movimiento:
-                saldo_cantidad = movimiento.saldo_cantidad + self.entra_cantidad
-                saldo_costo = movimiento.saldo_costo + (movimiento.costo_unitario * self.entra_cantidad)
-                costo_unitario = movimiento.costo_unitario
+            if ultimo_movimiento:
+                saldo_cantidad_nuevo = ultimo_movimiento.saldo_cantidad + self.entra_cantidad
+                saldo_costo_nuevo = ultimo_movimiento.saldo_costo + (
+                        ultimo_movimiento.costo_unitario * self.entra_cantidad)
+                costo_unitario_nuevo = ultimo_movimiento.costo_unitario
 
         if self.movimiento.tipo == 'E':
-            saldo_cantidad = self.entra_cantidad
-            saldo_costo = self.entra_costo
-            costo_unitario = saldo_costo / saldo_cantidad
-            if movimiento:
-                saldo_cantidad += movimiento.saldo_cantidad
-                saldo_costo += movimiento.saldo_costo
-                costo_unitario = saldo_costo / saldo_cantidad
+            cantidad_entra = self.entra_cantidad
+            costo_entra = self.entra_costo
+            if ultimo_movimiento:
+                saldo_cantidad_nuevo = cantidad_entra + ultimo_movimiento.saldo_cantidad
+                saldo_costo_nuevo = costo_entra + ultimo_movimiento.saldo_costo
+                costo_unitario_nuevo = saldo_costo_nuevo / saldo_cantidad_nuevo
+            else:
+                saldo_cantidad_nuevo = self.entra_cantidad
+                saldo_costo_nuevo = self.entra_costo
+                costo_unitario_nuevo = costo_entra / cantidad_entra
 
         if self.movimiento.tipo == 'S' or self.movimiento.tipo == 'SA':
-            saldo_cantidad = movimiento.saldo_cantidad - self.sale_cantidad
-            saldo_costo = movimiento.saldo_costo - (self.sale_cantidad * movimiento.costo_unitario)
-            costo_unitario = movimiento.costo_unitario
+            saldo_cantidad_nuevo = ultimo_movimiento.saldo_cantidad - self.sale_cantidad
+            saldo_costo_nuevo = ultimo_movimiento.saldo_costo - (self.sale_cantidad * ultimo_movimiento.costo_unitario)
+            costo_unitario_nuevo = ultimo_movimiento.costo_unitario
+            self.sale_costo = self.sale_cantidad * ultimo_movimiento.costo_unitario
 
         for x in qs.all():
             x.es_ultimo_saldo = False
             x.save()
 
         self.es_ultimo_saldo = True
-        self.saldo_cantidad = saldo_cantidad
-        self.saldo_costo = saldo_costo
-        self.costo_unitario = costo_unitario
+        self.saldo_cantidad = saldo_cantidad_nuevo
+        self.saldo_costo = saldo_costo_nuevo
+        self.costo_unitario = costo_unitario_nuevo
         self.save()
 
 

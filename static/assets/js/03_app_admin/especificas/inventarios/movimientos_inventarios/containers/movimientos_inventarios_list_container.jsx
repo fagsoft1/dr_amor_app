@@ -6,8 +6,12 @@ import {
     MOVIMIENTOS_INVENTARIOS as permisos_view
 } from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
+import crudHOC from '../../../../../00_utilities/components/hoc_crud';
 
-import ListCrud from '../components/movimientos_inventarios_list';
+import CreateForm from '../components/forms/movimiento_inventario_form';
+import Tabla from '../components/movimientos_inventarios_tabla';
+
+const CRUD = crudHOC(CreateForm, Tabla);
 
 
 class List extends Component {
@@ -35,12 +39,22 @@ class List extends Component {
 
     render() {
         const {object_list, mis_permisos} = this.props;
-        const bloque_1_list = permisosAdapter(mis_permisos, permisos_view);
+        const permisos_object = permisosAdapter(mis_permisos, permisos_view);
+        this.method_pool = {
+            fetchObjectMethod: this.props.fetchMovimientoInventario,
+            deleteObjectMethod: this.props.deleteMovimientoInventario,
+            createObjectMethod: this.props.createMovimientoInventario,
+            updateObjectMethod: this.props.updateMovimientoInventario,
+        };
         return (
             <Fragment>
-                <ListCrud
-                    object_list={object_list}
-                    permisos_object={bloque_1_list}
+                <CRUD
+                    posCreateMethod={(res) => this.props.history.push(`/app/admin/inventarios/movimientos_inventarios/detail/${res.id}`)}
+                    method_pool={this.method_pool}
+                    list={object_list}
+                    permisos_object={permisos_object}
+                    plural_name='Movimientos Inventarios'
+                    singular_name='Movimiento Inventario'
                     {...this.props}
                 />
                 <CargarDatos

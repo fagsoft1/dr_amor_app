@@ -47,7 +47,7 @@ class Form extends Component {
                     textField='nombre'
                     valuesField='id'
                     placeholder='Tipo Operación...'
-
+                    filter='contains'
                 />
                 <MyCombobox
                     className="col-12"
@@ -63,6 +63,7 @@ class Form extends Component {
                     textField='nombre'
                     valuesField='id'
                     placeholder='Tipo Operación...'
+                    filter='contains'
 
                 />
             </MyFormTagModal>

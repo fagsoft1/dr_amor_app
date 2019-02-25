@@ -3,6 +3,7 @@ import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dial
 import {fechaFormatoUno} from '../../../../../00_utilities/common';
 import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import {Link} from 'react-router-dom'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import ReactTable from "react-table";
 

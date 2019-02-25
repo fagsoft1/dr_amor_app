@@ -23,12 +23,23 @@ class BodegaSerializer(serializers.ModelSerializer):
 
 
 class MovimientoInventarioDetalleSerializer(serializers.ModelSerializer):
+    cuenta = serializers.PrimaryKeyRelatedField(source='movimiento.cuenta_id', read_only=True, allow_null=True)
+    cuenta_liquidada = serializers.NullBooleanField(source='movimiento.cuenta.liquidada', read_only=True)
+    cuenta_usuario = serializers.IntegerField(
+        source='movimiento.cuenta.propietario_id',
+        read_only=True,
+        allow_null=True
+    )
+    cuenta_tipo = serializers.IntegerField(source='movimiento.cuenta.tipo', read_only=True, allow_null=True)
     producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
     movimiento_detalle = serializers.CharField(source='movimiento.detalle', read_only=True)
+    movimiento_fecha = serializers.CharField(source='movimiento.fecha', read_only=True)
     movimiento_proveedor_nombre = serializers.CharField(source='movimiento.proveedor.nombre', read_only=True)
     bodega = serializers.IntegerField(source='movimiento.bodega_id', read_only=True)
     producto_categoria_nombre = serializers.CharField(source='producto.categoria_dos.categoria.nombre', read_only=True)
     producto_categoria_dos_nombre = serializers.CharField(source='producto.categoria_dos.nombre', read_only=True)
+    producto_precio_venta = serializers.DecimalField(source='producto.precio_venta', read_only=True, decimal_places=2,
+                                                     max_digits=12)
 
     class Meta:
         model = MovimientoInventarioDetalle
@@ -36,12 +47,19 @@ class MovimientoInventarioDetalleSerializer(serializers.ModelSerializer):
             'url',
             'id',
             'modified',
+            'cuenta',
+            'cuenta_tipo',
+            'cuenta_liquidada',
+            'cuenta_usuario',
             'movimiento',
             'bodega',
             'movimiento_detalle',
             'movimiento_proveedor_nombre',
+            'precio_venta_total',
             'producto',
             'producto_nombre',
+            'producto_precio_venta',
+            'movimiento_fecha',
             'costo_unitario',
             'entra_cantidad',
             'entra_costo',
@@ -80,6 +98,8 @@ class MovimientoInventarioSerializer(serializers.ModelSerializer):
     entra_cantidad = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     sale_cantidad = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     sale_costo = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    cuenta_liquidada = serializers.NullBooleanField(source='cuenta.liquidada', read_only=True)
+    cuenta_usuario = serializers.IntegerField(source='cuenta.propietario_id', read_only=True, allow_null=True)
 
     class Meta:
         model = MovimientoInventario
@@ -91,6 +111,9 @@ class MovimientoInventarioSerializer(serializers.ModelSerializer):
             'proveedor_nombre',
             'bodega',
             'bodega_nombre',
+            'cuenta',
+            'cuenta_liquidada',
+            'cuenta_usuario',
             'detalle',
             'tipo',
             'motivo',
@@ -101,6 +124,9 @@ class MovimientoInventarioSerializer(serializers.ModelSerializer):
             'sale_cantidad',
             'observacion',
         ]
+        extra_kwargs = {
+            'cuenta': {'read_only': True}
+        }
 
 
 class TrasladoInventarioSerializer(serializers.ModelSerializer):

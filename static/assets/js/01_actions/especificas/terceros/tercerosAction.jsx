@@ -1,9 +1,11 @@
 import {TERCERO_TYPES as TYPES} from '../../00_types';
 import {
     fetchListGet,
+    fetchListPostURLParameters,
     updateObject,
     fetchObject,
     callApiMethodPostParameters,
+    callApiMethodPost,
     baseWS
 } from '../../00_general_fuctions'
 
@@ -16,6 +18,22 @@ export function refreshUpdateTercero(payload) {
 export function refreshDeleteTercero(id) {
     return baseWS(TYPES.delete, id)
 }
+
+export const fetchTerceroxQr = (codigo_qr, options_action = {}) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+
+        };
+        const options = {
+            dispatches,
+            ...options_action,
+            dispatch_method: dispatch,
+        };
+        let params = new URLSearchParams();
+        params.append('codigo_qr', codigo_qr);
+        fetchListPostURLParameters(current_url_api, 'buscar_por_qr', params, options);
+    }
+};
 
 
 export const registrarIngresoTercero = (id, pin, options_action = {}) => {
@@ -33,6 +51,13 @@ export const registrarSalidaTercero = (id, pin, options_action = {}) => {
         params.append('pin', pin);
         const options = {...options_action, dispatch_method: dispatch};
         callApiMethodPostParameters(current_url_api, id, 'registrar_salida', params, options)
+    }
+};
+
+export const generaQrTercero = (id, options_action = {}) => {
+    return (dispatch) => {
+        const options = {...options_action, dispatch_method: dispatch};
+        callApiMethodPost(current_url_api, id, 'generar_qr', options)
     }
 };
 

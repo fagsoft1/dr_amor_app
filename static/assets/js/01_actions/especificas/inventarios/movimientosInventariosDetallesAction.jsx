@@ -7,7 +7,8 @@ import {
     fetchObject,
     deleteObject,
     createObject,
-    fetchListGetURLParameters, baseWS
+    fetchListGetURLParameters,
+    baseWS
 } from '../../00_general_fuctions'
 
 const current_url_api = 'movimiento_inventario_detalle';
@@ -69,7 +70,7 @@ export const fetchMovimientosInventariosDetallesxMovimiento = (movimiento_id, op
         fetchListGetURLParameters(`${current_url_api}/por_movimiento/?movimiento_id=${movimiento_id}`, options);
     }
 };
-export const fetchMovimientosInventariosSaldosxBodega = (bodega_id, options_action = {}) => {
+export const fetchMovimientosInventariosDetallesSaldosxBodega = (bodega_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -84,7 +85,52 @@ export const fetchMovimientosInventariosSaldosxBodega = (bodega_id, options_acti
         fetchListGetURLParameters(`${current_url_api}/actual_por_bodega/?bodega_id=${bodega_id}`, options);
     }
 };
-export const fetchMovimientosInventariosxBodegaxProducto = (bodega_id, producto_id, options_action = {}) => {
+export const fetchMovimientoIntentariosDetalles_por_tercero_cuenta_abierta = (tercero_id, options_action = {}) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        const {limpiar_coleccion = true} = options_action;
+        const options = {
+            dispatches,
+            ...options_action,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGetURLParameters(`${current_url_api}/consultar_por_tercero_cuenta_abierta/?tercero_id=${tercero_id}`, options);
+    }
+};
+export const fetchMovimientosInventariosDetallesSaldosxPDV = (punto_venta_id, options_action = {}) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        const {limpiar_coleccion = true} = options_action;
+        const options = {
+            dispatches,
+            ...options_action,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGetURLParameters(`${current_url_api}/actual_por_pdv/?punto_venta_id=${punto_venta_id}`, options);
+    }
+};
+export const fetchMovimientosInventariosDetallesxBodegaxFecha = (bodega_id, fecha_inicial, fecha_final, options_action = {}) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        const {limpiar_coleccion = true} = options_action;
+        const options = {
+            dispatches,
+            ...options_action,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        fetchListGetURLParameters(`${current_url_api}/por_bodega_por_fecha/?bodega_id=${bodega_id}&fecha_inicial=${fecha_inicial}&fecha_final=${fecha_final}`, options);
+    }
+};
+export const fetchMovimientosInventariosDetallesxBodegaxProducto = (bodega_id, producto_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
 import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
@@ -8,18 +8,22 @@ import Typography from '@material-ui/core/Typography';
 import {
     BODEGAS as permisos_view
 } from "../../../../../00_utilities/permisos/types";
-
 import TablaInventarioActual from '../components/bodegas_inventario_movimiento_actual_tabla';
 import TablaInventarioProducto from '../components/bodegas_inventario_movimiento_producto_tabla';
-
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import DateTimePicker from 'react-widgets/lib/DateTimePicker';
+import FormGroup from '@material-ui/core/FormGroup';
+import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 class Detail extends Component {
     constructor(props) {
         super(props);
         this.state = {
             slideIndex: 0,
+            fecha_inicio_mov_inventario: null,
+            fecha_final_mov_inventario: null
         };
         this.cargarDatos = this.cargarDatos.bind(this);
         this.verMovimientoProducto = this.verMovimientoProducto.bind(this);
@@ -29,7 +33,7 @@ class Detail extends Component {
         const {id} = this.props.match.params;
         this.setState({slideIndex: 1});
         this.props.clearMovimientosInventarios();
-        this.props.fetchMovimientosInventariosxBodegaxProducto(id, item_id);
+        this.props.fetchMovimientosInventariosDetallesxBodegaxProducto(id, item_id);
     }
 
     handleChange = (event, value) => {
@@ -45,14 +49,18 @@ class Detail extends Component {
         let index = value !== null ? value : this.state.slideIndex;
         if (index === 0) {
             const {id} = this.props.match.params;
-            this.props.fetchMovimientosInventariosSaldosxBodega(id);
+            this.props.fetchMovimientosInventariosDetallesSaldosxBodega(id);
         } else if (index === 1) {
-
+            this.props.clearMovimientosInventariosDetalles();
+            this.setState({
+                fecha_inicio_mov_inventario: null,
+                fecha_final_mov_inventario: null
+            })
         }
     }
 
     componentDidMount() {
-        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos(0)});
     }
 
     componentWillUnmount() {
@@ -60,22 +68,26 @@ class Detail extends Component {
         this.props.clearBodegas();
     }
 
-    cargarDatos() {
+    cargarDatos(tab_index = null) {
         const {id} = this.props.match.params;
-        this.props.fetchBodega(id, {callback: this.cargarElementos});
+        this.props.fetchBodega(id, {callback: () => this.cargarElementos(tab_index)});
+    }
+
+    consultaMovimientoInventarioPorFechas() {
+        const {id} = this.props.match.params;
+        const {fecha_inicio_mov_inventario, fecha_final_mov_inventario} = this.state;
+        this.props.fetchMovimientosInventariosDetallesxBodegaxFecha(id, fecha_inicio_mov_inventario, fecha_final_mov_inventario);
     }
 
     render() {
         const {object, movimientos_inventarios_detalles_list, mis_permisos} = this.props;
+        const {fecha_inicio_mov_inventario, fecha_final_mov_inventario} = this.state;
         const permisos = permisosAdapter(mis_permisos, permisos_view);
-
-
         if (!object) {
             return <Typography variant="overline" gutterBottom color="primary">
                 Cargando...
             </Typography>
         }
-
         return (
             <ValidarPermisos can_see={permisos.detail} nombre='detalles de bodega'>
                 <Typography variant="h5" gutterBottom color="primary">
@@ -87,7 +99,7 @@ class Detail extends Component {
                       value={this.state.slideIndex}
                 >
                     <Tab label="Inventario Actual" value={0}/>
-                    <Tab label="Moviemiento Inventario" value={1}/>
+                    <Tab label="Movimiento Inventario" value={1}/>
                 </Tabs>
 
                 {
@@ -106,11 +118,51 @@ class Detail extends Component {
                 }
                 {
                     this.state.slideIndex === 1 &&
-                    <TablaInventarioProducto
-                        data={_.map(_.orderBy(movimientos_inventarios_detalles_list, ['modified'], ['desc']), e => e)}
-                    />
+                    <Fragment>
+                        <div className="row mt-2">
+                            <div className="col-12 col-md-5">
+                                <FormControlLabel
+                                    control={
+                                        <DateTimePicker
+                                            onChange={(e, s) => this.setState({fecha_inicio_mov_inventario: s})}
+                                            time={false}
+                                        />
+                                    }
+                                    label="Fecha Inicial"
+                                    labelPlacement="start"
+                                />
+                            </div>
+                            <div className="col-12 col-md-5">
+                                <FormControlLabel
+                                    control={
+                                        <DateTimePicker
+                                            onChange={(e, s) => this.setState({fecha_final_mov_inventario: s})}
+                                            time={false}
+                                        />
+                                    }
+                                    label="Fecha Final"
+                                    labelPlacement="start"
+                                />
+                            </div>
+                            <div className="col-12 col-md-2">
+                                {
+                                    fecha_inicio_mov_inventario &&
+                                    fecha_final_mov_inventario &&
+                                    <Button
+                                        variant="contained"
+                                        color='primary'
+                                        onClick={() => this.consultaMovimientoInventarioPorFechas()}>
+                                        Consultar
+                                    </Button>
+                                }
+                            </div>
+                        </div>
+                        <TablaInventarioProducto
+                            data={_.map(_.orderBy(movimientos_inventarios_detalles_list, ['modified'], ['desc']), e => e)}
+                        />
+                    </Fragment>
                 }
-                <CargarDatos cargarDatos={this.cargarDatos}/>
+                <CargarDatos cargarDatos={() => this.cargarDatos(this.state.slideIndex)}/>
             </ValidarPermisos>
         )
     }

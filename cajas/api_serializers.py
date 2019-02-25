@@ -10,12 +10,17 @@ from .models import (
 
 class OperacionCajaSerializer(serializers.ModelSerializer):
     tipo_operacion = serializers.CharField(source='concepto.tipo', read_only=True)
+    cuenta_liquidada = serializers.NullBooleanField(read_only=True, source='cuenta.liquidada')
+    cuenta_usuario = serializers.PrimaryKeyRelatedField(source='cuenta.propietario', read_only=True, allow_null=True)
 
     class Meta:
         model = OperacionCaja
         fields = (
             'id',
             'tercero',
+            'cuenta',
+            'cuenta_liquidada',
+            'cuenta_usuario',
             'concepto',
             'grupo_operaciones',
             'punto_venta',

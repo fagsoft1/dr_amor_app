@@ -1,6 +1,7 @@
 import React from "react";
 import {numerosFormato, pesosColombianos} from '../../../../../00_utilities/common'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 
 import ReactTable from "react-table";
 
@@ -51,8 +52,7 @@ class Tabla extends React.Component {
                                 Header: "Movim.",
                                 maxWidth: 60,
                                 Cell: row =>
-                                    <FontAwesomeIcon
-                                        icon={['far', 'eye']}
+                                    <IconButtonTableSee
                                         onClick={() => verMovimientoProducto(row.original.producto)}
                                     />
                             },

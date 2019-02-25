@@ -9,7 +9,6 @@ from rest_framework.response import Response
 from permisos.api_serializers import PermissionSerializer
 from .api_serializers import UsuarioSerializer, LoginUserSerializer, UserSerializer
 from puntos_venta.models import PuntoVenta
-from puntos_venta.api_serializers import PuntoVentaSerializer
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
@@ -114,6 +113,14 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+
+        punto_venta_abierto = PuntoVenta.objects.filter(usuario_actual=user).exclude(id=punto_venta_id)
+
+        if punto_venta_abierto.exists():
+            raise serializers.ValidationError(
+                {'error': [
+                    'Ya tiene el punto de venta %s abierto. Debe cerrarlo primero antes de abrir otro' % punto_venta_abierto.first().nombre]}
+            )
 
         if punto_venta:
             if punto_venta.abierto and not punto_venta.usuario_actual == user:

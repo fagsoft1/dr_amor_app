@@ -15,6 +15,7 @@ class TerceroViewSetMixin(object):
     def get_queryset(self):
         saldo = LiquidacionCuenta.objects.filter(
             cuenta__liquidada=True,
+            cuenta__tipo=1,
             cuenta__propietario_id=OuterRef('usuario_id')
         ).order_by('-pk')
         qs = self.queryset.annotate(

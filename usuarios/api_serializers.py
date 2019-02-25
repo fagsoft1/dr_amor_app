@@ -8,6 +8,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
     imagen_perfil_url = serializers.SerializerMethodField()
     punto_venta_actual = PuntoVentaSerializer(read_only=True)
+    qr_acceso = serializers.CharField(source='tercero.qr_acceso', read_only=True)
 
     def get_imagen_perfil_url(self, obj):
         if hasattr(obj, 'tercero'):
@@ -36,6 +37,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'imagen_perfil_url',
             'tercero',
             'to_string',
+            'qr_acceso',
             'groups'
         ]
         extra_kwargs = {

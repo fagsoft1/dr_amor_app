@@ -151,6 +151,23 @@ export function fetchListGetURLParameters(url, options) {
     createRequest(request, {...options, mensaje_cargando});
 }
 
+
+export function fetchListPostURLParameters(url, method, values, options) {
+    console.log(`%cAPI METODO ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID`, 'color:red', 'color:blue', 'color:green');
+    const mensaje_cargando = `Ejecutando ${method.toUpperCase()} en ${url.toUpperCase()}`;
+    axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    axios_instance.defaults.xsrfCookieName = "csrftoken";
+    const headers = {};
+    if (localStorage.token) {
+        headers["Authorization"] = `Token ${localStorage.token}`;
+        headers["Content-Type"] = 'application/x-www-form-urlencoded;charset=UTF-8';
+    }
+    axios_instance.defaults.headers = headers;
+    const FULL_URL = `${url}/${method}/`;
+    const request = axios_instance.post(FULL_URL, values);
+    createRequest(request, {...options, mensaje_cargando});
+}
+
 export function fetchObject(url, id, options) {
     console.log(`%cFETCH OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
     const mensaje_cargando = `Consultando elemento en ${url.toUpperCase()}`;

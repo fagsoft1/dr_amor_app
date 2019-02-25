@@ -43,6 +43,7 @@ class Form extends Component {
 
         return (
             <MyFormTagModal
+                fullScreen={false}
                 onCancel={onCancel}
                 onSubmit={handleSubmit(onSubmit)}
                 reset={reset}
@@ -105,6 +106,7 @@ class Form extends Component {
                             nombre: h.nombre
                         })
                     })}
+                    filter='contains'
                 />
                 <MyCombobox
                     className="col-12 col-md-6"
@@ -119,6 +121,7 @@ class Form extends Component {
                             nombre: h.nombre
                         })
                     })}
+                    filter='contains'
                 />
 
                 <MyDateTimePickerField

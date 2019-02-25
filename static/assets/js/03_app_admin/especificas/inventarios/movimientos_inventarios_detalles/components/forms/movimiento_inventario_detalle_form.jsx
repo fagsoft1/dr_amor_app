@@ -33,6 +33,7 @@ class Form extends Component {
         } = this.props;
         return (
             <MyFormTagModal
+                fullScreen={false}
                 onCancel={onCancel}
                 onSubmit={handleSubmit((v) => onSubmit({...v, movimiento: movimiento_inventario_object.id}))}
                 reset={reset}
@@ -56,6 +57,7 @@ class Form extends Component {
                             nombre: h.nombre
                         })
                     })}
+                    filter='contains'
                 />
 
                 {
@@ -63,14 +65,14 @@ class Form extends Component {
                     <Fragment>
                         <MyTextFieldSimple
                             nombre='Cantidad de Ingreso'
-                            className='col-12'
+                            className='col-5 col-md-2'
                             name='entra_cantidad'
                         />
                         {
                             movimiento_inventario_object.tipo === 'E' &&
                             < MyTextFieldSimple
                                 nombre='Costo'
-                                className='col-12'
+                                className='col-7 col-md-10'
                                 name='entra_costo'
                             />
                         }

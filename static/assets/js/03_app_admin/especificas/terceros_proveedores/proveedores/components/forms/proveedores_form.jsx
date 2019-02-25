@@ -21,6 +21,7 @@ class Form extends Component {
         } = this.props;
         return (
             <MyFormTagModal
+                fullScreen={false}
                 onCancel={onCancel}
                 onSubmit={handleSubmit((v) => onSubmit({...v, tipo_documento: 'NI', es_proveedor: true}))}
                 reset={reset}

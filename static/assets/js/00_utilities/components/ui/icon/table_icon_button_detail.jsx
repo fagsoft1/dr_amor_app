@@ -5,7 +5,7 @@ import {withStyles} from "@material-ui/core/styles/index";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const IconButtonTableSee = (props) => {
-    const {onClick, classes} = props;
+    const {onClick = null, classes} = props;
     return (
         <div className='text-center'>
             <IconButton
@@ -13,7 +13,11 @@ const IconButtonTableSee = (props) => {
                     margin: 0,
                     padding: 4,
                 }}
-                onClick={onClick}
+                onClick={() => {
+                    if (onClick) {
+                        onClick()
+                    }
+                }}
             >
                 <FontAwesomeIcon
                     className={classes.icono}

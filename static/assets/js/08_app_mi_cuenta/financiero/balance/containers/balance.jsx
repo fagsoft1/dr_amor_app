@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import * as actions from "../../../../01_actions/01_index";
 import {connect} from "react-redux";
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import Dialog from '@material-ui/core/Dialog';
 import ServiciosTabla from '../../ingresos/servicios/components/servicios_ingreso_tabla';
 import PrestamosTabla from '../../egresos/prestamos/components/operacion_caja_egreso_tabla';
-import Grid from '@material-ui/core/Grid';
-
+import ConsumosTiendaTabla from '../../egresos/gasto_tienda/componentes/consumos_tienda_tabla';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import {withStyles} from '@material-ui/core/styles';
+import {pesosColombianos} from "../../../../00_utilities/common";
+import Typography from '@material-ui/core/Typography';
 
 class Balance extends Component {
     componentDidMount() {
@@ -18,7 +19,8 @@ class Balance extends Component {
     }
 
     cargarDatos() {
-        const cargarOperacionesCaja = (tercero_id) => this.props.fetchOperacionesCajas_por_tercero_cuenta_abierta(tercero_id);
+        const cargarComprasTienda = (tercero_id) => this.props.fetchMovimientoIntentariosDetalles_por_tercero_cuenta_abierta(tercero_id);
+        const cargarOperacionesCaja = (tercero_id) => this.props.fetchOperacionesCajas_por_tercero_cuenta_abierta(tercero_id, {callback: () => cargarComprasTienda(tercero_id)});
         const cargarServicios = (tercero_id) => {
             if (tercero_id) {
                 this.props.fetchServicios_por_tercero_cuenta_abierta(
@@ -31,25 +33,84 @@ class Balance extends Component {
     }
 
     render() {
-        const {servicios, operaciones_caja} = this.props;
-        return <Grid container spacing={24}>
+        const {mi_cuenta, classes} = this.props;
+        let {movimientos_inventarios_detalles, servicios, operaciones_caja} = this.props;
+        movimientos_inventarios_detalles = mi_cuenta ? _.pickBy(
+            movimientos_inventarios_detalles,
+            e => (
+                e.cuenta_usuario === mi_cuenta.id &&
+                e.cuenta_liquidada === false &&
+                e.cuenta_tipo === 1
+            )
+        ) : null;
+        servicios = mi_cuenta ? _.pickBy(
+            servicios,
+            e => (
+                e.cuenta_usuario === mi_cuenta.id &&
+                e.cuenta_liquidada === false &&
+                !e.anulado &&
+                e.cuenta_tipo === 1
+            )
+        ) : null;
+        operaciones_caja = mi_cuenta ? _.pickBy(
+            operaciones_caja,
+            e => (e.cuenta_usuario === mi_cuenta.id &&
+                e.cuenta_liquidada === false &&
+                e.tipo_operacion === 'E'
+            )
+        ) : null;
+
+        const valor_total_servicios = _.sumBy(_.map(servicios), e => parseFloat(e.valor_servicio));
+        const valor_total_consumo_tienda = _.sumBy(_.map(movimientos_inventarios_detalles, e => e), v => parseFloat(v.precio_venta_total));
+        const valor_total_prestamos = _.sumBy(_.map(operaciones_caja, e => e), v => parseFloat(v.valor));
+        const valor_total = valor_total_prestamos + valor_total_servicios + valor_total_consumo_tienda;
+
+        return <div className={classes.root}>
             {
                 _.size(servicios) > 0 &&
-                <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <ServiciosTabla
-                        servicios={servicios}
-                    />
-                </Grid>
+                <ServiciosTabla
+                    classes={classes}
+                    servicios={servicios}
+                    valor_total_servicios={valor_total_servicios}
+                />
             }
             {
                 _.size(operaciones_caja) > 0 &&
-                <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <PrestamosTabla
-                        operaciones_caja={operaciones_caja}
-                    />
-                </Grid>
+                <PrestamosTabla
+                    classes={classes}
+                    operaciones_caja={operaciones_caja}
+                    valor_total_prestamos={valor_total_prestamos}
+                />
             }
-        </Grid>
+            {
+                _.size(movimientos_inventarios_detalles) > 0 &&
+                <ConsumosTiendaTabla
+                    classes={classes}
+                    consumos_tienda={movimientos_inventarios_detalles}
+                    valor_total_consumo_tienda={valor_total_consumo_tienda}
+                />
+            }
+            {
+                <ExpansionPanel>
+                    <ExpansionPanelSummary
+                        expandIcon={null}>
+                        <div className="row" style={{width: '100%'}}>
+                            <div className="col-9">
+                                <Typography className={classes.heading}>
+                                    Total
+                                </Typography>
+
+                            </div>
+                            <div className="col-3 text-right">
+                                <Typography className={classes.heading}>
+                                    {pesosColombianos(valor_total)}
+                                </Typography>
+                            </div>
+                        </div>
+                    </ExpansionPanelSummary>
+                </ExpansionPanel>
+            }
+        </div>
     }
 }
 
@@ -57,8 +118,22 @@ function mapPropsToState(state, ownProps) {
     return {
         operaciones_caja: state.operaciones_caja,
         servicios: state.servicios,
-        mi_cuenta: state.mi_cuenta
+        mi_cuenta: state.mi_cuenta,
+        movimientos_inventarios_detalles: state.movimientos_inventarios_detalles
     }
 }
 
-export default connect(mapPropsToState, actions)(Balance)
+const styles = theme => ({
+    root: {
+        width: '100%',
+    },
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+        fontWeight: theme.typography.fontWeightRegular,
+    },
+    table: {
+        minWidth: 700,
+    },
+});
+
+export default withStyles(styles)(connect(mapPropsToState, actions)(Balance))

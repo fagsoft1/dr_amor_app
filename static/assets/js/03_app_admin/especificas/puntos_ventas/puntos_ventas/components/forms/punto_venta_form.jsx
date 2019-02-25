@@ -59,6 +59,7 @@ class Form extends Component {
                             nombre: h.nombre
                         })
                     })}
+                    filter='contains'
                 />
 
                 <MyDropdownList

@@ -58,6 +58,7 @@ export default class DatosCedulaForm extends Component {
                     textField='nombre'
                     valuesField='id'
                     placeholder='Tipo Documento...'
+                    filter='contains'
 
                 />
                 <MyTextFieldSimple
@@ -80,7 +81,7 @@ export default class DatosCedulaForm extends Component {
                     textField='nombre'
                     valuesField='id'
                     placeholder='Grupo Sanguineo...'
-
+                    filter='contains'
                 />
                 <div className="col-12">
                     <div className="row">

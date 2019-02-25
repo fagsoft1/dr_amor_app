@@ -1,18 +1,18 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom';
 import Loading from '../00_utilities/components/system/loading_overlay';
-import AppBarMenu from '../00_utilities/components/ui/menu/app_bar';
+import DrawerMenu from '../00_utilities/components/ui/drawer/drawer_menu';
 
 import AccesoList from "./acceso/containers/acceso_list_container";
 
 const AdminApp = (props) => {
     return (
         <Loading>
-            <AppBarMenu titulo='Acceso'>
+            <DrawerMenu lista_menu={null} titulo='Admin'>
                 <Switch>
                     <Route exact path='/app/acceso/' component={AccesoList}/>
                 </Switch>
-            </AppBarMenu>
+            </DrawerMenu>
         </Loading>
     )
 };
