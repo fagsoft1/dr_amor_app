@@ -1,5 +1,4 @@
 import React from "react";
-import Checkbox from '@material-ui/core/Checkbox';
 import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
 import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
@@ -31,7 +30,8 @@ class Tabla extends React.Component {
                             {
                                 Header: "Nombre",
                                 accessor: "full_name",
-                                maxWidth: 250,
+                                minWidth: 250,
+                                show: permisos_object.detail_privado,
                                 filterable: true,
                                 filterMethod: (filter, row) => {
                                     return row[filter.id].includes(filter.value.toUpperCase())
@@ -58,7 +58,8 @@ class Tabla extends React.Component {
                             {
                                 Header: "Identificación",
                                 accessor: "identificacion",
-                                maxWidth: 200,
+                                show: permisos_object.detail_privado,
+                                minWidth: 100,
                                 filterable: true,
                                 filterMethod: (filter, row) => {
                                     return row[filter.id].includes(filter.value.toUpperCase())

@@ -20,17 +20,7 @@ export const cambiarContrasenaUsuario = (id, password_old, password, password_2,
         params.append('password', password);
         params.append('password_2', password_2);
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'cambiar_contrasena', params, options)
-    }
-};
-
-export const cambiarPinUsuario = (id, pin, password, options_action = {}) => {
-    return (dispatch) => {
-        let params = new URLSearchParams();
-        params.append('pin', pin);
-        params.append('password', password);
-        const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'cambiar_pin', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'cambiar_contrasena', params, options)
     }
 };
 
@@ -39,7 +29,7 @@ export const addPermisoUsuario = (id, permiso_id, options_action = {}) => {
         let params = new URLSearchParams();
         params.append('id_permiso', permiso_id);
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'adicionar_permiso', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'adicionar_permiso', params, options)
     }
 };
 
@@ -48,7 +38,7 @@ export const addGrupoUsuario = (id, grupo_id, options_action = {}) => {
         let params = new URLSearchParams();
         params.append('id_grupo', grupo_id);
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'adicionar_grupo', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'adicionar_grupo', params, options)
     }
 };
 
@@ -62,7 +52,7 @@ export const fetchMiCuenta = (options_action = {}) => {
             ...options_action,
             dispatch_method: dispatch,
         };
-        fetchListGet(`${current_url_api}/mi_cuenta`, options);
+        return fetchListGet(`${current_url_api}/mi_cuenta`, options);
     }
 };
 
@@ -73,7 +63,7 @@ export const fetchUsuario = (id, options_action = {}) => {
         };
 
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        fetchObject(current_url_api, id, options);
+        return fetchObject(current_url_api, id, options);
     }
 };
 export const clearUsuarios = () => {
@@ -88,7 +78,7 @@ export const createUsuario = (values, options_action = {}) => {
             dispatch({type: TYPES.create, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        createObject(current_url_api, values, options);
+        return createObject(current_url_api, values, options);
     }
 };
 
@@ -98,7 +88,7 @@ export const deleteUsuario = (id, options_action = {}) => {
             dispatch({type: TYPES.delete, payload: id})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        deleteObject(current_url_api, id, options);
+        return deleteObject(current_url_api, id, options);
     }
 };
 
@@ -108,7 +98,7 @@ export const updateUsuario = (id, values, options_action = {}) => {
             dispatch({type: TYPES.update, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        updateObject(current_url_api, id, values, options);
+        return updateObject(current_url_api, id, values, options);
     }
 };
 
@@ -124,6 +114,6 @@ export const fetchUsuarios = (options_action = {}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(current_url_api, options);
+        return fetchListGet(current_url_api, options);
     }
 };

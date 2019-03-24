@@ -19,6 +19,16 @@ export function refreshDeleteTercero(id) {
     return baseWS(TYPES.delete, id)
 }
 
+export const cambiarPinTercero = (id, pin, password, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('pin', pin);
+        params.append('password', password);
+        const options = {...options_action, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'cambiar_pin', params, options)
+    }
+};
+
 export const fetchTerceroxQr = (codigo_qr, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
@@ -31,7 +41,7 @@ export const fetchTerceroxQr = (codigo_qr, options_action = {}) => {
         };
         let params = new URLSearchParams();
         params.append('codigo_qr', codigo_qr);
-        fetchListPostURLParameters(current_url_api, 'buscar_por_qr', params, options);
+        return fetchListPostURLParameters(current_url_api, 'buscar_por_qr', params, options);
     }
 };
 
@@ -41,7 +51,7 @@ export const registrarIngresoTercero = (id, pin, options_action = {}) => {
         let params = new URLSearchParams();
         params.append('pin', pin);
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'registrar_ingreso', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'registrar_ingreso', params, options)
     }
 };
 
@@ -50,14 +60,14 @@ export const registrarSalidaTercero = (id, pin, options_action = {}) => {
         let params = new URLSearchParams();
         params.append('pin', pin);
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'registrar_salida', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'registrar_salida', params, options)
     }
 };
 
 export const generaQrTercero = (id, options_action = {}) => {
     return (dispatch) => {
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPost(current_url_api, id, 'generar_qr', options)
+        return callApiMethodPost(current_url_api, id, 'generar_qr', options)
     }
 };
 
@@ -66,7 +76,7 @@ export const liquidarCuentaTercero = (id, pago, options_action = {}) => {
         let params = new URLSearchParams();
         params.append('pago', JSON.stringify(pago));
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'liquidar_cuenta', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'liquidar_cuenta', params, options)
     }
 };
 
@@ -82,7 +92,7 @@ export const fetchTercerosAusentes = (options_action = {}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(`${current_url_api}/listar_ausentes`, options);
+        return fetchListGet(`${current_url_api}/listar_ausentes`, options);
     }
 };
 
@@ -98,7 +108,7 @@ export const fetchTercerosPresentes = (options_action = {}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(`${current_url_api}/listar_presentes`, options);
+        return fetchListGet(`${current_url_api}/listar_presentes`, options);
     }
 };
 
@@ -114,7 +124,7 @@ export const fetchTerceros = (options_action = {}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(current_url_api, options);
+        return fetchListGet(current_url_api, options);
     }
 };
 
@@ -124,7 +134,7 @@ export const fetchTercero = (id, options_action = {}) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        fetchObject(current_url_api, id, options);
+        return fetchObject(current_url_api, id, options);
     }
 };
 export const clearTerceros = () => {
@@ -139,6 +149,6 @@ export const updateTercero = (id, values, options_action = {}) => {
             dispatch({type: TYPES.update, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        updateObject(current_url_api, id, values, options);
+        return updateObject(current_url_api, id, values, options);
     }
 };

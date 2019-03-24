@@ -6,10 +6,11 @@ from django.conf.urls.static import static
 
 from .api_urls import router
 from index.views import IndexView
+from knox.views import LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('usuarios.urls')),
+    path('api/auth/logout', LogoutView.as_view()),
     path('api/', include(router.urls)),
     url(r'^app/*', IndexView.as_view()),
     path('', include('index.urls')),

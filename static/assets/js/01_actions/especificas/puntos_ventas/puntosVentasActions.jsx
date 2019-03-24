@@ -19,7 +19,7 @@ export const efectuarVentaTiendaEnPuntoVenta = (id, qr_codigo, usuario_id, tipo_
         params.append('usuario_id', usuario_id);
         params.append('tipo_venta', tipo_venta);
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'efectuar_venta', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'efectuar_venta', params, options)
     }
 };
 
@@ -28,7 +28,7 @@ export const hacerEntregaEfectivoCajaPuntoVenta = (id, cierre, options_action = 
         let params = new URLSearchParams();
         params.append('cierre', JSON.stringify(cierre));
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'hacer_entrega_efectivo_caja', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'hacer_entrega_efectivo_caja', params, options)
     }
 };
 
@@ -45,7 +45,7 @@ export const fetchPuntosVentas_por_usuario_username = (username, options_action 
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(`${current_url_api}/listar_por_usuario_username/?username=${username}`, options);
+        return fetchListGetURLParameters(`${current_url_api}/listar_por_usuario_username/?username=${username}`, options);
     }
 };
 
@@ -61,7 +61,7 @@ export const fetchPuntosVentas_por_colaborador = (colaborador_id, options_action
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(`${current_url_api}/listar_por_colaborador/?colaborador_id=${colaborador_id}`, options);
+        return fetchListGetURLParameters(`${current_url_api}/listar_por_colaborador/?colaborador_id=${colaborador_id}`, options);
     }
 };
 
@@ -71,7 +71,7 @@ export const createPuntoVenta = (values, options_action = {}) => {
             dispatch({type: TYPES.create, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        createObject(current_url_api, values, options);
+        return createObject(current_url_api, values, options);
     }
 };
 export const deletePuntoVenta = (id, options_action = {}) => {
@@ -80,7 +80,7 @@ export const deletePuntoVenta = (id, options_action = {}) => {
             dispatch({type: TYPES.delete, payload: id})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        deleteObject(current_url_api, id, options);
+        return deleteObject(current_url_api, id, options);
     }
 };
 export const fetchPuntosVentas = (options_action = {}) => {
@@ -95,7 +95,7 @@ export const fetchPuntosVentas = (options_action = {}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(current_url_api, options);
+        return fetchListGet(current_url_api, options);
     }
 };
 
@@ -105,7 +105,7 @@ export const fetchPuntoVenta = (id, options_action = {}) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        fetchObject(current_url_api, id, options);
+        return fetchObject(current_url_api, id, options);
     }
 };
 export const clearPuntosVentas = () => {
@@ -120,6 +120,6 @@ export const updatePuntoVenta = (id, values, options_action = {}) => {
             dispatch({type: TYPES.update, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        updateObject(current_url_api, id, values, options);
+        return updateObject(current_url_api, id, values, options);
     }
 };

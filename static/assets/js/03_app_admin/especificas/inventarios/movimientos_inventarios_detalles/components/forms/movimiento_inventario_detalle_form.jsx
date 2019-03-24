@@ -29,7 +29,9 @@ class Form extends Component {
             modal_open,
             singular_name,
             movimiento_inventario_object,
-            productos_list
+            productos_list,
+            error,
+            object
         } = this.props;
         return (
             <MyFormTagModal
@@ -42,6 +44,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
+                error={error}
             >
 
                 <MyCombobox
@@ -61,39 +64,28 @@ class Form extends Component {
                 />
 
                 {
-                    (movimiento_inventario_object.tipo === 'E' || movimiento_inventario_object.tipo === 'EA') &&
+                    (movimiento_inventario_object.tipo === 'E') &&
                     <Fragment>
                         <MyTextFieldSimple
                             nombre='Cantidad de Ingreso'
                             className='col-5 col-md-2'
                             name='entra_cantidad'
                         />
-                        {
-                            movimiento_inventario_object.tipo === 'E' &&
-                            < MyTextFieldSimple
-                                nombre='Costo'
-                                className='col-7 col-md-10'
-                                name='entra_costo'
-                            />
-                        }
+                        < MyTextFieldSimple
+                            nombre='Costo'
+                            className='col-7 col-md-10'
+                            name='entra_costo'
+                        />
                     </Fragment>
                 }
                 {
-                    (movimiento_inventario_object.tipo === 'S' || movimiento_inventario_object.tipo === 'SA') &&
+                    (movimiento_inventario_object.tipo === 'S') &&
                     <Fragment>
                         <MyTextFieldSimple
                             nombre='Cantidad de Salida'
                             className='col-12'
                             name='sale_cantidad'
                         />
-                        {
-                            movimiento_inventario_object.tipo === 'S' &&
-                            < MyTextFieldSimple
-                                nombre='Costo'
-                                className='col-12'
-                                name='sale_costo'
-                            />
-                        }
                     </Fragment>
                 }
 

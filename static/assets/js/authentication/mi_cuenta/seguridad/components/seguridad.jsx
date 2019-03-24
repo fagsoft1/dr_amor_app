@@ -14,7 +14,8 @@ class Seguridad extends Component {
 
     onCambiarPin(values, callback) {
         const {mi_cuenta} = this.props;
-        this.props.cambiarPinUsuario(mi_cuenta.id, values.pin, values.password, {callback});
+        alert('Organizar el metodo cambiar pin ahora con tercero y no usuario, sacar el tercero de mi cuenta')
+        this.props.cambiarPinTercero(mi_cuenta.id, values.pin, values.password, {callback});
     }
 
     onCambiarPassword(values, callback) {

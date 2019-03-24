@@ -21,6 +21,7 @@ class Form extends Component {
             empresas_list,
             categorias_dos_list,
             unidades_list,
+            error,
         } = this.props;
         return (
             <MyFormTagModal
@@ -33,6 +34,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
+                error={error}
             >
                 <MyTextFieldSimple
                     className="col-12 col-md-9"

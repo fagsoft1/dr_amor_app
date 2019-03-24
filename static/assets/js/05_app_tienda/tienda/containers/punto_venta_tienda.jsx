@@ -27,15 +27,18 @@ class PuntoVentaTienda extends Component {
     }
 
     cargarDatos() {
-        const {id} = this.props.match.params;
-        this.props.fetchMovimientosInventariosDetallesSaldosxPDV(id);
+        const cargarSaldosInventario = () => {
+            const {mi_cuenta: {punto_venta_actual}} = this.props;
+            this.props.fetchMovimientosInventariosDetallesSaldosxPDV(punto_venta_actual.id)
+        };
+        this.props.fetchMiCuenta({callback: cargarSaldosInventario});
     }
 
     efectuarVenta(qr_codigo, id_usuario, tipo_venta) {
         const {pedido_actual} = this.state;
-        const {id} = this.props.match.params;
+        const {mi_cuenta: {punto_venta_actual}} = this.props;
         this.props.efectuarVentaTiendaEnPuntoVenta(
-            id,
+            punto_venta_actual.id,
             qr_codigo,
             id_usuario,
             tipo_venta,
@@ -218,6 +221,7 @@ function mapPropsToState(state, ownProps) {
     return {
         mi_cuenta: state.mi_cuenta,
         inventarios_bodega_origen_list: state.movimientos_inventarios_detalles,
+        traslados_inventarios: state.traslados_inventarios
     }
 }
 

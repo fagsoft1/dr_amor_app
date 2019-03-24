@@ -7,6 +7,7 @@ from .models import Servicio
 
 class ServicioSerializer(serializers.ModelSerializer):
     acompanante = serializers.PrimaryKeyRelatedField(source='cuenta.propietario.tercero.id', read_only=True)
+    empresa = serializers.IntegerField(source='habitacion.empresa.id', read_only=True)
     acompanante_nombre = serializers.CharField(source='cuenta.propietario.tercero.full_name_proxy', read_only=True)
     habitacion_nombre = serializers.CharField(source='habitacion.nombre', read_only=True)
     habitacion = serializers.PrimaryKeyRelatedField(source='habitacion.id', read_only=True)

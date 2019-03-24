@@ -14,12 +14,14 @@ class RegistroOperacionForm extends Component {
         const cargarColaboradores = () => this.props.fetchColaboradores({callback: cargarProveedores});
         this.props.fetchAcompanantesPresentes({callback: cargarColaboradores});
     }
-    componentWillUnmount(){
+
+    componentWillUnmount() {
         this.props.clearProveedores();
         this.props.clearAcompanantes();
         this.props.clearColaboradores();
         this.props.clearConceptosOperacionesCajas();
     }
+
     render() {
         const {
             conceptos_operaciones_caja,
@@ -34,6 +36,7 @@ class RegistroOperacionForm extends Component {
             mi_cuenta: {punto_venta_actual},
             cerrarModal,
             form_values,
+            error,
         } = this.props;
 
         const tipos_conceptos = _.unionBy(
@@ -93,6 +96,7 @@ class RegistroOperacionForm extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type='Operación Caja'
+                error={error}
             >
                 <div className="row p-1">
                     {

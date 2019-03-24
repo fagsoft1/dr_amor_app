@@ -42,7 +42,7 @@ class ListadoElementos extends Component {
         let index = value !== null ? value : this.state.slideIndex;
 
         if (index === 0) {
-            const cargarCategorias = this.props.fetchCategoriasAcompanantes();
+            const cargarCategorias =()=> this.props.fetchCategoriasAcompanantes();
             this.props.fetchAcompanantes({callback: cargarCategorias});
         } else if (index === 1) {
             this.props.fetchCategoriasAcompanantes();

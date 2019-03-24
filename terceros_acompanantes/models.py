@@ -8,7 +8,6 @@ class CategoriaAcompanante(models.Model):
     class Meta:
         permissions = [
             ['list_categoriaacompanante', 'Puede listar categorias acompanantes'],
-            ['detail_categoriaacompanante', 'Puede ver detalles categoria acompanante'],
         ]
 
 

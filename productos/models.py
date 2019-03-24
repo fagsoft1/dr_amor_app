@@ -1,5 +1,8 @@
 from django.db import models
+from model_utils.models import TimeStampedModel
+
 from empresas.models import Empresa
+from terceros.models import Cuenta
 
 
 class UnidadProducto(models.Model):
@@ -11,30 +14,30 @@ class UnidadProducto(models.Model):
         ]
 
 
-class Categoria(models.Model):
+class CategoriaProducto(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
-    codigo = models.CharField(max_length=3, unique=True)
+    codigo = models.CharField(max_length=10, unique=True)
 
     class Meta:
         permissions = [
-            ['list_categoria', 'Puede listar categorias productos'],
+            ['list_categoriaproducto', 'Puede listar categorias productos'],
         ]
 
 
-class CategoriaDos(models.Model):
-    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, related_name='categorias_dos')
+class CategoriaDosProducto(models.Model):
+    categoria = models.ForeignKey(CategoriaProducto, on_delete=models.PROTECT, related_name='categorias_dos')
     nombre = models.CharField(max_length=200, unique=True)
-    codigo = models.CharField(max_length=3, unique=True)
+    codigo = models.CharField(max_length=10, unique=True)
 
     class Meta:
         permissions = [
-            ['list_categoriados', 'Puede listar categorias dos productos'],
+            ['list_categoriadosproducto', 'Puede listar categorias dos productos'],
         ]
 
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
-    categoria_dos = models.ForeignKey(CategoriaDos, on_delete=models.PROTECT, related_name='productos')
+    categoria_dos = models.ForeignKey(CategoriaDosProducto, on_delete=models.PROTECT, related_name='productos')
     unidad_producto = models.ForeignKey(UnidadProducto, on_delete=models.PROTECT, related_name='productos')
     empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT, related_name='productos')
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)

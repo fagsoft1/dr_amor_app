@@ -10,7 +10,6 @@ from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from weasyprint import CSS, HTML
 
-from dr_amor_app import settings
 from .api_serializers import (
     BilleteMonedaSerializer,
     ArqueoCajaSerializer,
@@ -24,7 +23,6 @@ from .models import (
     ArqueoCaja,
     EfectivoEntregaDenominacion,
     BaseDisponibleDenominacion,
-    MovimientoDineroPDV,
 )
 
 
@@ -42,18 +40,19 @@ class OperacionCajaViewSet(viewsets.ModelViewSet):
                 operacion.valor *= -1
                 tipo_dos_movimiento = 'OPE_CAJ_EGR'
             operacion.save()
-        movimiento = MovimientoDineroPDV.objects.create(
-            tipo=operacion.concepto.tipo,
-            tipo_dos=tipo_dos_movimiento,
-            punto_venta_id=operacion.punto_venta_id,
-            concepto=operacion.descripcion,
-            creado_por=self.request.user,
-            valor_tarjeta=0,
-            valor_efectivo=operacion.valor,
-            nro_autorizacion=None,
-            franquicia=None
-        )
-        operacion.movimiento_dinero = movimiento
+        # TODO: Hacer lo correspondiente al registro en el nuevo TransaccionCaja
+        # movimiento = MovimientoDineroPDV.objects.create(
+        #     tipo=operacion.concepto.tipo,
+        #     tipo_dos=tipo_dos_movimiento,
+        #     punto_venta_id=operacion.punto_venta_id,
+        #     concepto=operacion.descripcion,
+        #     creado_por=self.request.user,
+        #     valor_tarjeta=0,
+        #     valor_efectivo=operacion.valor,
+        #     nro_autorizacion=None,
+        #     franquicia=None
+        # )
+        # operacion.movimiento_dinero = movimiento
         operacion.save()
 
     @list_route(methods=['get'])
@@ -89,106 +88,106 @@ class ArqueoCajaViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = ArqueoCajaSerializer
 
-    def get_queryset(self):
-        mo_dinero = MovimientoDineroPDV.objects.values(
-            'arqueo_caja_id'
-        ).annotate(
-            mo_nro_pagos_tarjetas=Sum(
-                Case(
-                    When(
-                        valor_tarjeta__gt=0,
-                        then=Value(1)
-                    ),
-                    default=Value(0),
-                    output_field=DecimalField(max_digits=10, decimal_places=2)
-                )
-            ),
-            total_ingreso_efectivo=Sum(
-                Case(
-                    When(tipo='I', then=Coalesce(F('valor_efectivo'), 0)),
-                    default=Value(0),
-                    output_field=DecimalField(max_digits=10, decimal_places=2)
-                )
-            ),
-            total_egreso_efectivo=Coalesce(
-                Sum(
-                    Case(
-                        When(tipo='E', then=Coalesce(F('valor_efectivo'), 0)),
-                        default=Value(0),
-                        output_field=DecimalField(max_digits=10, decimal_places=2)
-                    )
-                ), 0
-            ),
-            total_ingreso_tarjeta=Sum(
-                Case(
-                    When(
-                        tipo='I',
-                        then=Coalesce(F('valor_tarjeta'), 0)),
-                    default=Value(0),
-                    output_field=DecimalField(max_digits=10, decimal_places=2)
-                )
-            ),
-            total=Sum(Coalesce(F('valor_tarjeta'), 0) + Coalesce(F('valor_efectivo'), 0)),
-        ).filter(
-            arqueo_caja_id=OuterRef('id')
-        )
-
-        efectivo = EfectivoEntregaDenominacion.objects.values(
-            'arqueo_caja_id'
-        ).annotate(
-            total=ExpressionWrapper(
-                Sum(F('valor') * F('cantidad')),
-                output_field=DecimalField(max_digits=10, decimal_places=2)
-            )
-        ).filter(
-            arqueo_caja_id=OuterRef('id')
-        )
-        base = BaseDisponibleDenominacion.objects.values(
-            'arqueo_caja_id'
-        ).annotate(
-            total=ExpressionWrapper(
-                Sum(F('valor') * F('cantidad')),
-                output_field=DecimalField(max_digits=10, decimal_places=2)
-            )
-        ).filter(
-            arqueo_caja_id=OuterRef('id')
-        )
-
-        qs = self.queryset.annotate(
-            valor_entrega_dolares=ExpressionWrapper(
-                Sum(F('dolares') * F('dolares_tasa')),
-                output_field=DecimalField(max_digits=10, decimal_places=2)
-            ),
-            valor_entrega_efectivo=Subquery(efectivo.values('total')),
-            valor_entrega_base_dia_siguiente=Subquery(base.values('total')),
-            valor_entrega_total=ExpressionWrapper(
-                (
-                        Subquery(efectivo.values('total')) +
-                        Subquery(base.values('total')) +
-                        Sum(Coalesce(F('dolares') * F('dolares_tasa'), 0)) +
-                        Sum(Coalesce('valor_tarjeta', 0))
-                ),
-                output_field=DecimalField(max_digits=10, decimal_places=2)
-            ),
-
-            valor_mo_egresos_efectivo=Subquery(mo_dinero.values('total_egreso_efectivo')),
-            valor_mo_ingreso_efectivo=Subquery(mo_dinero.values('total_ingreso_efectivo')),
-            valor_mo_ingreso_tarjeta=Subquery(mo_dinero.values('total_ingreso_tarjeta')),
-            valor_mo_total=Subquery(mo_dinero.values('total')),
-            mo_nro_pagos_tarjetas=Subquery(mo_dinero.values('mo_nro_pagos_tarjetas')),
-            cuadre=ExpressionWrapper(
-                (
-                        Subquery(efectivo.values('total')) +
-                        Subquery(base.values('total')) +
-                        Sum(Coalesce(F('dolares') * F('dolares_tasa'), 0)) +
-                        Sum(Coalesce('valor_tarjeta', 0)) -
-                        Subquery(mo_dinero.values('total'))
-                ),
-                output_field=DecimalField(max_digits=10, decimal_places=2)
-            ),
-
-        ).all()
-        return qs
+    # def get_queryset(self):
+    #     mo_dinero = MovimientoDineroPDV.objects.values(
+    #         'arqueo_caja_id'
+    #     ).annotate(
+    #         mo_nro_pagos_tarjetas=Sum(
+    #             Case(
+    #                 When(
+    #                     valor_tarjeta__gt=0,
+    #                     then=Value(1)
+    #                 ),
+    #                 default=Value(0),
+    #                 output_field=DecimalField(max_digits=10, decimal_places=2)
+    #             )
+    #         ),
+    #         total_ingreso_efectivo=Sum(
+    #             Case(
+    #                 When(tipo='I', then=Coalesce(F('valor_efectivo'), 0)),
+    #                 default=Value(0),
+    #                 output_field=DecimalField(max_digits=10, decimal_places=2)
+    #             )
+    #         ),
+    #         total_egreso_efectivo=Coalesce(
+    #             Sum(
+    #                 Case(
+    #                     When(tipo='E', then=Coalesce(F('valor_efectivo'), 0)),
+    #                     default=Value(0),
+    #                     output_field=DecimalField(max_digits=10, decimal_places=2)
+    #                 )
+    #             ), 0
+    #         ),
+    #         total_ingreso_tarjeta=Sum(
+    #             Case(
+    #                 When(
+    #                     tipo='I',
+    #                     then=Coalesce(F('valor_tarjeta'), 0)),
+    #                 default=Value(0),
+    #                 output_field=DecimalField(max_digits=10, decimal_places=2)
+    #             )
+    #         ),
+    #         total=Sum(Coalesce(F('valor_tarjeta'), 0) + Coalesce(F('valor_efectivo'), 0)),
+    #     ).filter(
+    #         arqueo_caja_id=OuterRef('id')
+    #     )
+    #
+    #     efectivo = EfectivoEntregaDenominacion.objects.values(
+    #         'arqueo_caja_id'
+    #     ).annotate(
+    #         total=ExpressionWrapper(
+    #             Sum(F('valor') * F('cantidad')),
+    #             output_field=DecimalField(max_digits=10, decimal_places=2)
+    #         )
+    #     ).filter(
+    #         arqueo_caja_id=OuterRef('id')
+    #     )
+    #     base = BaseDisponibleDenominacion.objects.values(
+    #         'arqueo_caja_id'
+    #     ).annotate(
+    #         total=ExpressionWrapper(
+    #             Sum(F('valor') * F('cantidad')),
+    #             output_field=DecimalField(max_digits=10, decimal_places=2)
+    #         )
+    #     ).filter(
+    #         arqueo_caja_id=OuterRef('id')
+    #     )
+    #
+    #     qs = self.queryset.annotate(
+    #         valor_entrega_dolares=ExpressionWrapper(
+    #             Sum(F('dolares') * F('dolares_tasa')),
+    #             output_field=DecimalField(max_digits=10, decimal_places=2)
+    #         ),
+    #         valor_entrega_efectivo=Subquery(efectivo.values('total')),
+    #         valor_entrega_base_dia_siguiente=Subquery(base.values('total')),
+    #         valor_entrega_total=ExpressionWrapper(
+    #             (
+    #                     Subquery(efectivo.values('total')) +
+    #                     Subquery(base.values('total')) +
+    #                     Sum(Coalesce(F('dolares') * F('dolares_tasa'), 0)) +
+    #                     Sum(Coalesce('valor_tarjeta', 0))
+    #             ),
+    #             output_field=DecimalField(max_digits=10, decimal_places=2)
+    #         ),
+    #
+    #         valor_mo_egresos_efectivo=Subquery(mo_dinero.values('total_egreso_efectivo')),
+    #         valor_mo_ingreso_efectivo=Subquery(mo_dinero.values('total_ingreso_efectivo')),
+    #         valor_mo_ingreso_tarjeta=Subquery(mo_dinero.values('total_ingreso_tarjeta')),
+    #         valor_mo_total=Subquery(mo_dinero.values('total')),
+    #         mo_nro_pagos_tarjetas=Subquery(mo_dinero.values('mo_nro_pagos_tarjetas')),
+    #         cuadre=ExpressionWrapper(
+    #             (
+    #                     Subquery(efectivo.values('total')) +
+    #                     Subquery(base.values('total')) +
+    #                     Sum(Coalesce(F('dolares') * F('dolares_tasa'), 0)) +
+    #                     Sum(Coalesce('valor_tarjeta', 0)) -
+    #                     Subquery(mo_dinero.values('total'))
+    #             ),
+    #             output_field=DecimalField(max_digits=10, decimal_places=2)
+    #         ),
+    #
+    #     ).all()
+    #     return qs
 
     @detail_route(methods=['post'])
     def imprimir_entrega(self, request, pk=None):
@@ -295,5 +294,5 @@ class ArqueoCajaViewSet(viewsets.ModelViewSet):
             msg.send()
         except Exception as e:
             raise serializers.ValidationError(
-                'Se há presentado un error al intentar enviar el correo, envío fallido: %s' % e)
+                {'_error': 'Se há presentado un error al intentar enviar el correo, envío fallido: %s' % e})
         return Response({'resultado': 'ok'})

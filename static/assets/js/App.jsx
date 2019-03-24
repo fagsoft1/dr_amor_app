@@ -28,7 +28,7 @@ library.add(far);
 import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
 
 import indigo from '@material-ui/core/colors/indigo';
-import orange from '@material-ui/core/colors/orange';
+import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
 
 const theme = createMuiTheme({
@@ -51,7 +51,7 @@ const theme = createMuiTheme({
     palette: {
         primary: green,
         secondary: indigo,
-        error: orange,
+        error: red,
         // Used by `getContrastText()` to maximize the contrast between the background and
         // the text.
         contrastThreshold: 3,

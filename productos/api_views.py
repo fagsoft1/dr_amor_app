@@ -4,39 +4,26 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
 from .api_serializers import CategoriaSerializer, CategoriaDosSerializer, ProductoSerializer, UnidadProductoSerializer
-from .models import Categoria, CategoriaDos, Producto, UnidadProducto
+from .models import CategoriaProducto, CategoriaDosProducto, Producto, UnidadProducto
+from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
 
 
 class CategoriaViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Categoria.objects.all()
+    permission_classes = [DjangoModelPermissionsFull]
+    queryset = CategoriaProducto.objects.all()
     serializer_class = CategoriaSerializer
-
-    def perform_destroy(self, instance):
-        if not instance.categorias_dos.exists():
-            super().perform_destroy(instance)
-        else:
-            content = {'error': ['No se puede eliminar, hay productos con esta categoría']}
-            raise serializers.ValidationError(content)
 
 
 class CategoriaDosViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = CategoriaDos.objects.select_related(
+    permission_classes = [DjangoModelPermissionsFull]
+    queryset = CategoriaDosProducto.objects.select_related(
         'categoria'
     ).all()
     serializer_class = CategoriaDosSerializer
 
-    def perform_destroy(self, instance):
-        if not instance.productos.exists():
-            super().perform_destroy(instance)
-        else:
-            content = {'error': ['No se puede eliminar, hay productos con esta categoría']}
-            raise serializers.ValidationError(content)
-
 
 class ProductoViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsFull]
     queryset = Producto.objects.select_related(
         'categoria_dos__categoria',
         'categoria_dos',
@@ -62,13 +49,6 @@ class ProductoViewSet(viewsets.ModelViewSet):
 
 
 class UnidadProductoViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsFull]
     queryset = UnidadProducto.objects.all()
     serializer_class = UnidadProductoSerializer
-
-    def perform_destroy(self, instance):
-        if not instance.productos.exists():
-            super().perform_destroy(instance)
-        else:
-            content = {'error': ['No se puede eliminar, hay productos con esta categoría']}
-            raise serializers.ValidationError(content)

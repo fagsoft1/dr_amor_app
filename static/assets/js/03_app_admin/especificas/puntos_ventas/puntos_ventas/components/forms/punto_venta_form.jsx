@@ -27,6 +27,7 @@ class Form extends Component {
             modal_open,
             singular_name,
             bodegas_list,
+            error,
         } = this.props;
         return (
             <MyFormTagModal
@@ -39,6 +40,7 @@ class Form extends Component {
                 pristine={pristine}
                 element_type={singular_name}
                 fullScreen = {false}
+                error={error}
             >
                 <MyTextFieldSimple
                     className="col-12 col-md-6"

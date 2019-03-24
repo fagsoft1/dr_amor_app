@@ -3,10 +3,10 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 
-from cajas.models import MovimientoDineroPDV
+from servicios.services import servicio_terminar, servicio_cambiar_tiempo
 from .api_serializers import ServicioSerializer
 from .models import Servicio
-from terceros_acompanantes.models import CategoriaFraccionTiempo
+from servicios.services import servicio_solicitar_anular
 
 
 class ServicioViewSet(viewsets.ModelViewSet):
@@ -59,35 +59,27 @@ class ServicioViewSet(viewsets.ModelViewSet):
     def solicitar_anulacion(self, request, pk=None):
         servicio = self.get_object()
         observacion_anulacion = request.POST.get('observacion_anulacion')
+        # TODO: revisar quitar del post porque ya no se necesita
         punto_venta_id = request.POST.get('punto_venta_id', None)
-        servicio.anular(observacion_anulacion, self.request.user, punto_venta_id)
-        tercero = servicio.cuenta.propietario.tercero
-
-        total_valor_anulacion = -servicio.valor_total
-        concepto = 'Anulación de servicio por: "%s"' % observacion_anulacion
-
-        movimiento = MovimientoDineroPDV.objects.create(
-            tipo='E',
-            tipo_dos='ANU_SER_ACOM',
-            punto_venta_id=punto_venta_id,
-            creado_por=request.user,
-            concepto=concepto,
-            valor_tarjeta=0,
-            valor_efectivo=total_valor_anulacion,
-            nro_autorizacion=None,
-            franquicia=None
+        servicio_solicitar_anular(
+            servicio_id=servicio.id,
+            observacion_anulacion=observacion_anulacion,
+            usuario_pdv_id=self.request.user.id
         )
-        movimiento.servicios.add(servicio)
-
+        tercero = servicio.cuenta.propietario.tercero
         mensaje = 'Se ha solicitado anulación para el servicio de %s.' % (tercero.full_name_proxy)
         return Response({'result': mensaje})
 
     @detail_route(methods=['post'])
     def terminar_servicio(self, request, pk=None):
         servicio = self.get_object()
+        # TODO: evaluar quitar del post, ya viene del usuario activo
         punto_venta_id = self.request.POST.get('punto_venta_id', None)
         if servicio.estado == 1:
-            servicio.terminar(self.request.user, punto_venta_id)
+            servicio_terminar(
+                servicio_id=servicio.id,
+                usuario_pdv_id=self.request.user.id
+            )
             tercero = servicio.cuenta.propietario.tercero
             mensaje = 'El servicios de %s se ha terminado.' % (tercero.full_name_proxy)
             return Response({'result': mensaje})
@@ -96,46 +88,22 @@ class ServicioViewSet(viewsets.ModelViewSet):
     def cambiar_tiempo(self, request, pk=None):
         servicio = self.get_object()
         pago = json.loads(request.POST.get('pago'))
+        #TODO: evaluar quitar del post, ya viene del usuario
         punto_venta_id = pago.get('punto_venta_id', None)
         valor_efectivo = pago.get('valor_efectivo', 0)
         valor_tarjeta = pago.get('valor_tarjeta', 0)
         nro_autorizacion = pago.get('nro_autorizacion', 0)
         franquicia = pago.get('franquicia', None)
         categoria_fraccion_tiempo_id = pago.get('categoria_fraccion_tiempo_id', None)
-        categoria_fraccion_tiempo = CategoriaFraccionTiempo.objects.get(id=categoria_fraccion_tiempo_id)
 
-        valor_servicio_actual = servicio.valor_servicio
-        valor_servicio_nuevo = categoria_fraccion_tiempo.valor
-
-        diferencia = valor_servicio_nuevo - valor_servicio_actual
-
-        minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
-        tipo = 'I'
-        if diferencia > 0:
-            concepto = 'Extención de tiempo de %s a %s minutos' % (servicio.tiempo_minutos, minutos)
-        else:
-            tipo = 'E'
-            concepto = 'Disminución de tiempo de %s a %s minutos' % (servicio.tiempo_minutos, minutos)
-
-        concepto = '%s para %s' % (concepto, servicio.cuenta.propietario.tercero.full_name_proxy)
-
-        movimiento = MovimientoDineroPDV.objects.create(
-            tipo=tipo,
-            tipo_dos='CAM_TIE_SER_ACOM',
-            punto_venta_id=punto_venta_id,
-            creado_por=request.user,
-            concepto=concepto,
-            valor_tarjeta=valor_tarjeta,
+        servicio_cambiar_tiempo(
+            servicio_id=servicio.id,
+            usuario_pdv_id=self.request.user.id,
+            categoria_fraccion_tiempo_id=categoria_fraccion_tiempo_id,
             valor_efectivo=valor_efectivo,
+            valor_tarjeta=valor_tarjeta,
             nro_autorizacion=nro_autorizacion,
             franquicia=franquicia
         )
-        movimiento.servicios.add(servicio)
-
-        servicio.cambiar_tiempo(minutos, self.request.user, punto_venta_id)
-        servicio.valor_servicio += diferencia
-        servicio.save()
-
-        mensaje = 'Se ha efectuado con éxito la %s' % concepto
-
+        mensaje = 'Se ha efectuado con éxito el cambio de tiempo'
         return Response({'result': mensaje})

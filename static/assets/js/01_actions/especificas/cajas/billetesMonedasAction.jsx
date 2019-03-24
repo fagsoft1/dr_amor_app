@@ -14,7 +14,7 @@ export const createBilleteMoneda = (values, options_action={}) => {
             dispatch({type: TYPES.create, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        createObject(current_url_api, values, options);
+        return createObject(current_url_api, values, options);
     }
 };
 export const deleteBilleteMoneda = (id, options_action={}) => {
@@ -23,7 +23,7 @@ export const deleteBilleteMoneda = (id, options_action={}) => {
             dispatch({type: TYPES.delete, payload: id})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        deleteObject(current_url_api, id, options);
+        return deleteObject(current_url_api, id, options);
     }
 };
 export const fetchBilletesMonedas = (options_action={}) => {
@@ -38,7 +38,7 @@ export const fetchBilletesMonedas = (options_action={}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(current_url_api, options);
+        return fetchListGet(current_url_api, options);
     }
 };
 
@@ -48,7 +48,7 @@ export const fetchBilleteMoneda = (id, options_action = {}) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        fetchObject(current_url_api, id, options);
+        return fetchObject(current_url_api, id, options);
     }
 };
 export const clearBilletesMonedas = () => {
@@ -63,6 +63,6 @@ export const updateBilleteMoneda = (id, values, options_action={}) => {
             dispatch({type: TYPES.update, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        updateObject(current_url_api, id, values, options);
+        return updateObject(current_url_api, id, values, options);
     }
 };

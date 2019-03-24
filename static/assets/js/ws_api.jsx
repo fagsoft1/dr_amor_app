@@ -19,14 +19,11 @@ export const WebSocketAPI = {
     listen: (store) => {
         _socket.socket.addEventListener('open', () => {
             reconnect(store);
-            // store.dispatch(actions.fetchHabitaciones());
-            // store.dispatch(actions.fetchServiciosPos());
-            // store.dispatch(actions.reconexion());
+            store.dispatch(actions.noCargando());
         });
 
         _socket.socket.addEventListener('close', () => {
-            store.dispatch(actions.noCargando());
-            //alert('Existen problemas de conexión')
+            store.dispatch(actions.mostrar_error_loading('Problemas de Conexion', 'Error de red'));
         });
         _socket.listen();
 

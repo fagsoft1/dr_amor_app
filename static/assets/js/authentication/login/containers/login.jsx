@@ -33,7 +33,7 @@ class Login extends Component {
     onSubmit(e) {
         const {username, password, punto_venta = null} = e;
         const callback = () => this.props.fetchMiCuenta();
-        this.props.login(username, password, punto_venta, {callback});
+        return this.props.login(username, password, punto_venta, {callback});
     }
 
     render() {
@@ -53,9 +53,6 @@ class Login extends Component {
         if (auth.isAuthenticated) {
             return <Redirect to="/"/>
         }
-
-        const error_login = auth && auth.errors ? auth.errors : null;
-        const mensaje_error = error_login && error_login.error ? error_login.error[0] : null;
         return (
             <div className="container form-signin pt-3 text-center" style={{width: '400px'}}>
                 <FontAwesomeIcon
@@ -107,16 +104,11 @@ class Login extends Component {
                             }
                         </Fragment>
                     }
-                    {
-                        mensaje_error &&
-                        <div className='mt-3'>
-                            <Typography variant="caption" gutterBottom color="error">
-                                {mensaje_error}
-                            </Typography>
-                        </div>
-
-                    }
-
+                    <div className='mt-3'>
+                        <Typography variant="caption" gutterBottom color="error">
+                            {error && <strong>{error}</strong>}
+                        </Typography>
+                    </div>
                     <Button
                         variant="contained"
                         className='ml-3'

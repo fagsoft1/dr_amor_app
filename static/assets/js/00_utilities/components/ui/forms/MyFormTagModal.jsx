@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from "prop-types";
 import MyDialogCreate from '../../../../00_utilities/components/ui/dialog/create_dialog';
 import BotoneriaModalForm from '../../../../00_utilities/components/ui/forms/botoneria_modal_form';
+import Typography from '@material-ui/core/Typography';
 
 export const MyFormTagModal = (props) => {
     const {
@@ -18,6 +19,7 @@ export const MyFormTagModal = (props) => {
         mostrar_submit = true,
         mostrar_limpiar = true,
         mostrar_cancelar = true,
+        error = null
     } = props;
     return (
         <MyDialogCreate
@@ -29,6 +31,11 @@ export const MyFormTagModal = (props) => {
             <form onSubmit={onSubmit}>
                 <div className="row pl-3 pr-5">
                     {props.children}
+                </div>
+                <div className='mt-3'>
+                    <Typography variant="caption" gutterBottom color="error">
+                        {error && <strong>{error}</strong>}
+                    </Typography>
                 </div>
                 <div className='p-3'>
                     <BotoneriaModalForm

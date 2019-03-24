@@ -40,7 +40,8 @@ class Form extends Component {
             handleSubmit,
             modal_open,
             list,
-            tipo_registro
+            tipo_registro,
+            error
         } = this.props;
         const {pin} = this.state;
         return (
@@ -58,6 +59,7 @@ class Form extends Component {
                 mostrar_submit={false}
                 mostrar_limpiar={false}
                 mostrar_cancelar={true}
+                error={error}
             >
                 <MyCombobox
                     data={list}

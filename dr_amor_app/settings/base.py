@@ -66,6 +66,7 @@ MY_APPS = [
     'servicios.apps.ServiciosConfig',
     'cajas.apps.CajasConfig',
     'liquidaciones.apps.LiquidacionesConfig',
+    #'puntos_venta_sesiones_trabajo.apps.PuntosVentaSesionesTrabajoConfig',
 ]
 
 THIRD_PART_APPS = [
@@ -81,6 +82,12 @@ THIRD_PART_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'TEST_REQUEST_RENDERER_CLASSES': (
+        'rest_framework.renderers.MultiPartRenderer',
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.TemplateHTMLRenderer'
+    )
 }
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

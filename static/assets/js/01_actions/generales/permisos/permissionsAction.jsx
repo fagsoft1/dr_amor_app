@@ -33,7 +33,7 @@ export const fetchMisPermisosxListado = (listados_permisos = [], options_action 
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(FULL_URL, options);
+        return fetchListGetURLParameters(FULL_URL, options);
     }
 };
 
@@ -52,7 +52,7 @@ export function fetchMisPermisos(options_action = {}) {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(FULL_URL, options);
+        return fetchListGet(FULL_URL, options);
     }
 }
 
@@ -70,7 +70,7 @@ export function fetchPermisosActivos(options_action = {}) {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(FULL_URL, options);
+        return fetchListGet(FULL_URL, options);
     }
 }
 
@@ -89,7 +89,7 @@ export function fetchPermisosPorGrupo(grupo_id, options_action = {}) {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(FULL_URL, options);
+        return fetchListGetURLParameters(FULL_URL, options);
     }
 }
 
@@ -107,7 +107,7 @@ export function fetchPermisosxUsuario(id, options_action = {}) {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(FULL_URL, options);
+        return fetchListGetURLParameters(FULL_URL, options);
     }
 }
 
@@ -123,7 +123,7 @@ export const fetchPermisos = (options_action = {}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(current_url_api, options);
+        return fetchListGet(current_url_api, options);
     }
 };
 
@@ -133,7 +133,7 @@ export const updatePermiso = (id, values, options_action = {}) => {
             dispatch({type: TYPES.update, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        updateObject(current_url_api, id, values, options);
+        return updateObject(current_url_api, id, values, options);
     }
 };
 
@@ -144,7 +144,7 @@ export const fetchPermiso = (id, options_action = {}) => {
         };
 
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        fetchObject(current_url_api, id, options);
+        return fetchObject(current_url_api, id, options);
     }
 };
 

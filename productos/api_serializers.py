@@ -1,6 +1,6 @@
 from channels.binding.websockets import WebsocketBinding
 from rest_framework import serializers
-from .models import Producto, Categoria, CategoriaDos, UnidadProducto
+from .models import Producto, CategoriaProducto, CategoriaDosProducto, UnidadProducto
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -10,7 +10,7 @@ class CategoriaSerializer(serializers.ModelSerializer):
         return instance.nombre
 
     class Meta:
-        model = Categoria
+        model = CategoriaProducto
         fields = [
             'url',
             'id',
@@ -28,7 +28,7 @@ class CategoriaDosSerializer(serializers.ModelSerializer):
         return instance.nombre
 
     class Meta:
-        model = CategoriaDos
+        model = CategoriaDosProducto
         fields = [
             'url',
             'id',

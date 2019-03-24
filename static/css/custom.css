@@ -174,14 +174,14 @@ form .btn {
   border-radius: 10px;
 }
 .habitacion-tipo-list:nth-child(even) {
-  border-left: solid $rojo_dr_amor 1px;
+  border-left: solid #f00 1px;
 }
 .servicio.clock-0 {
   color: #008000 !important;
   font-size: 0.8rem;
 }
 .servicio.clock-1 {
-  color: $rojo_dr_amor !important;
+  color: #f00 !important;
   font-size: 0.8rem;
 }
 .servicio.servicio-list-item {

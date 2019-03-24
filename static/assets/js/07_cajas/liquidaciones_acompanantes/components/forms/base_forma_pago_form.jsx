@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {MyTextFieldSimple, MyDropdownList} from '../../../../00_utilities/components/ui/forms/fields';
 import {connect} from "react-redux";
-import {reduxForm, formValueSelector} from 'redux-form'
+import {reduxForm} from 'redux-form'
 import {pesosColombianos} from "../../../../00_utilities/common";
 import validate from './validate';
 import Button from '@material-ui/core/Button';

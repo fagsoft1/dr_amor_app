@@ -1,9 +1,13 @@
-from django.db.models import Sum, ExpressionWrapper, DecimalField, OuterRef, Subquery
+from django.db.models import OuterRef, Subquery
 from rest_framework import viewsets, permissions, serializers
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from datetime import datetime
 
+from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
+from inventarios.services import (
+    movimiento_inventario_aplicar_movimiento
+)
 from .api_serializers import (
     BodegaSerializer,
     MovimientoInventarioDetalleSerializer,
@@ -21,68 +25,50 @@ from .models import (
 
 
 class BodegaViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsFull]
     queryset = Bodega.objects.all()
     serializer_class = BodegaSerializer
 
 
 class MovimientoInventarioViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = MovimientoInventario.objects.select_related(
-        'proveedor',
-        'cuenta',
-        'bodega'
-    ).annotate(
-        entra_costo=ExpressionWrapper(Sum('detalles__entra_costo'),
-                                      output_field=DecimalField(max_digits=12, decimal_places=2)),
-        entra_cantidad=ExpressionWrapper(Sum('detalles__entra_cantidad'),
-                                         output_field=DecimalField(max_digits=12, decimal_places=2)),
-        sale_cantidad=ExpressionWrapper(Sum('detalles__sale_cantidad'),
-                                        output_field=DecimalField(max_digits=12, decimal_places=2)),
-        sale_costo=ExpressionWrapper(Sum('detalles__sale_costo'),
-                                     output_field=DecimalField(max_digits=12, decimal_places=2)),
-    ).all()
+    permission_classes = [DjangoModelPermissionsFull]
+    queryset = MovimientoInventario.objects.all()
     serializer_class = MovimientoInventarioSerializer
+
+    @detail_route(methods=['post'])
+    def upload_foto_documento(self, request, pk=None):  # pragma: no cover
+        movimiento = self.get_object()
+        archivo = self.request.FILES['archivo']
+        movimiento.documentos.create(imagen_documento=archivo)
+        serializer = self.get_serializer(movimiento)
+        return Response(serializer.data)
+
+    @detail_route(methods=['post'])
+    def delete_foto_documento(self, request, pk=None):  # pragma: no cover
+        movimiento = self.get_object()
+        documento_id = int(request.POST.get('documento_id', None))
+        movimiento.documentos.get(id=documento_id).delete()
+        serializer = self.get_serializer(movimiento)
+        return Response(serializer.data)
 
     @list_route(methods=['get'])
     def saldos_iniciales(self, request):
-        qs = self.queryset.filter(motivo='saldo_inicial')
+        qs = MovimientoInventario.saldos_iniciales.all()
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
     @detail_route(methods=['post'])
     def cargar_inventario(self, request, pk=None):
         movimiento_inventario = self.get_object()
-        if not movimiento_inventario.cargado:
-            movimiento_inventario.cargar_inventario()
-            serializer = self.get_serializer(movimiento_inventario)
-            return Response(serializer.data)
-        else:
-            content = {'error': ['Revisar, el movimiento ya ha sido cargado']}
-            raise serializers.ValidationError(content)
-
-    def perform_create(self, serializer):
-        instance = serializer.save(creado_por=self.request.user)
-        if instance.motivo in 'compra':
-            instance.tipo = 'E'
-            instance.detalle = 'Entrada Mercancía x Compra'
-        if instance.motivo == 'saldo_inicial':
-            instance.tipo = 'E'
-            instance.detalle = 'Saldo Inicial'
-        if instance.motivo == 'ajuste_ingreso':
-            instance.tipo = 'EA'
-            instance.detalle = 'Ingreso Ajuste'
-        if instance.motivo == 'ajuste_salida':
-            instance.tipo = 'SA'
-            instance.detalle = 'Salida Ajuste'
-        instance.save()
+        movimiento_inventario = movimiento_inventario_aplicar_movimiento(movimiento_inventario.id)
+        serializer = self.get_serializer(movimiento_inventario)
+        return Response(serializer.data)
 
 
 class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsFull]
     queryset = MovimientoInventarioDetalle.objects.select_related(
         'movimiento',
-        'movimiento__cuenta',
         'movimiento__proveedor'
     ).prefetch_related(
         'producto',
@@ -90,28 +76,6 @@ class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
         'producto__categoria_dos__categoria'
     ).all()
     serializer_class = MovimientoInventarioDetalleSerializer
-
-    @list_route(methods=['get'])
-    def consultar_por_tercero_cuenta_abierta(self, request):
-        tercero_id = int(request.GET.get('tercero_id', None))
-        qs = self.queryset.filter(
-            movimiento__cuenta__propietario__tercero=tercero_id,
-            movimiento__cuenta__liquidada=False,
-            movimiento__cuenta__tipo=1
-        )
-        serializer = self.get_serializer(qs, many=True)
-        return Response(serializer.data)
-
-    @list_route(methods=['get'])
-    def consultar_por_tercero_mesero_cuenta_abierta(self, request):
-        tercero_id = int(request.GET.get('tercero_id', None))
-        qs = self.queryset.filter(
-            movimiento__cuenta__propietario__tercero=tercero_id,
-            movimiento__cuenta__liquidada=False,
-            movimiento__cuenta__tipo=2
-        )
-        serializer = self.get_serializer(qs, many=True)
-        return Response(serializer.data)
 
     @list_route(methods=['get'])
     def por_movimiento(self, request):
@@ -157,7 +121,7 @@ class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
 
 
 class TrasladoInventarioViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsFull]
     queryset = TrasladoInventario.objects.select_related(
         'bodega_destino',
         'bodega_origen',
@@ -169,13 +133,39 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['post'])
     def trasladar(self, request, pk=None):
         traslado = self.get_object()
-        traslado.realizar_traslado()
+        user = self.request.user
+        from .services import traslado_inventario_realizar_traslado
+        traslado = traslado_inventario_realizar_traslado(traslado_inventario_id=traslado.id, usuario_id=user.id)
         serializer = self.get_serializer(traslado)
+        return Response(serializer.data)
+
+    @detail_route(methods=['post'])
+    def cambiar_estado(self, request, pk=None):
+        # TODO: Hacer test
+        traslado = self.get_object()
+        if not traslado.trasladado:
+            nuevo_estado = int(request.POST.get('nuevo_estado'))
+            traslado.estado = nuevo_estado
+            traslado.save()
+            serializer = self.get_serializer(traslado)
+            return Response(serializer.data)
+        else:
+            raise serializers.ValidationError(
+                {'_error': 'El inventario ya se encuentra trasladado, no se puede cambiar estado'})
+
+    @list_route(methods=['get'])
+    def pendiente_verificacion_por_bodega_destino(self, request):
+        # TODO: Hacer test
+        bodega_id = int(request.GET.get('bodega_id'))
+        qs = self.queryset.filter(bodega_destino=bodega_id, estado=2, trasladado=False)
+        serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
 
 class TrasladoInventarioDetallesViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsFull]
+    # TODO: Hacer queryset manager
+    # TODO: Hacer test queryset
     producto_bodega_origen = MovimientoInventarioDetalle.objects.filter(
         movimiento__bodega_id=OuterRef('traslado__bodega_origen_id'),
         producto_id=OuterRef('producto_id'),

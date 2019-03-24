@@ -22,6 +22,7 @@ class Form extends Component {
             handleSubmit,
             handleClose,
             modal_open,
+            error,
         } = this.props;
         return (
             <MyFormTagModal
@@ -38,6 +39,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type='Grupo Permisos'
+                error={error}
             >
                 <MyTextFieldSimple
                     className="col-12"
@@ -49,7 +51,9 @@ class Form extends Component {
     }
 }
 
-function mapPropsToState(state, ownProps) {
+function
+
+mapPropsToState(state, ownProps) {
     const {item_seleccionado} = ownProps;
     return {
         initialValues: item_seleccionado

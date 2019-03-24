@@ -21,5 +21,10 @@ class PuntoVenta(models.Model):
     class Meta:
         permissions = [
             ['list_puntoventa', 'Puede listar puntos ventas'],
-            ['detail_puntoventa', 'Puede ver detalle punto venta'],
         ]
+
+
+class PuntoVentaTurno(TimeStampedModel):
+    usuario = models.ForeignKey(User, related_name='turnos_punto_venta', on_delete=models.PROTECT)
+    punto_venta = models.ForeignKey(PuntoVenta, related_name='turnos', on_delete=models.PROTECT)
+    finish = models.DateTimeField(null=True)

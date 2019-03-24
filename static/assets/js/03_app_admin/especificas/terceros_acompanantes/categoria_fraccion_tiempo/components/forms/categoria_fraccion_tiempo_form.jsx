@@ -30,6 +30,7 @@ class Form extends Component {
             object,
             fracciones_tiempo_list,
             categorias_fracciones_tiempo_list,
+            error,
         } = this.props;
         let fracciones_existentes = _.map(categorias_fracciones_tiempo_list, c => c.fraccion_tiempo);
         return (
@@ -46,6 +47,7 @@ class Form extends Component {
                 pristine={pristine}
                 element_type={singular_name}
                 fullScreen={false}
+                error={error}
             >
                 {
                     initialValues ?

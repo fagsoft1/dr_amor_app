@@ -31,11 +31,11 @@ function crudHOC(CreateForm, Tabla) {
                         posDeleteMethod(item);
                     }
                 };
-                method_pool.deleteObjectMethod(item.id, {callback});
+                return method_pool.deleteObjectMethod(item.id, {callback});
             }
         }
 
-        onSubmit(item, uno = null, dos = null, cerrar_modal = true) {
+        onSubmit(item, uno = null, dos = null, cerrar_modal = true, callback_error = null) {
             const {
                 method_pool,
                 notificarAction,
@@ -50,26 +50,26 @@ function crudHOC(CreateForm, Tabla) {
                 this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : response});
 
                 if (item.id && posUpdateMethod) {
-                    posUpdateMethod(response);
+                    posUpdateMethod(response.data);
                 }
                 if (!item.id && posCreateMethod) {
-                    posCreateMethod(response);
+                    posCreateMethod(response.data);
                 }
                 if (posSummitMethod) {
-                    posSummitMethod(response)
+                    posSummitMethod(response.data)
                 }
             };
             if (item.id) {
                 if (method_pool.updateObjectMethod === null) {
                     console.log('No se ha asignado ningún método para UPDATE')
                 } else {
-                    method_pool.updateObjectMethod(item.id, item, {callback});
+                    return method_pool.updateObjectMethod(item.id, item, {callback, callback_error});
                 }
             } else {
                 if (method_pool.createObjectMethod === null) {
                     console.log('No se ha asignado ningún método para CREATE')
                 } else {
-                    method_pool.createObjectMethod(item, {callback});
+                    return method_pool.createObjectMethod(item, {callback, callback_error});
                 }
             }
         }
@@ -81,7 +81,7 @@ function crudHOC(CreateForm, Tabla) {
                 console.log('No se ha asignado ningún método para FETCH OBJECT')
             } else {
 
-                method_pool.fetchObjectMethod(item.id, {callback});
+                return method_pool.fetchObjectMethod(item.id, {callback});
             }
         }
 

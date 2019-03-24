@@ -27,7 +27,7 @@ export const createMovimientoInventarioDetalle = (values, options_action = {}) =
             dispatch({type: TYPES.create, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        createObject(current_url_api, values, options);
+        return createObject(current_url_api, values, options);
     }
 };
 export const deleteMovimientoInventarioDetalle = (id, options_action = {}) => {
@@ -36,7 +36,7 @@ export const deleteMovimientoInventarioDetalle = (id, options_action = {}) => {
             dispatch({type: TYPES.delete, payload: id})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        deleteObject(current_url_api, id, options);
+        return deleteObject(current_url_api, id, options);
     }
 };
 export const fetchMovimientosInventariosDetalles = (options_action = {}) => {
@@ -51,7 +51,7 @@ export const fetchMovimientosInventariosDetalles = (options_action = {}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(current_url_api, options);
+        return fetchListGet(current_url_api, options);
     }
 };
 
@@ -67,7 +67,7 @@ export const fetchMovimientosInventariosDetallesxMovimiento = (movimiento_id, op
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(`${current_url_api}/por_movimiento/?movimiento_id=${movimiento_id}`, options);
+        return fetchListGetURLParameters(`${current_url_api}/por_movimiento/?movimiento_id=${movimiento_id}`, options);
     }
 };
 export const fetchMovimientosInventariosDetallesSaldosxBodega = (bodega_id, options_action = {}) => {
@@ -82,24 +82,24 @@ export const fetchMovimientosInventariosDetallesSaldosxBodega = (bodega_id, opti
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(`${current_url_api}/actual_por_bodega/?bodega_id=${bodega_id}`, options);
+        return fetchListGetURLParameters(`${current_url_api}/actual_por_bodega/?bodega_id=${bodega_id}`, options);
     }
 };
-export const fetchMovimientoIntentariosDetalles_por_tercero_cuenta_abierta = (tercero_id, options_action = {}) => {
-    return (dispatch) => {
-        const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
-        };
-        const {limpiar_coleccion = true} = options_action;
-        const options = {
-            dispatches,
-            ...options_action,
-            dispatch_method: dispatch,
-            clear_action_type: limpiar_coleccion ? TYPES.clear : null
-        };
-        fetchListGetURLParameters(`${current_url_api}/consultar_por_tercero_cuenta_abierta/?tercero_id=${tercero_id}`, options);
-    }
-};
+// export const fetchMovimientoIntentariosDetalles_por_tercero_cuenta_abierta = (tercero_id, options_action = {}) => {
+//     return (dispatch) => {
+//         const dispatches = (response) => {
+//             dispatch({type: TYPES.fetch_all, payload: response})
+//         };
+//         const {limpiar_coleccion = true} = options_action;
+//         const options = {
+//             dispatches,
+//             ...options_action,
+//             dispatch_method: dispatch,
+//             clear_action_type: limpiar_coleccion ? TYPES.clear : null
+//         };
+//         return fetchListGetURLParameters(`${current_url_api}/consultar_por_tercero_cuenta_abierta/?tercero_id=${tercero_id}`, options);
+//     }
+// };
 export const fetchMovimientosInventariosDetallesSaldosxPDV = (punto_venta_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
@@ -112,7 +112,7 @@ export const fetchMovimientosInventariosDetallesSaldosxPDV = (punto_venta_id, op
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(`${current_url_api}/actual_por_pdv/?punto_venta_id=${punto_venta_id}`, options);
+        return fetchListGetURLParameters(`${current_url_api}/actual_por_pdv/?punto_venta_id=${punto_venta_id}`, options);
     }
 };
 export const fetchMovimientosInventariosDetallesxBodegaxFecha = (bodega_id, fecha_inicial, fecha_final, options_action = {}) => {
@@ -127,7 +127,7 @@ export const fetchMovimientosInventariosDetallesxBodegaxFecha = (bodega_id, fech
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(`${current_url_api}/por_bodega_por_fecha/?bodega_id=${bodega_id}&fecha_inicial=${fecha_inicial}&fecha_final=${fecha_final}`, options);
+        return fetchListGetURLParameters(`${current_url_api}/por_bodega_por_fecha/?bodega_id=${bodega_id}&fecha_inicial=${fecha_inicial}&fecha_final=${fecha_final}`, options);
     }
 };
 export const fetchMovimientosInventariosDetallesxBodegaxProducto = (bodega_id, producto_id, options_action = {}) => {
@@ -142,7 +142,7 @@ export const fetchMovimientosInventariosDetallesxBodegaxProducto = (bodega_id, p
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(`${current_url_api}/por_bodega_por_producto/?bodega_id=${bodega_id}&producto_id=${producto_id}`, options);
+        return fetchListGetURLParameters(`${current_url_api}/por_bodega_por_producto/?bodega_id=${bodega_id}&producto_id=${producto_id}`, options);
     }
 };
 export const fetchMovimientoInventarioDetalle = (id, options_action = {}) => {
@@ -151,7 +151,7 @@ export const fetchMovimientoInventarioDetalle = (id, options_action = {}) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        fetchObject(current_url_api, id, options);
+        return fetchObject(current_url_api, id, options);
     }
 };
 export const clearMovimientosInventariosDetalles = () => {
@@ -166,6 +166,6 @@ export const updateMovimientoInventarioDetalle = (id, values, options_action = {
             dispatch({type: TYPES.update, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        updateObject(current_url_api, id, values, options);
+        return updateObject(current_url_api, id, values, options);
     }
 };

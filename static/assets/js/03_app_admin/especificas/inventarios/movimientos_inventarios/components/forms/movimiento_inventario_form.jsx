@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {reduxForm} from 'redux-form';
+import {reduxForm, formValueSelector} from 'redux-form';
 import {
     MyTextFieldSimple,
     MyCombobox,
@@ -15,8 +15,7 @@ class Form extends Component {
     constructor(props) {
         super(props);
         this.state = ({
-            solo_bodegas_principales: true,
-            mostrar_observacions: false,
+            solo_bodegas_principales: true
         });
     }
 
@@ -33,8 +32,13 @@ class Form extends Component {
             singular_name,
             proveedores_list,
             bodegas_list,
+            error,
+            valores: {motivo},
         } = this.props;
-        const {solo_bodegas_principales, mostrar_observacions} = this.state;
+        const {solo_bodegas_principales,} = this.state;
+
+        const mostrar_observacions = ['entrada_ajuste', 'salida_ajuste'].includes(motivo);
+        const mostrar_proveedor = ['compra'].includes(motivo);
 
         let bodegas = bodegas_list;
         if (solo_bodegas_principales) {
@@ -52,6 +56,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
+                error={error}
             >
                 <MyDropdownList
                     className="col-12 col-md-6"
@@ -62,16 +67,11 @@ class Form extends Component {
                     valuesField='detalle'
                     onSelect={(e) => {
                         let solo_principales = false;
-                        let con_observaciones = false;
                         if (e.detalle === 'saldo_inicial' || e.detalle === 'compra') {
                             solo_principales = true;
                         }
-                        if (e.detalle === 'ajuste_ingreso' || e.detalle === 'ajuste_salida') {
-                            con_observaciones = true;
-                        }
                         this.setState({
-                            solo_bodegas_principales: solo_principales,
-                            mostrar_observacions: con_observaciones
+                            solo_bodegas_principales: solo_principales
                         });
                     }}
                     data={[
@@ -83,14 +83,14 @@ class Form extends Component {
                             motivo: 'Saldo Inicial',
                             detalle: 'saldo_inicial'
                         },
-                        // {
-                        //     motivo: 'Ajuste Ingreso',
-                        //     detalle: 'ajuste_ingreso'
-                        // },
-                        // {
-                        //     motivo: 'Ajuste Salida',
-                        //     detalle: 'ajuste_salida'
-                        // },
+                        {
+                            motivo: 'Entrada Ajuste',
+                            detalle: 'entrada_ajuste'
+                        },
+                        {
+                            motivo: 'Salida Ajuste',
+                            detalle: 'salida_ajuste'
+                        },
                     ]}
                 />
                 <MyCombobox
@@ -108,34 +108,38 @@ class Form extends Component {
                     })}
                     filter='contains'
                 />
-                <MyCombobox
-                    className="col-12 col-md-6"
-                    nombre='Proveedor'
-                    name='proveedor'
-                    textField='nombre'
-                    placeholder='Seleccionar Proveedor'
-                    valuesField='id'
-                    data={_.map(proveedores_list, h => {
-                        return ({
-                            id: h.id,
-                            nombre: h.nombre
-                        })
-                    })}
-                    filter='contains'
-                />
+                {
+                    mostrar_proveedor &&
+                    <MyCombobox
+                        className="col-12 col-md-6"
+                        nombre='Proveedor'
+                        name='proveedor'
+                        textField='nombre'
+                        placeholder='Seleccionar Proveedor'
+                        valuesField='id'
+                        data={_.map(proveedores_list, h => {
+                            return ({
+                                id: h.id,
+                                nombre: h.nombre
+                            })
+                        })}
+                        filter='contains'
+                    />
+                }
 
                 <MyDateTimePickerField
                     nombre='Fecha'
                     className='col-12 col-md-6'
                     name='fecha'
                 />
+
                 {
                     mostrar_observacions &&
                     <MyTextFieldSimple
                         nombre='Observación'
                         className='col-12'
                         name='observacion'
-                        multiLine={true}
+                        multiline={true}
                         rows={4}
                     />
                 }
@@ -147,10 +151,15 @@ class Form extends Component {
     }
 }
 
+const selector = formValueSelector('movimientosInventariosForm');
+
+
 function mapPropsToState(state, ownProps) {
     const {item_seleccionado} = ownProps;
+    const values = selector(state, 'motivo', '');
     return {
-        initialValues: item_seleccionado
+        initialValues: item_seleccionado,
+        valores: values
     }
 }
 

@@ -1,8 +1,14 @@
 from channels.binding.websockets import WebsocketBinding
 from rest_framework import serializers
 
-from .models import Bodega, MovimientoInventario, MovimientoInventarioDetalle, TrasladoInventario, \
+from .models import (
+    Bodega,
+    MovimientoInventario,
+    MovimientoInventarioDetalle,
+    MovimientoInventarioDocumento,
+    TrasladoInventario,
     TrasladoInventarioDetalle
+)
 
 
 class BodegaSerializer(serializers.ModelSerializer):
@@ -23,14 +29,6 @@ class BodegaSerializer(serializers.ModelSerializer):
 
 
 class MovimientoInventarioDetalleSerializer(serializers.ModelSerializer):
-    cuenta = serializers.PrimaryKeyRelatedField(source='movimiento.cuenta_id', read_only=True, allow_null=True)
-    cuenta_liquidada = serializers.NullBooleanField(source='movimiento.cuenta.liquidada', read_only=True)
-    cuenta_usuario = serializers.IntegerField(
-        source='movimiento.cuenta.propietario_id',
-        read_only=True,
-        allow_null=True
-    )
-    cuenta_tipo = serializers.IntegerField(source='movimiento.cuenta.tipo', read_only=True, allow_null=True)
     producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
     movimiento_detalle = serializers.CharField(source='movimiento.detalle', read_only=True)
     movimiento_fecha = serializers.CharField(source='movimiento.fecha', read_only=True)
@@ -47,15 +45,10 @@ class MovimientoInventarioDetalleSerializer(serializers.ModelSerializer):
             'url',
             'id',
             'modified',
-            'cuenta',
-            'cuenta_tipo',
-            'cuenta_liquidada',
-            'cuenta_usuario',
             'movimiento',
             'bodega',
             'movimiento_detalle',
             'movimiento_proveedor_nombre',
-            'precio_venta_total',
             'producto',
             'producto_nombre',
             'producto_precio_venta',
@@ -71,6 +64,30 @@ class MovimientoInventarioDetalleSerializer(serializers.ModelSerializer):
             'producto_categoria_nombre',
             'producto_categoria_dos_nombre',
         ]
+
+    def create(self, validated_data):
+        movimiento = validated_data.pop('movimiento')
+        producto = validated_data.pop('producto')
+        instance = None
+        if movimiento.tipo == 'E':
+            entra_cantidad = validated_data.pop('entra_cantidad')
+            entra_costo = validated_data.pop('entra_costo')
+            from inventarios.services import movimiento_inventario_detalle_entrada_add_item
+            instance = movimiento_inventario_detalle_entrada_add_item(
+                movimiento_id=movimiento.id,
+                cantidad=entra_cantidad,
+                costo_total=entra_costo,
+                producto_id=producto.id
+            )
+        if movimiento.tipo == 'S':
+            entra_cantidad = validated_data.pop('sale_cantidad')
+            from inventarios.services import movimiento_inventario_detalle_salida_add_item
+            instance = movimiento_inventario_detalle_salida_add_item(
+                movimiento_id=movimiento.id,
+                cantidad=entra_cantidad,
+                producto_id=producto.id
+            )
+        return instance
 
 
 class MovimientoInventarioDetalleBinding(WebsocketBinding):
@@ -90,7 +107,37 @@ class MovimientoInventarioDetalleBinding(WebsocketBinding):
         return True
 
 
+class MovimientoInventarioDocumentoSerializer(serializers.ModelSerializer):
+    imagen_documento_url = serializers.SerializerMethodField()
+    imagen_documento_thumbnail_url = serializers.SerializerMethodField()
+    to_string = serializers.SerializerMethodField()
+
+    def get_to_string(self, instance):
+        return instance.id
+
+    def get_imagen_documento_url(self, obj):
+        if obj.imagen_documento:
+            return obj.imagen_documento.url
+        return None
+
+    def get_imagen_documento_thumbnail_url(self, obj):
+        if obj.imagen_documento_thumbnail:
+            return obj.imagen_documento_thumbnail.url
+        return None
+
+    class Meta:
+        model = MovimientoInventarioDocumento
+        fields = [
+            'id',
+            'movimiento',
+            'to_string',
+            'imagen_documento_url',
+            'imagen_documento_thumbnail_url',
+        ]
+
+
 class MovimientoInventarioSerializer(serializers.ModelSerializer):
+    creado_por = serializers.HiddenField(default=serializers.CurrentUserDefault())
     proveedor_nombre = serializers.CharField(source='proveedor.nombre', read_only=True)
     bodega_nombre = serializers.CharField(source='bodega.nombre', read_only=True)
     fecha = serializers.DateTimeField(format="%Y-%m-%d", input_formats=['%Y-%m-%d', 'iso-8601'])
@@ -98,8 +145,7 @@ class MovimientoInventarioSerializer(serializers.ModelSerializer):
     entra_cantidad = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     sale_cantidad = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     sale_costo = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
-    cuenta_liquidada = serializers.NullBooleanField(source='cuenta.liquidada', read_only=True)
-    cuenta_usuario = serializers.IntegerField(source='cuenta.propietario_id', read_only=True, allow_null=True)
+    documentos = MovimientoInventarioDocumentoSerializer(many=True, read_only=True)
 
     class Meta:
         model = MovimientoInventario
@@ -109,11 +155,10 @@ class MovimientoInventarioSerializer(serializers.ModelSerializer):
             'fecha',
             'proveedor',
             'proveedor_nombre',
+            'creado_por',
+            'documentos',
             'bodega',
             'bodega_nombre',
-            'cuenta',
-            'cuenta_liquidada',
-            'cuenta_usuario',
             'detalle',
             'tipo',
             'motivo',
@@ -124,12 +169,52 @@ class MovimientoInventarioSerializer(serializers.ModelSerializer):
             'sale_cantidad',
             'observacion',
         ]
-        extra_kwargs = {
-            'cuenta': {'read_only': True}
-        }
+
+    def create(self, validated_data):
+        motivo = validated_data.pop('motivo', None)
+        bodega = validated_data.pop('bodega', None)
+        fecha = validated_data.pop('fecha', None)
+        usuario = validated_data.pop('creado_por', None)
+        proveedor = validated_data.pop('proveedor', None)
+        observacion = validated_data.pop('observacion', None)
+        if motivo == 'compra':
+            from inventarios.services import movimiento_inventario_compra_crear
+            instancia = movimiento_inventario_compra_crear(
+                proveedor_id=proveedor.id,
+                fecha=fecha,
+                usuario_id=usuario.id,
+                bodega_destino_id=bodega.id,
+            )
+            return instancia
+        if motivo == 'saldo_inicial':
+            from inventarios.services import movimiento_inventario_saldo_inicial_crear
+            instancia = movimiento_inventario_saldo_inicial_crear(
+                fecha=fecha,
+                usuario_id=usuario.id,
+                bodega_destino_id=bodega.id,
+            )
+            return instancia
+        if motivo == 'entrada_ajuste':
+            from inventarios.services import movimiento_inventario_entrada_ajuste_crear
+            instancia = movimiento_inventario_entrada_ajuste_crear(
+                usuario_id=usuario.id,
+                bodega_destino_id=bodega.id,
+                detalle=observacion
+            )
+            return instancia
+        if motivo == 'salida_ajuste':
+            from inventarios.services import movimiento_inventario_salida_ajuste_crear
+            instancia = movimiento_inventario_salida_ajuste_crear(
+                usuario_id=usuario.id,
+                bodega_origen_id=bodega.id,
+                detalle=observacion
+            )
+            return instancia
+        raise serializers.ValidationError({'_error': 'No se ha definido creación para tipo de motivo %s' % motivo})
 
 
 class TrasladoInventarioSerializer(serializers.ModelSerializer):
+    creado_por = serializers.HiddenField(default=serializers.CurrentUserDefault())
     bodega_origen_nombre = serializers.CharField(source='bodega_origen.nombre', read_only=True)
     bodega_destino_nombre = serializers.CharField(source='bodega_destino.nombre', read_only=True)
 
@@ -141,9 +226,12 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
             'bodega_origen',
             'bodega_origen_nombre',
             'bodega_destino',
+            'creado_por',
+            'recibido_por',
             'bodega_destino_nombre',
             'movimiento_origen',
             'movimiento_destino',
+            'estado',
             'trasladado',
         ]
         extra_kwargs = {
@@ -152,11 +240,35 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
 
         }
 
+    def create(self, validated_data):
+        from .services import traslado_inventario_crear
+        bodega_origen = validated_data.pop('bodega_origen', None)
+        bodega_destino = validated_data.pop('bodega_destino', None)
+        creado_por = validated_data.pop('creado_por', None)
+        traslado = traslado_inventario_crear(
+            bodega_destino_id=bodega_destino.id,
+            bodega_origen_id=bodega_origen.id,
+            usuario_crea_id=creado_por.id
+        )
+        return traslado
+
 
 class TrasladoInventarioDetalleSerializer(serializers.ModelSerializer):
     producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
     cantidad_origen = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     cantidad_destino = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+
+    def create(self, validated_data):
+        from .services import traslado_inventario_adicionar_item
+        traslado = validated_data.pop('traslado', None)
+        producto = validated_data.pop('producto', None)
+        cantidad = validated_data.pop('cantidad', None)
+        detalle_traslado_inventario = traslado_inventario_adicionar_item(
+            traslado_inventario_id=traslado.id,
+            producto_id=producto.id,
+            cantidad=cantidad,
+        )
+        return detalle_traslado_inventario
 
     class Meta:
         model = TrasladoInventarioDetalle

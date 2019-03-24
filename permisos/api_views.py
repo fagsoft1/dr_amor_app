@@ -1,15 +1,16 @@
 from django.contrib.auth.models import User, Permission, Group
 from django.db.models import Q
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 
+from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
 from .api_serializers import PermissionSerializer, GroupSerializer
 
 
 class PermissionViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsFull]
     queryset = Permission.objects.select_related('plus', 'content_type').all()
     serializer_class = PermissionSerializer
 
@@ -72,7 +73,7 @@ class PermissionViewSet(viewsets.ModelViewSet):
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsFull]
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 

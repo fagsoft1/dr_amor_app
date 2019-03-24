@@ -1,6 +1,7 @@
 export const LOADING = {
     loading: 'is_loading',
-    stop: 'in_not_loading'
+    stop: 'in_not_loading',
+    error: 'error_loading'
 };
 
 export const PERMISO_TYPES = {

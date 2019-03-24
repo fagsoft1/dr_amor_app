@@ -18,6 +18,7 @@ class Form extends Component {
             handleSubmit,
             modal_open,
             singular_name,
+            error,
         } = this.props;
         return (
             <MyFormTagModal
@@ -30,6 +31,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
+                error={error}
             >
                 <MyTextFieldSimple
                     className="col-12"

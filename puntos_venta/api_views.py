@@ -1,12 +1,11 @@
 import json
-from decimal import Decimal
 
 from rest_framework import viewsets, permissions, serializers
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
-from datetime import datetime
+from django.utils import timezone
 
-from productos.models import Producto
+from inventarios.services import movimiento_inventario_aplicar_movimiento
 from terceros.models import Tercero
 from .api_serializers import (
     PuntoVentaSerializer
@@ -17,11 +16,9 @@ from .models import (
 from cajas.models import (
     BaseDisponibleDenominacion,
     EfectivoEntregaDenominacion,
-    ArqueoCaja,
-    MovimientoDineroPDV
+    ArqueoCaja
 )
 from inventarios.models import (
-    MovimientoInventarioDetalle,
     MovimientoInventario
 )
 
@@ -36,16 +33,18 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['post'])
     def efectuar_venta(self, request, pk=None):
+        # TODO: Hacer funcion
         punto_venta = self.get_object()
         tipo_venta = int(
             request.POST.get('tipo_venta'))  # 1 venta efectivo, 2 venta mesero, 3 venta chica o colaborador
         pedido = json.loads(request.POST.get('pedido'))
-
+        user = self.request.user
         nuevo_movimiento_inventario = MovimientoInventario(
-            creado_por=self.request.user,
-            fecha=datetime.now(),
+            creado_por=user,
+            fecha=timezone.now(),
             tipo='S',
-            bodega=punto_venta.bodega
+            bodega=punto_venta.bodega,
+            sesion_trabajo_pv=user.tercero.sesion_trabajo_pv_abierta
         )
 
         if tipo_venta == 3 or tipo_venta == 2:
@@ -76,7 +75,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
                         )
                         nuevo_movimiento_inventario.save()
                     else:
-                        content = {'error': ['Este usuario no es mesero']}
+                        content = {'_error': 'Este usuario no es mesero'}
                         raise serializers.ValidationError(content)
 
         if nuevo_movimiento_inventario.id:
@@ -94,7 +93,8 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
                     producto_id=producto_id,
                     precio_venta_total=-producto_precio_total
                 )
-            nuevo_movimiento_inventario.cargar_inventario()
+
+                nuevo_movimiento_inventario = movimiento_inventario_aplicar_movimiento(nuevo_movimiento_inventario.id)
 
         mensaje = 'La venta se ha efectuado'
         return Response({'result': mensaje})
@@ -119,6 +119,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['post'])
     def hacer_entrega_efectivo_caja(self, request, pk=None):
+        # TODO: Hacer funcion
         punto_venta = self.get_object()
         cierre = json.loads(request.POST.get('cierre'))
         cierre_para_arqueo = cierre.pop('cierre_para_arqueo')
@@ -138,19 +139,22 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
                 total_base += cantidad * valor
                 BaseDisponibleDenominacion.objects.create(arqueo_caja=arqueo, **denominacion)
 
-        MovimientoDineroPDV.objects.filter(
-            punto_venta_id=punto_venta,
-            arqueo_caja__isnull=True
-        ).update(
-            arqueo_caja=arqueo)
-        MovimientoDineroPDV.objects.create(
-            punto_venta=punto_venta,
-            tipo='I',
-            tipo_dos='BASE_INI',
-            valor_efectivo=total_base,
-            creado_por=self.request.user,
-            concepto='Ingreso de base generada por el arqueo %s' % arqueo.id
-        )
+        # TODO: Hacer lo correspondiente al registro en el nuevo TransaccionCaja
+        # MovimientoDineroPDV.objects.filter(
+        #     punto_venta_id=punto_venta,
+        #     arqueo_caja__isnull=True
+        # ).update(
+        #     arqueo_caja=arqueo)
+        #
+        # TODO: Hacer lo correspondiente al registro en el nuevo TransaccionCaja
+        # MovimientoDineroPDV.objects.create(
+        #     punto_venta=punto_venta,
+        #     tipo='I',
+        #     tipo_dos='BASE_INI',
+        #     valor_efectivo=total_base,
+        #     creado_por=self.request.user,
+        #     concepto='Ingreso de base generada por el arqueo %s' % arqueo.id
+        # )
         punto_venta.abierto = False
         punto_venta.usuario_actual = None
         punto_venta.save()

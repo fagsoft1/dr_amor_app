@@ -21,6 +21,7 @@ class Form extends Component {
             onCancel,
             handleSubmit,
             modal_open,
+            error,
         } = this.props;
         return (
             <MyFormTagModal
@@ -35,6 +36,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type='Usuario'
+                error={error}
             >
                 <MyTextFieldSimple
                     className="col-12 col-md-4"

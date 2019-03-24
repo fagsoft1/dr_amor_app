@@ -71,7 +71,8 @@ class EfectivoEntregaDenominacion(models.Model):
     valor = models.DecimalField(max_digits=10, decimal_places=0)
 
 
-class MovimientoDineroPDV(TimeStampedModel):
+class TransaccionCaja(TimeStampedModel):
+    from puntos_venta.models import PuntoVentaTurno
     TIPO_CHOICES = (
         ("I", "Ingreso"),
         ("E", "Egreso"),
@@ -86,23 +87,9 @@ class MovimientoDineroPDV(TimeStampedModel):
         ("OPE_CAJ_EGR", "Operación Caja Egreso"),
         ("OPE_CAJ_ING", "Operación Caja Ingreso"),
     )
-    punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='movimientos_dinero')
-    creado_por = models.ForeignKey(User, on_delete=models.PROTECT)
-    servicios = models.ManyToManyField(Servicio, related_name='movimientos_dinero')
-    liquidacion = models.OneToOneField(
-        LiquidacionCuenta,
-        related_name='movimientos_dinero',
-        null=True,
-        blank=True,
-        on_delete=models.PROTECT
-    )
-    arqueo_caja = models.ForeignKey(
-        ArqueoCaja,
-        on_delete=models.PROTECT,
-        related_name='movimientos_dinero',
-        null=True,
-        blank=True
-    )
+
+    punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='transacciones_caja')
+    servicios = models.ManyToManyField(Servicio, related_name='transacciones_caja')
     concepto = models.TextField()
     tipo = models.CharField(max_length=3, null=True, blank=True, choices=TIPO_CHOICES)
     tipo_dos = models.CharField(max_length=30, null=True, blank=True, choices=TIPO_DOS_CHOICES)
@@ -121,6 +108,4 @@ class OperacionCaja(models.Model):
     descripcion = models.CharField(max_length=100)
     observacion = models.TextField(null=True)
     punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='operaciones_caja', null=True)
-    movimiento_dinero = models.ForeignKey(MovimientoDineroPDV, on_delete=models.PROTECT,
-                                          related_name='operaciones_caja', null=True)
     valor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)

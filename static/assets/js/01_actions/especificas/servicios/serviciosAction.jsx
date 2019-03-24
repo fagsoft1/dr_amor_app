@@ -26,7 +26,7 @@ export const solicitarAnulacionServicio = (id, observacion_anulacion, punto_vent
         params.append('observacion_anulacion', observacion_anulacion);
         params.append('punto_venta_id', punto_venta_id);
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'solicitar_anulacion', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'solicitar_anulacion', params, options)
     }
 };
 
@@ -36,7 +36,7 @@ export const cambiarTiempoServicio = (id, pago, options_action = {}) => {
         let params = new URLSearchParams();
         params.append('pago', JSON.stringify(pago));
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'cambiar_tiempo', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'cambiar_tiempo', params, options)
     }
 };
 
@@ -47,7 +47,7 @@ export const createServicio = (values, options_action = {}) => {
             dispatch({type: TYPES.create, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        createObject(current_url_api, values, options);
+        return createObject(current_url_api, values, options);
     }
 };
 export const deleteServicio = (id, options_action = {}) => {
@@ -56,7 +56,7 @@ export const deleteServicio = (id, options_action = {}) => {
             dispatch({type: TYPES.delete, payload: id})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        deleteObject(current_url_api, id, options);
+        return deleteObject(current_url_api, id, options);
     }
 };
 export const terminarServicio = (id, punto_venta_id, options_action = {}) => {
@@ -64,7 +64,7 @@ export const terminarServicio = (id, punto_venta_id, options_action = {}) => {
         let params = new URLSearchParams();
         params.append('punto_venta_id', punto_venta_id);
         const options = {...options_action, dispatch_method: dispatch};
-        callApiMethodPostParameters(current_url_api, id, 'terminar_servicio', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'terminar_servicio', params, options)
     }
 };
 export const fetchServicios = (options_action = {}) => {
@@ -79,7 +79,7 @@ export const fetchServicios = (options_action = {}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGet(current_url_api, options);
+        return fetchListGet(current_url_api, options);
     }
 };
 
@@ -95,7 +95,7 @@ export const fetchServicios_en_proceso = (options_action = {}) => {
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null,
         };
-        fetchListGet(`${current_url_api}/en_proceso`, options);
+        return fetchListGet(`${current_url_api}/en_proceso`, options);
     }
 };
 export const fetchServicios_por_habitacion = (habitacion_id, options_action = {}) => {
@@ -110,7 +110,7 @@ export const fetchServicios_por_habitacion = (habitacion_id, options_action = {}
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(`${current_url_api}/pendientes_por_habitacion/?habitacion_id=${habitacion_id}`, options);
+        return fetchListGetURLParameters(`${current_url_api}/pendientes_por_habitacion/?habitacion_id=${habitacion_id}`, options);
     }
 };
 export const fetchServicios_por_tercero_cuenta_abierta = (tercero_id, options_action = {}) => {
@@ -125,7 +125,7 @@ export const fetchServicios_por_tercero_cuenta_abierta = (tercero_id, options_ac
             dispatch_method: dispatch,
             clear_action_type: limpiar_coleccion ? TYPES.clear : null
         };
-        fetchListGetURLParameters(`${current_url_api}/consultar_por_tercero_cuenta_abierta/?tercero_id=${tercero_id}`, options);
+        return fetchListGetURLParameters(`${current_url_api}/consultar_por_tercero_cuenta_abierta/?tercero_id=${tercero_id}`, options);
     }
 };
 export const fetchServicio = (id, options_action = {}) => {
@@ -134,7 +134,7 @@ export const fetchServicio = (id, options_action = {}) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        fetchObject(current_url_api, id, options);
+        return fetchObject(current_url_api, id, options);
     }
 };
 export const clearServicios = () => {
@@ -149,6 +149,6 @@ export const updateServicio = (id, values, options_action = {}) => {
             dispatch({type: TYPES.update, payload: response})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
-        updateObject(current_url_api, id, values, options);
+        return updateObject(current_url_api, id, values, options);
     }
 };

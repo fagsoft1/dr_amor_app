@@ -1,42 +1,9 @@
-export const loadUser = (options = {}) => {
-    return (dispatch, getState) => {
-        const {callback = null, callback_error = null} = options;
-        dispatch({type: "USER_LOADING"});
-        const token = getState().auth.token;
-        let headers = {
-            "Content-Type": "application/json",
-        };
-        if (token) {
-            headers["Authorization"] = `Token ${token}`;
-        }
-        return fetch("/api/auth/user/", {headers,})
-            .then(res => {
-                if (res.status < 500) {
-                    return res.json().then(data => {
-                        return {status: res.status, data};
-                    })
-                } else {
-                    console.log("Server Error!");
-                    throw res;
-                }
-            })
-            .then(res => {
-                if (res.status === 200) {
-                    dispatch({type: 'USER_LOADED', user: res.data});
-                    if (callback) {
-                        callback()
-                    }
-                    return res.data;
-                } else if (res.status >= 400 && res.status < 500) {
-                    dispatch({type: "AUTHENTICATION_ERROR", data: res.data});
-                    if (callback_error) {
-                        callback_error()
-                    }
-                    throw res.data;
-                }
-            })
-    }
-};
+import {
+    fetchListPostURLParameters,
+    fetchListGet
+} from '../../00_general_fuctions'
+
+const current_url_api = 'authentication';
 
 export const clear_authentication_errors = () => {
     return (dispatch) => {
@@ -44,71 +11,74 @@ export const clear_authentication_errors = () => {
     }
 };
 
-export const login = (username, password, punto_venta = null, options = {}) => {
-    return (dispatch) => {
-        let headers = {"Content-Type": "application/json"};
-        let body = JSON.stringify({username, password, punto_venta});
-        const {callback = null, callback_error = null} = options;
 
-        return fetch("/api/auth/login/", {headers, body, method: "POST"})
-            .then(res => {
-                if (res.status < 500) {
-                    return res.json().then(data => {
-                        return {status: res.status, data};
-                    })
-                } else {
-                    console.log("Server Error!");
-                }
-            })
-            .then(res => {
-                if (res.status === 200) {
-                    dispatch({type: 'LOGIN_SUCCESSFUL', data: res.data});
-                    if (callback) {
-                        callback()
-                    }
-                    //return res.data;
-                } else if (res.status === 403 || res.status === 401) {
-                    dispatch({type: "AUTHENTICATION_ERROR", data: res.data});
-                    if (callback_error) {
-                        callback_error()
-                    }
-                    //throw res.data;
-                } else {
-                    dispatch({type: "LOGIN_FAILED", data: res.data});
-                    if (callback_error) {
-                        callback_error()
-                    }
-                    //throw res.data;
-                }
-            })
+export const logout = (options_action = {}) => {
+    return (dispatch) => {
+        const callback_error = (error) => {
+            if (error.status === 403 || error.status === 401) {
+                dispatch({type: "AUTHENTICATION_ERROR", data: error.response.data});
+            } else {
+                dispatch({type: "LOGIN_FAILED", data: error.response.data});
+            }
+        };
+        const dispatches = () => {
+            dispatch({type: 'LOGOUT_SUCCESSFUL'});
+        };
+        const options = {
+            dispatches,
+            callback_error,
+            ...options_action,
+            dispatch_method: dispatch
+        };
+        return fetchListGet(`${current_url_api}/logout`, options);
     }
 };
 
-export const logout = () => {
-    return (dispatch) => {
-        let headers = {"Content-Type": "application/json"};
 
-        return fetch("/api/auth/logout/", {headers, body: "", method: "POST"})
-            .then(res => {
-                if (res.status === 204) {
-                    return {status: res.status, data: {}};
-                } else if (res.status < 500) {
-                    return res.json().then(data => {
-                        return {status: res.status, data};
-                    })
-                } else {
-                    console.log("Server Error!");
-                    throw res;
-                }
-            })
-            .then(res => {
-                if (res.status === 204) {
-                    dispatch({type: 'LOGOUT_SUCCESSFUL'});
-                    return res.data;
-                } else if (res.status === 403 || res.status === 401) {
-                    dispatch({type: "AUTHENTICATION_ERROR", data: res.data});
-                    throw res.data;
-                }
-            })
+export const loadUser = (options_action = {}) => {
+    return (dispatch) => {
+        const callback_error = (error) => {
+            if (error.response.status >= 400 && error.response.status < 500) {
+                dispatch({type: "AUTHENTICATION_ERROR", data: error.response.data});
+            }
+        };
+        const dispatches = (response) => {
+            dispatch({type: 'USER_LOADED', user: response.data})
+        };
+        const options = {
+            dispatches,
+            callback_error,
+            ...options_action,
+            dispatch_method: dispatch
+        };
+        return fetchListGet(`${current_url_api}/cargar_usuario`, options);
+    }
+};
+
+export const login = (username, password, punto_venta = null, options_action = {}) => {
+    return (dispatch) => {
+        const callback_error = (error) => {
+            if (error.response.status === 403 || error.response.status === 401) {
+                dispatch({type: "AUTHENTICATION_ERROR", data: error.response.data});
+            } else {
+                dispatch({type: "LOGIN_FAILED", data: error.response.data});
+            }
+        };
+        const dispatches = (response) => {
+            if (response.status === 200) {
+                dispatch({type: 'LOGIN_SUCCESSFUL', data: response.data});
+            }
+        };
+        const options = {
+            dispatches,
+            callback_error,
+            ...options_action,
+            dispatch_method: dispatch,
+        };
+        let params = new URLSearchParams();
+        params.append('username', username);
+        params.append('password', password);
+        params.append('punto_venta', punto_venta);
+        return fetchListPostURLParameters(current_url_api, 'login', params, options);
     }
 };

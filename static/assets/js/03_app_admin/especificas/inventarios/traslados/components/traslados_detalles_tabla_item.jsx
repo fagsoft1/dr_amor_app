@@ -14,7 +14,7 @@ export default class TablaProcesoTrasladoItem extends Component {
     }
 
     render() {
-        const {item, updateCantidadTraslado} = this.props;
+        const {item, updateCantidadTraslado, editable} = this.props;
         const trasladado = this.props.traslado.trasladado;
         return (
             <tr>
@@ -40,7 +40,7 @@ export default class TablaProcesoTrasladoItem extends Component {
                 }
                 <td>
                     {
-                        !trasladado ?
+                        editable ?
                             <input type="text" value={this.state.cantidad}
                                    onBlur={() => {
                                        const cantidad = this.state.cantidad;
@@ -64,14 +64,17 @@ export default class TablaProcesoTrasladoItem extends Component {
                         <td>
                             {item.cantidad_destino ? Number(item.cantidad_destino) + Number(this.state.cantidad) : Number(this.state.cantidad)}
                         </td>
-                        <td>
-                            <FontAwesomeIcon
-                                className='puntero'
-                                icon={['far', 'trash']}
-                                onClick={() => this.props.eliminarItem(item.id)}
-                            />
-                        </td>
                     </Fragment>
+                }
+                {
+                    editable &&
+                    <td>
+                        <FontAwesomeIcon
+                            className='puntero'
+                            icon={['far', 'trash']}
+                            onClick={() => this.props.eliminarItem(item.id)}
+                        />
+                    </td>
                 }
             </tr>
         )

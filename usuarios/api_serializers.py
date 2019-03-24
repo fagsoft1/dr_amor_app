@@ -10,6 +10,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
     punto_venta_actual = PuntoVentaSerializer(read_only=True)
     qr_acceso = serializers.CharField(source='tercero.qr_acceso', read_only=True)
 
+    # sesion_trabajo_pv = serializers.IntegerField(allow_null=True)
+
     def get_imagen_perfil_url(self, obj):
         if hasattr(obj, 'tercero'):
             if obj.tercero.imagen_perfil:
@@ -26,6 +28,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'first_name',
             'punto_venta_actual',
             'last_name',
+            # 'sesion_trabajo_pv',
             'email',
             'is_active',
             'is_staff',
@@ -46,6 +49,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        validated_data.pop('groups', None)
         user = User.objects.create_user(**validated_data)
         user.set_password(validated_data['password'])
         user.save()
@@ -63,13 +67,7 @@ class LoginUserSerializer(serializers.Serializer):
                 if user.tercero.presente:
                     return user
                 raise serializers.ValidationError(
-                    {'error': 'Debes de hacer el ingreso de acceso primero!'})
+                    {'_error': 'Debes de hacer el ingreso de acceso primero!'})
             else:
                 return user
-        raise serializers.ValidationError({'error': 'El usuario y la contraseña no coinciden con ningún usuario!'})
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username')
+        raise serializers.ValidationError({'_error': 'El usuario y la contraseña no coinciden con ningún usuario!'})

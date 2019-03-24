@@ -23,6 +23,7 @@ class List extends Component {
         const {object_list, permisos_object} = this.props;
         return (
             <CRUD
+                posCreateMethod={(res) => console.log(res)}
                 method_pool={this.method_pool}
                 list={object_list}
                 permisos_object={permisos_object}

@@ -84,7 +84,7 @@ class IndexApp extends Component {
                                     punto_venta_actual.tipo === 2 &&
                                     <Boton
                                         nombre='Tienda'
-                                        link={`/app/tienda/${punto_venta_actual.id}`}
+                                        link={`/app/tienda/`}
                                         icono='shopping-cart'
                                         classes={classes}
                                     />

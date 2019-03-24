@@ -1,7 +1,15 @@
 from channels.binding.websockets import WebsocketBinding
-from django.contrib.auth.models import User, Group
+from .services import acompanante_desencriptar
 from rest_framework import serializers
 
+from terceros.services import (
+    tercero_set_new_pin,
+    colaborador_update,
+    acompanante_update,
+    acompanante_crear,
+    colaborador_crear,
+    acompanante_encriptar
+)
 from .models import Tercero
 
 
@@ -45,9 +53,37 @@ class AcompananteSerializer(serializers.ModelSerializer):
     fecha_nacimiento = serializers.DateTimeField(format="%Y-%m-%d", input_formats=['%Y-%m-%d', 'iso-8601'])
     saldo_final = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     to_string = serializers.SerializerMethodField()
+    identificacion = serializers.SerializerMethodField()
+    full_name = serializers.SerializerMethodField()
+    nombre_1 = serializers.SerializerMethodField()
+    nombre_segundo_1 = serializers.SerializerMethodField()
+    apellido_1 = serializers.SerializerMethodField()
+    apellido_segundo_1 = serializers.SerializerMethodField()
+    nro_identificacion_1 = serializers.SerializerMethodField()
 
     def get_to_string(self, instance):
         return instance.full_name_proxy
+
+    def get_nombre_1(self, instance):
+        return None
+
+    def get_nombre_segundo_1(self, instance):
+        return None
+
+    def get_apellido_1(self, instance):
+        return None
+
+    def get_apellido_segundo_1(self, instance):
+        return None
+
+    def get_nro_identificacion_1(self, instance):
+        return None
+
+    def get_full_name(self, instance):
+        return None
+
+    def get_identificacion(self, instance):
+        return None
 
     class Meta:
         model = Tercero
@@ -56,14 +92,19 @@ class AcompananteSerializer(serializers.ModelSerializer):
             'full_name',
             'full_name_proxy',
             'to_string',
+            'nombre_1',
+            'nombre_segundo_1',
+            'apellido_1',
+            'apellido_segundo_1',
+            'nro_identificacion_1',
             'nombre',
             'nombre_segundo',
             'apellido',
             'apellido_segundo',
+            'nro_identificacion',
             'identificacion',
             'genero',
             'tipo_documento',
-            'nro_identificacion',
             'fecha_nacimiento',
             'grupo_sanguineo',
             'es_acompanante',
@@ -77,54 +118,44 @@ class AcompananteSerializer(serializers.ModelSerializer):
             'saldo_final',
         ]
         extra_kwargs = {
-            'full_name': {'read_only': True},
             'usuario': {'read_only': True},
-            'identificacion': {'read_only': True},
+            'nombre': {'write_only': True},
+            'nombre_segundo': {'write_only': True},
+            'apellido': {'write_only': True},
+            'apellido_segundo': {'write_only': True},
+            'nro_identificacion': {'write_only': True},
         }
 
     def create(self, validated_data):
-        nombre = validated_data.get('nombre', None)
-        nombre_segundo = validated_data.get('nombre_segundo', None)
-        apellido = validated_data.get('apellido', None)
-        apellido_segundo = validated_data.get('apellido_segundo', None)
-        password = validated_data.get('nro_identificacion', None)
-        first_name = '%s %s'.strip() % (nombre, nombre_segundo)
-        last_name = '%s %s'.strip() % (apellido, apellido_segundo)
-        if apellido_segundo:
-            username = ('ac-%s%s%s' % (nombre[0:3], apellido[0:3], apellido_segundo[0:3])).lower()
-        else:
-            username = ('ac-%s%s' % (nombre[0:3], apellido[0:3])).lower()
-
-        if User.objects.filter(username=username).exists():
-            username = '%s%s' % (username, User.objects.filter(username__contains=username).count())
-        user = User.objects.create_user(
-            username=username.lower(),
-            first_name=first_name,
-            last_name=last_name,
-            password=password,
-            is_active=True
-        )
-        new_group, created = Group.objects.get_or_create(name='ACOMPAÑANTES')
-        user.groups.add(new_group)
-        validated_data.update(usuario=user, es_acompanante=True)
-        modelo = super().create(validated_data)
-        modelo.set_new_pin('0000')
-        return modelo
+        acompanante = acompanante_crear(validated_data)
+        return acompanante
 
     def update(self, instance, validated_data):
-        nombre = validated_data.get('nombre', None)
-        nombre_segundo = validated_data.get('nombre_segundo', None)
-        apellido = validated_data.get('apellido', None)
-        apellido_segundo = validated_data.get('apellido_segundo', None)
+        acompanante = acompanante_update(instance.id, validated_data)
+        return acompanante
 
-        if nombre and apellido:
-            first_name = '%s %s'.strip() % (nombre, nombre_segundo)
-            last_name = '%s %s'.strip() % (apellido, apellido_segundo)
-            instance.usuario.first_name = first_name
-            instance.usuario.last_name = last_name
-        instance.usuario.save()
 
-        return super().update(instance, validated_data)
+class AcompananteDesencriptadoSerializer(AcompananteSerializer):
+    def get_nombre_1(self, instance):
+        return acompanante_desencriptar(instance.nombre)
+
+    def get_nombre_segundo_1(self, instance):
+        return acompanante_desencriptar(instance.nombre_segundo)
+
+    def get_apellido_1(self, instance):
+        return acompanante_desencriptar(instance.apellido)
+
+    def get_apellido_segundo_1(self, instance):
+        return acompanante_desencriptar(instance.apellido_segundo)
+
+    def get_full_name(self, instance):
+        return instance.full_name
+
+    def get_identificacion(self, instance):
+        return instance.identificacion
+
+    def get_nro_identificacion_1(self, instance):
+        return acompanante_desencriptar(instance.nro_identificacion)
 
 
 class ColaboradorSerializer(serializers.ModelSerializer):
@@ -172,48 +203,12 @@ class ColaboradorSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        nombre = validated_data.get('nombre', None)
-        nombre_segundo = validated_data.get('nombre_segundo', None)
-        apellido = validated_data.get('apellido', None)
-        apellido_segundo = validated_data.get('apellido_segundo', None)
-        password = validated_data.get('nro_identificacion', None)
-        first_name = '%s %s'.strip() % (nombre, nombre_segundo)
-        last_name = '%s %s'.strip() % (apellido, apellido_segundo)
-        if apellido_segundo:
-            username = ('co-%s%s%s' % (nombre[0:3], apellido[0:3], apellido_segundo[0:3])).lower()
-        else:
-            username = ('co-%s%s' % (nombre[0:3], apellido[0:3])).lower()
-
-        if User.objects.filter(username=username).exists():
-            username = '%s%s' % (username, User.objects.filter(username__contains=username).count())
-        user = User.objects.create_user(
-            username=username.lower(),
-            first_name=first_name,
-            last_name=last_name,
-            password=password,
-            is_active=True
-        )
-        new_group, created = Group.objects.get_or_create(name='COLABORADORES')
-        user.groups.add(new_group)
-        validated_data.update(usuario=user, es_colaborador=True)
-        colaborador = super().create(validated_data)
-        colaborador.set_new_pin('0000')
+        colaborador = colaborador_crear(validated_data)
         return colaborador
 
     def update(self, instance, validated_data):
-        nombre = validated_data.get('nombre', None)
-        nombre_segundo = validated_data.get('nombre_segundo', None)
-        apellido = validated_data.get('apellido', None)
-        apellido_segundo = validated_data.get('apellido_segundo', None)
-
-        if nombre and apellido:
-            first_name = '%s %s'.strip() % (nombre, nombre_segundo)
-            last_name = '%s %s'.strip() % (apellido, apellido_segundo)
-            instance.usuario.first_name = first_name
-            instance.usuario.last_name = last_name
-        instance.usuario.save()
-
-        return super().update(instance, validated_data)
+        colaborador = colaborador_update(instance.id, validated_data)
+        return colaborador
 
 
 class ProveedorSerializer(serializers.ModelSerializer):

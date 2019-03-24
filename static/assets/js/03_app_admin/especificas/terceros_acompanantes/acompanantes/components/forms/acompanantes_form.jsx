@@ -3,9 +3,9 @@ import {reduxForm} from 'redux-form';
 import {MyTextFieldSimple, MyCombobox} from '../../../../../../00_utilities/components/ui/forms/fields';
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
-import validate from '../../../../terceros/componentes/forms/validate';
+import validate from './validate';
 import asyncValidate from './asyncValidate';
-import CedulaForm from '../../../../terceros/componentes/forms/datos_cedula_form';
+import CedulaForm from './datos_cedula_acompanante_form';
 import LectorCedula from '../../../../terceros/componentes/forms/lector_cedula_form';
 
 const modelStyle = {
@@ -20,6 +20,7 @@ class Form extends Component {
             pristine,
             submitting,
             reset,
+            error,
             initialValues,
             onSubmit,
             onCancel,
@@ -28,23 +29,35 @@ class Form extends Component {
             singular_name,
             setSelectItem,
             categorias_list,
+            permisos_object,
         } = this.props;
         return (
             <MyFormTagModal
                 modelStyle={modelStyle}
                 onCancel={onCancel}
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={handleSubmit(v => {
+                    const datos = {
+                        ...v,
+                        nombre: v.nombre_1,
+                        nombre_segundo: v.nombre_segundo_1 ? v.nombre_segundo_1 : '',
+                        apellido: v.apellido_1,
+                        apellido_segundo: v.apellido_segundo_1 ? v.apellido_segundo_1 : '',
+                        nro_identificacion: v.nro_identificacion_1,
+                    };
+                    return onSubmit(datos)
+                })}
                 reset={reset}
                 initialValues={initialValues}
                 submitting={submitting}
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
+                error={error}
             >
                 <LectorCedula
                     setSelectItem={setSelectItem}
                 >
-                    <CedulaForm/>
+                    <CedulaForm permisos={permisos_object}/>
                     <MyTextFieldSimple
                         className='col-12 col-md-6'
                         nombre='Alias'
@@ -83,7 +96,7 @@ Form = reduxForm({
     form: "acompanantesForm",
     validate,
     asyncValidate,
-    asyncBlurFields: ['nro_identificacion', 'tipo_documento'],
+    asyncBlurFields: ['nro_identificacion_1', 'tipo_documento', 'alias_modelo'],
     enableReinitialize: true
 })(Form);
 

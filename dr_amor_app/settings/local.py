@@ -1,3 +1,5 @@
+import sys
+
 from .base import *
 from django.core.exceptions import ImproperlyConfigured
 
@@ -102,3 +104,6 @@ CHANNEL_LAYERS = {
         "ROUTING": "dr_amor_app.ws_routing.channel_routing",
     },
 }
+
+KEY_ENCRY = '$3ST_43sl4C0ntr4_s3n4m4_sFu3rt3$'
+VECTOR_ENCRY = 'n$3rt3$4m4_ntr4_'

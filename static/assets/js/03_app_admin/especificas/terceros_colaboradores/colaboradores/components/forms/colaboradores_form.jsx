@@ -26,6 +26,7 @@ class Form extends Component {
             modal_open,
             singular_name,
             setSelectItem,
+            error
         } = this.props;
         return (
             <MyFormTagModal
@@ -38,6 +39,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
+                error={error}
             >
                 <LectorCedula
                     setSelectItem={setSelectItem}
