@@ -21,13 +21,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def mi_cuenta(self, request):
-        # ultima_sesion = SesionTrabajoPV.objects.filter(usuario=OuterRef('pk'), finish__isnull=True)
-        # qs = self.queryset.annotate(
-        #     sesion_trabajo_pv=Subquery(ultima_sesion.values('id')[:1]),
-        #     punto_venta=Subquery(ultima_sesion.values('punto_venta')[:1]),
-        # ).filter(
-        #     id=request.user.id
-        # ).distinct().first()
         qs = self.queryset.filter(
             id=request.user.id
         ).distinct().first()

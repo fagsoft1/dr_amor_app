@@ -38,7 +38,8 @@ const TablaProcesoTraslado = (props) => {
                     traslado={props.traslado}
                     eliminarItem={props.eliminarItem}
                     updateCantidadTraslado={props.updateCantidadTraslado}
-                    key={e.id} item={e}
+                    key={e.id}
+                    item={e}
                 />
             )}
             </tbody>

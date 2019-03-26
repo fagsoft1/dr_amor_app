@@ -10,8 +10,8 @@ from inventarios.managers import (
     MovimientoInventarioComprasManager,
     MovimientoInventarioSaldosInicialesManager,
     MovimientoInventarioAjustesManager,
-    MovimientoInventarioManager
-)
+    MovimientoInventarioManager,
+    TrasladoInventarioDetalleManager)
 from terceros.models import Tercero
 from productos.models import Producto
 
@@ -96,7 +96,7 @@ class MovimientoInventarioDetalle(TimeStampedModel):
         ]
 
 
-class TrasladoInventario(models.Model):
+class TrasladoInventario(TimeStampedModel):
     ESTADO_CHOICES = (
         (1, 'Iniciado'),
         (2, 'Esperando Traslado'),
@@ -150,6 +150,8 @@ class TrasladoInventarioDetalle(models.Model):
     producto = models.ForeignKey(Producto, related_name='mis_traslados', on_delete=models.PROTECT)
     cantidad = models.DecimalField(max_digits=12, decimal_places=2)
     cantidad_realmente_trasladada = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    objects = TrasladoInventarioDetalleManager()
 
     class Meta:
         unique_together = [('traslado', 'producto')]

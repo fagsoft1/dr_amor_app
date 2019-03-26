@@ -11,15 +11,15 @@ import {
 
 const current_url_api = 'puntos_ventas';
 
-export const efectuarVentaTiendaEnPuntoVenta = (id, qr_codigo, usuario_id, tipo_venta, pedido, options_action = {}) => {
+export const efectuarVentaTiendaEnPuntoVenta = (id, qr_codigo, tercero_id, tipo_venta, pedido, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('pedido', JSON.stringify(pedido));
         params.append('qr_codigo', qr_codigo);
-        params.append('usuario_id', usuario_id);
+        params.append('tercero_id', tercero_id);
         params.append('tipo_venta', tipo_venta);
         const options = {...options_action, dispatch_method: dispatch};
-        return callApiMethodPostParameters(current_url_api, id, 'efectuar_venta', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'efectuar_venta_producto', params, options)
     }
 };
 

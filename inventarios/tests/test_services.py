@@ -487,7 +487,7 @@ class TrasladoServicesTests(TestCase):
             bodega_destino_id=bodega_inventario_principal_dos.id,
             usuario_crea_id=self.usuario.id
         )
-        self.assertTrue(traslado.estado == 0)
+        self.assertTrue(traslado.estado == 1)
         self.assertFalse(traslado.trasladado)
         self.assertEqual(traslado.bodega_origen_id, self.bodega_inventario.id)
         self.assertEqual(traslado.bodega_destino.id, bodega_inventario_principal_dos.id)
@@ -500,7 +500,7 @@ class TrasladoServicesTests(TestCase):
             bodega_destino_id=self.bodega_punto_venta_abierto.id,
             usuario_crea_id=self.usuario.id
         )
-        self.assertTrue(traslado.estado == 0)
+        self.assertTrue(traslado.estado == 1)
         self.assertFalse(traslado.trasladado)
         self.assertEqual(traslado.bodega_origen_id, self.bodega_inventario.id)
         self.assertEqual(traslado.bodega_destino.id, self.bodega_punto_venta_abierto.id)
@@ -513,7 +513,7 @@ class TrasladoServicesTests(TestCase):
             bodega_destino_id=self.bodega_punto_venta_abierto.id,
             usuario_crea_id=self.colaborador_presente_dos.usuario.id
         )
-        self.assertTrue(traslado.estado == 0)
+        self.assertTrue(traslado.estado == 1)
         self.assertFalse(traslado.trasladado)
         self.assertEqual(traslado.bodega_origen_id, self.bodega_punto_venta_abierto_dos.id)
         self.assertEqual(traslado.bodega_destino.id, self.bodega_punto_venta_abierto.id)
@@ -649,28 +649,6 @@ class TrasladoServicesTests(TestCase):
                 cantidad=200
             )
 
-    def test_traslado_inventario_adicionar_item_repitiendo_item(self):
-        from ..services import traslado_inventario_crear, traslado_inventario_adicionar_item
-        traslado = traslado_inventario_crear(
-            bodega_origen_id=self.bodega_inventario.id,
-            bodega_destino_id=self.bodega_punto_venta_abierto.id,
-            usuario_crea_id=self.usuario.id
-        )
-        traslado_inventario_adicionar_item(
-            traslado_inventario_id=traslado.id,
-            producto_id=self.producto_dos.id,
-            cantidad=1
-        )
-        with self.assertRaisesMessage(
-                ValidationError,
-                "{'_error': 'No puede tener 2 productos del mismo tipo en un traslado, por favor deje solo una linea de traslado por el producto"
-        ):
-            traslado_inventario_adicionar_item(
-                traslado_inventario_id=traslado.id,
-                producto_id=self.producto_dos.id,
-                cantidad=1
-            )
-
     def test_traslado_inventario_realizar_traslado(self):
         from ..services import (
             traslado_inventario_crear,
@@ -684,7 +662,7 @@ class TrasladoServicesTests(TestCase):
             bodega_destino_id=self.bodega_punto_venta_abierto.id,
             usuario_crea_id=self.usuario.id
         )
-        self.assertTrue(traslado.estado == 0)
+        self.assertTrue(traslado.estado == 1)
         traslado_inventario_adicionar_item(
             traslado_inventario_id=traslado.id,
             producto_id=self.producto_uno.id,
@@ -770,7 +748,7 @@ class TrasladoServicesTests(TestCase):
             bodega_destino_id=self.bodega_punto_venta_abierto.id,
             usuario_crea_id=self.usuario.id
         )
-        self.assertTrue(traslado.estado == 0)
+        self.assertTrue(traslado.estado == 1)
         traslado_inventario_adicionar_item(
             traslado_inventario_id=traslado.id,
             producto_id=self.producto_uno.id,

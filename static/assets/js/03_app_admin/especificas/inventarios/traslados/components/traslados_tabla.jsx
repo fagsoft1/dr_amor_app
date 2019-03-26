@@ -1,11 +1,11 @@
 import React from "react";
-import Checkbox from '@material-ui/core/Checkbox';
 import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
 import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 import {Link} from 'react-router-dom'
 
 import ReactTable from "react-table";
+import {fechaHoraFormatoUno} from "../../../../../00_utilities/common";
 
 class Tabla extends React.Component {
     render() {
@@ -18,7 +18,7 @@ class Tabla extends React.Component {
             onSelectItemEdit,
             permisos_object
         } = this.props;
-
+        console.log(data)
 
         return (
             <ReactTable
@@ -46,23 +46,24 @@ class Tabla extends React.Component {
                                     return row[filter.id].includes(filter.value.toUpperCase())
                                 }
                             },
+                            {
+                                Header: "Fecha",
+                                accessor: "created",
+                                minWidth: 130,
+                                maxWidth: 150,
+                                Cell: row => fechaHoraFormatoUno(row.value)
+                            },
+                            {
+                                Header: "Estado",
+                                accessor: "estado_display",
+                                minWidth: 120,
+                                maxWidth: 150
+                            },
                         ]
                     },
                     {
                         Header: "Opciones",
                         columns: [
-                            // {
-                            //     Header: "Activo",
-                            //     accessor: "is_active",
-                            //     show: permisos_object.make_user_active,
-                            //     maxWidth: 60,
-                            //     Cell: row => (
-                            //         <Checkbox
-                            //             checked={row.value}
-                            //             onChange={() => updateItem({...row.original, is_active: !row.value})}
-                            //         />
-                            //     )
-                            // },
                             {
                                 Header: "Elimi.",
                                 show: permisos_object.delete,

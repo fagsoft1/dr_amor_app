@@ -34,7 +34,7 @@ export function createRequest(request, options = {}) {
             dispatch_method(actions.noCargando())
         }
         if (callback) {
-            callback(response)
+            callback(response.data)
         }
     }).catch(error => {
             if (callback_error) {

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Permission, Group
 from django.db.models import Q
 
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 
@@ -54,7 +54,7 @@ class PermissionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(permissions_list, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def tengo_permisos(self, request):
         listado_split = request.GET.get('listado_permisos').split(',')[0:-1]
         if request.user.is_superuser:

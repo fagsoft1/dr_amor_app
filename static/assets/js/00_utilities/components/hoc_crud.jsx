@@ -50,13 +50,13 @@ function crudHOC(CreateForm, Tabla) {
                 this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : response});
 
                 if (item.id && posUpdateMethod) {
-                    posUpdateMethod(response.data);
+                    posUpdateMethod(response);
                 }
                 if (!item.id && posCreateMethod) {
-                    posCreateMethod(response.data);
+                    posCreateMethod(response);
                 }
                 if (posSummitMethod) {
-                    posSummitMethod(response.data)
+                    posSummitMethod(response)
                 }
             };
             if (item.id) {

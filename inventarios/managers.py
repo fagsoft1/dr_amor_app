@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, ExpressionWrapper, Sum, DecimalField
+from django.db.models import Q, ExpressionWrapper, Sum, DecimalField, Subquery, OuterRef
 
 
 # region MovimientoInventario Managers
@@ -74,9 +74,28 @@ class MovimientoInventarioAjustesManager(MovimientoInventarioManager):
     def sin_cargar(self):
         return self.get_queryset().sin_cargar()
 
+
 # endregion
 
 
-# region MovimientoInventarioDetalle Managers
-
+# region TrasladoInventarioDetalle Managers
+class TrasladoInventarioDetalleManager(models.Manager):
+    def get_queryset(self):
+        from inventarios.models import MovimientoInventarioDetalle
+        producto_bodega_origen = MovimientoInventarioDetalle.objects.filter(
+            movimiento__bodega_id=OuterRef('traslado__bodega_origen_id'),
+            producto_id=OuterRef('producto_id'),
+            es_ultimo_saldo=True,
+        )
+        producto_bodega_destino = MovimientoInventarioDetalle.objects.filter(
+            movimiento__bodega_id=OuterRef('traslado__bodega_destino_id'),
+            producto_id=OuterRef('producto_id'),
+            es_ultimo_saldo=True,
+        )
+        return super().get_queryset().select_related(
+            'producto',
+        ).annotate(
+            cantidad_origen=Subquery(producto_bodega_origen.values('saldo_cantidad')),
+            cantidad_destino=Subquery(producto_bodega_destino.values('saldo_cantidad')),
+        ).all()
 # endregion

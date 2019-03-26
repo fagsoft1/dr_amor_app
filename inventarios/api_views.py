@@ -1,5 +1,4 @@
-from django.db.models import OuterRef, Subquery
-from rest_framework import viewsets, permissions, serializers
+from rest_framework import viewsets, serializers
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from datetime import datetime
@@ -145,8 +144,18 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
         traslado = self.get_object()
         if not traslado.trasladado:
             nuevo_estado = int(request.POST.get('nuevo_estado'))
-            traslado.estado = nuevo_estado
-            traslado.save()
+            if nuevo_estado == 2:
+                from .services import traslado_inventario_set_estado_esperando_traslado
+                traslado = traslado_inventario_set_estado_esperando_traslado(
+                    traslado_inventario_id=traslado.id,
+                    usuario_id=self.request.user.id
+                )
+            elif nuevo_estado == 1:
+                from .services import traslado_inventario_set_estado_Iniciado
+                traslado = traslado_inventario_set_estado_Iniciado(
+                    traslado_inventario_id=traslado.id,
+                    usuario_id=self.request.user.id
+                )
             serializer = self.get_serializer(traslado)
             return Response(serializer.data)
         else:
@@ -164,24 +173,8 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
 
 class TrasladoInventarioDetallesViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissionsFull]
-    # TODO: Hacer queryset manager
     # TODO: Hacer test queryset
-    producto_bodega_origen = MovimientoInventarioDetalle.objects.filter(
-        movimiento__bodega_id=OuterRef('traslado__bodega_origen_id'),
-        producto_id=OuterRef('producto_id'),
-        es_ultimo_saldo=True,
-    )
-    producto_bodega_destino = MovimientoInventarioDetalle.objects.filter(
-        movimiento__bodega_id=OuterRef('traslado__bodega_destino_id'),
-        producto_id=OuterRef('producto_id'),
-        es_ultimo_saldo=True,
-    )
-    queryset = TrasladoInventarioDetalle.objects.select_related(
-        'producto',
-    ).annotate(
-        cantidad_origen=Subquery(producto_bodega_origen.values('saldo_cantidad')),
-        cantidad_destino=Subquery(producto_bodega_destino.values('saldo_cantidad')),
-    ).all()
+    queryset = TrasladoInventarioDetalle.objects.all()
     serializer_class = TrasladoInventarioDetalleSerializer
 
     @list_route(methods=['get'])

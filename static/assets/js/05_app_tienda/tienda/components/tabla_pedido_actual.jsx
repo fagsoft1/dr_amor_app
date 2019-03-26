@@ -28,7 +28,7 @@ class TablaPedidoActual extends Component {
             {
                 _.map(pedido_actual, e => {
                         return (
-                            <tr key={e.id}>
+                            <tr key={e.producto_id}>
                                 <td>{e.nombre}</td>
                                 <td>{e.cantidad}</td>
                                 <td>{pesosColombianos(e.precio_unitario)}</td>
@@ -50,8 +50,8 @@ class TablaPedidoActual extends Component {
                                 </td>
                                 <td>
                                     {
-                                        inventario_disponible[e.id] &&
-                                        inventario_disponible[e.id].saldo_cantidad > 0 &&
+                                        inventario_disponible[e.producto_id] &&
+                                        inventario_disponible[e.producto_id].saldo_cantidad > 0 &&
                                         <IconButton
                                             style={{
                                                 margin: 0,

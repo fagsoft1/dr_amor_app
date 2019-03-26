@@ -217,6 +217,10 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
     creado_por = serializers.HiddenField(default=serializers.CurrentUserDefault())
     bodega_origen_nombre = serializers.CharField(source='bodega_origen.nombre', read_only=True)
     bodega_destino_nombre = serializers.CharField(source='bodega_destino.nombre', read_only=True)
+    estado_display = serializers.SerializerMethodField()
+
+    def get_estado_display(self, obj):
+        return obj.get_estado_display()
 
     class Meta:
         model = TrasladoInventario
@@ -224,6 +228,7 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
             'url',
             'id',
             'bodega_origen',
+            'created',
             'bodega_origen_nombre',
             'bodega_destino',
             'creado_por',
@@ -232,6 +237,7 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
             'movimiento_origen',
             'movimiento_destino',
             'estado',
+            'estado_display',
             'trasladado',
         ]
         extra_kwargs = {
@@ -267,6 +273,17 @@ class TrasladoInventarioDetalleSerializer(serializers.ModelSerializer):
             traslado_inventario_id=traslado.id,
             producto_id=producto.id,
             cantidad=cantidad,
+        )
+        return detalle_traslado_inventario
+
+    def update(self, instance, validated_data):
+        from .services import traslado_inventario_adicionar_item
+        cantidad = validated_data.pop('cantidad', None)
+        detalle_traslado_inventario = traslado_inventario_adicionar_item(
+            traslado_inventario_id=instance.traslado.id,
+            producto_id=instance.producto.id,
+            cantidad=cantidad,
+            traslado_item_id=instance.id
         )
         return detalle_traslado_inventario
 

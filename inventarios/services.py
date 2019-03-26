@@ -267,6 +267,26 @@ def traslado_inventario_set_estado_esperando_traslado(
     return traslado
 
 
+def traslado_inventario_set_estado_Iniciado(
+        traslado_inventario_id: int,
+        usuario_id: int
+) -> TrasladoInventario:
+    traslado = TrasladoInventario.objects.get(pk=traslado_inventario_id)
+    if traslado.estado == 3:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Un traslado ya verificado no se puede editar'}
+        )
+    if traslado.creado_por.id != usuario_id:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Sólo el usuario que creo el traslado puede editar el traslado'}
+        )
+    traslado.estado = 1
+    traslado.save()
+    return traslado
+
+
 def traslado_inventario_crear(
         usuario_crea_id: int,
         bodega_origen_id: int,
@@ -299,7 +319,7 @@ def traslado_inventario_crear(
         creado_por_id=usuario_crea_id,
         bodega_destino_id=bodega_destino_id,
         bodega_origen_id=bodega_origen_id,
-        estado=0,
+        estado=1,
         trasladado=False
     )
 
@@ -307,36 +327,43 @@ def traslado_inventario_crear(
 def traslado_inventario_adicionar_item(
         traslado_inventario_id: int,
         producto_id: int,
-        cantidad: float
+        cantidad: float,
+        traslado_item_id: int = None
 ) -> TrasladoInventarioDetalle:
     traslado_inventario = TrasladoInventario.objects.get(pk=traslado_inventario_id)
     bodega_origen = traslado_inventario.bodega_origen
-    qs = MovimientoInventarioDetalle.objects.filter(
+
+    if not MovimientoInventarioDetalle.objects.filter(
+            producto_id=producto_id,
+            movimiento__bodega_id=bodega_origen,
+            es_ultimo_saldo=True
+    ).exists():
+        producto = Producto.objects.get(pk=producto_id)
+        raise serializers.ValidationError({'_error': 'No hay existencias de producto %s' % producto.nombre})
+
+    inventario_producto = MovimientoInventarioDetalle.objects.get(
         producto_id=producto_id,
         movimiento__bodega_id=bodega_origen,
         es_ultimo_saldo=True
     )
-    if not qs.exists():
-        producto = Producto.objects.get(pk=producto_id)
-        raise serializers.ValidationError({'_error': 'No hay existencias de producto %s' % producto.nombre})
-
-    inventario_producto = qs.first()
     if inventario_producto.saldo_cantidad < cantidad:
         raise serializers.ValidationError({
             '_error': 'No hay existencias suficientes del producto seleccionado. Solo hay %s de %s y usted pide trasladar %s' % (
                 inventario_producto.saldo_cantidad, inventario_producto.producto.nombre,
                 cantidad)
         })
-    if traslado_inventario.detalles.filter(producto_id=producto_id).exists():
-        producto = Producto.objects.get(pk=producto_id)
-        raise serializers.ValidationError({
-            '_error': 'No puede tener 2 productos del mismo tipo en un traslado, por favor deje solo una linea de traslado por el producto %s' % producto.nombre
-        })
-    return TrasladoInventarioDetalle.objects.create(
-        traslado_id=traslado_inventario_id,
-        producto_id=producto_id,
-        cantidad=cantidad
-    )
+
+    if not traslado_item_id:
+        return TrasladoInventarioDetalle.objects.create(
+            traslado_id=traslado_inventario_id,
+            producto_id=producto_id,
+            cantidad=cantidad
+        )
+    else:
+        traslado_item = TrasladoInventarioDetalle.objects.get(pk=traslado_item_id)
+        traslado_item.cantidad = cantidad
+        traslado_item.save()
+        return traslado_item
 
 
 def traslado_inventario_realizar_traslado(

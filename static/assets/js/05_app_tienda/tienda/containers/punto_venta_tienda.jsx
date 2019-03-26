@@ -68,7 +68,7 @@ class PuntoVentaTienda extends Component {
                     ...s.pedido_actual,
                     [item.producto]: {
                         cantidad: 1,
-                        id: item.producto,
+                        producto_id: item.producto,
                         nombre: item.producto_nombre,
                         precio_unitario: parseFloat(item.producto_precio_venta),
                         precio_total: parseFloat(item.producto_precio_venta)
@@ -81,16 +81,16 @@ class PuntoVentaTienda extends Component {
 
     restarUnidadItem(item) {
         this.setState(s => {
-            if (s.pedido_actual[item.id]) {
-                const item_actual = s.pedido_actual[item.id];
+            if (s.pedido_actual[item.producto_id]) {
+                const item_actual = s.pedido_actual[item.producto_id];
                 const item_modificado = {
                     ...item_actual,
                     cantidad: item_actual.cantidad - 1,
                     precio_total: parseFloat((item_actual.cantidad - 1) * item.precio_unitario)
                 };
-                let pedido_actual = {...s.pedido_actual, [item.id]: item_modificado};
+                let pedido_actual = {...s.pedido_actual, [item.producto_id]: item_modificado};
                 if (item_modificado.cantidad <= 0) {
-                    pedido_actual = _.omit(s.pedido_actual, item.id);
+                    pedido_actual = _.omit(s.pedido_actual, item.producto_id);
                 }
                 return {pedido_actual}
             } else {
@@ -101,8 +101,8 @@ class PuntoVentaTienda extends Component {
 
     eliminarItem(item) {
         this.setState(s => {
-            if (s.pedido_actual[item.id]) {
-                const pedido_actual = _.omit(s.pedido_actual, item.id);
+            if (s.pedido_actual[item.producto_id]) {
+                const pedido_actual = _.omit(s.pedido_actual, item.producto_id);
                 return {pedido_actual}
             } else {
                 return {pedido_actual: s.pedido_actual}
@@ -112,14 +112,14 @@ class PuntoVentaTienda extends Component {
 
     adicionarUnidadItem(item) {
         this.setState(s => {
-            if (s.pedido_actual[item.id]) {
-                const item_actual = s.pedido_actual[item.id];
+            if (s.pedido_actual[item.producto_id]) {
+                const item_actual = s.pedido_actual[item.producto_id];
                 const item_modificado = {
                     ...item_actual,
                     cantidad: item_actual.cantidad + 1,
                     precio_total: parseFloat((item_actual.cantidad + 1) * item.precio_unitario)
                 };
-                let pedido_actual = {...s.pedido_actual, [item.id]: item_modificado};
+                let pedido_actual = {...s.pedido_actual, [item.producto_id]: item_modificado};
                 return {pedido_actual}
             } else {
                 return {pedido_actual: s.pedido_actual}

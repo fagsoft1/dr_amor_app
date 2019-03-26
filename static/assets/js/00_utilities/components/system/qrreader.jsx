@@ -154,7 +154,7 @@ class QrReaderComponent extends Component {
                         }
                         {
                             error_mesero &&
-                            <Typography variant="overline" gutterBottom style={{color:'red'}}>
+                            <Typography variant="overline" gutterBottom style={{color: 'red'}}>
                                 Se ha tratado de cargar una venta de mesero a {tercero.full_name_proxy}
                             </Typography>
 

@@ -127,7 +127,7 @@ class Detail extends Component {
                             this.cambiarEstadoTrasladoInventario(2)
                         }}
                     >
-                        Pasar a verificación
+                        Solicitar Recibir Traslado
                     </Button>
                 }
                 {
