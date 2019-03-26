@@ -1,7 +1,52 @@
+from django.contrib.auth.models import User
 from django.db.models import Sum, F
 from rest_framework import serializers
 
-from cajas.models import TransaccionCaja
+from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja
+
+
+def transaccion_caja_registrar_operacion_caja_egreso(
+        punto_venta_turno_id: int,
+        concepto: str,
+        valor_efectivo: float,
+) -> TransaccionCaja:
+    if valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s' % (
+                    valor_efectivo)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='E',
+        tipo_dos='OPERA_CAjA',
+        concepto=concepto,
+        valor_efectivo=-valor_efectivo
+    )
+    return transaccion
+
+
+def transaccion_caja_registrar_operacion_caja_ingreso(
+        punto_venta_turno_id: int,
+        concepto: str,
+        valor_efectivo: float,
+) -> TransaccionCaja:
+    if valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s' % (
+                    valor_efectivo)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='I',
+        tipo_dos='OPERA_CAjA',
+        concepto=concepto,
+        valor_efectivo=valor_efectivo
+    )
+    return transaccion
 
 
 def transaccion_caja_registrar_cambio_tiempo_servicio_menor_tiempo(
@@ -291,3 +336,83 @@ def transaccion_caja_registrar_cambio_habitacion_menor_valor(
     servicios = Servicio.objects.filter(id__in=array_servicios_id)
     transaccion.servicios.set(servicios)
     return transaccion
+
+
+def operacion_caja_crear(
+        concepto_id: int,
+        usuario_pdv_id: int,
+        descripcion: str,
+        valor: float,
+        tercero_id: int = None,
+        observacion: str = '',
+) -> OperacionCaja:
+    from terceros.models import Tercero
+    cuenta = None
+
+    if valor <= 0:
+        raise serializers.ValidationError({'_error': 'El valor ingresado debe ser positivo mayor a cero'})
+
+    concepto_operacion_caja = ConceptoOperacionCaja.objects.get(pk=concepto_id)
+    if concepto_operacion_caja.tipo == 'E':
+        valor = valor * -1
+
+    usuario = User.objects.get(pk=usuario_pdv_id)
+    if not hasattr(usuario, 'tercero'):
+        raise serializers.ValidationError({'_error': 'Quien crea la operación debe tener un tercero'})
+    if not usuario.tercero.presente:
+        raise serializers.ValidationError({'_error': 'Quien crea de la operación debe estar presente'})
+    punto_venta_turno = usuario.tercero.turno_punto_venta_abierto
+    if not punto_venta_turno:
+        raise serializers.ValidationError(
+            {'_error': 'Quien crea de la operación debe tener un turno de punto de venta abierto'})
+
+    if not tercero_id and concepto_operacion_caja.grupo in ['C', 'A', 'P']:
+        raise serializers.ValidationError(
+            {'_error': 'Para el concepto seleccionado se requiere un tercero'}
+        )
+
+    if tercero_id and concepto_operacion_caja.grupo in ['O', 'T']:
+        raise serializers.ValidationError(
+            {'_error': 'Para los conceptos Otro y Taxi no se utiliza tercero'}
+        )
+
+    if tercero_id:
+        tercero = Tercero.objects.get(pk=tercero_id)
+        if concepto_operacion_caja.grupo == 'C' and not tercero.es_colaborador:
+            raise serializers.ValidationError(
+                {'_error': 'Un tipo de operacion de caja para colaborador solo debe ser creada para un colaborador'})
+        if concepto_operacion_caja.grupo == 'A' and not tercero.es_acompanante:
+            raise serializers.ValidationError(
+                {'_error': 'Un tipo de operacion de caja para acompañante solo debe ser creada para un acompañante'})
+        if concepto_operacion_caja.grupo == 'P' and not tercero.es_proveedor:
+            raise serializers.ValidationError(
+                {'_error': 'Un tipo de operacion de caja para proveedor solo debe ser creada para un proveedor'})
+
+        if tercero.es_acompanante or tercero.es_colaborador:
+            if not tercero.presente:
+                raise serializers.ValidationError({'_error': 'A quien se le crea la operación debe estar presente.'})
+            cuenta = tercero.cuenta_abierta
+
+    operacion_caja = OperacionCaja.objects.create(
+        concepto_id=concepto_id,
+        valor=valor,
+        tercero_id=tercero_id,
+        cuenta=cuenta,
+        punto_venta_turno=punto_venta_turno,
+        descripcion=descripcion,
+        observacion=observacion
+    )
+    if concepto_operacion_caja.tipo == 'E':
+        transaccion_caja = transaccion_caja_registrar_operacion_caja_egreso(
+            punto_venta_turno_id=punto_venta_turno.id,
+            concepto='Egreso x %s' % concepto_operacion_caja.descripcion,
+            valor_efectivo=-valor
+        )
+    else:
+        transaccion_caja = transaccion_caja_registrar_operacion_caja_ingreso(
+            punto_venta_turno_id=punto_venta_turno.id,
+            concepto='Ingreso x %s' % concepto_operacion_caja.descripcion,
+            valor_efectivo=valor
+        )
+    operacion_caja.transacciones_caja.add(transaccion_caja)
+    return operacion_caja

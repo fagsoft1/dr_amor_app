@@ -1,8 +1,7 @@
 from io import BytesIO
 
 from django.core.mail import EmailMultiAlternatives
-from django.db.models import OuterRef, ExpressionWrapper, Subquery, Sum, F, DecimalField, Case, When, Value
-from django.db.models.functions import Coalesce
+from django.db.models import ExpressionWrapper, F, DecimalField
 from django.http import HttpResponse
 from django.template.loader import get_template, render_to_string
 from rest_framework import viewsets, permissions, serializers
@@ -10,6 +9,7 @@ from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from weasyprint import CSS, HTML
 
+from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
 from .api_serializers import (
     BilleteMonedaSerializer,
     ArqueoCajaSerializer,
@@ -27,33 +27,9 @@ from .models import (
 
 
 class OperacionCajaViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsFull]
     queryset = OperacionCaja.objects.all()
     serializer_class = OperacionCajaSerializer
-
-    def perform_create(self, serializer):
-        operacion = serializer.save()
-        tipo_dos_movimiento = 'OPE_CAJ_ING'
-        if operacion.tercero and (operacion.tercero.es_acompanante or operacion.tercero.es_colaborador):
-            operacion.cuenta = operacion.tercero.cuenta_abierta
-            if operacion.concepto.tipo == 'E':
-                operacion.valor *= -1
-                tipo_dos_movimiento = 'OPE_CAJ_EGR'
-            operacion.save()
-        # TODO: Hacer lo correspondiente al registro en el nuevo TransaccionCaja
-        # movimiento = MovimientoDineroPDV.objects.create(
-        #     tipo=operacion.concepto.tipo,
-        #     tipo_dos=tipo_dos_movimiento,
-        #     punto_venta_id=operacion.punto_venta_id,
-        #     concepto=operacion.descripcion,
-        #     creado_por=self.request.user,
-        #     valor_tarjeta=0,
-        #     valor_efectivo=operacion.valor,
-        #     nro_autorizacion=None,
-        #     franquicia=None
-        # )
-        # operacion.movimiento_dinero = movimiento
-        operacion.save()
 
     @list_route(methods=['get'])
     def consultar_por_tercero_cuenta_abierta(self, request):

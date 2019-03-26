@@ -19,7 +19,7 @@ class Balance extends Component {
     }
 
     cargarDatos() {
-        const cargarComprasTienda = (tercero_id) => this.props.fetchMovimientoIntentariosDetalles_por_tercero_cuenta_abierta(tercero_id);
+        const cargarComprasTienda = (tercero_id) => console.log('Aqui traería ventas por cuenta abierta');
         const cargarOperacionesCaja = (tercero_id) => this.props.fetchOperacionesCajas_por_tercero_cuenta_abierta(tercero_id, {callback: () => cargarComprasTienda(tercero_id)});
         const cargarServicios = (tercero_id) => {
             if (tercero_id) {

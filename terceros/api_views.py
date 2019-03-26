@@ -190,6 +190,7 @@ class ColaboradorViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
         punto_venta_id = self.request.POST.get('punto_venta_id')
         if hasattr(colaborador, 'usuario'):
             usuario = colaborador.usuario
+
             if not usuario.mis_puntos_venta.filter(id=punto_venta_id).exists():
                 usuario.mis_puntos_venta.add(punto_venta_id)
         return Response({'result': 'se ha adicionado correctamente el punto de venta'})

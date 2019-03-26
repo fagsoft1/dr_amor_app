@@ -58,11 +58,14 @@ export function createRequest(request, options = {}) {
                     }
                 } else if (error.response.status === 401) {
 
+                } else if (error.response.status === 403) {
+                    dispatch_method(actions.mostrar_error_loading(error.response.data['detail'], `${error.response.status}: ${error.response.statusText}`));
+                    dispatch_method(actions.notificarErrorAction(error.response.data['detail']));
                 } else if (402 < error.response.status < 600) {
-                    dispatch_method(actions.mostrar_error_loading(error.response.data, `${error.response.status}: ${error.response.statusText}`))
+                    dispatch_method(actions.mostrar_error_loading(error.response.data, `${error.response.status}: ${error.response.statusText}`));
+                    dispatch_method(actions.notificarErrorAction(error.response.status));
                 } else {
                     if (error.response.data) {
-                        console.log('para otro')
                         console.log(error.response)
                     }
                 }

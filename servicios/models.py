@@ -32,6 +32,7 @@ class Servicio(TimeStampedModel):
     servicio_anterior = models.OneToOneField('self', on_delete=models.PROTECT, related_name='servicio_siguiente',
                                              null=True)
     observacion_anulacion = models.TextField(null=True)
+    transacciones_caja = models.ManyToManyField('cajas.TransaccionCaja', related_name='transacciones_caja')
 
     @property
     def valor_total(self):

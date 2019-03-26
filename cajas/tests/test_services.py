@@ -1,11 +1,12 @@
 from django.test import TestCase
+from django.utils import timezone
 from faker import Faker
 from rest_framework.exceptions import ValidationError
 
 faker = Faker()
 
 
-class TransaccionesCajaServicesServiciosTests(TestCase):
+class TransaccionesCajaServicesTests(TestCase):
     def setUp(self):
         from terceros.factories import AcompananteFactory, ColaboradorFactory
         from puntos_venta.factories import PuntoVentaFactory
@@ -433,3 +434,419 @@ class TransaccionesCajaServicesServiciosTests(TestCase):
             )
 
     # endregion
+
+
+class OperacionCajaServicesTests(TestCase):
+    def setUp(self):
+        from terceros.factories import AcompananteFactory, ColaboradorFactory, ProveedorFactory
+        from puntos_venta.factories import PuntoVentaFactory
+        from puntos_venta.services import punto_venta_abrir
+        from terceros.services import (
+            tercero_set_new_pin,
+            tercero_registra_entrada
+        )
+
+        self.punto_venta = PuntoVentaFactory(abierto=False, usuario_actual=None)
+        self.colaborador_pdv = ColaboradorFactory()
+        tercero_set_new_pin(self.colaborador_pdv.id, '0000')
+        tercero_registra_entrada(self.colaborador_pdv.id, '0000')
+        punto_venta_abrir(self.colaborador_pdv.usuario.id, self.punto_venta.id)
+
+        self.colaborador = ColaboradorFactory()
+        tercero_set_new_pin(self.colaborador.id, '0000')
+        tercero_registra_entrada(self.colaborador.id, '0000')
+
+        self.acompanante = AcompananteFactory()
+        tercero_set_new_pin(self.acompanante.id, '0000')
+        tercero_registra_entrada(self.acompanante.id, '0000')
+
+        self.proveedor = ProveedorFactory()
+
+    def test_operacion_caja_acompanante(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='I',
+            grupo='A'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.acompanante.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, 1000)
+        self.assertIsNotNone(operacion_caja.cuenta)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='A'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.acompanante.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, -1000)
+        self.assertIsNotNone(operacion_caja.cuenta)
+
+    def test_operacion_caja_transacciones(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='I',
+            grupo='A'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.acompanante.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.transacciones_caja.all().count(), 1)
+        self.assertEqual(operacion_caja.transacciones_caja.all().first().tipo, 'I')
+        self.assertEqual(operacion_caja.transacciones_caja.all().first().valor_efectivo, 1000)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='A'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.acompanante.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.transacciones_caja.all().count(), 1)
+        self.assertEqual(operacion_caja.transacciones_caja.all().first().tipo, 'E')
+        self.assertEqual(operacion_caja.transacciones_caja.all().first().valor_efectivo, -1000)
+
+    def test_operacion_caja_colaborador(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='I',
+            grupo='C'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.colaborador.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, 1000)
+        self.assertIsNotNone(operacion_caja.cuenta)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='C'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.colaborador.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, -1000)
+        self.assertIsNotNone(operacion_caja.cuenta)
+
+    def test_operacion_caja_proveedor(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='I',
+            grupo='P'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.proveedor.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, 1000)
+        self.assertIsNone(operacion_caja.cuenta)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='P'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.proveedor.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, -1000)
+        self.assertIsNone(operacion_caja.cuenta)
+
+    def test_operacion_caja_taxi(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='I',
+            grupo='T'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, 1000)
+        self.assertIsNone(operacion_caja.cuenta)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='T'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, -1000)
+        self.assertIsNone(operacion_caja.cuenta)
+
+    def test_operacion_caja_otro(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='I',
+            grupo='O'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, 1000)
+        self.assertIsNone(operacion_caja.cuenta)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='O'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            valor=1000,
+            descripcion='hola',
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, -1000)
+        self.assertIsNone(operacion_caja.cuenta)
+
+    def test_operacion_caja_colaborador_creador_punto_venta_turno(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+
+        turno = self.colaborador_pdv.turno_punto_venta_abierto
+        turno.finish = timezone.now()
+        turno.save()
+
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Quien crea de la operación debe tener un turno de punto de venta abierto'}"
+        ):
+            concepto_operacion = ConceptoOperacionCajaFactory(
+                tipo='I',
+                grupo='A'
+            )
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=self.colaborador_pdv.usuario.id,
+                tercero_id=self.acompanante.id,
+                valor=1000,
+                descripcion='hola',
+                observacion='hola'
+            )
+
+    def test_operacion_caja_valor_solo_positivo(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='T'
+        )
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'El valor ingresado debe ser positivo mayor a cero'}"
+        ):
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=self.colaborador_pdv.usuario.id,
+                valor=-1000,
+                descripcion='hola',
+                observacion='hola'
+            )
+
+    def test_operacion_caja_colaborador_acompanante_presentes(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+        from terceros.services import tercero_registra_salida, tercero_registra_entrada
+
+        tercero_registra_salida(self.colaborador_pdv.id, '0000')
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Quien crea de la operación debe estar presente'}"
+        ):
+            concepto_operacion = ConceptoOperacionCajaFactory(
+                tipo='I',
+                grupo='A'
+            )
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=self.colaborador_pdv.usuario.id,
+                tercero_id=self.acompanante.id,
+                valor=1000,
+                descripcion='hola',
+                observacion='hola'
+            )
+
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'A quien se le crea la operación debe estar presente.'}"
+        ):
+            tercero_registra_entrada(self.colaborador_pdv.id, '0000')
+            tercero_registra_salida(self.acompanante.id, '0000')
+            concepto_operacion = ConceptoOperacionCajaFactory(
+                tipo='I',
+                grupo='A'
+            )
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=self.colaborador_pdv.usuario.id,
+                tercero_id=self.acompanante.id,
+                valor=1000,
+                descripcion='hola',
+                observacion='hola'
+            )
+
+        usuario = self.colaborador_pdv.usuario
+        self.colaborador_pdv.usuario = None
+        self.colaborador_pdv.save()
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Quien crea la operación debe tener un tercero'}"
+        ):
+            concepto_operacion = ConceptoOperacionCajaFactory(
+                tipo='I',
+                grupo='A'
+            )
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=usuario.id,
+                tercero_id=self.colaborador_pdv.id,
+                valor=1000,
+                descripcion='hola',
+                observacion='hola'
+            )
+
+    def test_operacion_caja_grupos(self):
+        from ..factories import ConceptoOperacionCajaFactory
+        from ..services import operacion_caja_crear
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Un tipo de operacion de caja para acompañante solo debe ser creada para un acompañante'}"
+        ):
+            concepto_operacion = ConceptoOperacionCajaFactory(
+                tipo='I',
+                grupo='A'
+            )
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=self.colaborador_pdv.usuario.id,
+                tercero_id=self.proveedor.id,
+                valor=1000,
+                descripcion='hola',
+                observacion='hola'
+            )
+
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Un tipo de operacion de caja para colaborador solo debe ser creada para un colaborador'}"
+        ):
+            concepto_operacion = ConceptoOperacionCajaFactory(
+                tipo='I',
+                grupo='C'
+            )
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=self.colaborador_pdv.usuario.id,
+                tercero_id=self.proveedor.id,
+                valor=1000,
+                descripcion='hola',
+                observacion='hola'
+            )
+
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Un tipo de operacion de caja para proveedor solo debe ser creada para un proveedor'}"
+        ):
+            concepto_operacion = ConceptoOperacionCajaFactory(
+                tipo='I',
+                grupo='P'
+            )
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=self.colaborador_pdv.usuario.id,
+                tercero_id=self.acompanante.id,
+                valor=1000,
+                descripcion='hola',
+                observacion='hola'
+            )
+
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Para el concepto seleccionado se requiere un tercero'}"
+        ):
+            concepto_operacion = ConceptoOperacionCajaFactory(
+                tipo='I',
+                grupo='A'
+            )
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=self.colaborador_pdv.usuario.id,
+                valor=1000,
+                descripcion='hola',
+                observacion='hola'
+            )
+
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Para los conceptos Otro y Taxi no se utiliza tercero'}"
+        ):
+            concepto_operacion = ConceptoOperacionCajaFactory(
+                tipo='I',
+                grupo='O'
+            )
+            operacion_caja_crear(
+                concepto_id=concepto_operacion.id,
+                usuario_pdv_id=self.colaborador_pdv.usuario.id,
+                tercero_id=self.acompanante.id,
+                valor=1000,
+                descripcion='hola',
+                observacion='hola'
+            )

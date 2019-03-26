@@ -8,28 +8,6 @@ from liquidaciones.models import LiquidacionCuenta
 from terceros.models import Cuenta, Tercero
 
 
-class ConceptoOperacionCaja(models.Model):
-    TIPO_CHOICES = (
-        ('I', 'Ingreso'),
-        ('E', 'Egreso'),
-    )
-    GRUPO_CHOICES = (
-        ('A', 'Acompañantes'),
-        ('C', 'Colaboradores'),
-        ('P', 'Proveedores'),
-        ('T', 'Taxis'),
-        ('O', 'Otros'),
-    )
-    tipo = models.CharField(choices=TIPO_CHOICES, max_length=3)
-    grupo = models.CharField(choices=GRUPO_CHOICES, max_length=3)
-    descripcion = models.CharField(max_length=300)
-
-    class Meta:
-        permissions = [
-            ['list_conceptooperacioncaja', 'Puede listar Conceptos Operaciones Caja'],
-        ]
-
-
 class BilleteMoneda(models.Model):
     TIPO_CHOICES = (
         (0, 'BILLETES'),
@@ -71,6 +49,28 @@ class EfectivoEntregaDenominacion(models.Model):
     valor = models.DecimalField(max_digits=10, decimal_places=0)
 
 
+class ConceptoOperacionCaja(models.Model):
+    TIPO_CHOICES = (
+        ('I', 'Ingreso'),
+        ('E', 'Egreso'),
+    )
+    GRUPO_CHOICES = (
+        ('A', 'Acompañantes'),
+        ('C', 'Colaboradores'),
+        ('P', 'Proveedores'),
+        ('T', 'Taxis'),
+        ('O', 'Otros'),
+    )
+    tipo = models.CharField(choices=TIPO_CHOICES, max_length=3)
+    grupo = models.CharField(choices=GRUPO_CHOICES, max_length=3)
+    descripcion = models.CharField(max_length=300)
+
+    class Meta:
+        permissions = [
+            ['list_conceptooperacioncaja', 'Puede listar Conceptos Operaciones Caja'],
+        ]
+
+
 class TransaccionCaja(TimeStampedModel):
     from puntos_venta.models import PuntoVentaTurno
     TIPO_CHOICES = (
@@ -89,7 +89,6 @@ class TransaccionCaja(TimeStampedModel):
     )
 
     punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='transacciones_caja')
-    servicios = models.ManyToManyField(Servicio, related_name='transacciones_caja')
     concepto = models.TextField()
     tipo = models.CharField(max_length=3, null=True, blank=True, choices=TIPO_CHOICES)
     tipo_dos = models.CharField(max_length=30, null=True, blank=True, choices=TIPO_DOS_CHOICES)
@@ -100,12 +99,37 @@ class TransaccionCaja(TimeStampedModel):
 
 
 class OperacionCaja(models.Model):
-    concepto = models.ForeignKey(ConceptoOperacionCaja, on_delete=models.PROTECT, related_name='operaciones_caja',
-                                 null=True)
-    cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='operaciones_caja', null=True)
-    tercero = models.ForeignKey(Tercero, on_delete=models.PROTECT, related_name='operaciones_caja', null=True)
+    from puntos_venta.models import PuntoVentaTurno
+    concepto = models.ForeignKey(
+        ConceptoOperacionCaja,
+        on_delete=models.PROTECT,
+        related_name='operaciones_caja',
+        null=True
+    )
+    cuenta = models.ForeignKey(
+        Cuenta,
+        on_delete=models.PROTECT,
+        related_name='operaciones_caja',
+        null=True
+    )
+    punto_venta_turno = models.ForeignKey(
+        PuntoVentaTurno,
+        on_delete=models.PROTECT,
+        related_name='operaciones_caja'
+    )
+    tercero = models.ForeignKey(
+        Tercero,
+        on_delete=models.PROTECT,
+        related_name='operaciones_caja',
+        null=True
+    )
     grupo_operaciones = models.CharField(max_length=300)
     descripcion = models.CharField(max_length=100)
     observacion = models.TextField(null=True)
-    punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='operaciones_caja', null=True)
     valor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    transacciones_caja = models.ManyToManyField(TransaccionCaja, related_name='operaciones_caja')
+
+    class Meta:
+        permissions = [
+            ['list_operacioncaja', 'Puede listar Operaciones Caja'],
+        ]

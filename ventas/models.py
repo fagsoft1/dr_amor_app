@@ -7,12 +7,15 @@ from puntos_venta.models import PuntoVenta, PuntoVentaTurno
 from productos.models import Producto
 from terceros.models import Cuenta
 from inventarios.models import MovimientoInventario
+from ventas.managers import VentasProductosManager
 
 
 class VentaProducto(TimeStampedModel):
     punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='ventas_productos')
     cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='compras_productos', null=True)
     movimientos = models.ManyToManyField(MovimientoInventario, related_name='ventas_productos')
+
+    objects = VentasProductosManager()
 
     class Meta:
         permissions = [

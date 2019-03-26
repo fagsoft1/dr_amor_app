@@ -10,25 +10,40 @@ from .models import (
 
 class OperacionCajaSerializer(serializers.ModelSerializer):
     tipo_operacion = serializers.CharField(source='concepto.tipo', read_only=True)
-    cuenta_liquidada = serializers.NullBooleanField(read_only=True, source='cuenta.liquidada')
-    cuenta_usuario = serializers.PrimaryKeyRelatedField(source='cuenta.propietario', read_only=True, allow_null=True)
+    usuario_pv = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = OperacionCaja
         fields = (
             'id',
             'tercero',
-            'cuenta',
-            'cuenta_liquidada',
-            'cuenta_usuario',
+            'usuario_pv',
             'concepto',
             'grupo_operaciones',
-            'punto_venta',
             'descripcion',
             'tipo_operacion',
             'observacion',
             'valor',
         )
+
+    def create(self, validated_data):
+        from .services import operacion_caja_crear
+        concepto = validated_data.get('concepto', None)
+        descripcion = validated_data.get('descripcion', None)
+        valor = validated_data.get('valor', None)
+        tercero = validated_data.get('tercero', None)
+        observacion = validated_data.get('observacion', None)
+        usuario_pv = validated_data.get('usuario_pv')
+
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto.id,
+            usuario_pdv_id=usuario_pv.id,
+            descripcion=descripcion,
+            valor=valor,
+            tercero_id=tercero.id if tercero else None,
+            observacion=observacion
+        )
+        return operacion_caja
 
 
 class ConceptoOperacionCajaSerializer(serializers.ModelSerializer):
