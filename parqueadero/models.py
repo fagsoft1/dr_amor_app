@@ -1,6 +1,10 @@
+from decimal import Decimal
+
 from django.db import models
+
 from empresas.models import Empresa
 from model_utils.models import TimeStampedModel
+from puntos_venta.models import PuntoVentaTurno
 
 
 class TipoVehiculo(models.Model):
@@ -8,6 +12,7 @@ class TipoVehiculo(models.Model):
     nombre = models.CharField(max_length=120, unique=True)
     porcentaje_iva = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     valor_impuesto_unico = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    tiene_placa = models.BooleanField(default=False)
 
     class Meta:
         permissions = [
@@ -40,9 +45,21 @@ class ModalidadFraccionTiempoDetalle(models.Model):
         ]
 
     @property
-    def valor_antes_impuestos(self):
+    def valor_antes_impuestos(self) -> Decimal:
         return self.valor / (1 + (
                 self.modalidad_fraccion_tiempo.tipo_vehiculo.porcentaje_iva / 100)) - self.modalidad_fraccion_tiempo.tipo_vehiculo.valor_impuesto_unico
+
+    @property
+    def valor_unico_impuesto(self) -> Decimal:
+        return self.modalidad_fraccion_tiempo.tipo_vehiculo.valor_impuesto_unico
+
+    @property
+    def impuesto_iva(self) -> Decimal:
+        return self.valor - self.valor_antes_impuestos - self.valor_unico_impuesto
+
+    @property
+    def tipo_vehiculo_nombre(self) -> str:
+        return self.modalidad_fraccion_tiempo.tipo_vehiculo.nombre
 
 
 class Vehiculo(TimeStampedModel):
@@ -52,4 +69,32 @@ class Vehiculo(TimeStampedModel):
     class Meta:
         permissions = [
             ['list_vehiculo', 'Puede listar vehiculos'],
+        ]
+
+
+class RegistroEntradaParqueo(TimeStampedModel):
+    punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT)
+    codigo_qr = models.CharField(max_length=300, null=True)
+    modalidad_fraccion_tiempo = models.ForeignKey(
+        ModalidadFraccionTiempo,
+        related_name='registros_de_parqueo',
+        on_delete=models.PROTECT
+    )
+    vehiculo = models.ForeignKey(Vehiculo, related_name='registros_de_parqueo', on_delete=models.PROTECT, null=True)
+    hora_ingreso = models.DateTimeField(null=True)
+    hora_salida = models.DateTimeField(null=True)
+    valor_parqueadero = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    valor_iva_parqueadero = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    valor_impuesto_unico = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    detalle = models.CharField(max_length=500, null=True)
+    transacciones_caja = models.ManyToManyField('cajas.TransaccionCaja', related_name='parqueaderos')
+
+    @property
+    def valor_total(self):
+        valor_total = self.valor_parqueadero + self.valor_iva_parqueadero + self.valor_impuesto_unico
+        return valor_total
+
+    class Meta:
+        permissions = [
+            ['list_registroentradaparqueo', 'Puede listar registros de parqueo'],
         ]

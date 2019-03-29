@@ -5,6 +5,31 @@ from rest_framework import serializers
 from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja
 
 
+def transaccion_caja_registrar_venta_parqueadero(
+        registro_entrada_parqueo_id: int,
+        punto_venta_turno_id: int,
+        concepto: str,
+        valor_efectivo: float
+) -> TransaccionCaja:
+    if valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s' % (
+                    valor_efectivo)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='I',
+        tipo_dos='PARQUEADERO',
+        concepto=concepto,
+        valor_efectivo=valor_efectivo
+    )
+    transaccion.parqueaderos.add(registro_entrada_parqueo_id)
+    return transaccion
+
+
+# TODO: Relacionar con la operacion de caja al igual que se hace con servicios y parqueo
 def transaccion_caja_registrar_operacion_caja_egreso(
         punto_venta_turno_id: int,
         concepto: str,
@@ -20,13 +45,14 @@ def transaccion_caja_registrar_operacion_caja_egreso(
     transaccion = TransaccionCaja.objects.create(
         punto_venta_turno_id=punto_venta_turno_id,
         tipo='E',
-        tipo_dos='OPERA_CAjA',
+        tipo_dos='OPERA_CAJA',
         concepto=concepto,
         valor_efectivo=-valor_efectivo
     )
     return transaccion
 
 
+# TODO: Relacionar con la operacion de caja al igual que se hace con servicios y parqueo
 def transaccion_caja_registrar_operacion_caja_ingreso(
         punto_venta_turno_id: int,
         concepto: str,
@@ -42,7 +68,7 @@ def transaccion_caja_registrar_operacion_caja_ingreso(
     transaccion = TransaccionCaja.objects.create(
         punto_venta_turno_id=punto_venta_turno_id,
         tipo='I',
-        tipo_dos='OPERA_CAjA',
+        tipo_dos='OPERA_CAJA',
         concepto=concepto,
         valor_efectivo=valor_efectivo
     )

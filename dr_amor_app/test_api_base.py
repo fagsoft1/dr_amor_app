@@ -57,9 +57,11 @@ class BaseTestsApi(TestCase):
             data,
             HTTP_AUTHORIZATION='Token ' + self.token_user
         )
-        print(response.data)
-        id = response.data.pop('id')
-        self.assertTrue(self.modelo.objects.filter(pk=id).exists())
+        try:
+            id = response.data.pop('id')
+            self.assertTrue(self.modelo.objects.filter(pk=id).exists())
+        except:
+            print(response.data)
 
         count_2 = self.modelo.objects.count()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

@@ -8,7 +8,7 @@ from productos.models import Producto
 from terceros.models import Cuenta
 from inventarios.models import MovimientoInventario
 from ventas.managers import VentasProductosManager
-from parqueadero.models import Vehiculo
+from parqueadero.models import Vehiculo, RegistroEntradaParqueo
 
 
 class VentaProducto(TimeStampedModel):
@@ -37,16 +37,3 @@ class VentaProductoDetalle(TimeStampedModel):
         permissions = [
             ['list_ventaproductodetalle', 'Puede listar ventas productos detalles'],
         ]
-
-
-class VentaParqueadero(TimeStampedModel):
-    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT)
-    valor_parqueadero = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    valor_iva_parqueadero = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    valor_impuesto_unico = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    detalle = models.CharField(max_length=500)
-
-    @property
-    def valor_total(self):
-        valor_total = self.valor_parqueadero + self.valor_iva_parqueadero + self.valor_impuesto_unico
-        return valor_total
