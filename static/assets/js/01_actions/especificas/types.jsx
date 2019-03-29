@@ -223,3 +223,21 @@ export const OPERACION_CAJA_TYPES = {
     clear: 'clear_operaciones_caja',
     update: 'update_operacion_caja',
 };
+
+export const VENTA_PRODUCTO_TYPES = {
+    create: 'create_venta_producto',
+    delete: 'delete_venta_producto',
+    fetch_all: 'fetch_ventas_productos',
+    fetch: 'fetch_venta_producto',
+    clear: 'clear_ventas_productos',
+    update: 'update_venta_producto',
+};
+
+export const VENTA_PRODUCTO_DETALLE_TYPES = {
+    create: 'create_venta_producto_detalle',
+    delete: 'delete_venta_producto_detalle',
+    fetch_all: 'fetch_ventas_productos_detalles',
+    fetch: 'fetch_venta_producto_detalle',
+    clear: 'clear_ventas_productos_detalles',
+    update: 'update_venta_producto_detalle',
+};

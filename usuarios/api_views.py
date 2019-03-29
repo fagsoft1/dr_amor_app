@@ -91,7 +91,10 @@ class LoginViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=self.request.POST)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
-        token = usuario_login(usuario_id=user.id, **request.data)
+        punto_venta_id = int(self.request.POST.get('punto_venta')) if int(
+            self.request.POST.get('punto_venta')) > 0 else None
+
+        token = usuario_login(usuario_id=user.id, punto_venta_id=punto_venta_id)
         UserSerializer = knox_settings.USER_SERIALIZER
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,

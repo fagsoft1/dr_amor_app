@@ -95,6 +95,7 @@ def habitacion_cambiar_servicios_de_habitacion(
     diferencia = habitacion_nueva_valor - habitacion_anterior_valor
 
     servicios = Servicio.objects.filter(id__in=servicios_array_id)
+    turno_punto_venta = User.objects.get(pk=usuario_id).tercero.turno_punto_venta_abierto
 
     if diferencia == 0:
         for servicio in servicios.all():
@@ -102,8 +103,7 @@ def habitacion_cambiar_servicios_de_habitacion(
                 servicio_id=servicio.id,
                 habitacion_nueva_id=habitacion_nueva.id,
                 habitacion_anterior_id=habitacion_anterior.id,
-                punto_venta_id=punto_venta_id,
-                usuario_id=usuario_id
+                punto_venta_turno_id=turno_punto_venta.id
             )
             servicio.habitacion = habitacion_nueva
             servicio.save()
@@ -114,8 +114,7 @@ def habitacion_cambiar_servicios_de_habitacion(
                 servicio_id=servicio.id,
                 habitacion_nueva_id=habitacion_nueva.id,
                 habitacion_anterior_id=habitacion_anterior.id,
-                punto_venta_id=punto_venta_id,
-                usuario_id=usuario_id,
+                punto_venta_turno_id=turno_punto_venta.id,
                 observacion_devolucion=observacion_devolucion
             )
             valor_habitacion = habitacion_nueva.tipo.valor_antes_impuestos
@@ -147,7 +146,7 @@ def habitacion_cambiar_servicios_de_habitacion(
                 habitacion_nueva_id=habitacion_nueva_id,
                 habitacion_anterior_id=habitacion_anterior_id,
                 usuario_pdv_id=usuario_id,
-                valor_efectivo=valor_efectivo,
+                valor_efectivo=-valor_efectivo,
             )
 
     habitacion_anterior = habitacion_cambiar_estado(habitacion_anterior.id, 2)
@@ -178,7 +177,6 @@ def habitacion_iniciar_servicios(
 
     servicios_a_iniciar_id = []
     for servicio in servicios:
-        # servicio.pop('id')
         tercero_id = servicio.pop('tercero_id')
         categoria_fraccion_tiempo_id = servicio.pop('categoria_fraccion_tiempo_id')
 

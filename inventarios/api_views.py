@@ -3,7 +3,7 @@ from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from datetime import datetime
 
-from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
+from dr_amor_app.custom_permissions import DjangoModelPermissionsFull, EsColaboradorPermission
 from inventarios.services import (
     movimiento_inventario_aplicar_movimiento
 )
@@ -76,28 +76,28 @@ class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = MovimientoInventarioDetalleSerializer
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_movimiento(self, request):
         movimiento_id = int(request.GET.get('movimiento_id'))
         qs = self.queryset.filter(movimiento_id=movimiento_id)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
     def actual_por_bodega(self, request):
         bodega_id = int(request.GET.get('bodega_id'))
         qs = self.queryset.filter(movimiento__bodega_id=bodega_id, es_ultimo_saldo=True)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
     def actual_por_pdv(self, request):
         punto_venta_id = int(request.GET.get('punto_venta_id'))
         qs = self.queryset.filter(movimiento__bodega__punto_venta__id=punto_venta_id, es_ultimo_saldo=True)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_bodega_por_fecha(self, request):
         bodega_id = int(request.GET.get('bodega_id'))
         fecha_inicial = datetime.strptime(request.GET.get('fecha_inicial'), "%d/%m/%Y").date()
@@ -110,7 +110,7 @@ class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_bodega_por_producto(self, request):
         bodega_id = int(request.GET.get('bodega_id'))
         producto_id = int(request.GET.get('producto_id'))
@@ -126,10 +126,11 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
         'bodega_origen',
         'movimiento_destino',
         'movimiento_origen',
+        'creado_por',
     ).all()
     serializer_class = TrasladoInventarioSerializer
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=['post'], permission_classes=[EsColaboradorPermission])
     def trasladar(self, request, pk=None):
         traslado = self.get_object()
         user = self.request.user
@@ -162,7 +163,7 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
             raise serializers.ValidationError(
                 {'_error': 'El inventario ya se encuentra trasladado, no se puede cambiar estado'})
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
     def pendiente_verificacion_por_bodega_destino(self, request):
         # TODO: Hacer test
         bodega_id = int(request.GET.get('bodega_id'))
@@ -177,7 +178,7 @@ class TrasladoInventarioDetallesViewSet(viewsets.ModelViewSet):
     queryset = TrasladoInventarioDetalle.objects.all()
     serializer_class = TrasladoInventarioDetalleSerializer
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_traslado(self, request):
         traslado_id = int(request.GET.get('traslado_id'))
         qs = self.queryset.filter(traslado_id=traslado_id)

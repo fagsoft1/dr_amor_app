@@ -9,7 +9,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 
 function SimpleTable(props) {
     const {classes, consumos_tienda, valor_total_consumo_tienda} = props;
-    const cantidad_total = _.sumBy(_.map(consumos_tienda, e => e), v => parseFloat(v.sale_cantidad));
+    const cantidad_total = _.sumBy(_.map(consumos_tienda, e => e), v => parseFloat(v.cantidad));
     return (
         <ExpansionPanel>
             <ExpansionPanelSummary
@@ -43,8 +43,8 @@ function SimpleTable(props) {
                             <tr key={p.id}>
                                 <td>{p.id}</td>
                                 <td>{p.producto_nombre}</td>
-                                <td className='text-right'>{numerosFormato(p.sale_cantidad)}</td>
-                                <td className='text-right'>{pesosColombianos(parseFloat(p.precio_venta_total))}</td>
+                                <td className='text-right'>{numerosFormato(p.cantidad)}</td>
+                                <td className='text-right'>{pesosColombianos(parseFloat(p.precio_total * -1))}</td>
                             </tr>
                         )
                     }

@@ -13,42 +13,34 @@ from .models import Servicio, BitacoraServicio
 
 # TODO: Hacer test
 def bitacora_registrar_inicio_servicio(
-        usuario_id: int,
-        servicio_id: int,
-        punto_venta_id: int
+        punto_venta_turno_id: int,
+        servicio_id: int
 ):
-    # TODO:Evaluar si se puede sacar el usuario id del usuario actual del punto de venta o dejar como usuario actual de la app
     servicio = Servicio.objects.get(pk=servicio_id)
-    usuario = User.objects.get(pk=usuario_id)
     BitacoraServicio.objects.create(
-        created_by=usuario,
         servicio=servicio,
         habitacion_nombre=servicio.habitacion.nombre,
         concepto='Inicia Servicio',
         tiempo_contratado=servicio.tiempo_minutos,
-        punto_venta_id=punto_venta_id,
+        punto_venta_turno_id=punto_venta_turno_id,
         hora_evento=timezone.now(),
     )
 
 
 # TODO: Hacer test
 def bitacora_registrar_terminar_servicio(
-        usuario_id: int,
         servicio_id: int,
-        punto_venta_id: int
+        punto_venta_turno_id: int
 ):
-    # TODO:Evaluar si se puede sacar el usuario id del usuario actual del punto de venta o dejar como usuario actual de la app
     servicio = Servicio.objects.get(pk=servicio_id)
-    usuario = User.objects.get(pk=usuario_id)
     now = timezone.now()
     tiempo_inicio_servicio = servicio.hora_inicio
     tiempo_minutos_recorridos = ((now - tiempo_inicio_servicio).seconds / 60) if tiempo_inicio_servicio < now else 0
 
     BitacoraServicio.objects.create(
-        created_by=usuario,
+        punto_venta_turno_id=punto_venta_turno_id,
         servicio=servicio,
         concepto='Termina Servicio',
-        punto_venta_id=punto_venta_id,
         tiempo_contratado=servicio.tiempo_minutos,
         hora_evento=timezone.now(),
         habitacion_nombre=servicio.habitacion.nombre,
@@ -56,25 +48,20 @@ def bitacora_registrar_terminar_servicio(
     )
 
 
-# TODO: Hacer test
 def bitacora_registrar_solicitar_anular_servicio(
-        usuario_id: int,
         servicio_id: int,
         observacion_anulacion: str,
-        punto_venta_id: int
+        punto_venta_turno_id: int
 ):
-    # TODO:Evaluar si se puede sacar el usuario id del usuario actual del punto de venta o dejar como usuario actual de la app
     servicio = Servicio.objects.get(pk=servicio_id)
-    usuario = User.objects.get(pk=usuario_id)
     now = timezone.now()
     tiempo_inicio_servicio = servicio.hora_inicio
     tiempo_minutos_recorridos = ((now - tiempo_inicio_servicio).seconds / 60) if tiempo_inicio_servicio < now else 0
     BitacoraServicio.objects.create(
-        created_by=usuario,
+        punto_venta_turno_id=punto_venta_turno_id,
         servicio=servicio,
         concepto='Solicita Anular Servicio',
         observacion=observacion_anulacion,
-        punto_venta_id=punto_venta_id,
         tiempo_contratado=servicio.tiempo_minutos,
         hora_evento=timezone.now(),
         habitacion_nombre=servicio.habitacion.nombre,
@@ -84,24 +71,20 @@ def bitacora_registrar_solicitar_anular_servicio(
 
 # TODO: Hacer test
 def bitacora_registrar_cambiar_tiempo_servicio(
-        usuario_id: int,
+        punto_venta_turno_id: int,
         servicio_id: int,
         tiempo_contratado_nuevo: int,
-        punto_venta_id: int
 ):
-    # TODO:Evaluar si se puede sacar el usuario id del usuario actual del punto de venta o dejar como usuario actual de la app
     servicio = Servicio.objects.get(pk=servicio_id)
-    usuario = User.objects.get(pk=usuario_id)
     now = timezone.now()
     tiempo_inicio_servicio = servicio.hora_inicio
     concepto = 'Extención de tiempo' if tiempo_contratado_nuevo > servicio.tiempo_minutos else 'Disminución de tiempo'
     tiempo_minutos_recorridos = ((now - tiempo_inicio_servicio).seconds / 60) if tiempo_inicio_servicio < now else 0
 
     BitacoraServicio.objects.create(
-        created_by=usuario,
         servicio=servicio,
         concepto=concepto,
-        punto_venta_id=punto_venta_id,
+        punto_venta_turno_id=punto_venta_turno_id,
         tiempo_contratado_anterior=servicio.tiempo_minutos,
         tiempo_contratado_nuevo=tiempo_contratado_nuevo,
         hora_evento=timezone.now(),
@@ -112,27 +95,23 @@ def bitacora_registrar_cambiar_tiempo_servicio(
 
 # TODO: Hacer test
 def bitacora_registrar_cambiar_habitacion_servicio(
-        usuario_id: int,
         servicio_id: int,
         habitacion_anterior_id: int,
         habitacion_nueva_id: int,
-        punto_venta_id: int,
+        punto_venta_turno_id: int,
         observacion_devolucion: Optional[str] = None
 
 ):
-    # TODO:Evaluar si se puede sacar el usuario id del usuario actual del punto de venta o dejar como usuario actual de la app
     servicio = Servicio.objects.get(pk=servicio_id)
-    usuario = User.objects.get(pk=usuario_id)
     habitacion_anterior = Habitacion.objects.get(pk=habitacion_anterior_id)
     habitacion_nueva = Habitacion.objects.get(pk=habitacion_nueva_id)
     now = timezone.now()
     tiempo_inicio_servicio = servicio.hora_inicio
     tiempo_minutos_recorridos = ((now - tiempo_inicio_servicio).seconds / 60) if tiempo_inicio_servicio < now else 0
     BitacoraServicio.objects.create(
-        created_by=usuario,
+        punto_venta_turno_id=punto_venta_turno_id,
         servicio=servicio,
         concepto='Cambio de habitación',
-        punto_venta_id=punto_venta_id,
         hora_evento=timezone.now(),
         habitacion_anterior_nombre=habitacion_anterior.nombre,
         tiempo_contratado=servicio.tiempo_minutos,
@@ -191,7 +170,10 @@ def servicio_terminar(
     tercero = servicio.cuenta.propietario.tercero
     servicio.cuenta.servicios.filter(estado=0).delete()
     tercero_cambiar_estado(tercero.id, 0)
-    bitacora_registrar_terminar_servicio(usuario_pdv_id, servicio_id, punto_venta.id)
+    bitacora_registrar_terminar_servicio(
+        servicio_id=servicio_id,
+        punto_venta_turno_id=turno_punto_venta.id
+    )
     return servicio
 
 
@@ -227,7 +209,10 @@ def servicio_iniciar(
     servicio.hora_final = servicio_calcular_hora_final(servicio_id, hora_inicio)
     servicio.save()
 
-    bitacora_registrar_inicio_servicio(usuario_pdv_id, servicio_id, punto_venta.id)
+    bitacora_registrar_inicio_servicio(
+        servicio_id=servicio_id,
+        punto_venta_turno_id=turno_punto_venta.id
+    )
     return servicio
 
 
@@ -361,7 +346,11 @@ def servicio_solicitar_anular(
     tercero = servicio.cuenta.propietario.tercero
     tercero_cambiar_estado(tercero.id, 0)
 
-    bitacora_registrar_solicitar_anular_servicio(usuario_pdv_id, servicio_id, observacion_anulacion, punto_venta.id)
+    bitacora_registrar_solicitar_anular_servicio(
+        servicio_id=servicio_id,
+        observacion_anulacion=observacion_anulacion,
+        punto_venta_turno_id=turno_punto_venta.id
+    )
 
     transaccion_caja_registrar_anulacion_servicio(
         servicio_id=servicio_id,
@@ -393,11 +382,15 @@ def servicio_cambiar_tiempo(
     categoria_fraccion_tiempo = CategoriaFraccionTiempo.objects.get(id=categoria_fraccion_tiempo_id)
     minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
 
+    if servicio.tiempo_minutos == minutos:
+        raise serializers.ValidationError(
+            {'_error': 'El tiempo solicitado y el actual del servicio es el mismo'}
+        )
+
     bitacora_registrar_cambiar_tiempo_servicio(
-        usuario_pdv_id,
-        servicio_id,
-        minutos,
-        punto_venta.id
+        punto_venta_turno_id=turno_punto_venta.id,
+        servicio_id=servicio_id,
+        tiempo_contratado_nuevo=minutos
     )
 
     servicio.tiempo_minutos = minutos
@@ -418,8 +411,8 @@ def servicio_cambiar_tiempo(
             usuario_pdv_id=usuario_pdv_id,
             servicio_id=servicio_id,
             categoria_fraccion_tiempo_nueva_id=categoria_fraccion_tiempo_id,
-            valor_tarjeta=valor_tarjeta,
-            valor_efectivo=valor_efectivo,
+            valor_tarjeta=abs(valor_tarjeta),
+            valor_efectivo=abs(valor_efectivo),
             nro_autorizacion=nro_autorizacion,
             franquicia=franquicia
         )
@@ -430,7 +423,7 @@ def servicio_cambiar_tiempo(
             usuario_pdv_id=usuario_pdv_id,
             servicio_id=servicio_id,
             categoria_fraccion_tiempo_nueva_id=categoria_fraccion_tiempo_id,
-            valor_efectivo=valor_efectivo
+            valor_efectivo=abs(valor_efectivo)
         )
 
     return servicio

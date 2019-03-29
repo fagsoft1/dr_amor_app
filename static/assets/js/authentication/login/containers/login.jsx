@@ -31,7 +31,7 @@ class Login extends Component {
 
 
     onSubmit(e) {
-        const {username, password, punto_venta = null} = e;
+        const {username, password, punto_venta = 0} = e;
         const callback = () => this.props.fetchMiCuenta();
         return this.props.login(username, password, punto_venta, {callback});
     }

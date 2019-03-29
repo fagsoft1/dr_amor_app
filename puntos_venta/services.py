@@ -6,11 +6,11 @@ from puntos_venta.models import PuntoVenta, PuntoVentaTurno
 
 def punto_venta_abrir(
         usuario_pv_id: int,
-        punto_venta_id: int
+        punto_venta_id: int = None
 ) -> [PuntoVenta, PuntoVentaTurno]:
     punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
     usuario = User.objects.get(pk=usuario_pv_id)
-    if punto_venta.abierto:
+    if punto_venta.abierto and usuario != punto_venta.usuario_actual:
         raise serializers.ValidationError({'_error': 'Este punto de venta ya esta abierto'})
     if punto_venta.usuario_actual and punto_venta.usuario_actual.id != usuario_pv_id:
         raise serializers.ValidationError(
@@ -28,12 +28,13 @@ def punto_venta_abrir(
     # TODO: Validar si esta en la lista de los colaboradores validos para este punto venta
 
     punto_venta_turno = usuario.tercero.turno_punto_venta_abierto
-    if punto_venta_turno:
+    if punto_venta_turno and punto_venta_turno.punto_venta != punto_venta:
         raise serializers.ValidationError(
             {
                 '_error': 'Este usuario ya tiene un turno abierto y debe cerrarlo primero antes de abrir otro turno. El turno esta abierto en el punto de venta %s' % punto_venta_turno.punto_venta.nombre}
         )
-    punto_venta_turno = PuntoVentaTurno.objects.create(usuario=usuario, punto_venta=punto_venta)
+    if not punto_venta_turno:
+        punto_venta_turno = PuntoVentaTurno.objects.create(usuario=usuario, punto_venta=punto_venta)
 
     punto_venta.abierto = True
     punto_venta.usuario_actual = User.objects.get(pk=usuario_pv_id)

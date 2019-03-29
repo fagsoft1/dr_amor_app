@@ -45,7 +45,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'tercero': {'read_only': True},
-            'punto_venta_actual': {'read_only': True}
+            'punto_venta_actual': {'read_only': True},
+            'password': {'write_only': True},
         }
 
     def create(self, validated_data):

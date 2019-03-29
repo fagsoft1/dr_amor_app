@@ -66,7 +66,8 @@ MY_APPS = [
     'servicios.apps.ServiciosConfig',
     'cajas.apps.CajasConfig',
     'liquidaciones.apps.LiquidacionesConfig',
-    #'puntos_venta_sesiones_trabajo.apps.PuntosVentaSesionesTrabajoConfig',
+    'parqueadero.apps.ParqueaderoConfig',
+    # 'puntos_venta_sesiones_trabajo.apps.PuntosVentaSesionesTrabajoConfig',
 ]
 
 THIRD_PART_APPS = [

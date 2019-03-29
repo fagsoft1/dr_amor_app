@@ -436,7 +436,8 @@ class HabitacionTests(TestCase):
 
         self.punto_venta.refresh_from_db()
 
-        bitacoras = self.punto_venta.bitacoras_servicios.all()
+        from servicios.models import BitacoraServicio
+        bitacoras = BitacoraServicio.objects.filter(punto_venta_turno__punto_venta=self.punto_venta).all()
         bitacoras_conceptos = bitacoras.filter(concepto='Cambio de habitación').all()
         bitacoras_sin_observacion = bitacoras_conceptos.filter(observacion__isnull=True).all()
         bitacoras_con_habitacion_anterior = bitacoras_sin_observacion.filter(
@@ -581,8 +582,8 @@ class HabitacionTests(TestCase):
                 servicios_array_id=[servicio_uno.id, servicio_dos.id, servicio_otra.id],
                 punto_venta_id=self.punto_venta.id,
                 usuario_id=self.punto_venta.usuario_actual.id,
-                valor_efectivo=20000,
-                valor_tarjeta=0
+                valor_efectivo=-30000,
+                valor_tarjeta=-30000
             )
 
         habitacion_nueva, habitacion_anterior = habitacion_cambiar_servicios_de_habitacion(
@@ -591,7 +592,7 @@ class HabitacionTests(TestCase):
             servicios_array_id=[servicio_uno.id, servicio_dos.id, servicio_otra.id],
             punto_venta_id=self.punto_venta.id,
             usuario_id=self.punto_venta.usuario_actual.id,
-            valor_efectivo=(self.habitacion_dos.tipo.valor - habitacion_nueva_menor_tarifa.tipo.valor) * 3,
+            valor_efectivo=-(self.habitacion_dos.tipo.valor - habitacion_nueva_menor_tarifa.tipo.valor) * 3,
             valor_tarjeta=0
         )
         iva_anterior_uno = servicio_uno.valor_iva_habitacion

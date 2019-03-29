@@ -10,6 +10,8 @@ from .models import (
 
 class OperacionCajaSerializer(serializers.ModelSerializer):
     tipo_operacion = serializers.CharField(source='concepto.tipo', read_only=True)
+    cuenta_liquidada = serializers.NullBooleanField(read_only=True, source='cuenta.liquidada')
+    cuenta_usuario = serializers.PrimaryKeyRelatedField(source='cuenta.propietario', read_only=True, allow_null=True)
     usuario_pv = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -18,6 +20,9 @@ class OperacionCajaSerializer(serializers.ModelSerializer):
             'id',
             'tercero',
             'usuario_pv',
+            'cuenta',
+            'cuenta_liquidada',
+            'cuenta_usuario',
             'concepto',
             'grupo_operaciones',
             'descripcion',

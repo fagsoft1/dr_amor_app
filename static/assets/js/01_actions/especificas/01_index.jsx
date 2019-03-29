@@ -24,3 +24,5 @@ export * from './cajas/billetesMonedasAction';
 export * from './cajas/arqueosCajasAction';
 export * from './cajas/conceptosOperacionesCajaAction';
 export * from './cajas/operacionesCajaAction';
+export * from './ventas/ventasProductosAction';
+export * from './ventas/ventasProductosDetallesAction';

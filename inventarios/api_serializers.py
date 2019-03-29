@@ -218,9 +218,15 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
     bodega_origen_nombre = serializers.CharField(source='bodega_origen.nombre', read_only=True)
     bodega_destino_nombre = serializers.CharField(source='bodega_destino.nombre', read_only=True)
     estado_display = serializers.SerializerMethodField()
+    creado_por_username = serializers.SerializerMethodField()
 
     def get_estado_display(self, obj):
         return obj.get_estado_display()
+
+    def get_creado_por_username(self, obj):
+        if obj.creado_por:
+            return obj.creado_por.username
+        return None
 
     class Meta:
         model = TrasladoInventario
@@ -229,6 +235,7 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
             'id',
             'bodega_origen',
             'created',
+            'creado_por_username',
             'bodega_origen_nombre',
             'bodega_destino',
             'creado_por',

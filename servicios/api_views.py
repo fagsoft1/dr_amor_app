@@ -88,10 +88,10 @@ class ServicioViewSet(viewsets.ModelViewSet):
     def cambiar_tiempo(self, request, pk=None):
         servicio = self.get_object()
         pago = json.loads(request.POST.get('pago'))
-        #TODO: evaluar quitar del post, ya viene del usuario
+        # TODO: evaluar quitar del post, ya viene del usuario
         punto_venta_id = pago.get('punto_venta_id', None)
-        valor_efectivo = pago.get('valor_efectivo', 0)
-        valor_tarjeta = pago.get('valor_tarjeta', 0)
+        valor_efectivo = float(pago.get('valor_efectivo', 0))
+        valor_tarjeta = float(pago.get('valor_tarjeta', 0))
         nro_autorizacion = pago.get('nro_autorizacion', 0)
         franquicia = pago.get('franquicia', None)
         categoria_fraccion_tiempo_id = pago.get('categoria_fraccion_tiempo_id', None)

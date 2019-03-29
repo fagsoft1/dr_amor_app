@@ -77,17 +77,18 @@ def transaccion_caja_registrar_cambio_tiempo_servicio_menor_tiempo(
         punto_venta_turno=turno_punto_venta,
         tipo='E',
         tipo_dos='SERVICIO',
-        concepto='Devolucion por disminución de tiempo de %s a %s minutos' % (servicio.tiempo_minutos, minutos),
+        concepto='Devolucion por disminución de tiempo a %s minutos' % (minutos),
         valor_efectivo=-valor_efectivo
     )
     transaccion.servicios.add(servicio)
-
     if valor_efectivo != -diferencia:
         raise serializers.ValidationError(
             {
                 '_error': 'El valor ingresado de forma de pago es diferente a la devolución por el servicio. El Valor de la devolucion es %s, pero el pago en Efectivo= %s no coincide' % (
                     -diferencia, valor_efectivo)}
         )
+    servicio.valor_servicio += diferencia
+    servicio.save()
 
     return transaccion
 
@@ -123,7 +124,7 @@ def transaccion_caja_registrar_cambio_tiempo_servicio_mayor_tiempo(
         punto_venta_turno=turno_punto_venta,
         tipo='I',
         tipo_dos='SERVICIO',
-        concepto='Ingreso por extención de tiempo de %s a %s minutos' % (servicio.tiempo_minutos, minutos),
+        concepto='Ingreso por extención de tiempo a %s minutos' % (minutos),
         valor_tarjeta=valor_tarjeta,
         valor_efectivo=valor_efectivo,
         nro_autorizacion=nro_autorizacion,
@@ -138,6 +139,8 @@ def transaccion_caja_registrar_cambio_tiempo_servicio_mayor_tiempo(
                     diferencia, valor_efectivo, valor_tarjeta)}
         )
 
+    servicio.valor_servicio += diferencia
+    servicio.save()
     return transaccion
 
 

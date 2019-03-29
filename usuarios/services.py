@@ -23,12 +23,11 @@ def usuario_existe_username(
 
 def usuario_login(
         usuario_id: int,
-        **kwargs
+        punto_venta_id: int = None
 ) -> str:
     from puntos_venta.services import punto_venta_abrir
     token = usuario_obtener_token(usuario_id=usuario_id)
-    punto_venta_id = kwargs['punto_venta'][0] if 'punto_venta' in kwargs else None
-    if punto_venta_id:
+    if punto_venta_id is not None:
         punto_venta_abrir(
             punto_venta_id=punto_venta_id,
             usuario_pv_id=usuario_id

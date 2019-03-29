@@ -32,7 +32,7 @@ class Servicio(TimeStampedModel):
     servicio_anterior = models.OneToOneField('self', on_delete=models.PROTECT, related_name='servicio_siguiente',
                                              null=True)
     observacion_anulacion = models.TextField(null=True)
-    transacciones_caja = models.ManyToManyField('cajas.TransaccionCaja', related_name='transacciones_caja')
+    transacciones_caja = models.ManyToManyField('cajas.TransaccionCaja', related_name='servicios')
 
     @property
     def valor_total(self):
@@ -41,11 +41,7 @@ class Servicio(TimeStampedModel):
 
 
 class BitacoraServicio(TimeStampedModel):
-    created_by = models.ForeignKey(
-        User,
-        on_delete=models.PROTECT,
-        related_name='bitacoras_servicios'
-    )
+    punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='bitacoras_servicios')
     servicio = models.ForeignKey(
         Servicio,
         on_delete=models.CASCADE,
@@ -63,4 +59,3 @@ class BitacoraServicio(TimeStampedModel):
     tiempo_minutos_recorridos = models.PositiveIntegerField(null=True, blank=True)
     concepto = models.CharField(max_length=200)
     observacion = models.TextField(null=True)
-    punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='bitacoras_servicios')

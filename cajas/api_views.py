@@ -28,10 +28,13 @@ from .models import (
 
 class OperacionCajaViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissionsFull]
-    queryset = OperacionCaja.objects.all()
+    queryset = OperacionCaja.objects.select_related(
+        'cuenta',
+        'concepto'
+    ).all()
     serializer_class = OperacionCajaSerializer
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def consultar_por_tercero_cuenta_abierta(self, request):
         tercero_id = request.GET.get('tercero_id', None)
         qs = self.queryset.filter(

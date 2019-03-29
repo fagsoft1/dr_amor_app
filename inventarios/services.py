@@ -379,7 +379,10 @@ def traslado_inventario_realizar_traslado(
         if hasattr(bodega_destino, 'punto_venta'):
             if bodega_destino.punto_venta.usuario_actual.id != usuario_id:
                 raise serializers.ValidationError(
-                    {'_error': 'El traslado a esta bodega sólamente puede realizarlo %s' % usuario.username})
+                    {
+                        '_error': 'El traslado a esta bodega sólamente puede realizarlo %s' % bodega_destino.punto_venta.usuario_actual.username
+                    }
+                )
         movimiento_origen = movimiento_inventario_traslado_salida_crear(
             bodega_origen_id=traslado_inventario.bodega_origen.id,
             usuario_id=traslado_inventario.creado_por.id,

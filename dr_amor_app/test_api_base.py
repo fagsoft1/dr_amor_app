@@ -57,6 +57,7 @@ class BaseTestsApi(TestCase):
             data,
             HTTP_AUTHORIZATION='Token ' + self.token_user
         )
+        print(response.data)
         id = response.data.pop('id')
         self.assertTrue(self.modelo.objects.filter(pk=id).exists())
 

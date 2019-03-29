@@ -32,8 +32,8 @@ function SimpleTable(props) {
                     <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Tiempo</th>
                         <th>Hora</th>
+                        <th>Tiempo</th>
                         <th>Valor</th>
                     </tr>
                     </thead>

@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework.permissions import DjangoModelPermissions, DjangoObjectPermissions
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import exceptions
 
 SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS', 'VIEW')
@@ -59,5 +59,25 @@ class DjangoModelPermissionsFull(DjangoModelPermissions):
         return True
 
 
+class EsAcompanantePermission(DjangoModelPermissions):
+    def has_permission(self, request, view):
+        if hasattr(request.user, 'tercero'):
+            return request.user.tercero.es_acompanante
+        else:
+            return request.user.is_superuser
 
 
+class EsColaboradorPermission(DjangoModelPermissions):
+    def has_permission(self, request, view):
+        if hasattr(request.user, 'tercero'):
+            return request.user.tercero.es_colaborador
+        else:
+            return request.user.is_superuser
+
+
+class EsInternoPermission(DjangoModelPermissions):
+    def has_permission(self, request, view):
+        if hasattr(request.user, 'tercero'):
+            return request.user.tercero.es_colaborador or request.user.tercero.es_acompanante
+        else:
+            return request.user.is_superuser

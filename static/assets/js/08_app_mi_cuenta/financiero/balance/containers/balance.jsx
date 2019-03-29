@@ -19,7 +19,7 @@ class Balance extends Component {
     }
 
     cargarDatos() {
-        const cargarComprasTienda = (tercero_id) => console.log('Aqui traería ventas por cuenta abierta');
+        const cargarComprasTienda = (tercero_id) => this.props.fetchVentasProductosDetalles_por_tercero_cuenta_abierta(tercero_id);
         const cargarOperacionesCaja = (tercero_id) => this.props.fetchOperacionesCajas_por_tercero_cuenta_abierta(tercero_id, {callback: () => cargarComprasTienda(tercero_id)});
         const cargarServicios = (tercero_id) => {
             if (tercero_id) {
@@ -34,9 +34,10 @@ class Balance extends Component {
 
     render() {
         const {mi_cuenta, classes} = this.props;
-        let {movimientos_inventarios_detalles, servicios, operaciones_caja} = this.props;
-        movimientos_inventarios_detalles = mi_cuenta ? _.pickBy(
-            movimientos_inventarios_detalles,
+        let {movimientos_inventarios_detalles, servicios, operaciones_caja, ventas_productos_detalles} = this.props;
+
+        ventas_productos_detalles = mi_cuenta ? _.pickBy(
+            ventas_productos_detalles,
             e => (
                 e.cuenta_usuario === mi_cuenta.id &&
                 e.cuenta_liquidada === false &&
@@ -60,8 +61,10 @@ class Balance extends Component {
             )
         ) : null;
 
+        console.log(ventas_productos_detalles)
+
         const valor_total_servicios = _.sumBy(_.map(servicios), e => parseFloat(e.valor_servicio));
-        const valor_total_consumo_tienda = _.sumBy(_.map(movimientos_inventarios_detalles, e => e), v => parseFloat(v.precio_venta_total));
+        const valor_total_consumo_tienda = _.sumBy(_.map(ventas_productos_detalles, e => e), v => parseFloat(v.precio_total)) * -1;
         const valor_total_prestamos = _.sumBy(_.map(operaciones_caja, e => e), v => parseFloat(v.valor));
         const valor_total = valor_total_prestamos + valor_total_servicios + valor_total_consumo_tienda;
 
@@ -83,10 +86,10 @@ class Balance extends Component {
                 />
             }
             {
-                _.size(movimientos_inventarios_detalles) > 0 &&
+                _.size(ventas_productos_detalles) > 0 &&
                 <ConsumosTiendaTabla
                     classes={classes}
-                    consumos_tienda={movimientos_inventarios_detalles}
+                    consumos_tienda={ventas_productos_detalles}
                     valor_total_consumo_tienda={valor_total_consumo_tienda}
                 />
             }
@@ -119,6 +122,7 @@ function mapPropsToState(state, ownProps) {
         operaciones_caja: state.operaciones_caja,
         servicios: state.servicios,
         mi_cuenta: state.mi_cuenta,
+        ventas_productos_detalles: state.ventas_productos_detalles,
         movimientos_inventarios_detalles: state.movimientos_inventarios_detalles
     }
 }

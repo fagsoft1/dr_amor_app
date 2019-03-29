@@ -39,6 +39,9 @@ import arqueosCajasReducer from './especificas/cajas/arqueosCajasReducer';
 import conceptosOperacionesCajasReducer from './especificas/cajas/conceptosOperacionesCajas';
 import operacionesCajasReducer from './especificas/cajas/operacionesCajas';
 
+import ventasProductosReducer from './especificas/ventas/ventasProductosReducer';
+import ventasProductosDetallesReducer from './especificas/ventas/ventasProductosDetallesReducer';
+
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
     permisos: permisosReducer,
@@ -78,6 +81,9 @@ const rootReducer = combineReducers({
     arqueos_cajas: arqueosCajasReducer,
     conceptos_operaciones_caja: conceptosOperacionesCajasReducer,
     operaciones_caja: operacionesCajasReducer,
+
+    ventas_productos_detalles: ventasProductosDetallesReducer,
+    ventas_productos: ventasProductosReducer,
 });
 
 export default rootReducer;

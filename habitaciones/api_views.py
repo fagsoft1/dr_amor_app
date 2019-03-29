@@ -1,7 +1,7 @@
 import json
 
 from django.db.models import Max, Subquery, OuterRef, ExpressionWrapper, DateTimeField
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
@@ -58,7 +58,7 @@ class HabitacionViewSet(viewsets.ModelViewSet):
         mensaje = 'Los servicios para habitacion %s se han terminado.' % (habitacion.numero)
         return Response({'result': mensaje})
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def iniciar_servicios(self, request, pk=None):
         habitacion = self.get_object()
         pago = json.loads(request.POST.get('pago'))
@@ -66,8 +66,8 @@ class HabitacionViewSet(viewsets.ModelViewSet):
 
         # TODO: evaluar que se puede ir, ya sale del usuario actual
         # punto_venta_id = pago.get('punto_venta_id', None)
-        valor_efectivo = pago.get('valor_efectivo', 0)
-        valor_tarjeta = pago.get('valor_tarjeta', 0)
+        valor_efectivo = float(pago.get('valor_efectivo', 0))
+        valor_tarjeta = float(pago.get('valor_tarjeta', 0))
         nro_autorizacion = pago.get('nro_autorizacion', 0)
         franquicia = pago.get('franquicia', None)
 
@@ -93,8 +93,8 @@ class HabitacionViewSet(viewsets.ModelViewSet):
             servicios_array_id=json.loads(request.POST.get('servicios_array_id', None)),
             punto_venta_id=self.request.user.tercero.turno_punto_venta_abierto.punto_venta_id,
             usuario_id=self.request.user.id,
-            valor_efectivo=pago.get('valor_efectivo', 0),
-            valor_tarjeta=pago.get('valor_tarjeta', 0),
+            valor_efectivo=float(pago.get('valor_efectivo', 0)),
+            valor_tarjeta=float(pago.get('valor_tarjeta', 0)),
             observacion_devolucion=pago.get(
                 'observacion_devolucion') if 'observacion_devolucion' in pago.keys() else None,
             nro_autorizacion=pago.get('nro_autorizacion', None),
