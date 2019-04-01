@@ -15,6 +15,7 @@ class VentaProducto(TimeStampedModel):
     punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='ventas_productos')
     cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='compras_productos', null=True)
     movimientos = models.ManyToManyField(MovimientoInventario, related_name='ventas_productos')
+    transacciones_caja = models.ManyToManyField('cajas.TransaccionCaja', related_name='ventas_productos')
 
     objects = VentasProductosManager()
 
@@ -34,7 +35,7 @@ class VentaProductoDetalle(TimeStampedModel):
     precio_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     comision = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     cuenta_comision = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='comisiones_x_productos',
-                               null=True)
+                                        null=True)
 
     class Meta:
         permissions = [

@@ -143,7 +143,7 @@ class LiquidacionServicesTests(BaseTest):
             valor_efectivo=1,
             nro_vauchers=10
         )
-        self.assertEqual(liquidacion_cuenta_tres.saldo_anterior, saldo_dos)
+        self.assertEqual(int(liquidacion_cuenta_tres.saldo_anterior), int(saldo_dos))
 
     # endregion
 
@@ -321,7 +321,7 @@ class LiquidacionServicesTests(BaseTest):
                 "{'_error': 'Sólo se puede liquidar cuenta a un colaborador presente'}"
         ):
             liquidar_cuenta_colaborador(
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                user_id=self.colaborador_cajero.id,
                 colaborador_id=self.colaborador_dos.id,
                 valor_cuadre_cierre_nomina=10000
             )
@@ -333,9 +333,9 @@ class LiquidacionServicesTests(BaseTest):
                 "{'_error': 'Sólo se puede liquidar una cuenta a un tercero que sea colaborador'}"
         ):
             liquidar_cuenta_colaborador(
-                punto_venta_turno_id=self.punto_venta_turno.id,
                 colaborador_id=self.acompanante.id,
-                valor_cuadre_cierre_nomina=10000
+                valor_cuadre_cierre_nomina=10000,
+                user_id=self.colaborador_cajero.id
             )
 
     def test_liquidar_cuenta_colaborador_solo_con_transacciones(self):
@@ -345,7 +345,7 @@ class LiquidacionServicesTests(BaseTest):
                 "{'_error': 'No hay nada para liquidar para colaborador'}"
         ):
             liquidar_cuenta_colaborador(
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                user_id=self.colaborador_cajero.id,
                 colaborador_id=self.colaborador_dos.id,
                 valor_cuadre_cierre_nomina=10000
             )
@@ -399,7 +399,6 @@ class LiquidacionServicesTests(BaseTest):
         )
 
         # ------------------
-
 
         self.hacer_venta_productos_dos(
             punto_venta=self.punto_venta,

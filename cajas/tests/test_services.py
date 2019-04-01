@@ -522,13 +522,13 @@ class OperacionCajaServicesTests(TestCase):
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.acompanante.id,
-            valor=1000,
+            valor=2000,
             descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.transacciones_caja.all().count(), 1)
         self.assertEqual(operacion_caja.transacciones_caja.all().first().tipo, 'E')
-        self.assertEqual(operacion_caja.transacciones_caja.all().first().valor_efectivo, -1000)
+        self.assertEqual(operacion_caja.transacciones_caja.all().first().valor_efectivo, -2000)
 
     def test_operacion_caja_colaborador(self):
         from ..factories import ConceptoOperacionCajaFactory

@@ -123,8 +123,7 @@ def habitacion_cambiar_servicios_de_habitacion(
                 observacion_devolucion=observacion_devolucion
             )
             valor_habitacion = habitacion_nueva.tipo.valor_antes_impuestos
-            valor_habitacion_con_iva = habitacion_nueva.tipo.valor
-            valor_iva_habitacion = valor_habitacion_con_iva - valor_habitacion
+            valor_iva_habitacion = habitacion_nueva.tipo.impuesto
             comision_habitacion_nueva = habitacion_nueva.tipo.comision
 
             servicio.valor_habitacion = valor_habitacion - comision_habitacion_nueva

@@ -1,112 +1,81 @@
-from django.test import TestCase
-from django.utils import timezone
+import random
+
+from django.db.models import Sum
 from rest_framework.exceptions import ValidationError
+from django.utils import timezone
 from faker import Faker
+
+from dr_amor_app.utilities_tests.test_base import BaseTest
 
 faker = Faker()
 
 
-class VentaProductosServicesTests(TestCase):
+class VentaProductosServicesTests(BaseTest):
     def setUp(self):
-        from terceros.factories import ColaboradorFactory, AcompananteFactory
-        from puntos_venta.factories import PuntoVentaFactory
-        from usuarios.services import usuario_login
-        from terceros.services import tercero_registra_entrada, tercero_set_new_pin
-        from inventarios.factories import MovimientoInventarioDetalleFactory
-        from inventarios.services import (
-            movimiento_inventario_aplicar_movimiento,
-            movimiento_inventario_saldo_inicial_crear
-        )
-        self.punto_venta = PuntoVentaFactory(abierto=False, usuario_actual=None)
+        self.acompanantesSetUp()
+        self.colaboradoresSetUp()
+        self.ventasProductosInventarioInicialSetUp()
 
-        self.bodega = self.punto_venta.bodega
-        self.bodega.es_principal = False
-        self.bodega.save()
+    def crear_pedido(self, nro_referencias=3, inventario_no_existente=False):
+        from productos.models import Producto
+        if not Producto.objects.exists():
+            array_ids = self.crear_inventarios_productos(nro_referencias=nro_referencias)
+        else:
+            array_ids = Producto.objects.values_list('pk', flat=True)
+        valor_pedido = 0
+        cantidad_pedido = 0
+        pedido = []
+        informacion = {
+            'cantidad_pedido': 0,
+            'valor_pedido': 0,
+            'array_id_items': [],
+            'pedido': None
+        }
+        for x in array_ids:
+            cantidad = random.randint(1, x + 3)
+            if inventario_no_existente:
+                cantidad = cantidad * 10000
+            cantidad_pedido += cantidad
 
-        self.colaborador = ColaboradorFactory()
-        tercero_set_new_pin(
-            tercero_id=self.colaborador.id,
-            raw_pin='0000'
-        )
-        tercero_registra_entrada(
-            tercero_id=self.colaborador.id,
-            raw_pin='0000'
-        )
-        usuario_login(
-            usuario_id=self.colaborador.usuario.id,
-            punto_venta_id=self.punto_venta.id
-        )
+            valor = 1000 * x * cantidad
+            valor_pedido += valor
 
-        self.acompanante = AcompananteFactory()
-        tercero_set_new_pin(
-            tercero_id=self.acompanante.id,
-            raw_pin='0000'
-        )
-        tercero_registra_entrada(
-            tercero_id=self.acompanante.id,
-            raw_pin='0000'
-        )
-        movimiento = movimiento_inventario_saldo_inicial_crear(
-            fecha=timezone.now(),
-            bodega_destino_id=self.bodega.id,
-            usuario_id=self.colaborador.usuario.id
+            pedido.append({'producto_id': x, 'precio_total': valor, 'cantidad': cantidad})
+            informacion['array_id_items'].append(x)
+        informacion['valor_pedido'] = valor_pedido
+        informacion['cantidad_pedido'] = cantidad_pedido
+        informacion['pedido'] = pedido
 
-        )
-        self.mid_uno = MovimientoInventarioDetalleFactory(
-            movimiento=movimiento
-        )
-        self.mid_dos = MovimientoInventarioDetalleFactory(
-            movimiento=movimiento
-        )
-        self.mid_tres = MovimientoInventarioDetalleFactory(
-            movimiento=movimiento
-        )
-        movimiento_inventario_aplicar_movimiento(
-            movimiento_inventario_id=movimiento.id
-        )
-
-    def crear_pedido(self):
-        return [
-            {'producto_id': self.mid_uno.producto.id, 'precio_total': 2000, 'cantidad': 1},
-            {'producto_id': self.mid_dos.producto.id, 'precio_total': 3000, 'cantidad': 2},
-            {'producto_id': self.mid_tres.producto.id, 'precio_total': 4000, 'cantidad': 3},
-        ]
+        return informacion
 
     def crear_pedido_errado_producto_no_existente(self):
         return [
-            {'producto_id': self.mid_uno.producto.id, 'precio_total': 2000, 'cantidad': 1},
-            {'producto_id': self.mid_dos.producto.id, 'precio_total': 3000, 'cantidad': 2},
-            {'producto_id': 1000, 'precio_total': 4000, 'cantidad': 3},
-        ]
-
-    def crear_pedido_errado_cantidad_no_existente(self):
-        return [
-            {'producto_id': self.mid_uno.producto.id, 'precio_total': 2000, 'cantidad': 1},
-            {'producto_id': self.mid_dos.producto.id, 'precio_total': 3000, 'cantidad': 2},
-            {'producto_id': self.mid_tres.producto.id, 'precio_total': 4000000, 'cantidad': 3000},
+            {'producto_id': 1, 'precio_total': 2000, 'cantidad': 1},
+            {'producto_id': 2, 'precio_total': 3000, 'cantidad': 2},
+            {'producto_id': 100000, 'precio_total': 4000, 'cantidad': 3},
         ]
 
     def crear_venta_producto_a_acompanante(self):
         from ventas.services import venta_producto_crear
         return venta_producto_crear(
-            punto_venta_turno_id=self.colaborador.turno_punto_venta_abierto.id,
+            punto_venta_turno_id=self.colaborador_cajero.turno_punto_venta_abierto.id,
             cuenta_id=self.acompanante.cuenta_abierta.id
         )
 
     def crear_venta_producto_sin_cuenta(self):
         from ventas.services import venta_producto_crear
         return venta_producto_crear(
-            punto_venta_turno_id=self.colaborador.turno_punto_venta_abierto.id
+            punto_venta_turno_id=self.colaborador_cajero.turno_punto_venta_abierto.id
         )
 
     def test_venta_producto_crear(self):
         venta = self.crear_venta_producto_a_acompanante()
-        self.assertEqual(venta.punto_venta_turno_id, self.colaborador.turno_punto_venta_abierto.id)
+        self.assertEqual(venta.punto_venta_turno_id, self.colaborador_cajero.turno_punto_venta_abierto.id)
         self.assertEqual(venta.cuenta_id, self.acompanante.cuenta_abierta.id)
 
         venta = self.crear_venta_producto_sin_cuenta()
         self.assertIsNone(venta.cuenta)
-        self.assertEqual(venta.punto_venta_turno_id, self.colaborador.turno_punto_venta_abierto.id)
+        self.assertEqual(venta.punto_venta_turno_id, self.colaborador_cajero.turno_punto_venta_abierto.id)
 
     def test_venta_producto_crear_tercero_no_presente(self):
         self.acompanante.presente = False
@@ -119,7 +88,7 @@ class VentaProductosServicesTests(TestCase):
 
     def test_venta_producto_crear_cajero_turno_cerrado(self):
         from ventas.services import venta_producto_crear
-        punto_venta_turno = self.colaborador.turno_punto_venta_abierto
+        punto_venta_turno = self.colaborador_cajero.turno_punto_venta_abierto
         punto_venta_turno.finish = timezone.now()
         punto_venta_turno.save()
         with self.assertRaisesMessage(
@@ -130,73 +99,164 @@ class VentaProductosServicesTests(TestCase):
                 punto_venta_turno_id=punto_venta_turno.id
             )
 
-    def test_venta_producto_efectuar_venta_colaborador(self):
+    def test_venta_producto_efectuar(self):
         from ventas.services import venta_producto_efectuar_venta
         from terceros.services import tercero_generarQR
         self.assertTrue(self.acompanante.cuenta_abierta.compras_productos.all().count() == 0)
-        venta = venta_producto_efectuar_venta(
-            usuario_pdv_id=self.colaborador.usuario.id,
+        pedido_ini = self.crear_pedido(nro_referencias=5)
+        venta_producto_efectuar_venta(
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             punto_venta_id=self.punto_venta.id,
             tipo_venta=3,
-            pedidos=self.crear_pedido(),
+            pedidos=pedido_ini['pedido'],
+            cliente_usuario_id=self.colaborador_dos.usuario.id,
+            cliente_qr_codigo=tercero_generarQR(self.colaborador_dos.id).qr_acceso
+        )
+
+        self.assertEqual(
+            self.colaborador_dos.cuenta_abierta.egreso_por_compras_productos,
+            pedido_ini['valor_pedido']
+        )
+
+        pedido = self.crear_pedido(nro_referencias=5)
+        venta = venta_producto_efectuar_venta(
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
+            punto_venta_id=self.punto_venta.id,
+            tipo_venta=3,
+            pedidos=pedido['pedido'],
             cliente_usuario_id=self.acompanante.usuario.id,
             cliente_qr_codigo=tercero_generarQR(self.acompanante.id).qr_acceso
         )
-        movimientos_detalles_venta = venta.movimientos.first()
-        [self.assertTrue(x.es_ultimo_saldo) for x in movimientos_detalles_venta.detalles.all()]
-        self.assertTrue(movimientos_detalles_venta.sale_cantidad, 6)
-        self.assertTrue(movimientos_detalles_venta.sale_costo, 6000)
-        self.assertTrue(movimientos_detalles_venta.detalle, 'Salida de Mercancia x Venta')
-        self.assertTrue(movimientos_detalles_venta.motivo, 'venta')
-        self.assertTrue(self.acompanante.cuenta_abierta.compras_productos.all().count() == 1)
-        productos = self.acompanante.cuenta_abierta.compras_productos.first().productos.all()
-        self.assertEqual(productos.count(), 3)
+        valor_pedido_efectivo = venta.productos.aggregate(
+            precio_venta=Sum('precio_total')
+        )['precio_venta']
+        cantidad_pedido_efectivo = venta.productos.aggregate(
+            cantidad=Sum('cantidad')
+        )['cantidad']
+        valor_pedido_esperado = pedido['valor_pedido']
+        cantidad_pedido_esperado = pedido['cantidad_pedido']
 
-        venta_detalle = venta.productos.all()
-        [self.assertEqual(int(x.precio_unitario), int(x.precio_total / x.cantidad)) for x in venta_detalle]
+        self.assertEqual(valor_pedido_efectivo, valor_pedido_esperado)
+        self.assertEqual(cantidad_pedido_efectivo, cantidad_pedido_esperado)
+
+        movimientos_detalles_venta = venta.movimientos.first()
+        self.assertEqual(movimientos_detalles_venta.detalle, 'Salida de Mercancia x Venta')
+        self.assertEqual(movimientos_detalles_venta.motivo, 'venta')
+        for x in pedido['pedido']:
+            producto_id = x.get('producto_id')
+            cantidad = x.get('cantidad')
+            precio_total = x.get('precio_total')
+            movimiento_item = movimientos_detalles_venta.detalles.filter(producto__id=producto_id).first()
+            venta_item = venta.productos.filter(producto__id=producto_id).first()
+            self.assertEqual(movimiento_item.sale_cantidad, cantidad)
+            self.assertEqual(movimiento_item.es_ultimo_saldo, True)
+            self.assertEqual(venta_item.precio_total, precio_total)
+            self.assertEqual(venta_item.cantidad, cantidad)
+            self.assertEqual(venta_item.costo_unitario, movimiento_item.costo_unitario_promedio)
+            self.assertEqual(venta_item.costo_total, movimiento_item.sale_costo)
+        compras_productos = self.acompanante.cuenta_abierta.compras_productos.first()
+        self.assertEqual(compras_productos.productos.count(), len(pedido['pedido']))
+        self.assertEqual(
+            self.acompanante.cuenta_abierta.egreso_por_compras_productos,
+            pedido['valor_pedido']
+        )
 
     def test_venta_producto_efectuar_venta_mesero(self):
         from ventas.services import venta_producto_efectuar_venta
         from terceros.services import tercero_generarQR
-        colaborador_dos = self.acompanante
-        colaborador_dos.es_colaborador = True
-        colaborador_dos.es_acompanante = True
-        colaborador_dos.presente = True
-        colaborador_dos.save()
-        self.assertTrue(colaborador_dos.cuenta_abierta_mesero.compras_productos.all().count() == 0)
+        pedido = self.crear_pedido()
+        self.assertTrue(self.colaborador_dos.cuenta_abierta_mesero.compras_productos.all().count() == 0)
         venta = venta_producto_efectuar_venta(
-            usuario_pdv_id=self.colaborador.usuario.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             punto_venta_id=self.punto_venta.id,
             tipo_venta=2,
-            pedidos=self.crear_pedido(),
-            cliente_usuario_id=colaborador_dos.usuario.id,
-            cliente_qr_codigo=tercero_generarQR(colaborador_dos.id).qr_acceso
+            pedidos=pedido['pedido'],
+            cliente_usuario_id=self.colaborador_dos.usuario.id,
+            cliente_qr_codigo=tercero_generarQR(self.colaborador_dos.id).qr_acceso
         )
         movimientos_detalles_venta = venta.movimientos.first()
-        [self.assertTrue(x.es_ultimo_saldo) for x in movimientos_detalles_venta.detalles.all()]
-        self.assertTrue(movimientos_detalles_venta.sale_cantidad, 6)
-        self.assertTrue(movimientos_detalles_venta.sale_costo, 6000)
-        self.assertTrue(movimientos_detalles_venta.detalle, 'Salida de Mercancia x Venta')
-        self.assertTrue(movimientos_detalles_venta.motivo, 'venta')
-        self.assertTrue(colaborador_dos.cuenta_abierta_mesero.compras_productos.all().count() == 1)
-        productos = colaborador_dos.cuenta_abierta_mesero.compras_productos.first().productos.all()
-        self.assertEqual(productos.count(), 3)
-        self.assertEqual(int(colaborador_dos.cuenta_abierta_mesero.dinero_a_entregar_mesero), 9000)
+        self.assertEqual(movimientos_detalles_venta.detalle, 'Salida de Mercancia x Venta')
+        self.assertEqual(movimientos_detalles_venta.motivo, 'venta')
+        for x in pedido['pedido']:
+            producto_id = x.get('producto_id')
+            cantidad = x.get('cantidad')
+            precio_total = x.get('precio_total')
+            movimiento_item = movimientos_detalles_venta.detalles.filter(producto__id=producto_id).first()
+            venta_item = venta.productos.filter(producto__id=producto_id).first()
+            self.assertEqual(movimiento_item.sale_cantidad, cantidad)
+            self.assertEqual(movimiento_item.es_ultimo_saldo, True)
+            self.assertEqual(venta_item.precio_total, precio_total)
+            self.assertEqual(venta_item.cantidad, cantidad)
+            self.assertEqual(venta_item.costo_unitario, movimiento_item.costo_unitario_promedio)
+            self.assertEqual(venta_item.costo_total, movimiento_item.sale_costo)
+
+        compras_productos = self.colaborador_dos.cuenta_abierta_mesero.compras_productos.first()
+        self.assertEqual(compras_productos.productos.count(), len(pedido['pedido']))
+        self.assertEqual(
+            self.colaborador_dos.cuenta_abierta_mesero.valor_ventas_productos,
+            pedido['valor_pedido']
+        )
+
+    def test_venta_producto_efectuar_venta_sin_tipo_venta_existente(self):
+        from ventas.services import venta_producto_efectuar_venta
+        pedido = self.crear_pedido()
+
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'No hay ninguna venta de este tipo'}"
+        ):
+            venta_producto_efectuar_venta(
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
+                punto_venta_id=self.punto_venta.id,
+                tipo_venta=5,
+                pedidos=pedido['pedido'],
+                pago_efectivo=1
+            )
 
     def test_venta_producto_efectuar_venta_sin_tercero(self):
         from ventas.services import venta_producto_efectuar_venta
+        pedido = self.crear_pedido()
+
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'El valor del pago no coincide con el valor de la compra. El valor de la compra es"
+        ):
+            venta_producto_efectuar_venta(
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
+                punto_venta_id=self.punto_venta.id,
+                tipo_venta=1,
+                pedidos=pedido['pedido'],
+                pago_efectivo=1
+            )
         venta = venta_producto_efectuar_venta(
-            usuario_pdv_id=self.colaborador.usuario.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             punto_venta_id=self.punto_venta.id,
             tipo_venta=1,
-            pedidos=self.crear_pedido()
+            pedidos=pedido['pedido'],
+            pago_efectivo=pedido['valor_pedido']
         )
         movimientos_detalles_venta = venta.movimientos.first()
-        [self.assertTrue(x.es_ultimo_saldo) for x in movimientos_detalles_venta.detalles.all()]
-        self.assertTrue(movimientos_detalles_venta.sale_cantidad, 6)
-        self.assertTrue(movimientos_detalles_venta.sale_costo, 6000)
-        self.assertTrue(movimientos_detalles_venta.detalle, 'Salida de Mercancia x Venta')
-        self.assertTrue(movimientos_detalles_venta.motivo, 'venta')
+        self.assertEqual(movimientos_detalles_venta.detalle, 'Salida de Mercancia x Venta')
+        self.assertEqual(movimientos_detalles_venta.motivo, 'venta')
+        for x in pedido['pedido']:
+            producto_id = x.get('producto_id')
+            cantidad = x.get('cantidad')
+            precio_total = x.get('precio_total')
+            movimiento_item = movimientos_detalles_venta.detalles.filter(producto__id=producto_id).first()
+            venta_item = venta.productos.filter(producto__id=producto_id).first()
+            self.assertEqual(movimiento_item.sale_cantidad, cantidad)
+            self.assertEqual(movimiento_item.es_ultimo_saldo, True)
+            self.assertEqual(venta_item.precio_total, precio_total)
+            self.assertEqual(venta_item.cantidad, cantidad)
+            self.assertEqual(venta_item.costo_unitario, movimiento_item.costo_unitario_promedio)
+            self.assertEqual(venta_item.costo_total, movimiento_item.sale_costo)
+
+        transaccion = venta.transacciones_caja.first()
+        self.assertGreater(transaccion.valor_efectivo, 0)
+        self.assertEqual(transaccion.tipo, 'I')
+        self.assertEqual(transaccion.valor_efectivo, pedido['valor_pedido'])
+        self.assertEqual(transaccion.concepto, 'Ingreso x Venta de Producto en Efectivo')
+        self.assertIsNone(venta.cuenta)
 
     def test_venta_producto_efectuar_venta_producto_no_existente(self):
         from ventas.services import venta_producto_efectuar_venta
@@ -206,7 +266,7 @@ class VentaProductosServicesTests(TestCase):
                 "{'_error': 'No existe en el inventario el item de código"
         ):
             venta_producto_efectuar_venta(
-                usuario_pdv_id=self.colaborador.usuario.id,
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
                 punto_venta_id=self.punto_venta.id,
                 tipo_venta=3,
                 pedidos=self.crear_pedido_errado_producto_no_existente(),
@@ -221,11 +281,12 @@ class VentaProductosServicesTests(TestCase):
                 ValidationError,
                 "{'_error': 'No hay suficientes existencias del producto"
         ):
+            pedido = self.crear_pedido(inventario_no_existente=True)
             venta_producto_efectuar_venta(
-                usuario_pdv_id=self.colaborador.usuario.id,
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
                 punto_venta_id=self.punto_venta.id,
                 tipo_venta=3,
-                pedidos=self.crear_pedido_errado_cantidad_no_existente(),
+                pedidos=pedido['pedido'],
                 cliente_usuario_id=self.acompanante.usuario.id,
                 cliente_qr_codigo=tercero_generarQR(self.acompanante.id).qr_acceso
             )

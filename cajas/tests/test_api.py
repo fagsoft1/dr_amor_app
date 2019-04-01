@@ -1,5 +1,5 @@
 from ..models import OperacionCaja
-from dr_amor_app.test_api_base import BaseTestsApi
+from dr_amor_app.utilities_tests.test_api_base import BaseTestsApi
 
 from faker import Faker
 

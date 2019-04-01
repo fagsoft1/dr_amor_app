@@ -11,11 +11,6 @@ from .api_serializers import (
 from .models import (
     PuntoVenta,
 )
-from cajas.models import (
-    BaseDisponibleDenominacion,
-    EfectivoEntregaDenominacion,
-    ArqueoCaja
-)
 
 
 class PuntoVentaViewSet(viewsets.ModelViewSet):
@@ -35,6 +30,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         tipo_venta = int(request.POST.get('tipo_venta', None))
         qr_codigo = request.POST.get('qr_codigo')
         tercero_id = request.POST.get('tercero_id', None)
+        pago_efectivo = request.POST.get('pago_efectivo', 0)
         tercero = None
         if tercero_id:
             tercero = Tercero.objects.get(pk=tercero_id)
@@ -44,7 +40,8 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
             tipo_venta=tipo_venta,
             pedidos=pedidos,
             cliente_usuario_id=tercero.usuario_id if tercero_id else None,
-            cliente_qr_codigo=qr_codigo
+            cliente_qr_codigo=qr_codigo,
+            pago_efectivo=pago_efectivo
         )
         mensaje = 'La venta se ha efectuado'
         return Response({'result': mensaje})

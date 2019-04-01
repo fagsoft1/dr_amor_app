@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+from django.db.models import Sum
 from rest_framework import serializers
 
 from ventas.models import VentaProducto
@@ -35,7 +38,8 @@ def venta_producto_efectuar_venta(
         tipo_venta: int,
         pedidos: list,
         cliente_usuario_id: int = None,
-        cliente_qr_codigo: str = None
+        cliente_qr_codigo: str = None,
+        pago_efectivo: float = 0
 
 ) -> VentaProducto:
     from puntos_venta.models import PuntoVenta
@@ -66,10 +70,15 @@ def venta_producto_efectuar_venta(
                 punto_venta_turno_id=punto_venta_turno.id,
                 cuenta_id=tercero.cuenta_abierta.id
             )
-    else:  # Venta en efectivo
+    elif tipo_venta == 1:  # Venta en efectivo
         venta = venta_producto_crear(
             punto_venta_turno_id=punto_venta_turno.id
         )
+    else:
+        venta = None
+
+    if not venta:
+        raise serializers.ValidationError({'_error': 'No hay ninguna venta de este tipo'})
 
     movimiento_venta = movimiento_inventario_venta_crear(
         bodega_origen_id=bodega.id,
@@ -118,5 +127,20 @@ def venta_producto_efectuar_venta(
             precio_unitario=(precio_total / item_movimiento_detalle.sale_cantidad),
             costo_total=item_movimiento_detalle.sale_costo,
             costo_unitario=item_movimiento_detalle.costo_unitario_promedio
+        )
+
+    if tipo_venta == 1:
+        valor_venta = venta.productos.aggregate(
+            precio_total=Sum('precio_total')
+        )['precio_total']
+        if int(Decimal(pago_efectivo)) != int(Decimal(valor_venta)):
+            raise serializers.ValidationError({
+                '_error': 'El valor del pago no coincide con el valor de la compra. El valor de la compra es %s y el del efectivo fue %s' % (
+                    valor_venta, pago_efectivo)})
+        from cajas.services import transaccion_caja_registrar_venta_product_efectivo_ingreso
+        transaccion_caja_registrar_venta_product_efectivo_ingreso(
+            punto_venta_turno_id=punto_venta_turno.id,
+            valor_efectivo=Decimal(pago_efectivo),
+            venta_id=venta.id
         )
     return venta

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Permission, Group
 
-from dr_amor_app.test_api_base import BaseTestsApi
+from dr_amor_app.utilities_tests.test_api_base import BaseTestsApi
 
 from faker import Faker
 

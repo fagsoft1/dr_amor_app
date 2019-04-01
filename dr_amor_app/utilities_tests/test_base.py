@@ -278,71 +278,6 @@ class BaseTest(TestCase):
         informacion['valor_venta'] = valor_venta['valor']
         return venta, informacion
 
-    def hacer_ventas_productos(self) -> [VentaProducto, VentaProducto, VentaProducto]:
-        from ventas.services import venta_producto_efectuar_venta
-        from terceros.services import tercero_generarQR
-
-        pedido_uno = [
-            {'producto_id': self.mid_uno.producto.id, 'precio_total': 7000, 'cantidad': 5},
-            {'producto_id': self.mid_dos.producto.id, 'precio_total': 3000, 'cantidad': 2},
-            {'producto_id': self.mid_tres.producto.id, 'precio_total': 4000, 'cantidad': 3},
-
-        ]
-
-        pedido_dos = [
-            {'producto_id': self.mid_uno.producto.id, 'precio_total': 5000, 'cantidad': 2},
-            {'producto_id': self.mid_dos.producto.id, 'precio_total': 7000, 'cantidad': 5},
-        ]
-
-        pedido_tres = [
-            {'producto_id': self.mid_uno.producto.id, 'precio_total': 5000, 'cantidad': 4},
-            {'producto_id': self.mid_dos.producto.id, 'precio_total': 8000, 'cantidad': 5},
-            {'producto_id': self.mid_tres.producto.id, 'precio_total': 2000, 'cantidad': 1},
-        ]
-
-        pedido_cuatro = [
-            {'producto_id': self.mid_uno.producto.id, 'precio_total': 2500, 'cantidad': 2},
-            {'producto_id': self.mid_dos.producto.id, 'precio_total': 6000, 'cantidad': 3},
-        ]
-
-        venta_mesero = venta_producto_efectuar_venta(
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            punto_venta_id=self.punto_venta.id,
-            tipo_venta=2,
-            pedidos=pedido_uno,
-            cliente_usuario_id=self.colaborador_mesero.usuario.id,
-            cliente_qr_codigo=tercero_generarQR(self.colaborador_mesero.id).qr_acceso
-        )
-
-        venta_mesero_dos = venta_producto_efectuar_venta(
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            punto_venta_id=self.punto_venta.id,
-            tipo_venta=2,
-            pedidos=pedido_cuatro,
-            cliente_usuario_id=self.colaborador_mesero_dos.usuario.id,
-            cliente_qr_codigo=tercero_generarQR(self.colaborador_mesero_dos.id).qr_acceso
-        )
-
-        venta_colaborador = venta_producto_efectuar_venta(
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            punto_venta_id=self.punto_venta.id,
-            tipo_venta=3,
-            pedidos=pedido_dos,
-            cliente_usuario_id=self.colaborador_dos.usuario.id,
-            cliente_qr_codigo=tercero_generarQR(self.colaborador_dos.id).qr_acceso
-        )
-
-        venta_acompanante = venta_producto_efectuar_venta(
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            punto_venta_id=self.punto_venta.id,
-            tipo_venta=3,
-            pedidos=pedido_tres,
-            cliente_usuario_id=self.acompanante.usuario.id,
-            cliente_qr_codigo=tercero_generarQR(self.acompanante.id).qr_acceso
-        )
-
-        return venta_mesero, venta_mesero_dos, venta_colaborador, venta_acompanante
-
     def hacer_operaciones_caja_dos(
             self, tercero: Tercero = None,
             cantidad_operaciones=5
@@ -414,102 +349,6 @@ class BaseTest(TestCase):
             )
         return valor_ingresos, valor_egresos
 
-    def hacer_operaciones_caja(self):
-        from cajas.factories import ConceptoOperacionCajaFactory
-        from cajas.services import operacion_caja_crear
-        concepto_ingreso_acompanante = ConceptoOperacionCajaFactory(
-            tipo='I',
-            grupo='A'
-        )
-        concepto_egreso_acompanante = ConceptoOperacionCajaFactory(
-            tipo='E',
-            grupo='A'
-        )
-        concepto_ingreso_colaborador = ConceptoOperacionCajaFactory(
-            tipo='I',
-            grupo='C'
-        )
-        concepto_egreso_colaborador = ConceptoOperacionCajaFactory(
-            tipo='E',
-            grupo='C'
-        )
-
-        # region Operaciones caja para colaboradores
-        operacion_caja_crear(
-            concepto_id=concepto_egreso_colaborador.id,
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            descripcion='Un prestamo para colaborador',
-            valor=10000,
-            tercero_id=self.colaborador_dos.id,
-            observacion='probando'
-        )
-
-        operacion_caja_crear(
-            concepto_id=concepto_egreso_colaborador.id,
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            descripcion='Un prestamo para colaborador',
-            valor=20000,
-            tercero_id=self.colaborador_dos.id,
-            observacion='probando'
-        )
-
-        operacion_caja_crear(
-            concepto_id=concepto_ingreso_colaborador.id,
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            descripcion='Un ingreso para colaborador',
-            valor=30000,
-            tercero_id=self.colaborador_dos.id,
-            observacion='probando'
-        )
-
-        operacion_caja_crear(
-            concepto_id=concepto_ingreso_colaborador.id,
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            descripcion='Un ingreso para colaborador',
-            valor=15000,
-            tercero_id=self.colaborador_dos.id,
-            observacion='probando'
-        )
-        # endregion
-
-        # region Operaciones caja para acompañantes
-        operacion_caja_crear(
-            concepto_id=concepto_egreso_acompanante.id,
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            descripcion='Un prestamo para acompañante',
-            valor=15000,
-            tercero_id=self.acompanante.id,
-            observacion='probando'
-        )
-
-        operacion_caja_crear(
-            concepto_id=concepto_egreso_acompanante.id,
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            descripcion='Un prestamo para acompañante',
-            valor=25000,
-            tercero_id=self.acompanante.id,
-            observacion='probando'
-        )
-
-        operacion_caja_crear(
-            concepto_id=concepto_ingreso_acompanante.id,
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            descripcion='Un ingreso para acompañante',
-            valor=25000,
-            tercero_id=self.acompanante.id,
-            observacion='probando'
-        )
-
-        operacion_caja_crear(
-            concepto_id=concepto_ingreso_acompanante.id,
-            usuario_pdv_id=self.colaborador_cajero.usuario.id,
-            descripcion='Un ingreso para acompañante',
-            valor=10000,
-            tercero_id=self.acompanante.id,
-            observacion='probando'
-        )
-        # endregion
-
     def hacer_servicios_dos(
             self,
             acompanante,
@@ -530,6 +369,9 @@ class BaseTest(TestCase):
         tipo_habitacion = habitacion.tipo
         tipo_habitacion.comision = comision
         tipo_habitacion.save()
+        valor_totat_todos_los_servicio = 0
+        valor_totat_todos_los_ivas = 0
+        valor_totat_habitaciones = 0
 
         array_servicios_1 = []
         array_servicios_2 = []
@@ -542,26 +384,32 @@ class BaseTest(TestCase):
         ]
 
         valores_totales_servicios = {
+            'valor_totat_todos_los_servicio': 0,
+            'valor_totat_todos_los_ivas': 0,
+            'valor_totat_habitaciones': 0,
             'acompanante_1': {
                 'valor_servicio': 0,
                 'valor_habitacion': 0,
                 'valor_iva': 0,
                 'comision': 0,
-                'servicios': []
+                'servicios': [],
+                'array_servicios': [],
             },
             'acompanante_2': {
                 'valor_servicio': 0,
                 'valor_habitacion': 0,
                 'valor_iva': 0,
                 'comision': 0,
-                'servicios': []
+                'servicios': [],
+                'array_servicios': [],
             },
             'acompanante_3': {
                 'valor_servicio': 0,
                 'valor_habitacion': 0,
                 'valor_iva': 0,
                 'comision': 0,
-                'servicios': []
+                'servicios': [],
+                'array_servicios': [],
             },
         }
 
@@ -607,6 +455,9 @@ class BaseTest(TestCase):
                 valores_totales_servicios['acompanante_1']['valor_habitacion'] += valor_habitacion
                 valores_totales_servicios['acompanante_1']['comision'] += comision
                 valores_totales_servicios['acompanante_1']['servicios'].append(servicio)
+                valor_totat_todos_los_servicio += valor_servicio
+                valor_totat_habitaciones += valor_habitacion
+                valor_totat_todos_los_ivas += valor_iva
 
             if acompanante_dos:
                 for i in range(nro_servicios - 1):
@@ -623,6 +474,9 @@ class BaseTest(TestCase):
                     valores_totales_servicios['acompanante_2']['valor_habitacion'] += valor_habitacion
                     valores_totales_servicios['acompanante_2']['comision'] += comision
                     valores_totales_servicios['acompanante_2']['servicios'].append(servicio)
+                    valor_totat_todos_los_servicio += valor_servicio
+                    valor_totat_habitaciones += valor_habitacion
+                    valor_totat_todos_los_ivas += valor_iva
 
             if acompanante_tres:
                 for i in range(nro_servicios - 2):
@@ -639,6 +493,16 @@ class BaseTest(TestCase):
                     valores_totales_servicios['acompanante_3']['valor_habitacion'] += valor_habitacion
                     valores_totales_servicios['acompanante_3']['comision'] += comision
                     valores_totales_servicios['acompanante_3']['servicios'].append(servicio)
+                    valor_totat_todos_los_servicio += valor_servicio
+                    valor_totat_habitaciones += valor_habitacion
+                    valor_totat_todos_los_ivas += valor_iva
+
+        valores_totales_servicios['acompanante_1']['array_servicios'] = array_servicios_1
+        valores_totales_servicios['acompanante_2']['array_servicios'] = array_servicios_2
+        valores_totales_servicios['acompanante_3']['array_servicios'] = array_servicios_3
+        valores_totales_servicios['valor_totat_todos_los_servicio'] = valor_totat_todos_los_servicio
+        valores_totales_servicios['valor_totat_habitaciones'] = valor_totat_habitaciones
+        valores_totales_servicios['valor_totat_todos_los_ivas'] = valor_totat_todos_los_ivas
 
         if terminados:
             habitacion = habitacion_terminar_servicios(
@@ -649,57 +513,3 @@ class BaseTest(TestCase):
             habitacion.save()
 
         return valores_totales_servicios
-
-    def hacer_servicios(self, acompanante, acompanante_dos, habitacion, terminados=False, comision=0, iniciados=False):
-        from servicios.services import servicio_crear_nuevo, servicio_iniciar
-        from habitaciones.services import habitacion_terminar_servicios
-
-        tipo_habitacion = habitacion.tipo
-        tipo_habitacion.comision = comision
-        tipo_habitacion.save()
-
-        servicio_uno = servicio_crear_nuevo(
-            habitacion_id=habitacion.id,
-            acompanante_id=acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_dos = servicio_crear_nuevo(
-            habitacion_id=habitacion.id,
-            acompanante_id=acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_otra = servicio_crear_nuevo(
-            habitacion_id=habitacion.id,
-            acompanante_id=acompanante_dos.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-        if iniciados:
-            servicio_uno = servicio_iniciar(
-                servicio_id=servicio_uno.id,
-                usuario_pdv_id=self.punto_venta.usuario_actual.id
-            )
-
-            servicio_dos = servicio_iniciar(
-                servicio_id=servicio_dos.id,
-                usuario_pdv_id=self.punto_venta.usuario_actual.id
-            )
-
-            servicio_otra = servicio_iniciar(
-                servicio_id=servicio_otra.id,
-                usuario_pdv_id=self.punto_venta.usuario_actual.id
-            )
-
-        if terminados:
-            habitacion = habitacion_terminar_servicios(
-                habitacion_id=habitacion.id,
-                usuario_pdv_id=self.punto_venta.usuario_actual.id
-            )
-            habitacion.estado = 0
-            habitacion.save()
-
-        return habitacion, servicio_uno, servicio_dos, servicio_otra

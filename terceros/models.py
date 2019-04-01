@@ -150,14 +150,16 @@ class Tercero(models.Model):
         if not self.es_colaborador:
             raise serializers.ValidationError(
                 {'_error': 'Las cuentas abiertas de mesero solo pueden ser para colaboradores'})
-        cuenta = self.usuario.cuentas.filter(liquidada=False, tipo=2)
-        if cuenta.count() > 1:
+        cuenta_sin_liquidar = Cuenta.cuentas_meseros.sin_liquidar().filter(propietario__tercero=self)
+        if cuenta_sin_liquidar.count() > 1:
             raise serializers.ValidationError(
-                {'_error': 'Sólo debe de haber 1 o 0 cuentas mesero de tipo 2 no liquidada. Hay %s' % cuenta.count()}
+                {
+                    '_error': 'Sólo debe de haber 1 o 0 cuentas mesero de tipo 2 no liquidada. Hay %s' % cuenta_sin_liquidar.count()}
             )
-        cuenta = self.usuario.cuentas.filter(liquidada=False, tipo=2).last()
+        cuenta = cuenta_sin_liquidar.first()
         if not cuenta:
-            cuenta = self.usuario.cuentas.create(liquidada=False, tipo=2)
+            self.usuario.cuentas.create(liquidada=False, tipo=2)
+            cuenta = cuenta_sin_liquidar.first()
         return cuenta
 
     @property
@@ -166,8 +168,9 @@ class Tercero(models.Model):
             raise serializers.ValidationError(
                 {'_error': 'Las cuentas liquidadas de mesero solo pueden ser para colaboradores'})
 
-        if self.usuario.cuentas.filter(liquidada=True, tipo=2).exists():
-            return self.usuario.cuentas.filter(liquidada=True, tipo=2).last()
+        cuenta_liquidada = Cuenta.cuentas_meseros.liquidada().filter(propietario__tercero=self)
+        if cuenta_liquidada.exists():
+            return cuenta_liquidada.last()
         return None
 
     @property
@@ -189,20 +192,36 @@ class Tercero(models.Model):
 
     @property
     def cuenta_abierta(self):
-        cuenta = self.usuario.cuentas.filter(liquidada=False, tipo=1)
-        if cuenta.count() > 1:
-            raise serializers.ValidationError(
-                {'_error': 'Sólo debe de haber 1 o 0 cuentas de tipo 1 no liquidada. Hay %s' % cuenta.count()}
-            )
-        cuenta = self.usuario.cuentas.filter(liquidada=False, tipo=1).last()
+        if self.es_acompanante:
+            cuentas_sin_liquidar = Cuenta.cuentas_acompanantes.sin_liquidar().filter(propietario__tercero=self)
+        elif self.es_colaborador:
+            cuentas_sin_liquidar = Cuenta.cuentas_colaboradores.sin_liquidar().filter(propietario__tercero=self)
+        else:
+            cuentas_sin_liquidar = None
+
+        if cuentas_sin_liquidar:
+            if cuentas_sin_liquidar.count() > 1:
+                raise serializers.ValidationError(
+                    {
+                        '_error': 'Sólo debe de haber 1 o 0 cuentas de tipo 1 no liquidada. Hay %s' % cuentas_sin_liquidar.count()}
+                )
+        cuenta = cuentas_sin_liquidar.last()
         if not cuenta:
-            cuenta = self.usuario.cuentas.create(liquidada=False, tipo=1)
+            self.usuario.cuentas.create(liquidada=False, tipo=1)
+            cuenta = cuentas_sin_liquidar.last()
         return cuenta
 
     @property
     def ultima_cuenta_liquidada(self):
-        if self.usuario.cuentas.filter(liquidada=True, tipo=1).exists():
-            return self.usuario.cuentas.filter(liquidada=True, tipo=1).last()
+        if self.es_acompanante:
+            cuentas_liquidadas = Cuenta.cuentas_acompanantes.liquidada().filter(propietario__tercero=self)
+        elif self.es_colaborador:
+            cuentas_liquidadas = Cuenta.cuentas_colaboradores.liquidada().filter(propietario__tercero=self)
+        else:
+            cuentas_liquidadas = None
+
+        if cuentas_liquidadas.exists():
+            return cuentas_liquidadas.last()
         return None
 
     class Meta:

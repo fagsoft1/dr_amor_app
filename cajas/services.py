@@ -5,6 +5,31 @@ from rest_framework import serializers
 from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja
 
 
+# region Transacciones Caja
+def transaccion_caja_registrar_venta_product_efectivo_ingreso(
+        punto_venta_turno_id: int,
+        valor_efectivo: float,
+        venta_id: int
+) -> TransaccionCaja:
+    if valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s' % (
+                    valor_efectivo)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='I',
+        tipo_dos='VENTA_PRODUCTO',
+        concepto='Ingreso x Venta de Producto en Efectivo',
+        valor_efectivo=valor_efectivo
+    )
+
+    transaccion.ventas_productos.add(venta_id)
+    return transaccion
+
+
 def transaccion_caja_liquidacion_cuenta_mesero(
         liquidacion_mesero_id: int,
         punto_venta_turno_id: int,
@@ -395,6 +420,10 @@ def transaccion_caja_registrar_cambio_habitacion_menor_valor(
     return transaccion
 
 
+# endregion
+
+# region Operaciones Caja
+
 def operacion_caja_crear(
         concepto_id: int,
         usuario_pdv_id: int,
@@ -473,3 +502,5 @@ def operacion_caja_crear(
         )
     operacion_caja.transacciones_caja.add(transaccion_caja)
     return operacion_caja
+
+# endregion

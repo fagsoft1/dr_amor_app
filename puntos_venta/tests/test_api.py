@@ -2,7 +2,7 @@ import json
 
 from django.utils import timezone
 
-from dr_amor_app.test_api_base import BaseTestsApi
+from dr_amor_app.utilities_tests.test_api_base import BaseTestsApi
 
 from faker import Faker
 
@@ -127,7 +127,8 @@ class PuntoVentaTestApi(BaseTestsApi):
             'efectuar_venta_producto',
             {
                 'tipo_venta': 1,
-                'pedido': json.dumps(self.pedido)
+                'pedido': json.dumps(self.pedido),
+                'pago_efectivo': 9000
             },
             self.punto_venta.id
         )

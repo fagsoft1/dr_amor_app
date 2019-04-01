@@ -283,3 +283,5 @@ class RegistroEntradaParqueoTests(TestCase):
         self.assertEqual(len(registro.transacciones_caja.all()), 1)
         self.assertIsNotNone(registro.hora_salida)
         self.assertEqual(registro.transacciones_caja.all().first().valor_efectivo, registro.valor_total)
+        self.assertEqual(registro.transacciones_caja.all().first().tipo, 'I')
+        self.assertEqual(registro.transacciones_caja.all().first().tipo_dos, 'PARQUEADERO')

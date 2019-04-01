@@ -1,6 +1,5 @@
-from productos.api_views import UnidadProductoViewSet
 from ..models import Producto, CategoriaProducto, UnidadProducto, CategoriaDosProducto
-from dr_amor_app.test_api_base import BaseTestsApi
+from dr_amor_app.utilities_tests.test_api_base import BaseTestsApi
 
 from faker import Faker
 
