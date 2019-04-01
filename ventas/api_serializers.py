@@ -33,6 +33,8 @@ class VentaProductoDetalleSerializer(serializers.ModelSerializer):
             'cuenta_liquidada',
             'cuenta_tipo',
             'cuenta_usuario',
+            'cuenta_comision',
+            'comision',
             'producto',
             'cantidad',
             'costo_unitario',

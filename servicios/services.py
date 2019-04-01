@@ -281,9 +281,10 @@ def servicio_crear_nuevo(
     tiempo_minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
     categoria = tercero.categoria_modelo.nombre
     valor_servicio = categoria_fraccion_tiempo.valor
-    valor_habitacion = habitacion.tipo.valor_antes_impuestos
+    valor_habitacion = habitacion.tipo.valor_antes_impuestos - habitacion.tipo.comision
     cuenta = tercero.cuenta_abierta
     valor_iva_habitacion = habitacion.tipo.impuesto
+    comision = habitacion.tipo.comision
     servicio_nuevo = Servicio.objects.create(
         habitacion=habitacion,
         cuenta=cuenta,
@@ -291,6 +292,7 @@ def servicio_crear_nuevo(
         tiempo_minutos=tiempo_minutos,
         categoria=categoria,
         valor_servicio=valor_servicio,
+        comision=comision,
         valor_habitacion=valor_habitacion,
         valor_iva_habitacion=valor_iva_habitacion,
         punto_venta_turno=turno_punto_venta

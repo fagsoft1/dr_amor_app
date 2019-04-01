@@ -20,6 +20,7 @@ class TipoHabitacionSerializer(serializers.ModelSerializer):
             'porcentaje_impuesto',
             'valor_antes_impuestos',
             'impuesto',
+            'comision',
         )
         extra_kwargs = {
             'valor_antes_impuestos': {'read_only': True},

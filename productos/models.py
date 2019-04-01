@@ -41,6 +41,7 @@ class Producto(models.Model):
     unidad_producto = models.ForeignKey(UnidadProducto, on_delete=models.PROTECT, related_name='productos')
     empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT, related_name='productos')
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
+    comision = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     activo = models.BooleanField(default=True)
 
     class Meta:

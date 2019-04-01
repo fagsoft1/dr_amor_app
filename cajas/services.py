@@ -5,6 +5,33 @@ from rest_framework import serializers
 from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja
 
 
+def transaccion_caja_liquidacion_cuenta_mesero(
+        liquidacion_mesero_id: int,
+        punto_venta_turno_id: int,
+        valor_efectivo: float,
+        valor_tarjeta: float,
+        nro_vauchers: int
+) -> TransaccionCaja:
+    if valor_tarjeta < 0 or valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s y de la tarjeta es %s' % (
+                    valor_efectivo, valor_tarjeta)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='I',
+        tipo_dos='LIQ_CUE_MESERO',
+        concepto='Liquidación de cuenta para mesero',
+        valor_efectivo=valor_efectivo,
+        valor_tarjeta=valor_tarjeta,
+        nro_vauchers=nro_vauchers
+    )
+    transaccion.liquidaciones.add(liquidacion_mesero_id)
+    return transaccion
+
+
 def transaccion_caja_registrar_venta_parqueadero(
         registro_entrada_parqueo_id: int,
         punto_venta_turno_id: int,
@@ -29,7 +56,6 @@ def transaccion_caja_registrar_venta_parqueadero(
     return transaccion
 
 
-# TODO: Relacionar con la operacion de caja al igual que se hace con servicios y parqueo
 def transaccion_caja_registrar_operacion_caja_egreso(
         punto_venta_turno_id: int,
         concepto: str,
@@ -52,7 +78,6 @@ def transaccion_caja_registrar_operacion_caja_egreso(
     return transaccion
 
 
-# TODO: Relacionar con la operacion de caja al igual que se hace con servicios y parqueo
 def transaccion_caja_registrar_operacion_caja_ingreso(
         punto_venta_turno_id: int,
         concepto: str,
@@ -152,6 +177,7 @@ def transaccion_caja_registrar_cambio_tiempo_servicio_mayor_tiempo(
         tipo_dos='SERVICIO',
         concepto='Ingreso por extención de tiempo a %s minutos' % (minutos),
         valor_tarjeta=valor_tarjeta,
+        nro_vauchers=1 if valor_tarjeta > 0 else 0,
         valor_efectivo=valor_efectivo,
         nro_autorizacion=nro_autorizacion,
         franquicia=franquicia
@@ -198,6 +224,7 @@ def transaccion_caja_registrar_pago_nuevos_servicios_habitacion(
         tipo_dos='SERVICIO',
         concepto='Pago de servicios habitación %s' % habitacion.nombre,
         valor_tarjeta=valor_tarjeta,
+        nro_vauchers=1 if valor_tarjeta > 0 else 0,
         valor_efectivo=valor_efectivo,
         nro_autorizacion=nro_autorizacion,
         franquicia=franquicia
@@ -307,6 +334,7 @@ def transaccion_caja_registrar_cambio_habitacion_mayor_valor(
         concepto='Ingreso por cambio de la habitación %s a la habitación %s' % (
             habitacion_anterior.nombre, habitacion_nueva.nombre),
         valor_tarjeta=valor_tarjeta,
+        nro_vauchers=1 if valor_tarjeta > 0 else 0,
         valor_efectivo=valor_efectivo,
         nro_autorizacion=nro_autorizacion,
         franquicia=franquicia

@@ -1,10 +1,7 @@
 import React from "react";
-import Checkbox from '@material-ui/core/Checkbox';
 import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
 import {pesosColombianos} from '../../../../../00_utilities/common';
-import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
-import {Link} from 'react-router-dom'
 
 import ReactTable from "react-table";
 
@@ -39,12 +36,6 @@ class Tabla extends React.Component {
                                 }
                             },
                             {
-                                Header: "% Valor sin Iva",
-                                maxWidth: 150,
-                                accessor: "valor_antes_impuestos",
-                                Cell: row => pesosColombianos(row.value)
-                            },
-                            {
                                 Header: "% Iva",
                                 accessor: "porcentaje_impuesto",
                                 maxWidth: 150,
@@ -53,6 +44,18 @@ class Tabla extends React.Component {
                             {
                                 Header: "Impuesto",
                                 accessor: "impuesto",
+                                maxWidth: 150,
+                                Cell: row => pesosColombianos(row.value)
+                            },
+                            {
+                                Header: "Valor sin Iva ni Comisión",
+                                maxWidth: 150,
+                                accessor: "valor_antes_impuestos",
+                                Cell: row => pesosColombianos(row.value - row.original.comision)
+                            },
+                            {
+                                Header: "Comisión",
+                                accessor: "comision",
                                 maxWidth: 150,
                                 Cell: row => pesosColombianos(row.value)
                             },

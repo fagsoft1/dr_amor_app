@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
-import {reduxForm} from 'redux-form';
+import {formValueSelector, reduxForm} from 'redux-form';
 import {MyTextFieldSimple, MyCombobox} from '../../../../../../00_utilities/components/ui/forms/fields';
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
-
+import InputAdornment from '@material-ui/core/InputAdornment';
+import {pesosColombianos} from "../../../../../../00_utilities/common";
+import Typography from '@material-ui/core/Typography';
 
 class Form extends Component {
     render() {
@@ -22,7 +24,9 @@ class Form extends Component {
             categorias_dos_list,
             unidades_list,
             error,
+            valores
         } = this.props;
+        const {precio_venta, comision} = valores;
         return (
             <MyFormTagModal
                 fullScreen={false}
@@ -45,6 +49,17 @@ class Form extends Component {
                     className="col-12 col-md-3"
                     nombre='Precio de Venta'
                     name='precio_venta'
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
+                />
+                <MyTextFieldSimple
+                    className="col-12 col-md-7"
+                    nombre='Comisión'
+                    name='comision'
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
                 />
                 <MyCombobox
                     className="col-12 col-md-6"
@@ -91,15 +106,27 @@ class Form extends Component {
                     })}
                     filter='contains'
                 />
+                <div className="col-12">
+                    <Typography variant="body1" gutterBottom>
+                        <strong>Comisión: </strong>{pesosColombianos(comision)}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                        <strong>Precio de Venta sin Comisión: </strong>{pesosColombianos(precio_venta-comision)}
+                    </Typography>
+                </div>
             </MyFormTagModal>
         )
     }
 }
 
+const selector = formValueSelector('productosForm');
+
 function mapPropsToState(state, ownProps) {
     const {item_seleccionado} = ownProps;
+    const values = selector(state, 'precio_venta', 'comision');
     return {
-        initialValues: item_seleccionado
+        initialValues: item_seleccionado,
+        valores: values,
     }
 }
 

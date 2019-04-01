@@ -2,6 +2,8 @@ import random
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFit
@@ -13,8 +15,8 @@ from terceros.managers import (
     AcompanantesManager,
     ColaboradoresManager,
     ProveedoresManager,
-    InternosManager
-)
+    InternosManager,
+    CuentaMeseroManager, CuentaAcompananteManager, CuentaColaboradorManager)
 from terceros_acompanantes.models import CategoriaAcompanante
 
 
@@ -163,8 +165,10 @@ class Tercero(models.Model):
         if not self.es_colaborador:
             raise serializers.ValidationError(
                 {'_error': 'Las cuentas liquidadas de mesero solo pueden ser para colaboradores'})
-        cuenta = self.usuario.cuentas.filter(liquidada=True, tipo=2).last()
-        return cuenta
+
+        if self.usuario.cuentas.filter(liquidada=True, tipo=2).exists():
+            return self.usuario.cuentas.filter(liquidada=True, tipo=2).last()
+        return None
 
     @property
     def turno_punto_venta_abierto(self):
@@ -197,8 +201,9 @@ class Tercero(models.Model):
 
     @property
     def ultima_cuenta_liquidada(self):
-        cuenta = self.usuario.cuentas.filter(liquidada=True, tipo=1).last()
-        return cuenta
+        if self.usuario.cuentas.filter(liquidada=True, tipo=1).exists():
+            return self.usuario.cuentas.filter(liquidada=True, tipo=1).last()
+        return None
 
     class Meta:
         unique_together = [('tipo_documento', 'nro_identificacion')]
@@ -230,8 +235,13 @@ class Cuenta(TimeStampedModel):
         (2, 'Mesero'),
     )
     propietario = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT, related_name='cuentas')
-    saldo_anterior = models.DecimalField(decimal_places=2, max_digits=12, null=True)
-    valor_pagado = models.DecimalField(decimal_places=2, max_digits=12, null=True)
-    saldo_pasa = models.DecimalField(decimal_places=2, max_digits=12, null=True)
+    saldo_anterior = models.DecimalField(decimal_places=2, max_digits=12, default=0)
+    valor_pagado = models.DecimalField(decimal_places=2, max_digits=12, default=0)
+    saldo_pasa = models.DecimalField(decimal_places=2, max_digits=12, default=0)
     liquidada = models.BooleanField(default=False, db_index=True)
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES, default=1)
+
+    objects = models.Manager()
+    cuentas_meseros = CuentaMeseroManager()
+    cuentas_acompanantes = CuentaAcompananteManager()
+    cuentas_colaboradores = CuentaColaboradorManager()

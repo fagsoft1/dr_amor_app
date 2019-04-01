@@ -271,34 +271,53 @@ class HabitacionTests(TestCase):
     # endregion
 
     # region habitacion_cambiar_de_habitacion
-    def test_habitacion_cambiar_de_habitacion_solo_punto_venta_abierto(self):
-        from ..services import habitacion_cambiar_servicios_de_habitacion
+
+    def crear_servicios_para_habitacion(self, habitacion):
         from servicios.services import servicio_crear_nuevo, servicio_iniciar
-
-        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=self.habitacion.tipo)
-
         servicio_uno = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
+            habitacion_id=habitacion.id,
             acompanante_id=self.acompanante.id,
             categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
             usuario_pdv_id=self.punto_venta.usuario_actual.id
         )
-        servicio_uno = servicio_iniciar(
+        servicio_iniciar(
             servicio_id=servicio_uno.id,
             usuario_pdv_id=self.punto_venta.usuario_actual.id
         )
 
         servicio_dos = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
+            habitacion_id=habitacion.id,
             acompanante_id=self.acompanante.id,
             categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
             usuario_pdv_id=self.punto_venta.usuario_actual.id
         )
 
-        servicio_dos = servicio_iniciar(
+        servicio_iniciar(
             servicio_id=servicio_dos.id,
             usuario_pdv_id=self.punto_venta.usuario_actual.id
         )
+
+        servicio_otra = servicio_crear_nuevo(
+            habitacion_id=habitacion.id,
+            acompanante_id=self.acompanante_dos.id,
+            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+
+        servicio_iniciar(
+            servicio_id=servicio_otra.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+
+        array_servicios = [servicio_uno.id, servicio_dos.id, servicio_otra.id]
+        return array_servicios, servicio_uno, servicio_dos, servicio_otra
+
+    def test_habitacion_cambiar_de_habitacion_solo_punto_venta_abierto(self):
+        from ..services import habitacion_cambiar_servicios_de_habitacion
+        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=self.habitacion.tipo)
+
+        array_servicios, servicio_uno, servicio_dos, servicio_otra = self.crear_servicios_para_habitacion(
+            self.habitacion)
 
         self.punto_venta.abierto = False
         self.punto_venta.save()
@@ -310,119 +329,19 @@ class HabitacionTests(TestCase):
             habitacion_cambiar_servicios_de_habitacion(
                 habitacion_anterior_id=self.habitacion.id,
                 habitacion_nueva_id=habitacion_nueva_igual_tarifa.id,
-                servicios_array_id=[servicio_uno.id, servicio_dos.id],
+                servicios_array_id=array_servicios[:2],
                 punto_venta_id=self.punto_venta.id,
                 usuario_id=self.punto_venta.usuario_actual.id,
                 valor_efectivo=0,
                 valor_tarjeta=0
             )
 
-    def test_habitacion_cambiar_de_habitacion_igual_tarifa(self):
-        from ..services import habitacion_cambiar_servicios_de_habitacion
-        from servicios.services import servicio_crear_nuevo, servicio_iniciar
-
-        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=self.habitacion.tipo, estado=0)
-
-        servicio_uno = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-        servicio_uno = servicio_iniciar(
-            servicio_id=servicio_uno.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_dos = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_dos = servicio_iniciar(
-            servicio_id=servicio_dos.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_otra = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante_dos.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_otra = servicio_iniciar(
-            servicio_id=servicio_otra.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        habitacion_nueva, habitacion_anterior = habitacion_cambiar_servicios_de_habitacion(
-            habitacion_anterior_id=self.habitacion.id,
-            habitacion_nueva_id=habitacion_nueva_igual_tarifa.id,
-            servicios_array_id=[servicio_uno.id, servicio_dos.id, servicio_otra.id],
-            punto_venta_id=self.punto_venta.id,
-            usuario_id=self.punto_venta.usuario_actual.id,
-            valor_efectivo=0,
-            valor_tarjeta=0
-        )
-
-        diferencia_valor = self.habitacion.tipo.valor - habitacion_nueva_igual_tarifa.tipo.valor
-        valor_total_anterior = servicio_uno.valor_total
-        servicio_uno.refresh_from_db()
-        valor_total_nuevo = servicio_uno.valor_total
-        self.assertEqual(valor_total_anterior - valor_total_nuevo, diferencia_valor)
-
-        servicio_uno.refresh_from_db()
-        servicio_dos.refresh_from_db()
-        servicio_otra.refresh_from_db()
-        self.assertEqual(habitacion_nueva, servicio_uno.habitacion)
-        self.assertEqual(habitacion_nueva, servicio_dos.habitacion)
-        self.assertEqual(habitacion_nueva, servicio_otra.habitacion)
-        self.assertTrue(habitacion_anterior.estado == 2)
-        self.assertTrue(habitacion_nueva.estado == 1)
-
     def test_habitacion_cambiar_de_habitacion_guarda_datos_bitacora(self):
         from ..services import habitacion_cambiar_servicios_de_habitacion
-        from servicios.services import servicio_crear_nuevo, servicio_iniciar
-
         habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=self.habitacion.tipo, estado=0)
 
-        servicio_uno = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-        servicio_uno = servicio_iniciar(
-            servicio_id=servicio_uno.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_dos = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_dos = servicio_iniciar(
-            servicio_id=servicio_dos.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_otra = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante_dos.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_otra = servicio_iniciar(
-            servicio_id=servicio_otra.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
+        array_servicios, servicio_uno, servicio_dos, servicio_otra = self.crear_servicios_para_habitacion(
+            self.habitacion)
 
         habitacion_nueva, habitacion_anterior = habitacion_cambiar_servicios_de_habitacion(
             habitacion_anterior_id=self.habitacion.id,
@@ -451,52 +370,100 @@ class HabitacionTests(TestCase):
         self.assertTrue(bitacoras_con_habitacion_anterior.count() == 3)
         self.assertTrue(bitacoras_con_habitacion_nueva.count() == 3)
 
-    def test_habitacion_cambiar_de_habitacion_mayor_tarifa(self):
+    def habitacion_cambiar_de_habitacion_igual_tarifa(self, habitacion_inicial, habitacion_nueva_igual_tarifa):
         from ..services import habitacion_cambiar_servicios_de_habitacion
-        from servicios.services import servicio_crear_nuevo, servicio_iniciar
+        array_servicios, servicio_uno, servicio_dos, servicio_otra = self.crear_servicios_para_habitacion(
+            habitacion_inicial)
 
-        habitacion_nueva_mayor_tarifa = HabitacionFactory(tipo=self.habitacion_dos.tipo, estado=0)
-
-        servicio_uno = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-        servicio_uno = servicio_iniciar(
-            servicio_id=servicio_uno.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        habitacion_nueva, habitacion_anterior = habitacion_cambiar_servicios_de_habitacion(
+            habitacion_anterior_id=habitacion_inicial.id,
+            habitacion_nueva_id=habitacion_nueva_igual_tarifa.id,
+            servicios_array_id=[servicio_uno.id, servicio_dos.id, servicio_otra.id],
+            punto_venta_id=self.punto_venta.id,
+            usuario_id=self.punto_venta.usuario_actual.id,
+            valor_efectivo=0,
+            valor_tarjeta=0
         )
 
-        servicio_dos = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        diferencia_valor = habitacion_inicial.tipo.valor - habitacion_nueva_igual_tarifa.tipo.valor
+        valor_total_anterior = servicio_uno.valor_total
+        servicio_uno.refresh_from_db()
+        valor_total_nuevo = servicio_uno.valor_total
+        self.assertEqual(valor_total_anterior - valor_total_nuevo, diferencia_valor)
+        self.assertEqual(diferencia_valor, 0)
+
+        servicio_uno.refresh_from_db()
+        servicio_dos.refresh_from_db()
+        servicio_otra.refresh_from_db()
+        self.assertEqual(habitacion_nueva, servicio_uno.habitacion)
+        self.assertEqual(habitacion_nueva, servicio_dos.habitacion)
+        self.assertEqual(habitacion_nueva, servicio_otra.habitacion)
+        self.assertTrue(habitacion_anterior.estado == 2)
+        self.assertTrue(habitacion_nueva.estado == 1)
+        return servicio_uno, servicio_dos, servicio_otra
+
+    def test_habitacion_cambiar_de_habitacion_igual_tarifa(self):
+        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=self.habitacion.tipo, estado=0)
+        self.habitacion_cambiar_de_habitacion_igual_tarifa(self.habitacion, habitacion_nueva_igual_tarifa)
+
+    def test_habitacion_cambiar_de_habitacion_igual_tarifa_comision_en_ambas(self):
+        self.tipo_habitacion_uno.comision = 1000
+        self.tipo_habitacion_uno.save()
+
+        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=self.tipo_habitacion_uno, estado=0)
+        servicio_uno, servicio_dos, servicio_otra = self.habitacion_cambiar_de_habitacion_igual_tarifa(
+            self.habitacion,
+            habitacion_nueva_igual_tarifa
+        )
+        self.assertEqual(servicio_uno.comision, 1000)
+        self.assertEqual(servicio_dos.comision, 1000)
+        self.assertEqual(servicio_otra.comision, 1000)
+
+    def test_habitacion_cambiar_de_habitacion_igual_tarifa_comision_en_inicial(self):
+        from ..factories import TipoHabitacionFactory
+        tipo_habitacion_sin_comision = TipoHabitacionFactory(
+            valor=self.tipo_habitacion_uno.valor,
+            porcentaje_impuesto=self.tipo_habitacion_uno.porcentaje_impuesto
         )
 
-        servicio_dos = servicio_iniciar(
-            servicio_id=servicio_dos.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
+        self.tipo_habitacion_uno.comision = 1000
+        self.tipo_habitacion_uno.save()
 
-        servicio_otra = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante_dos.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=tipo_habitacion_sin_comision, estado=0)
+        servicio_uno, servicio_dos, servicio_otra = self.habitacion_cambiar_de_habitacion_igual_tarifa(
+            self.habitacion,
+            habitacion_nueva_igual_tarifa
         )
+        self.assertEqual(servicio_uno.comision, 0)
+        self.assertEqual(servicio_dos.comision, 0)
+        self.assertEqual(servicio_otra.comision, 0)
 
-        servicio_otra = servicio_iniciar(
-            servicio_id=servicio_otra.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
+    def test_habitacion_cambiar_de_habitacion_igual_tarifa_comision_en_nueva(self):
+        from ..factories import TipoHabitacionFactory
+        tipo_habitacion_con_comision = TipoHabitacionFactory(
+            valor=self.tipo_habitacion_uno.valor,
+            porcentaje_impuesto=self.tipo_habitacion_uno.porcentaje_impuesto,
+            comision=1000
         )
+        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=tipo_habitacion_con_comision, estado=0)
+        servicio_uno, servicio_dos, servicio_otra = self.habitacion_cambiar_de_habitacion_igual_tarifa(
+            self.habitacion,
+            habitacion_nueva_igual_tarifa
+        )
+        self.assertEqual(servicio_uno.comision, 1000)
+        self.assertEqual(servicio_dos.comision, 1000)
+        self.assertEqual(servicio_otra.comision, 1000)
+
+    def habitacion_cambiar_de_habitacion_mayor_tarifa(self, habitacion_inicial, habitacion_nueva_mayor_tarifa):
+        from ..services import habitacion_cambiar_servicios_de_habitacion
+        array_servicios, servicio_uno, servicio_dos, servicio_otra = self.crear_servicios_para_habitacion(
+            habitacion_inicial)
         with self.assertRaisesMessage(
                 ValidationError,
                 'El valor ingresado del pago del faltante, entre efectivo y tarjetas es diferente al requerido para cambiar de habitación. Valor requerido:'
         ):
             habitacion_cambiar_servicios_de_habitacion(
-                habitacion_anterior_id=self.habitacion.id,
+                habitacion_anterior_id=habitacion_inicial.id,
                 habitacion_nueva_id=habitacion_nueva_mayor_tarifa.id,
                 servicios_array_id=[servicio_uno.id, servicio_dos.id, servicio_otra.id],
                 punto_venta_id=self.punto_venta.id,
@@ -506,18 +473,18 @@ class HabitacionTests(TestCase):
             )
 
         habitacion_nueva, habitacion_anterior = habitacion_cambiar_servicios_de_habitacion(
-            habitacion_anterior_id=self.habitacion.id,
+            habitacion_anterior_id=habitacion_inicial.id,
             habitacion_nueva_id=habitacion_nueva_mayor_tarifa.id,
             servicios_array_id=[servicio_uno.id, servicio_dos.id, servicio_otra.id],
             punto_venta_id=self.punto_venta.id,
             usuario_id=self.punto_venta.usuario_actual.id,
             valor_efectivo=0,
-            valor_tarjeta=(habitacion_nueva_mayor_tarifa.tipo.valor - self.habitacion.tipo.valor) * 3
+            valor_tarjeta=(habitacion_nueva_mayor_tarifa.tipo.valor - habitacion_inicial.tipo.valor) * 3
         )
 
         iva_anterior_uno = servicio_uno.valor_iva_habitacion
 
-        diferencia_valor = habitacion_nueva_mayor_tarifa.tipo.valor - self.habitacion.tipo.valor
+        diferencia_valor = habitacion_nueva_mayor_tarifa.tipo.valor - habitacion_inicial.tipo.valor
         valor_total_anterior = servicio_uno.valor_total
         servicio_uno.refresh_from_db()
         valor_total_nuevo = servicio_uno.valor_total
@@ -531,53 +498,63 @@ class HabitacionTests(TestCase):
         self.assertTrue(habitacion_nueva.estado == 1)
         self.assertEqual(int(servicio_uno.valor_iva_habitacion), int(habitacion_nueva.tipo.impuesto))
         self.assertGreater(int(servicio_uno.valor_iva_habitacion), int(iva_anterior_uno))
+        return servicio_uno, servicio_dos, servicio_otra
 
-    def test_habitacion_cambiar_de_habitacion_menor_tarifa(self):
+    def test_habitacion_cambiar_de_habitacion_mayor_tarifa(self):
+        habitacion_nueva_mayor_tarifa = HabitacionFactory(tipo=self.habitacion_dos.tipo, estado=0)
+        self.habitacion_cambiar_de_habitacion_mayor_tarifa(self.habitacion, habitacion_nueva_mayor_tarifa)
+
+    def test_habitacion_cambiar_de_habitacion_mayor_tarifa_comision_en_inicial(self):
+        self.tipo_habitacion_uno.comision = 1000
+        self.tipo_habitacion_uno.save()
+
+        habitacion_nueva_mayor_tarifa = HabitacionFactory(tipo=self.habitacion_dos.tipo, estado=0)
+        servicio_uno, servicio_dos, servicio_otra = self.habitacion_cambiar_de_habitacion_mayor_tarifa(
+            self.habitacion,
+            habitacion_nueva_mayor_tarifa
+        )
+        self.assertEqual(servicio_uno.comision, 0)
+        self.assertEqual(servicio_dos.comision, 0)
+        self.assertEqual(servicio_otra.comision, 0)
+
+    def test_habitacion_cambiar_de_habitacion_mayor_tarifa_comision_en_nueva(self):
+        self.tipo_habitacion_dos.comision = 1000
+        self.tipo_habitacion_dos.save()
+        habitacion_nueva_mayor_tarifa = HabitacionFactory(tipo=self.habitacion_dos.tipo, estado=0)
+        servicio_uno, servicio_dos, servicio_otra = self.habitacion_cambiar_de_habitacion_mayor_tarifa(
+            self.habitacion,
+            habitacion_nueva_mayor_tarifa
+        )
+        self.assertEqual(servicio_uno.comision, 1000)
+        self.assertEqual(servicio_dos.comision, 1000)
+        self.assertEqual(servicio_otra.comision, 1000)
+
+    def test_habitacion_cambiar_de_habitacion_mayor_tarifa_comision_en_ambas(self):
+        self.tipo_habitacion_uno.comision = 1000
+        self.tipo_habitacion_uno.save()
+        self.tipo_habitacion_dos.comision = 1000
+        self.tipo_habitacion_dos.save()
+
+        habitacion_nueva_mayor_tarifa = HabitacionFactory(tipo=self.habitacion_dos.tipo, estado=0)
+        servicio_uno, servicio_dos, servicio_otra = self.habitacion_cambiar_de_habitacion_mayor_tarifa(
+            self.habitacion,
+            habitacion_nueva_mayor_tarifa
+        )
+        self.assertEqual(servicio_uno.comision, 1000)
+        self.assertEqual(servicio_dos.comision, 1000)
+        self.assertEqual(servicio_otra.comision, 1000)
+
+    def habitacion_cambiar_de_habitacion_menor_tarifa(self, habitacion_inicial, habitacion_nueva_menor_tarifa):
         from ..services import habitacion_cambiar_servicios_de_habitacion
-        from servicios.services import servicio_crear_nuevo, servicio_iniciar
 
-        habitacion_nueva_menor_tarifa = HabitacionFactory(tipo=self.habitacion.tipo, estado=0)
-
-        servicio_uno = servicio_crear_nuevo(
-            habitacion_id=self.habitacion_dos.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-        servicio_uno = servicio_iniciar(
-            servicio_id=servicio_uno.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_dos = servicio_crear_nuevo(
-            habitacion_id=self.habitacion_dos.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_dos = servicio_iniciar(
-            servicio_id=servicio_dos.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_otra = servicio_crear_nuevo(
-            habitacion_id=self.habitacion_dos.id,
-            acompanante_id=self.acompanante_dos.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_otra = servicio_iniciar(
-            servicio_id=servicio_otra.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
+        array_servicios, servicio_uno, servicio_dos, servicio_otra = self.crear_servicios_para_habitacion(
+            self.habitacion_dos)
         with self.assertRaisesMessage(
                 ValidationError,
                 'El valor ingresado para la devolucion debe ser todo en efectivo. Valor devolucion:'
         ):
             habitacion_cambiar_servicios_de_habitacion(
-                habitacion_anterior_id=self.habitacion_dos.id,
+                habitacion_anterior_id=habitacion_inicial.id,
                 habitacion_nueva_id=habitacion_nueva_menor_tarifa.id,
                 servicios_array_id=[servicio_uno.id, servicio_dos.id, servicio_otra.id],
                 punto_venta_id=self.punto_venta.id,
@@ -587,17 +564,17 @@ class HabitacionTests(TestCase):
             )
 
         habitacion_nueva, habitacion_anterior = habitacion_cambiar_servicios_de_habitacion(
-            habitacion_anterior_id=self.habitacion_dos.id,
+            habitacion_anterior_id=habitacion_inicial.id,
             habitacion_nueva_id=habitacion_nueva_menor_tarifa.id,
             servicios_array_id=[servicio_uno.id, servicio_dos.id, servicio_otra.id],
             punto_venta_id=self.punto_venta.id,
             usuario_id=self.punto_venta.usuario_actual.id,
-            valor_efectivo=-(self.habitacion_dos.tipo.valor - habitacion_nueva_menor_tarifa.tipo.valor) * 3,
+            valor_efectivo=-(habitacion_inicial.tipo.valor - habitacion_nueva_menor_tarifa.tipo.valor) * 3,
             valor_tarjeta=0
         )
         iva_anterior_uno = servicio_uno.valor_iva_habitacion
 
-        diferencia_valor = self.habitacion_dos.tipo.valor - habitacion_nueva_menor_tarifa.tipo.valor
+        diferencia_valor = habitacion_inicial.tipo.valor - habitacion_nueva_menor_tarifa.tipo.valor
         valor_total_anterior = servicio_uno.valor_total
         servicio_uno.refresh_from_db()
         valor_total_nuevo = servicio_uno.valor_total
@@ -614,6 +591,51 @@ class HabitacionTests(TestCase):
 
         self.assertEqual(int(servicio_uno.valor_iva_habitacion), int(habitacion_nueva.tipo.impuesto))
         self.assertGreater(int(iva_anterior_uno), int(servicio_uno.valor_iva_habitacion))
+        return servicio_uno, servicio_dos, servicio_otra
+
+    def test_habitacion_cambiar_de_habitacion_menor_tarifa(self):
+        habitacion_nueva_menor_tarifa = HabitacionFactory(tipo=self.habitacion.tipo, estado=0)
+        self.habitacion_cambiar_de_habitacion_menor_tarifa(self.habitacion_dos, habitacion_nueva_menor_tarifa)
+
+    def test_habitacion_cambiar_de_habitacion_menor_tarifa_comision_en_inicial(self):
+        self.tipo_habitacion_dos.comision = 1000
+        self.tipo_habitacion_dos.save()
+
+        habitacion_nueva_menor_tarifa = HabitacionFactory(tipo=self.habitacion.tipo, estado=0)
+        servicio_uno, servicio_dos, servicio_otra = self.habitacion_cambiar_de_habitacion_menor_tarifa(
+            self.habitacion_dos,
+            habitacion_nueva_menor_tarifa
+        )
+        self.assertEqual(servicio_uno.comision, 0)
+        self.assertEqual(servicio_dos.comision, 0)
+        self.assertEqual(servicio_otra.comision, 0)
+
+    def test_habitacion_cambiar_de_habitacion_menor_tarifa_comision_en_nueva(self):
+        self.tipo_habitacion_uno.comision = 1000
+        self.tipo_habitacion_uno.save()
+        habitacion_nueva_menor_tarifa = HabitacionFactory(tipo=self.habitacion.tipo, estado=0)
+        servicio_uno, servicio_dos, servicio_otra = self.habitacion_cambiar_de_habitacion_menor_tarifa(
+            self.habitacion_dos,
+            habitacion_nueva_menor_tarifa
+        )
+        self.assertEqual(servicio_uno.comision, 1000)
+        self.assertEqual(servicio_dos.comision, 1000)
+        self.assertEqual(servicio_otra.comision, 1000)
+
+    def test_habitacion_cambiar_de_habitacion_menor_tarifa_comision_en_ambas(self):
+        self.tipo_habitacion_uno.comision = 1000
+        self.tipo_habitacion_uno.save()
+        self.tipo_habitacion_dos.comision = 1000
+        self.tipo_habitacion_dos.save()
+
+        habitacion_nueva_menor_tarifa = HabitacionFactory(tipo=self.habitacion.tipo, estado=0)
+        servicio_uno, servicio_dos, servicio_otra = self.habitacion_cambiar_de_habitacion_menor_tarifa(
+            self.habitacion_dos,
+            habitacion_nueva_menor_tarifa
+        )
+        self.assertEqual(servicio_uno.comision, 1000)
+        self.assertEqual(servicio_dos.comision, 1000)
+        self.assertEqual(servicio_otra.comision, 1000)
 
     # endregion
 

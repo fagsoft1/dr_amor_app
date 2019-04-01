@@ -17,6 +17,7 @@ class TipoHabitacionFactory(factory.django.DjangoModelFactory):
     nombre = factory.Sequence(lambda n: 'nombre%d' % n)
     valor = 40000
     porcentaje_impuesto = 19
+    comision = 0
 
 
 class HabitacionFactory(factory.django.DjangoModelFactory):

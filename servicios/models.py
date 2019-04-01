@@ -26,6 +26,7 @@ class Servicio(TimeStampedModel):
     hora_anulacion = models.DateTimeField(null=True)
     tiempo_minutos = models.PositiveIntegerField(default=0)
     categoria = models.CharField(max_length=120, null=True)
+    comision = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     valor_servicio = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     valor_habitacion = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     valor_iva_habitacion = models.DecimalField(max_digits=10, decimal_places=2, null=True)
@@ -36,7 +37,7 @@ class Servicio(TimeStampedModel):
 
     @property
     def valor_total(self):
-        valor_total = self.valor_habitacion + self.valor_iva_habitacion + self.valor_servicio
+        valor_total = self.valor_habitacion + self.valor_iva_habitacion + self.valor_servicio + self.comision
         return valor_total
 
 

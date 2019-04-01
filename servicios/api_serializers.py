@@ -68,6 +68,7 @@ class ServicioSerializer(serializers.ModelSerializer):
             'categoria_id',
             'acompanante',
             'acompanante_nombre',
+            'comision',
             'valor_servicio',
             'valor_habitacion',
             'valor_iva_habitacion',

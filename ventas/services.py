@@ -54,17 +54,19 @@ def venta_producto_efectuar_venta(
 
     if tipo_venta == 3 or tipo_venta == 2:
         tercero = Tercero.objects.get(usuario_id=cliente_usuario_id, qr_acceso=cliente_qr_codigo)
-        if tipo_venta == 2:
+        if tipo_venta == 2:  # Venta en mesero
+            if tercero.es_acompanante:
+                raise serializers.ValidationError({'_error': 'No se puede crear una venta mesero a una acompañante'})
             venta = venta_producto_crear(
                 punto_venta_turno_id=punto_venta_turno.id,
                 cuenta_id=tercero.cuenta_abierta_mesero.id
             )
-        else:
+        else:  # Venta colaborador o acompañante
             venta = venta_producto_crear(
                 punto_venta_turno_id=punto_venta_turno.id,
                 cuenta_id=tercero.cuenta_abierta.id
             )
-    else:
+    else:  # Venta en efectivo
         venta = venta_producto_crear(
             punto_venta_turno_id=punto_venta_turno.id
         )

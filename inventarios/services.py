@@ -247,7 +247,7 @@ def movimiento_inventario_detalle_calcular_costo_promedio(
     movimiento_inventario_detalle.saldo_cantidad = saldo_cantidad_nuevo
     movimiento_inventario_detalle.saldo_costo = saldo_costo_nuevo
     movimiento_inventario_detalle.costo_unitario = costo_unitario_nuevo
-    movimiento_inventario_detalle.costo_unitario_promedio = saldo_costo_nuevo / saldo_cantidad_nuevo
+    movimiento_inventario_detalle.costo_unitario_promedio = saldo_costo_nuevo / saldo_cantidad_nuevo if saldo_cantidad_nuevo else 0
     movimiento_inventario_detalle.save()
     return movimiento_inventario_detalle
 

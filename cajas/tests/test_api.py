@@ -31,6 +31,7 @@ class OperacionCajaTestsApi(BaseTestsApi):
         )
         self.data_for_create_test['tercero'] = self.colaborador.id
         self.data_for_create_test['concepto'] = concepto.id
+        self.data_for_create_test['cuenta'] = self.colaborador.cuenta_abierta.id
         self.data_for_update_test = {'observacion': 'probando'}
 
     def test_ingreso_no_autorizado(self):

@@ -78,12 +78,46 @@ class ServiciosServicesTests(TestCase):
         self.punto_venta.save()
 
         count = Servicio.objects.filter(estado=0).count()
-        servicio_crear_nuevo(
+        servicio = servicio_crear_nuevo(
             habitacion_id=self.habitacion_uno.id,
             acompanante_id=self.acompanante.id,
             categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
             usuario_pdv_id=self.punto_venta.usuario_actual.id
         )
+        self.assertEqual(servicio.comision, 0)
+        self.assertEqual(
+            int(servicio.valor_habitacion),
+            int(self.habitacion_uno.tipo.valor_antes_impuestos)
+        )
+        self.assertEqual(int(servicio.valor_iva_habitacion), int(self.habitacion_uno.tipo.impuesto))
+        count_dos = Servicio.objects.filter(estado=0).count()
+        self.assertEqual(count + 1, count_dos)
+        self.habitacion_uno.refresh_from_db()
+        self.assertTrue(self.habitacion_uno.estado == 1)
+
+    def test_servicio_crear_nuevo_con_comision(self):
+        from servicios.models import Servicio
+        self.assertTrue(self.habitacion_uno.estado == 0)
+        self.punto_venta.abierto = True
+        self.punto_venta.save()
+
+        tipo_habitacion = self.habitacion_uno.tipo
+        tipo_habitacion.comision = 5000
+        tipo_habitacion.save()
+
+        count = Servicio.objects.filter(estado=0).count()
+        servicio = servicio_crear_nuevo(
+            habitacion_id=self.habitacion_uno.id,
+            acompanante_id=self.acompanante.id,
+            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+        self.assertEqual(servicio.comision, 5000)
+        self.assertEqual(
+            int(servicio.valor_habitacion),
+            int(self.habitacion_uno.tipo.valor_antes_impuestos) - 5000
+        )
+        self.assertEqual(int(servicio.valor_iva_habitacion), int(self.habitacion_uno.tipo.impuesto))
         count_dos = Servicio.objects.filter(estado=0).count()
         self.assertEqual(count + 1, count_dos)
         self.habitacion_uno.refresh_from_db()

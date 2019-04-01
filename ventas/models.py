@@ -32,6 +32,9 @@ class VentaProductoDetalle(TimeStampedModel):
     costo_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     precio_unitario = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     precio_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    comision = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    cuenta_comision = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='comisiones_x_productos',
+                               null=True)
 
     class Meta:
         permissions = [

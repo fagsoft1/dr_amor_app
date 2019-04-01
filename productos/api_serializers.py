@@ -81,6 +81,7 @@ class ProductoSerializer(serializers.ModelSerializer):
             'empresa',
             'empresa_nombre',
             'precio_venta',
+            'comision',
             'activo'
         ]
 

@@ -24,12 +24,12 @@ class Form extends Component {
             valores,
             error
         } = this.props;
-        const {porcentaje_impuesto, valor} = valores;
+        const {porcentaje_impuesto, valor, comision} = valores;
         const valor_sin_iva = (valor / (1 + (porcentaje_impuesto / 100)));
         const iva = valor - valor_sin_iva;
         return (
             <MyFormTagModal
-                fullScreen = {false}
+                fullScreen={false}
                 onCancel={onCancel}
                 onSubmit={handleSubmit(onSubmit)}
                 reset={reset}
@@ -45,6 +45,14 @@ class Form extends Component {
                     nombre='Nombre'
                     name='nombre'
                     case='U'
+                />
+                <MyTextFieldSimple
+                    className="col-12 col-md-7"
+                    nombre='Comisión'
+                    name='comision'
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
                 />
                 <MyTextFieldSimple
                     className="col-12 col-md-7"
@@ -64,7 +72,10 @@ class Form extends Component {
                 />
                 <div className="col-12">
                     <Typography variant="body1" gutterBottom>
-                        <strong>Valor sin Iva: </strong>{pesosColombianos(valor_sin_iva)}
+                        <strong>Valor sin Iva y sin Comisión: </strong>{pesosColombianos(valor_sin_iva - comision)}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                        <strong>Comisión: </strong>{pesosColombianos(comision)}
                     </Typography>
                     <Typography variant="body1" gutterBottom>
                         <strong>Iva: </strong>{pesosColombianos(iva)}
@@ -79,7 +90,7 @@ const selector = formValueSelector('habitacionesTipoForm');
 
 function mapPropsToState(state, ownProps) {
     const {item_seleccionado} = ownProps;
-    const values = selector(state, 'porcentaje_impuesto', 'valor');
+    const values = selector(state, 'porcentaje_impuesto', 'valor', 'comision');
     return {
         initialValues: item_seleccionado,
         valores: values,

@@ -111,7 +111,7 @@ class AuthenticationTestsApi(BaseTestsApi):
         self.assertEqual(username, self.superuser.username)
 
     def test_login(self):
-        response = self.list_route_post('login/', {'username': 'admin', 'password': 'admin'})
+        response = self.list_route_post('login/', {'username': 'admin', 'password': 'admin', 'punto_venta': 0})
         respuesta = response.data
         token = respuesta.get('token', None)
         user = respuesta.get('user', None)

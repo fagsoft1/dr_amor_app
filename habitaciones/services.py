@@ -105,6 +105,11 @@ def habitacion_cambiar_servicios_de_habitacion(
                 habitacion_anterior_id=habitacion_anterior.id,
                 punto_venta_turno_id=turno_punto_venta.id
             )
+
+            comision_habitacion_nueva = habitacion_nueva.tipo.comision
+            servicio.valor_habitacion = habitacion_nueva.tipo.valor_antes_impuestos - comision_habitacion_nueva
+            servicio.comision = comision_habitacion_nueva
+
             servicio.habitacion = habitacion_nueva
             servicio.save()
     else:
@@ -120,8 +125,11 @@ def habitacion_cambiar_servicios_de_habitacion(
             valor_habitacion = habitacion_nueva.tipo.valor_antes_impuestos
             valor_habitacion_con_iva = habitacion_nueva.tipo.valor
             valor_iva_habitacion = valor_habitacion_con_iva - valor_habitacion
+            comision_habitacion_nueva = habitacion_nueva.tipo.comision
 
-            servicio.valor_habitacion = valor_habitacion
+            servicio.valor_habitacion = valor_habitacion - comision_habitacion_nueva
+            servicio.comision = comision_habitacion_nueva
+
             servicio.valor_iva_habitacion = valor_iva_habitacion
             servicio.habitacion = habitacion_nueva
             servicio.save()

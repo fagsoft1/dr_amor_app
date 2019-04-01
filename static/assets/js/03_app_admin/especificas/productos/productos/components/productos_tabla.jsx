@@ -61,6 +61,18 @@ class Tabla extends React.Component {
                                 }
                             },
                             {
+                                Header: "Precio Venta sin Comisión",
+                                accessor: "precio_venta",
+                                maxWidth: 100,
+                                Cell: row => pesosColombianos(row.value - row.original.comision)
+                            },
+                            {
+                                Header: "Comision",
+                                accessor: "comision",
+                                maxWidth: 100,
+                                Cell: row => pesosColombianos(row.value)
+                            },
+                            {
                                 Header: "Precio Venta",
                                 accessor: "precio_venta",
                                 maxWidth: 100,

@@ -90,6 +90,7 @@ class TransaccionCaja(TimeStampedModel):
 
     punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='transacciones_caja')
     concepto = models.TextField()
+    nro_vauchers = models.PositiveIntegerField(default=0)
     tipo = models.CharField(max_length=3, null=True, blank=True, choices=TIPO_CHOICES)
     tipo_dos = models.CharField(max_length=30, null=True, blank=True, choices=TIPO_DOS_CHOICES)
     valor_efectivo = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -126,7 +127,7 @@ class OperacionCaja(models.Model):
     grupo_operaciones = models.CharField(max_length=300)
     descripcion = models.CharField(max_length=100)
     observacion = models.TextField(null=True)
-    valor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     transacciones_caja = models.ManyToManyField(TransaccionCaja, related_name='operaciones_caja')
 
     class Meta:

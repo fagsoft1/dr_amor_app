@@ -74,6 +74,7 @@ class PuntoVentaTests(TestCase):
 
     def test_punto_venta_abrir_solo_sin_turno_abierto(self):
         from ..services import punto_venta_abrir, punto_venta_cerrar
+        from ..factories import PuntoVentaFactory
         from terceros.services import tercero_registra_entrada
         tercero_registra_entrada(self.colaborador.id, '1111')
         punto_venta, punto_venta_turno = punto_venta_abrir(
@@ -87,13 +88,15 @@ class PuntoVentaTests(TestCase):
         punto_venta_turno.finish = None
         punto_venta_turno.save()
 
+        punto_venta_dos = PuntoVentaFactory(abierto=False, usuario_actual=None)
+
         with self.assertRaisesMessage(
                 ValidationError,
                 'Este usuario ya tiene un turno abierto y debe cerrarlo primero antes de abrir otro turno. El turno esta abierto en el punto'
         ):
             punto_venta_abrir(
                 usuario_pv_id=self.colaborador.usuario.id,
-                punto_venta_id=self.punto_venta.id
+                punto_venta_id=punto_venta_dos.id
             )
 
     def test_punto_venta_cerrar(self):

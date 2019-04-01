@@ -181,6 +181,7 @@ class VentaProductosServicesTests(TestCase):
         self.assertTrue(colaborador_dos.cuenta_abierta_mesero.compras_productos.all().count() == 1)
         productos = colaborador_dos.cuenta_abierta_mesero.compras_productos.first().productos.all()
         self.assertEqual(productos.count(), 3)
+        self.assertEqual(int(colaborador_dos.cuenta_abierta_mesero.dinero_a_entregar_mesero), 9000)
 
     def test_venta_producto_efectuar_venta_sin_tercero(self):
         from ventas.services import venta_producto_efectuar_venta
