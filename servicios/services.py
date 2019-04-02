@@ -427,6 +427,8 @@ def servicio_cambiar_tiempo(
             categoria_fraccion_tiempo_nueva_id=categoria_fraccion_tiempo_id,
             valor_efectivo=abs(valor_efectivo)
         )
+    servicio.valor_servicio = valor_servicio_nuevo
+    servicio.save()
 
     return servicio
 

@@ -1,6 +1,7 @@
 from django.test import TestCase
 from rest_framework.exceptions import ValidationError
 
+from cajas.models import TransaccionCaja
 from ..factories import TipoHabitacionFactory, HabitacionFactory
 from ..services import habitacion_cambiar_estado
 from dr_amor_app.utilities_tests.test_base import BaseTest
@@ -10,7 +11,7 @@ from faker import Faker
 faker = Faker()
 
 
-class HabitacionTestsDos(BaseTest):
+class HabitacionServicesTests(BaseTest):
     def setUp(self):
         self.acompanantesSetUp()
         self.colaboradoresSetUp()
@@ -160,7 +161,7 @@ class HabitacionTestsDos(BaseTest):
     def test_habitacion_iniciar_servicios(self):
         from ..services import habitacion_iniciar_servicios
         from servicios.models import Servicio
-        habitacion_iniciar_servicios(
+        habitacion = habitacion_iniciar_servicios(
             usuario_pdv_id=self.punto_venta.usuario_actual.id,
             habitacion_id=self.habitacion.id,
             valor_efectivo=800000,
@@ -169,11 +170,20 @@ class HabitacionTestsDos(BaseTest):
             franquicia='visa',
             servicios=self.array_servicios
         )
+        valor_total_servicios = 0
+        for servicio in habitacion.servicios.all():
+            valor_total_servicios += servicio.valor_total
+
+        self.assertEqual(valor_total_servicios, 800000 + 200000)
 
         count_dos = Servicio.objects.filter(habitacion_id=self.habitacion.id, estado=1).count()
         count_tres = self.habitacion.servicios.filter(estado=1).count()
         self.assertEqual(len(self.array_servicios), count_dos)
         self.assertEqual(count_tres, count_dos)
+
+        transaccion_caja = TransaccionCaja.objects.last()
+        self.assertEqual(transaccion_caja.tipo, 'I')
+        self.assertEqual(transaccion_caja.valor_efectivo + transaccion_caja.valor_tarjeta, valor_total_servicios)
 
     def test_habitacion_iniciar_servicios_valor_ingresado_efectivo_credito_igual_al_valor_total_servicios(self):
         from ..services import habitacion_iniciar_servicios
@@ -316,6 +326,9 @@ class HabitacionTestsDos(BaseTest):
 
         self.assertTrue(habitacion_anterior.estado == 2)
         self.assertTrue(habitacion_nueva.estado == 1)
+
+        transaccion_caja = TransaccionCaja.objects.last()
+        self.assertIsNone(transaccion_caja)
 
         return servicios
 
@@ -486,6 +499,11 @@ class HabitacionTestsDos(BaseTest):
 
         self.assertTrue(habitacion_anterior.estado == 2)
         self.assertTrue(habitacion_nueva.estado == 1)
+
+        transaccion_caja = TransaccionCaja.objects.last()
+        self.assertEqual(transaccion_caja.tipo, 'I')
+        self.assertEqual(transaccion_caja.valor_efectivo + transaccion_caja.valor_tarjeta, diferencia_valor_total)
+
         return servicios
 
     def test_habitacion_cambiar_de_habitacion_mayor_tarifa(self):
@@ -642,6 +660,10 @@ class HabitacionTestsDos(BaseTest):
 
         self.assertTrue(habitacion_anterior.estado == 2)
         self.assertTrue(habitacion_nueva.estado == 1)
+
+        transaccion_caja = TransaccionCaja.objects.last()
+        self.assertEqual(transaccion_caja.tipo, 'E')
+        self.assertEqual(transaccion_caja.valor_efectivo, -diferencia_valor_total)
         return servicios
 
     def test_habitacion_cambiar_de_habitacion_menor_tarifa(self):

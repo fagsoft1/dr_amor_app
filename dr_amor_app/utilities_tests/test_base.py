@@ -210,6 +210,7 @@ class BaseTest(TestCase):
 
     def crear_inventarios_productos(self, nro_referencias: int = 5):
         from inventarios.factories import MovimientoInventarioDetalleFactory
+        from productos.factories import ProductoFactory
         from inventarios.services import (
             movimiento_inventario_aplicar_movimiento,
             movimiento_inventario_saldo_inicial_crear
@@ -221,10 +222,13 @@ class BaseTest(TestCase):
 
         )
         for i in range(nro_referencias):
+            producto = ProductoFactory()
+            entra_cantidad = random.randint(1000, 3000)
+            entra_costo = (producto.precio_venta - producto.precio_venta * 0.3) * entra_cantidad
             MovimientoInventarioDetalleFactory(
                 movimiento=movimiento,
-                entra_cantidad=random.randint(50, 300),
-                entra_costo=random.randrange(20000, 50000)
+                entra_cantidad=entra_cantidad,
+                entra_costo=entra_costo
             )
         movimiento_inventario_aplicar_movimiento(movimiento_inventario_id=movimiento.id)
         return movimiento.detalles.values_list('producto_id', flat=True)
@@ -421,6 +425,8 @@ class BaseTest(TestCase):
                 usuario_pdv_id=punto_venta.usuario_actual.id
             )
             array_servicios_1.append(servicio.pk)
+            if not terminados and not iniciados:
+                valores_totales_servicios['acompanante_1']['servicios'].append(servicio)
         if acompanante_dos:
             for i in range(nro_servicios - 1):
                 servicio = servicio_crear_nuevo(
@@ -429,7 +435,9 @@ class BaseTest(TestCase):
                     categoria_fraccion_tiempo_id=random.choice(array_categorias_fracciones_tiempo),
                     usuario_pdv_id=punto_venta.usuario_actual.id
                 )
-                array_servicios_2.append(servicio.pk)
+                if not terminados and not iniciados:
+                    array_servicios_2.append(servicio.pk)
+                    valores_totales_servicios['acompanante_2']['servicios'].append(servicio)
         if acompanante_tres:
             for i in range(nro_servicios - 2):
                 servicio = servicio_crear_nuevo(
@@ -438,7 +446,9 @@ class BaseTest(TestCase):
                     categoria_fraccion_tiempo_id=random.choice(array_categorias_fracciones_tiempo),
                     usuario_pdv_id=punto_venta.usuario_actual.id
                 )
-                array_servicios_3.append(servicio.pk)
+                if not terminados and not iniciados:
+                    array_servicios_3.append(servicio.pk)
+                    valores_totales_servicios['acompanante_3']['servicios'].append(servicio)
 
         if iniciados:
             for i in range(nro_servicios):
@@ -460,7 +470,7 @@ class BaseTest(TestCase):
                 valor_totat_todos_los_ivas += valor_iva
 
             if acompanante_dos:
-                for i in range(nro_servicios - 1):
+                for i in range(len(array_servicios_2)):
                     servicio = servicio_iniciar(
                         servicio_id=array_servicios_2[i],
                         usuario_pdv_id=punto_venta.usuario_actual.id
@@ -479,7 +489,7 @@ class BaseTest(TestCase):
                     valor_totat_todos_los_ivas += valor_iva
 
             if acompanante_tres:
-                for i in range(nro_servicios - 2):
+                for i in range(len(array_servicios_3)):
                     servicio = servicio_iniciar(
                         servicio_id=array_servicios_3[i],
                         usuario_pdv_id=punto_venta.usuario_actual.id
@@ -497,19 +507,19 @@ class BaseTest(TestCase):
                     valor_totat_habitaciones += valor_habitacion
                     valor_totat_todos_los_ivas += valor_iva
 
+            if terminados:
+                habitacion = habitacion_terminar_servicios(
+                    habitacion_id=habitacion.id,
+                    usuario_pdv_id=punto_venta.usuario_actual.id
+                )
+                habitacion.estado = 0
+                habitacion.save()
+
         valores_totales_servicios['acompanante_1']['array_servicios'] = array_servicios_1
         valores_totales_servicios['acompanante_2']['array_servicios'] = array_servicios_2
         valores_totales_servicios['acompanante_3']['array_servicios'] = array_servicios_3
         valores_totales_servicios['valor_totat_todos_los_servicio'] = valor_totat_todos_los_servicio
         valores_totales_servicios['valor_totat_habitaciones'] = valor_totat_habitaciones
         valores_totales_servicios['valor_totat_todos_los_ivas'] = valor_totat_todos_los_ivas
-
-        if terminados:
-            habitacion = habitacion_terminar_servicios(
-                habitacion_id=habitacion.id,
-                usuario_pdv_id=punto_venta.usuario_actual.id
-            )
-            habitacion.estado = 0
-            habitacion.save()
 
         return valores_totales_servicios
