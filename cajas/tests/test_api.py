@@ -23,7 +23,12 @@ class OperacionCajaTestsApi(BaseTestsApi):
         tercero_set_new_pin(self.colaborador.id, '0000')
         tercero_registra_entrada(self.colaborador.id, '0000')
         self.punto_venta = PuntoVentaFactory(abierto=False, usuario_actual=None)
-        punto_venta_abrir(self.colaborador.usuario.id, self.punto_venta.id)
+        punto_venta_abrir(
+            saldo_cierre_caja_anterior=0,
+            base_inicial_efectivo=0,
+            usuario_pv_id=self.colaborador.usuario.id,
+            punto_venta_id=self.punto_venta.id
+        )
 
         concepto = ConceptoOperacionCajaFactory(
             tipo='I',

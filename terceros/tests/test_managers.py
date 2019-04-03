@@ -110,7 +110,10 @@ class ManagerCuentaTests(BaseTest):
         cuenta = qs_cuenta.sin_liquidar().first()
         self.assertEqual(valor_compra_productos, cuenta.egreso_por_compras_productos)
 
-        valor_ingresos, valor_egresos = self.hacer_operaciones_caja_dos(self.acompanante, 5)
+        valor_ingresos, valor_egresos = self.hacer_operaciones_caja_dos(
+            tercero=self.acompanante,
+            cantidad_operaciones=5
+        )
         cuenta = qs_cuenta.sin_liquidar().first()
 
         self.assertEqual(valor_ingresos, cuenta.ingresos_por_operaciones_caja)

@@ -380,7 +380,7 @@ class TrasladoServicesTests(TestCase):
             tercero_set_new_pin,
             tercero_registra_entrada
         )
-        from usuarios.services import usuario_login
+        from puntos_venta.services import punto_venta_abrir
         from puntos_venta.factories import PuntoVentaFactory
 
         # Primer colaborador presente
@@ -399,9 +399,11 @@ class TrasladoServicesTests(TestCase):
         )
         self.colaborador_presente.usuario.set_password('otro')
         self.colaborador_presente.usuario.save()
-        usuario_login(
-            usuario_id=self.colaborador_presente.usuario.id,
-            punto_venta_id=self.punto_venta_abierto.id
+        punto_venta_abrir(
+            usuario_pv_id=self.colaborador_presente.usuario.id,
+            punto_venta_id=self.punto_venta_abierto.id,
+            saldo_cierre_caja_anterior=0,
+            base_inicial_efectivo=0
         )
         self.punto_venta_abierto.refresh_from_db()
         self.bodega_punto_venta_abierto = self.punto_venta_abierto.bodega
@@ -425,9 +427,11 @@ class TrasladoServicesTests(TestCase):
         )
         self.colaborador_presente_dos.usuario.set_password('otro')
         self.colaborador_presente_dos.usuario.save()
-        usuario_login(
-            usuario_id=self.colaborador_presente_dos.usuario.id,
-            punto_venta_id=self.punto_venta_abierto_dos.id
+        punto_venta_abrir(
+            usuario_pv_id=self.colaborador_presente_dos.usuario.id,
+            punto_venta_id=self.punto_venta_abierto_dos.id,
+            saldo_cierre_caja_anterior=0,
+            base_inicial_efectivo=0
         )
         self.punto_venta_abierto_dos.refresh_from_db()
         self.bodega_punto_venta_abierto_dos = self.punto_venta_abierto_dos.bodega

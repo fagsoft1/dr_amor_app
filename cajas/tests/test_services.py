@@ -1,9 +1,99 @@
+from decimal import Decimal
+
 from django.test import TestCase
 from django.utils import timezone
 from faker import Faker
 from rest_framework.exceptions import ValidationError
 
+from dr_amor_app.utilities_tests.test_base import BaseTest
+
 faker = Faker()
+
+
+class TransaccionesCajaDosServicesTests(BaseTest):
+    def setUp(self):
+        self.habitacionesSetUp()
+        self.acompanantesSetUp()
+        self.colaboradoresSetUp()
+
+    def test_hacer_cierre_caja(self):
+        from cajas.services import hacer_cierre_de_caja
+        servicios = self.hacer_servicios_desde_habitacion(
+            acompanante=self.acompanante,
+            acompanante_dos=self.acompanante_dos,
+            acompanante_tres=self.acompanante_tres,
+            habitacion=self.habitacion,
+            punto_venta=self.punto_venta,
+            nro_servicios=7,
+            terminados=True
+        )
+
+        servicios2 = self.hacer_servicios_desde_habitacion(
+            acompanante=self.acompanante,
+            acompanante_dos=self.acompanante_dos,
+            acompanante_tres=self.acompanante_tres,
+            habitacion=self.habitacion_dos,
+            punto_venta=self.punto_venta,
+            nro_servicios=8,
+            terminados=True,
+            comision=5000
+        )
+        ingreso_uno = servicios['valor_total_todos']
+        ingreso_dos = servicios2['valor_total_todos']
+        ingreso_tres, egreso_uno = self.hacer_operaciones_caja_dos(
+            tercero=self.acompanante
+        )
+        ingreso_cuatro, egreso_dos = self.hacer_operaciones_caja_dos(
+            tercero=self.acompanante_dos,
+            cantidad_operaciones=9
+        )
+        ingreso_cinco, egreso_tres = self.hacer_operaciones_caja_dos(
+            tercero=self.colaborador_dos,
+            cantidad_operaciones=7
+        )
+
+        self.hacer_venta_productos_dos(
+            punto_venta=self.punto_venta,
+            nro_referencias=10,
+            mesero=self.colaborador_mesero
+        )
+
+        from liquidaciones.services import liquidar_cuenta_mesero
+
+        liquidacion_mesero = liquidar_cuenta_mesero(
+            colaborador_id=self.colaborador_mesero.id,
+            punto_venta_turno_id=self.punto_venta.usuario_actual.tercero.turno_punto_venta_abierto.id,
+            valor_efectivo=self.colaborador_mesero.cuenta_abierta_mesero.valor_ventas_productos
+        )
+        ingreso_seis = liquidacion_mesero.pagado
+
+        self.hacer_venta_productos_dos(
+            punto_venta=self.punto_venta,
+            nro_referencias=8,
+            cliente=self.acompanante_tres
+        )
+        from liquidaciones.services import liquidar_cuenta_acompanante
+
+        liquidacion_modelo_tres = liquidar_cuenta_acompanante(
+            acompanante_id=self.acompanante_tres.id,
+            punto_venta_turno_id=self.punto_venta.usuario_actual.tercero.turno_punto_venta_abierto.id,
+            valor_efectivo=int(self.acompanante_tres.cuenta_abierta.total_ingresos * Decimal(0.5))
+        )
+
+        egreso_cuatro = liquidacion_modelo_tres.pagado
+        # liquidacion_modelo_dos = liquidar_cuenta_acompanante(
+        #     acompanante_id=self.acompanante_dos.id,
+        #     punto_venta_turno_id=self.punto_venta.usuario_actual.tercero.turno_punto_venta_abierto.id,
+        #     valor_efectivo=self.acompanante_dos.cuenta_abierta.total_ingresos - self.acompanante_dos.cuenta_abierta.total_egresos
+        # )
+        #
+        # egreso_siete = liquidacion_modelo_dos.pagado
+
+        total_ingreso = ingreso_uno + ingreso_dos + ingreso_tres + ingreso_cuatro + ingreso_cinco + ingreso_seis
+        total_egreso = egreso_uno + egreso_dos + egreso_tres + egreso_cuatro
+        print('Total Ingreso Esperado %s' % total_ingreso)
+        print('Total Egreso Esperado %s' % total_egreso)
+        hacer_cierre_de_caja(usuario_pdv_id=self.punto_venta.usuario_actual.id)
 
 
 class TransaccionesCajaServicesTests(TestCase):
@@ -47,7 +137,9 @@ class TransaccionesCajaServicesTests(TestCase):
         self.punto_venta = PuntoVentaFactory(abierto=False, usuario_actual=None)
         self.punto_venta, self.punto_venta_turno = punto_venta_abrir(
             punto_venta_id=self.punto_venta.id,
-            usuario_pv_id=self.colaborador.usuario.id
+            usuario_pv_id=self.colaborador.usuario.id,
+            saldo_cierre_caja_anterior=0,
+            base_inicial_efectivo=0
         )
 
         # Acompanante
@@ -450,7 +542,12 @@ class OperacionCajaServicesTests(TestCase):
         self.colaborador_pdv = ColaboradorFactory()
         tercero_set_new_pin(self.colaborador_pdv.id, '0000')
         tercero_registra_entrada(self.colaborador_pdv.id, '0000')
-        punto_venta_abrir(self.colaborador_pdv.usuario.id, self.punto_venta.id)
+        punto_venta_abrir(
+            usuario_pv_id=self.colaborador_pdv.usuario.id,
+            punto_venta_id=self.punto_venta.id,
+            saldo_cierre_caja_anterior=0,
+            base_inicial_efectivo=0
+        )
 
         self.colaborador = ColaboradorFactory()
         tercero_set_new_pin(self.colaborador.id, '0000')
@@ -510,9 +607,10 @@ class OperacionCajaServicesTests(TestCase):
             descripcion='hola',
             observacion='hola'
         )
-        self.assertEqual(operacion_caja.transacciones_caja.all().count(), 1)
-        self.assertEqual(operacion_caja.transacciones_caja.all().first().tipo, 'I')
-        self.assertEqual(operacion_caja.transacciones_caja.all().first().valor_efectivo, 1000)
+        transaccion_caja = operacion_caja.transacciones_caja.last()
+        self.assertEqual(transaccion_caja.tipo, 'I')
+        self.assertEqual(transaccion_caja.tipo_dos, 'OPERA_CAJA')
+        self.assertEqual(transaccion_caja.valor_efectivo, 1000)
 
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='E',
@@ -527,8 +625,10 @@ class OperacionCajaServicesTests(TestCase):
             observacion='hola'
         )
         self.assertEqual(operacion_caja.transacciones_caja.all().count(), 1)
-        self.assertEqual(operacion_caja.transacciones_caja.all().first().tipo, 'E')
-        self.assertEqual(operacion_caja.transacciones_caja.all().first().valor_efectivo, -2000)
+        transaccion_caja = operacion_caja.transacciones_caja.last()
+        self.assertEqual(transaccion_caja.tipo, 'E')
+        self.assertEqual(transaccion_caja.tipo_dos, 'OPERA_CAJA')
+        self.assertEqual(transaccion_caja.valor_efectivo, -2000)
 
     def test_operacion_caja_colaborador(self):
         from ..factories import ConceptoOperacionCajaFactory

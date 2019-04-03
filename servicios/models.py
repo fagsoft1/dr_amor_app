@@ -27,9 +27,9 @@ class Servicio(TimeStampedModel):
     tiempo_minutos = models.PositiveIntegerField(default=0)
     categoria = models.CharField(max_length=120, null=True)
     comision = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    valor_servicio = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    valor_habitacion = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    valor_iva_habitacion = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    valor_servicio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor_habitacion = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor_iva_habitacion = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     servicio_anterior = models.OneToOneField('self', on_delete=models.PROTECT, related_name='servicio_siguiente',
                                              null=True)
     observacion_anulacion = models.TextField(null=True)

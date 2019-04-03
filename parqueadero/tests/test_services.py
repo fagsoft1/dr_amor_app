@@ -113,7 +113,9 @@ class RegistroEntradaParqueoTests(TestCase):
         colaborador = ColaboradorFactory(presente=True)
         punto_venta, self.punto_venta_turno = punto_venta_abrir(
             usuario_pv_id=colaborador.usuario.id,
-            punto_venta_id=punto_venta.id
+            punto_venta_id=punto_venta.id,
+            saldo_cierre_caja_anterior=0,
+            base_inicial_efectivo=0
         )
 
         tipo_vehiculo_sin_placa = TipoVehiculoFactory(

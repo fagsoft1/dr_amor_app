@@ -83,9 +83,9 @@ class RegistroEntradaParqueo(TimeStampedModel):
     vehiculo = models.ForeignKey(Vehiculo, related_name='registros_de_parqueo', on_delete=models.PROTECT, null=True)
     hora_ingreso = models.DateTimeField(null=True)
     hora_salida = models.DateTimeField(null=True)
-    valor_parqueadero = models.DecimalField(max_digits=12, decimal_places=2, null=True)
-    valor_iva_parqueadero = models.DecimalField(max_digits=12, decimal_places=2, null=True)
-    valor_impuesto_unico = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    valor_parqueadero = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    valor_iva_parqueadero = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    valor_impuesto_unico = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     detalle = models.CharField(max_length=500, null=True)
     transacciones_caja = models.ManyToManyField('cajas.TransaccionCaja', related_name='parqueaderos')
 

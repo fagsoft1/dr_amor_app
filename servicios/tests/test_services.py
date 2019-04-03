@@ -739,6 +739,7 @@ class ServiciosServicesTests(BaseTest):
     # region servicio_solicitar_anular
     def test_servicio_solicitar_anular(self):
         from ..services import servicio_solicitar_anular
+        from cajas.models import TransaccionCaja
         servicio = servicio_crear_nuevo(
             habitacion_id=self.habitacion.id,
             acompanante_id=self.acompanante.id,
@@ -760,6 +761,13 @@ class ServiciosServicesTests(BaseTest):
 
         ultima_transaccion_caja = servicio.transacciones_caja.last()
         self.assertEqual(ultima_transaccion_caja.tipo, 'E')
+
+        transaccion_caja = TransaccionCaja.objects.filter(
+            tipo='E',
+            tipo_dos='SERVICIO',
+            concepto__contains='Anulación de servicio por'
+        ).last()
+        self.assertIsNotNone(transaccion_caja)
         self.assertEqual(ultima_transaccion_caja.valor_efectivo, servicio.valor_total * -1)
 
     def test_servicio_solicitar_anular_solo_punto_venta_abierto(self):

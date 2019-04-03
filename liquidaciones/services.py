@@ -63,7 +63,7 @@ def liquidar_cuenta_acompanante(
         valor_transferencia: float = 0,
         valor_efectivo: float = 0
 ) -> LiquidacionCuenta:
-    from cajas.services import transaccion_caja_liquidacion_cuenta_mesero
+    from cajas.services import transaccion_caja_liquidacion_cuenta_acompanante
     from terceros.models import Cuenta
 
     acompanante = Tercero.objects.get(pk=acompanante_id)
@@ -107,13 +107,12 @@ def liquidar_cuenta_acompanante(
         tarjeta_o_transferencia=valor_transferencia,
         saldo=saldo
     )
-    transaccion_caja_liquidacion_cuenta_mesero(
-        liquidacion_mesero_id=liquidacion_cuenta.id,
-        punto_venta_turno_id=punto_venta_turno_id,
-        valor_efectivo=valor_efectivo,
-        valor_tarjeta=0,
-        nro_vauchers=0
-    )
+    if valor_efectivo > 0:
+        transaccion_caja_liquidacion_cuenta_acompanante(
+            liquidacion_mesero_id=liquidacion_cuenta.id,
+            punto_venta_turno_id=punto_venta_turno_id,
+            valor_efectivo=valor_efectivo
+        )
 
     return liquidacion_cuenta
 

@@ -20,22 +20,6 @@ def usuario_existe_username(
         return True
     return False
 
-
-def usuario_login(
-        usuario_id: int,
-        punto_venta_id: int = None
-) -> str:
-    from puntos_venta.services import punto_venta_abrir
-    token = usuario_obtener_token(usuario_id=usuario_id)
-    if punto_venta_id is not None:
-        punto_venta_abrir(
-            punto_venta_id=punto_venta_id,
-            usuario_pv_id=usuario_id
-        )
-
-    return token
-
-
 def user_cambiar_contrasena(
         usuario_id: int,
         password_old: str,

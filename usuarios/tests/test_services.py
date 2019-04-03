@@ -89,49 +89,6 @@ class UserServicesTests(TestCase):
         self.assertEqual(count_tres, count_dos)
         self.assertNotEqual(token_anterior, token_actual)
 
-    def test_user_login_token(self):
-        from ..services import usuario_login
-        token = usuario_login(usuario_id=self.user.id, punto_venta_id=None)
-        token2 = AuthToken.objects.get(user=self.user)
-        token_key = token2.token_key
-        tamano_token_key = len(token_key)
-        self.assertEqual(token[0:tamano_token_key], token_key)
-
-    def test_user_login_colaborador(self):
-        from ..services import usuario_login
-        from terceros.services import tercero_registra_entrada, tercero_set_new_pin
-        from puntos_venta.models import PuntoVentaTurno
-        self.assertFalse(self.punto_venta.abierto)
-        self.assertIsNone(self.punto_venta.usuario_actual)
-        count = PuntoVentaTurno.objects.filter(usuario=self.colaborador.usuario).count()
-        tercero_set_new_pin(self.colaborador.id, '0000')
-        tercero_registra_entrada(
-            tercero_id=self.colaborador.id,
-            raw_pin='0000'
-        )
-        usuario_login(usuario_id=self.colaborador.usuario.id, punto_venta_id=self.punto_venta.id)
-        self.punto_venta.refresh_from_db()
-        self.assertTrue(self.punto_venta.abierto)
-        self.assertEqual(self.punto_venta.usuario_actual, self.colaborador.usuario)
-        count_dos = PuntoVentaTurno.objects.filter(usuario=self.colaborador.usuario).count()
-        self.assertEqual(count + 1, count_dos)
-
-    def test_user_login_colaborador_no_presente(self):
-        from ..services import usuario_login
-        with self.assertRaisesMessage(
-                ValidationError,
-                "{'_error': 'No se puede abrir un punto de venta a un colaborador que no este presente'}"
-        ):
-            usuario_login(usuario_id=self.colaborador.usuario.id, punto_venta_id=self.punto_venta.id)
-
-    def test_user_login_usuario(self):
-        from ..services import usuario_login
-        from puntos_venta.models import PuntoVentaTurno
-        count = PuntoVentaTurno.objects.filter(usuario=self.user).count()
-        usuario_login(usuario_id=self.user.id, punto_venta_id=None)
-        count_dos = PuntoVentaTurno.objects.filter(usuario=self.user).count()
-        self.assertEqual(count, count_dos)
-
     def test_user_cambiar_contrasena(self):
         password_old = 'lac0ntr4sena'
         password_nuevo = 'lac0ntr4sena'

@@ -83,12 +83,12 @@ class HabitacionServicesTests(BaseTest):
         from ..services import habitacion_terminar_servicios
         servicios = self.hacer_servicios_dos(
             acompanante=self.acompanante,
+            acompanante_dos=self.acompanante_dos,
             habitacion=self.habitacion,
             punto_venta=self.punto_venta,
             terminados=False,
             iniciados=True,
             nro_servicios=5,
-            acompanante_dos=self.acompanante_dos
         )
         servicios_acompanante_1 = servicios['acompanante_1']['servicios']
         servicios_acompanante_2 = servicios['acompanante_2']['servicios']
@@ -181,8 +181,12 @@ class HabitacionServicesTests(BaseTest):
         self.assertEqual(len(self.array_servicios), count_dos)
         self.assertEqual(count_tres, count_dos)
 
-        transaccion_caja = TransaccionCaja.objects.last()
-        self.assertEqual(transaccion_caja.tipo, 'I')
+        transaccion_caja = TransaccionCaja.objects.filter(
+            tipo='I',
+            tipo_dos='SERVICIO',
+            concepto__contains='Pago de servicios habitación'
+        ).last()
+        self.assertIsNotNone(transaccion_caja)
         self.assertEqual(transaccion_caja.valor_efectivo + transaccion_caja.valor_tarjeta, valor_total_servicios)
 
     def test_habitacion_iniciar_servicios_valor_ingresado_efectivo_credito_igual_al_valor_total_servicios(self):
@@ -327,7 +331,7 @@ class HabitacionServicesTests(BaseTest):
         self.assertTrue(habitacion_anterior.estado == 2)
         self.assertTrue(habitacion_nueva.estado == 1)
 
-        transaccion_caja = TransaccionCaja.objects.last()
+        transaccion_caja = TransaccionCaja.objects.filter(tipo_dos='SERVICIO').last()
         self.assertIsNone(transaccion_caja)
 
         return servicios
@@ -500,8 +504,12 @@ class HabitacionServicesTests(BaseTest):
         self.assertTrue(habitacion_anterior.estado == 2)
         self.assertTrue(habitacion_nueva.estado == 1)
 
-        transaccion_caja = TransaccionCaja.objects.last()
-        self.assertEqual(transaccion_caja.tipo, 'I')
+        transaccion_caja = TransaccionCaja.objects.filter(
+            tipo='I',
+            tipo_dos='SERVICIO',
+            concepto__contains='Ingreso por cambio de la habitación'
+        ).last()
+        self.assertIsNotNone(transaccion_caja)
         self.assertEqual(transaccion_caja.valor_efectivo + transaccion_caja.valor_tarjeta, diferencia_valor_total)
 
         return servicios
@@ -661,8 +669,12 @@ class HabitacionServicesTests(BaseTest):
         self.assertTrue(habitacion_anterior.estado == 2)
         self.assertTrue(habitacion_nueva.estado == 1)
 
-        transaccion_caja = TransaccionCaja.objects.last()
-        self.assertEqual(transaccion_caja.tipo, 'E')
+        transaccion_caja = TransaccionCaja.objects.filter(
+            tipo='E',
+            tipo_dos='SERVICIO',
+            concepto__contains='Devolución por cambio de la habitación'
+        ).last()
+        self.assertIsNotNone(transaccion_caja)
         self.assertEqual(transaccion_caja.valor_efectivo, -diferencia_valor_total)
         return servicios
 

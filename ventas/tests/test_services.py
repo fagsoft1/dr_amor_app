@@ -32,12 +32,13 @@ class VentaProductosServicesTests(BaseTest):
             'pedido': None
         }
         for x in array_ids:
-            cantidad = random.randint(1, x + 3)
+            producto = Producto.objects.get(pk=x)
+            cantidad = random.randint(1, 20)
             if inventario_no_existente:
-                cantidad = cantidad * 10000
+                cantidad = cantidad * 10000000
             cantidad_pedido += cantidad
 
-            valor = 1000 * x * cantidad
+            valor = producto.precio_venta * cantidad
             valor_pedido += valor
 
             pedido.append({'producto_id': x, 'precio_total': valor, 'cantidad': cantidad})
@@ -251,9 +252,11 @@ class VentaProductosServicesTests(BaseTest):
             self.assertEqual(venta_item.costo_unitario, movimiento_item.costo_unitario_promedio)
             self.assertEqual(venta_item.costo_total, movimiento_item.sale_costo)
 
-        transaccion = venta.transacciones_caja.first()
-        self.assertGreater(transaccion.valor_efectivo, 0)
-        self.assertEqual(transaccion.tipo, 'I')
+        transaccion = venta.transacciones_caja.filter(
+            tipo='I',
+            tipo_dos='VENTA_PRODUCTO',
+            concepto__contains='Ingreso x Venta de Producto en Efectivo'
+        ).last()
         self.assertEqual(transaccion.valor_efectivo, pedido['valor_pedido'])
         self.assertEqual(transaccion.concepto, 'Ingreso x Venta de Producto en Efectivo')
         self.assertIsNone(venta.cuenta)

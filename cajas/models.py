@@ -27,9 +27,9 @@ class BilleteMoneda(models.Model):
 class ArqueoCaja(TimeStampedModel):
     usuario = models.ForeignKey(User, on_delete=models.PROTECT, related_name='bases_disponibles_entregadas')
     punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='bases_disponibles')
-    dolares = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    dolares_tasa = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    valor_tarjeta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    dolares = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    dolares_tasa = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor_tarjeta = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     nro_voucher = models.PositiveIntegerField(default=0)
 
 
@@ -91,10 +91,10 @@ class TransaccionCaja(TimeStampedModel):
     punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='transacciones_caja')
     concepto = models.TextField()
     nro_vauchers = models.PositiveIntegerField(default=0)
-    tipo = models.CharField(max_length=3, null=True, blank=True, choices=TIPO_CHOICES)
-    tipo_dos = models.CharField(max_length=30, null=True, blank=True, choices=TIPO_DOS_CHOICES)
-    valor_efectivo = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    valor_tarjeta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    tipo = models.CharField(max_length=3, null=True, choices=TIPO_CHOICES)
+    tipo_dos = models.CharField(max_length=30, null=True, choices=TIPO_DOS_CHOICES)
+    valor_efectivo = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor_tarjeta = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     franquicia = models.CharField(max_length=30, null=True)
     nro_autorizacion = models.CharField(max_length=30, null=True)
 

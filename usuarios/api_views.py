@@ -87,14 +87,11 @@ class LoginViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['post'], permission_classes=[permissions.AllowAny])
     def login(self, request) -> Response:
-        from .services import usuario_login
+        from .services import usuario_obtener_token
         serializer = self.get_serializer(data=self.request.POST)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
-        punto_venta_id = int(self.request.POST.get('punto_venta')) if int(
-            self.request.POST.get('punto_venta')) > 0 else None
-
-        token = usuario_login(usuario_id=user.id, punto_venta_id=punto_venta_id)
+        token = usuario_obtener_token(usuario_id=user.id)
         UserSerializer = knox_settings.USER_SERIALIZER
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,

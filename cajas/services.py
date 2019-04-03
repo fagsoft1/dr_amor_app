@@ -6,6 +6,71 @@ from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja
 
 
 # region Transacciones Caja
+def transaccion_caja_registrar_egreso_saldo_cierre_caja(
+        punto_venta_turno_id: int,
+        valor_efectivo: float,
+        valor_tarjeta: float,
+) -> TransaccionCaja:
+    if valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s y de la tarjeta es %s' % (
+                    valor_efectivo, valor_tarjeta)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='E',
+        tipo_dos='SALDO_CIERRE_CAJA',
+        concepto='Egreso de saldo para siguiente apertura de caja',
+        valor_efectivo=-valor_efectivo,
+        valor_tarjeta=-valor_tarjeta
+    )
+    return transaccion
+
+
+def transaccion_caja_registrar_ingreso_base_inicial_apertura_caja(
+        punto_venta_turno_id: int,
+        valor_efectivo: float
+) -> TransaccionCaja:
+    if valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s' % (
+                    valor_efectivo)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='I',
+        tipo_dos='BASE_INI_CAJA',
+        concepto='Ingreso de base inicial apertura de caja',
+        valor_efectivo=valor_efectivo
+    )
+    return transaccion
+
+
+def transaccion_caja_registrar_ingreso_saldo_cierre_anterior_apertura_caja(
+        punto_venta_turno_id: int,
+        valor_efectivo: float,
+) -> TransaccionCaja:
+    if valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s' % (
+                    valor_efectivo)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='I',
+        tipo_dos='SALDO_CIERRE_ANTERIOR_CAJA',
+        concepto='Ingreso de valor de saldo de cierre anterior de caja',
+        valor_efectivo=valor_efectivo
+    )
+    return transaccion
+
+
 def transaccion_caja_registrar_venta_product_efectivo_ingreso(
         punto_venta_turno_id: int,
         valor_efectivo: float,
@@ -14,7 +79,7 @@ def transaccion_caja_registrar_venta_product_efectivo_ingreso(
     if valor_efectivo < 0:
         raise serializers.ValidationError(
             {
-                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s' % (
+                '_error': 'Los valores en efectivo deben ser iguales o mayores a 0. El valor del efectivo es %s' % (
                     valor_efectivo)}
         )
 
@@ -52,6 +117,31 @@ def transaccion_caja_liquidacion_cuenta_mesero(
         valor_efectivo=valor_efectivo,
         valor_tarjeta=valor_tarjeta,
         nro_vauchers=nro_vauchers
+    )
+    transaccion.liquidaciones.add(liquidacion_mesero_id)
+    return transaccion
+
+
+def transaccion_caja_liquidacion_cuenta_acompanante(
+        liquidacion_mesero_id: int,
+        punto_venta_turno_id: int,
+        valor_efectivo: float
+) -> TransaccionCaja:
+    if valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valor en efectivo debe ser igual o mayor a 0. El valor del efectivo es %s' % (
+                    valor_efectivo)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='E',
+        tipo_dos='LIQ_CUE_ACOMP',
+        concepto='Liquidación de cuenta para acompañante',
+        valor_efectivo=-valor_efectivo,
+        valor_tarjeta=0,
+        nro_vauchers=0
     )
     transaccion.liquidaciones.add(liquidacion_mesero_id)
     return transaccion

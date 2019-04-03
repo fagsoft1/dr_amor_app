@@ -18,6 +18,14 @@ class PuntoVenta(models.Model):
                                           on_delete=models.PROTECT)
     abierto = models.BooleanField(default=0)
 
+    @property
+    def turno_anterior(self):
+        return self.turnos.filter(finish__isnull=False).last()
+
+    @property
+    def turno_actual(self):
+        return self.turnos.filter(finish__isnull=True).last()
+
     class Meta:
         permissions = [
             ['list_puntoventa', 'Puede listar puntos ventas'],
@@ -27,4 +35,8 @@ class PuntoVenta(models.Model):
 class PuntoVentaTurno(TimeStampedModel):
     usuario = models.ForeignKey(User, related_name='turnos_punto_venta', on_delete=models.PROTECT)
     punto_venta = models.ForeignKey(PuntoVenta, related_name='turnos', on_delete=models.PROTECT)
+    turno_anterior = models.ForeignKey('self', related_name='siguiente_turno', on_delete=models.PROTECT, null=True)
+    saldo_cierre_caja_anterior = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    base_inicial_efectivo = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    saldo_cierre_caja = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     finish = models.DateTimeField(null=True)

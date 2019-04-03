@@ -73,7 +73,7 @@ class CuentaMeseroManager(models.Manager):
             tipo=2,
             propietario__tercero__es_colaborador=True
         ).annotate(
-            valor_ventas_productos=Sum('compras_productos__productos__precio_total')
+            valor_ventas_productos=Coalesce(Sum('compras_productos__productos__precio_total'), 0)
         )
 
     def liquidada(self):
