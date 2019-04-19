@@ -5,55 +5,60 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
+<body style="font-size: 9px">
 {% localize on %}
-    {% with usuario=arqueo.usuario.tercero.full_name_proxy punto_venta=arqueo.punto_venta.nombre %}
-        {% if entrega %}
-            <h3>Entrega</h3>
+    {% with usuario=arqueo.punto_venta_turno.usuario.tercero.full_name_proxy punto_venta=arqueo.punto_venta_turno.punto_venta.nombre %}
+        {% if arqueo.entrega_efectivo %}
+            <h3>Entrega Efectivo</h3>
             <table>
                 <thead>
                 <tr>
                     <th>Valor</th>
                     <th style="text-align: center">Cantidad</th>
+                    <th style="text-align: right">Valor</th>
                     <th style="text-align: right">Total</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for item in entrega %}
+                {% for item in arqueo.entrega_efectivo.all|dictsort:"valor"|dictsort:"tipo" %}
                     <tr>
-                        <td>{% if item.tipo == 0 %}Bill. de {% else %}Mon. de {% endif %}{{ item.valor }}</td>
+                        <td>{% if item.tipo == 1 %}Bill. de {% else %}Mon. de {% endif %}{{ item.valor }}</td>
                         <td style="text-align: center">{{ item.cantidad }}</td>
-                        <td style="text-align: right">{{ item.total }}</td>
+                        <td style="text-align: right">{{ item.valor }}</td>
+                        <td style="text-align: right">{{ item.valor_total }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
                 <tfoot>
                 <tr>
                     <td>Total</td>
+                    <td></td>
                     <td></td>
                     <td>{{ arqueo.valor_entrega_efectivo }}</td>
                 </tr>
                 </tfoot>
             </table>
+            {% include 'reportes/cajas/entrega_cierre_pdf_info.html' %}
         {% endif %}
-        {% include 'reportes/cajas/entrega_cierre_pdf_info.html' %}
         --------------------------
-        {% if base %}
-            <h3>Base que pasa</h3>
+        {% if arqueo.base_dia_siguiente %}
+            <h3>Base</h3>
             <table>
                 <thead>
                 <tr>
                     <th>Valor</th>
                     <th style="text-align: center">Cantidad</th>
+                    <th style="text-align: right">Valor</th>
                     <th style="text-align: right">Total</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for item in base %}
+                {% for item in arqueo.base_dia_siguiente.all|dictsort:"valor"|dictsort:"tipo" %}
                     <tr>
-                        <td>{% if item.tipo == 0 %}Bill. de {% else %}Mon. de {% endif %}{{ item.valor }}</td>
+                        <td>{% if item.tipo == 1 %}Bill. de {% else %}Mon. de {% endif %}{{ item.valor }}</td>
                         <td style="text-align: center">{{ item.cantidad }}</td>
-                        <td style="text-align: right">{{ item.total }}</td>
+                        <td style="text-align: right">{{ item.valor }}</td>
+                        <td style="text-align: right">{{ item.valor_total }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -61,23 +66,28 @@
                 <tr>
                     <td>Total</td>
                     <td></td>
-                    <td>{{ arqueo.valor_entrega_base_dia_siguiente }}</td>
+                    <td></td>
+                    <td>{{ arqueo.valor_base_dia_siguiente }}</td>
                 </tr>
                 </tfoot>
             </table>
+            {% include 'reportes/cajas/entrega_cierre_pdf_info.html' %}
         {% endif %}
-        {% include 'reportes/cajas/entrega_cierre_pdf_info.html' %}
         --------------------------
-        <h3>Dolares</h3>
-        Dolares: {{ arqueo.dolares|floatformat:0 }}<br/>
-        Tasa: {{ arqueo.dolares_tasa|floatformat:0 }}<br/>
-        Total: {{ arqueo.valor_entrega_dolares|floatformat:0 }}
-        {% include 'reportes/cajas/entrega_cierre_pdf_info.html' %}
+        {% if arqueo.valor_dolares_entregados > 0 %}
+            <h3>Dolares</h3>
+            Dolares: {{ arqueo.valor_dolares_entregados|floatformat:0 }}<br/>
+            Tasa: {{ arqueo.dolares_tasa|floatformat:0 }}<br/>
+            Total: {{ arqueo.valor_dolares_en_pesos|floatformat:0 }}
+            {% include 'reportes/cajas/entrega_cierre_pdf_info.html' %}
+        {% endif %}
         --------------------------
-        <h3>Vouchers (Tarjetas)</h3>
-        Total: {{ arqueo.valor_tarjeta|floatformat:0 }}<br/>
-        # Vouchers: {{ arqueo.nro_voucher }}
-        {% include 'reportes/cajas/entrega_cierre_pdf_info.html' %}
+        {% if arqueo.valor_tarjeta_entregados > 0 %}
+            <h3>Vouchers (Tarjetas)</h3>
+            Total: {{ arqueo.valor_tarjeta_entregados|floatformat:0 }}<br/>
+            # Vouchers: {{ arqueo.nro_voucher_entregados }}
+            {% include 'reportes/cajas/entrega_cierre_pdf_info.html' %}
+        {% endif %}
     {% endwith %}
 {% endlocalize %}
 </body>

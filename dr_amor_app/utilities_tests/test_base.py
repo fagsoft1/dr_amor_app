@@ -15,6 +15,21 @@ class BaseTest(TestCase):
         from usuarios.factories import UserFactory
         self.usuario_sin_tercero = UserFactory()
 
+    def billetesMonedasSetUp(self):
+        from cajas.factories import BilleteMonedaFactory
+        BilleteMonedaFactory(tipo=1, valor=100000)
+        BilleteMonedaFactory(tipo=1, valor=50000)
+        BilleteMonedaFactory(tipo=1, valor=20000)
+        BilleteMonedaFactory(tipo=1, valor=10000)
+        BilleteMonedaFactory(tipo=1, valor=5000)
+        BilleteMonedaFactory(tipo=1, valor=2000)
+        BilleteMonedaFactory(tipo=1, valor=1000)
+        BilleteMonedaFactory(tipo=2, valor=1000)
+        BilleteMonedaFactory(tipo=2, valor=500)
+        BilleteMonedaFactory(tipo=2, valor=200)
+        BilleteMonedaFactory(tipo=2, valor=100)
+        BilleteMonedaFactory(tipo=2, valor=50)
+
     def habitacionesSetUp(self):
         from empresas.factories import EmpresaFactory
         from habitaciones.factories import HabitacionFactory, TipoHabitacionFactory
@@ -280,12 +295,15 @@ class BaseTest(TestCase):
         informacion = {
             'valor_venta': 0
         }
-
+        precio_a_pagar = 0
         for i in range(len(array_id_productos)):
+            precio_venta = Producto.objects.get(pk=array_id_productos[i]).precio_venta
+            cantidad = random.randint(2, 7)
+            precio_a_pagar += precio_venta * cantidad
             pedido.append({
                 'producto_id': array_id_productos[i],
-                'precio_total': random.randrange(20000, 50000),
-                'cantidad': random.randint(2, 7)
+                'precio_total': precio_venta * cantidad,
+                'cantidad': cantidad
             })
 
         if mesero:
@@ -298,14 +316,23 @@ class BaseTest(TestCase):
                 cliente_qr_codigo=tercero_generarQR(mesero.id).qr_acceso
             )
         else:
-            venta = venta_producto_efectuar_venta(
-                usuario_pdv_id=self.colaborador_cajero.usuario.id,
-                punto_venta_id=punto_venta.id,
-                tipo_venta=3,
-                pedidos=pedido,
-                cliente_usuario_id=cliente.usuario.id,
-                cliente_qr_codigo=tercero_generarQR(cliente.id).qr_acceso
-            )
+            if cliente:
+                venta = venta_producto_efectuar_venta(
+                    usuario_pdv_id=self.colaborador_cajero.usuario.id,
+                    punto_venta_id=punto_venta.id,
+                    tipo_venta=3,
+                    pedidos=pedido,
+                    cliente_usuario_id=cliente.usuario.id,
+                    cliente_qr_codigo=tercero_generarQR(cliente.id).qr_acceso
+                )
+            else:
+                venta = venta_producto_efectuar_venta(
+                    usuario_pdv_id=self.colaborador_cajero.usuario.id,
+                    punto_venta_id=punto_venta.id,
+                    tipo_venta=1,
+                    pedidos=pedido,
+                    pago_efectivo=precio_a_pagar
+                )
 
         valor_venta = venta.productos.aggregate(valor=Sum('precio_total'))
         informacion['valor_venta'] = valor_venta['valor']
@@ -450,7 +477,8 @@ class BaseTest(TestCase):
         from servicios.services import servicio_crear_nuevo, servicio_iniciar
         from habitaciones.services import habitacion_terminar_servicios
 
-        nro_servicios = nro_servicios if nro_servicios > 3 else 3
+        if acompanante_tres or acompanante_dos and nro_servicios <= 3:
+            nro_servicios = 3
 
         tipo_habitacion = habitacion.tipo
         tipo_habitacion.comision = comision
@@ -660,6 +688,41 @@ class BaseTest(TestCase):
 
         return valores_totales_servicios
 
+    def distribuir_en_billetes_monedas(self, valor):
+        from cajas.models import BilleteMoneda
+        valor_minimo = BilleteMoneda.objects.order_by('valor')
+        valor_minimo = valor_minimo.first().valor
+        distribucion = {
+            1: {},
+            2: {},
+            'total_distribuido': 0,
+            'array_distribucion': []
+        }
+        total_distribuido = 0
+        array_distribucion = []
+        while valor >= valor_minimo:
+            lista_array_id = BilleteMoneda.objects.values_list('pk', flat=True).filter(valor__lte=valor)
+            billete_moneda = BilleteMoneda.objects.get(pk=random.choice(lista_array_id))
+            valor = valor - billete_moneda.valor
+            total_distribuido += billete_moneda.valor
+            if not billete_moneda.valor in distribucion[billete_moneda.tipo]:
+                distribucion[billete_moneda.tipo][billete_moneda.valor] = 1
+            else:
+                distribucion[billete_moneda.tipo][billete_moneda.valor] += 1
+        if valor > 0:
+            billete_moneda = BilleteMoneda(valor=valor, tipo=2)
+            distribucion[billete_moneda.tipo][int(billete_moneda.valor)] = 1
+            total_distribuido += billete_moneda.valor
+
+        for k, v in distribucion[1].items():
+            array_distribucion.append({'tipo': 1, 'valor': k, 'cantidad': v})
+
+        for k, v in distribucion[2].items():
+            array_distribucion.append({'tipo': 2, 'valor': k, 'cantidad': v})
+        distribucion['array_distribucion'] = array_distribucion
+        distribucion['total_distribuido'] = total_distribuido
+        return distribucion
+
     def hacer_movimiento_para_punto_venta_abierto(
             self,
             punto_venta
@@ -667,9 +730,6 @@ class BaseTest(TestCase):
         from habitaciones.models import Habitacion
         from liquidaciones.services import liquidar_cuenta_acompanante, liquidar_cuenta_mesero
         array_habitaciones = Habitacion.objects.values_list('pk', flat=True)
-
-        punto_venta_base_inicial = punto_venta.turno_actual.base_inicial_efectivo
-        punto_venta_saldo_cierre_caja_anterior = punto_venta.turno_actual.saldo_cierre_caja_anterior
 
         # region Genera Servicios
         servicios = self.hacer_servicios_desde_habitacion(
@@ -713,8 +773,6 @@ class BaseTest(TestCase):
 
         valor_ingresos_por_servicios_efectivo = valor_total_servicios_uno_efectivo + valor_total_servicios_dos_efectivo + valor_total_servicios_tres_efectivo
         valor_ingresos_por_servicios_tarjeta = valor_total_servicios_uno_tarjeta + valor_total_servicios_dos_tarjeta + valor_total_servicios_tres_tarjeta
-        valor_ingresos_por_servicios = valor_ingresos_por_servicios_efectivo + valor_ingresos_por_servicios_tarjeta
-
         # endregion
 
         # region Genera Ventas Productos
@@ -729,6 +787,13 @@ class BaseTest(TestCase):
             nro_referencias=8,
             mesero=self.colaborador_mesero
         )
+
+        venta3, informacion3 = self.hacer_venta_productos_dos(
+            punto_venta=punto_venta,
+            nro_referencias=8
+        )
+
+        valor_venta_producto_efectivo = informacion3['valor_venta']
         # endregion
 
         # region Genera Operaciones Caja
@@ -744,7 +809,7 @@ class BaseTest(TestCase):
 
         valor_ingresos_tres, valor_egresos_tres = self.hacer_operaciones_caja_dos(
             colaborador_cajero=punto_venta.usuario_actual.tercero,
-            tercero=self.acompanante_tres
+            tercero=self.colaborador_mesero
         )
 
         valor_ingresos_cuatro, valor_egresos_cuatro = self.hacer_operaciones_caja_dos(
@@ -752,7 +817,7 @@ class BaseTest(TestCase):
         )
 
         valor_ingresos_operaciones_caja = valor_ingresos_uno + valor_ingresos_dos + valor_ingresos_tres + valor_ingresos_cuatro
-        valor_egresos_operaciones_caja = valor_egresos_uno + valor_egresos_dos + valor_egresos_tres + valor_ingresos_cuatro
+        valor_egresos_operaciones_caja = valor_egresos_uno + valor_egresos_dos + valor_egresos_tres + valor_egresos_cuatro
         # endregion
 
         # region Genera Liquidaciones
@@ -762,26 +827,32 @@ class BaseTest(TestCase):
             valor_efectivo=(
                                    self.acompanante.cuenta_abierta.total_ingresos - self.acompanante.cuenta_abierta.total_egresos) - 10000
         )
-        liquidacion_cuenta_mesero = liquidar_cuenta_mesero(
+
+        a_cobrar_a_mesero = self.colaborador_mesero.cuenta_abierta_mesero.valor_ventas_productos
+        a_cobrar_a_mesero_efectivo = int(a_cobrar_a_mesero / 3)
+        a_cobrar_a_mesero_tarjeta = a_cobrar_a_mesero - a_cobrar_a_mesero_efectivo
+        liquidar_cuenta_mesero(
             colaborador_id=self.colaborador_mesero.id,
             punto_venta_turno_id=punto_venta.usuario_actual.tercero.turno_punto_venta_abierto.id,
-            valor_efectivo=self.colaborador_mesero.cuenta_abierta_mesero.valor_ventas_productos + 5000,
-            valor_tarjetas=0,
-            nro_vauchers=0
+            valor_efectivo=a_cobrar_a_mesero_efectivo,
+            valor_tarjetas=a_cobrar_a_mesero_tarjeta,
+            nro_vauchers=10
         )
         # endregion
 
         egreso_liquidacion_acompanante = liquidacion_cuenta_acompanante.pagado
-        ingreso_liquidacion_mesero = liquidacion_cuenta_mesero.pagado
 
         total_valor_egresos = egreso_liquidacion_acompanante + valor_egresos_operaciones_caja
-        total_valor_ingresos = ingreso_liquidacion_mesero + valor_ingresos_operaciones_caja + valor_ingresos_por_servicios + punto_venta_saldo_cierre_caja_anterior + punto_venta_base_inicial
+
+        total_ingresos_en_efectivo = a_cobrar_a_mesero_efectivo + valor_ingresos_por_servicios_efectivo + valor_venta_producto_efectivo + valor_ingresos_operaciones_caja
+        total_ingresos_en_tarjeta = valor_ingresos_por_servicios_tarjeta + a_cobrar_a_mesero_tarjeta
+        total_ingresos = total_ingresos_en_efectivo + total_ingresos_en_tarjeta
 
         informacion = {
             'ingresos': {
-                'totales': total_valor_ingresos,
-                'totales_efectivo': valor_ingresos_por_servicios_efectivo,
-                'totales_tarjeta': valor_ingresos_por_servicios_tarjeta,
+                'totales': total_ingresos,
+                'totales_efectivo': total_ingresos_en_efectivo,
+                'totales_tarjeta': total_ingresos_en_tarjeta,
             },
             'egresos': {
                 'totales': total_valor_egresos

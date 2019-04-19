@@ -1,7 +1,7 @@
 import random
 
 import factory
-from .models import ConceptoOperacionCaja, OperacionCaja
+from .models import ConceptoOperacionCaja, OperacionCaja, BilleteMoneda
 from faker import Faker
 from puntos_venta.factories import PuntoVentaTurnoFactory
 
@@ -29,3 +29,12 @@ class OperacionCajaFactory(factory.django.DjangoModelFactory):
     descripcion = 'hola'
     observacion = 'hola'
     valor = 1000
+
+
+class BilleteMonedaFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = BilleteMoneda
+
+    tipo = random.choice([1, 2])
+    valor = 10000
+    activo = True

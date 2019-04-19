@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from django.db.models import Sum, F
+from django.template.loader import get_template
 from rest_framework import serializers
+from weasyprint import HTML, CSS
 
-from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja
+from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja, ArqueoCaja
 
 
 # region Transacciones Caja
@@ -351,7 +353,7 @@ def transaccion_caja_registrar_pago_nuevos_servicios_habitacion(
         valor=Sum(F('valor_habitacion') + F('valor_servicio') + F('valor_iva_habitacion'))
     )['valor']
 
-    if valor_tarjeta + valor_efectivo != valor_total:
+    if int(valor_tarjeta + valor_efectivo) != int(valor_total):
         raise serializers.ValidationError(
             {
                 '_error': 'El valor ingresado de forma de pago es diferente al valor total de los servicios. El Valor de los servicios es %s, pero el pago en Efectivo= %s + Tarjeta= %s no coincide' % (
@@ -593,4 +595,31 @@ def operacion_caja_crear(
     operacion_caja.transacciones_caja.add(transaccion_caja)
     return operacion_caja
 
+
 # endregion
+
+
+def arqueo_generar_recibo_entrega(arqueo_id):
+    arqueo = ArqueoCaja.objects.get(pk=arqueo_id)
+    context = {
+        "arqueo": arqueo
+    }
+    html_get_template = get_template('reportes/cajas/entrega_cierre_pdf.html').render(context)
+    html = HTML(
+        string=html_get_template
+    )
+    main_doc = html.render(stylesheets=[CSS('static/css/reportes_carta.css')])
+    return main_doc
+
+
+def arqueo_generar_pdf_prueba():
+    context = {
+    }
+    html_get_template = get_template('reportes/cajas/prueba_pdf.html').render(context)
+    html = HTML(
+        string=html_get_template
+    )
+    main_doc = html.render(stylesheets=[CSS('static/css/reportes_carta.css')])
+    main_doc.write_pdf(
+        target='example.pdf'
+    )

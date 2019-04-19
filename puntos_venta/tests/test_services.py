@@ -1,4 +1,3 @@
-from django.test import TestCase
 from faker import Faker
 from rest_framework.exceptions import ValidationError
 
@@ -13,14 +12,18 @@ class PuntoVentaTests(BaseTest):
         self.colaboradoresSetUp()
         self.habitacionesSetUp()
         self.usuariosSetUp()
+        self.billetesMonedasSetUp()
 
     def cerrar_punto_venta(self):
         from ..services import punto_venta_cerrar
         punto_venta_cerrar(
             usuario_pv_id=self.colaborador_cajero.usuario.id,
-            valor_dinero_efectivo=0,
             valor_tarjeta=0,
-            nro_vauchers=0
+            entrega_base_dict={},
+            entrega_efectivo_dict={},
+            nro_vauchers=0,
+            valor_dolares=0,
+            tasa_dolar=0
         )
 
     # region Abrir Punto Venta
@@ -129,22 +132,44 @@ class PuntoVentaTests(BaseTest):
     # regio Cerrar Punto de Venta
 
     def test_punto_venta_cerrar(self):
-        from ..services import punto_venta_cerrar, punto_venta_abrir
+        from ..services import punto_venta_cerrar
+        from cajas.services import arqueo_generar_recibo_entrega
+        punto_venta_base_inicial = self.punto_venta.turno_actual.base_inicial_efectivo
+        punto_venta_saldo_cierre_caja_anterior = self.punto_venta.turno_actual.saldo_cierre_caja_anterior
 
         operaciones = self.hacer_movimiento_para_punto_venta_abierto(
             punto_venta=self.punto_venta
         )
-        print(operaciones)
+        ingresos_efectivo = operaciones['ingresos']['totales_efectivo']
+        ingresos_tarjeta = operaciones['ingresos']['totales_tarjeta']
+        egresos = operaciones['egresos']['totales']
 
-        print('Total ingreso esperado %s' % operaciones['ingresos']['totales'])
-        print('Total egreso esperado %s' % operaciones['egresos']['totales'])
+        valor_dolares_simulados = 30
+        tasa_dolares_simulados = 2800
+        valor_dolares_en_pesos = valor_dolares_simulados * tasa_dolares_simulados
 
-        punto_venta = punto_venta_cerrar(
+        total_efectivo_a_distribuir_base = 300000
+        total_efectivo_a_distribuir_entrega = ingresos_efectivo - egresos + punto_venta_base_inicial + punto_venta_saldo_cierre_caja_anterior - total_efectivo_a_distribuir_base - valor_dolares_en_pesos
+        engrega_efectivo_simulado = self.distribuir_en_billetes_monedas(total_efectivo_a_distribuir_entrega)[
+            'array_distribucion']
+
+        engrega_base_simulado = self.distribuir_en_billetes_monedas(total_efectivo_a_distribuir_base)[
+            'array_distribucion']
+
+        punto_venta, arqueo_caja = punto_venta_cerrar(
             usuario_pv_id=self.punto_venta.usuario_actual.id,
-            valor_tarjeta=0,
-            valor_dinero_efectivo=0,
-            nro_vauchers=0
+            valor_tarjeta=ingresos_tarjeta,
+            entrega_base_dict=engrega_base_simulado,
+            entrega_efectivo_dict=engrega_efectivo_simulado,
+            nro_vauchers=13,
+            valor_dolares=valor_dolares_simulados,
+            tasa_dolar=tasa_dolares_simulados
         )
+        reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
+        reporte.write_pdf(
+            target='media/reporte.pdf'
+        )
+
         self.assertFalse(punto_venta.abierto)
         self.assertIsNone(punto_venta.usuario_actual)
         self.assertIsNone(self.colaborador_cajero.turno_punto_venta_abierto)
@@ -161,8 +186,11 @@ class PuntoVentaTests(BaseTest):
             punto_venta_cerrar(
                 usuario_pv_id=usuario.id,
                 valor_tarjeta=0,
-                valor_dinero_efectivo=0,
-                nro_vauchers=0
+                entrega_base_dict={},
+                entrega_efectivo_dict={},
+                nro_vauchers=0,
+                valor_dolares=0,
+                tasa_dolar=0
             )
 
     def test_punto_venta_cerrar_solo_con_puntos_venta_abiertos(self):
@@ -175,8 +203,11 @@ class PuntoVentaTests(BaseTest):
             punto_venta_cerrar(
                 usuario_pv_id=self.colaborador_cajero.usuario.id,
                 valor_tarjeta=0,
-                valor_dinero_efectivo=0,
-                nro_vauchers=0
+                entrega_base_dict={},
+                entrega_efectivo_dict={},
+                nro_vauchers=0,
+                valor_dolares=0,
+                tasa_dolar=0
             )
 
-    # endregion
+# endregion

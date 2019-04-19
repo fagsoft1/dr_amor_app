@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from model_utils.models import TimeStampedModel
 from servicios.models import Servicio
 from puntos_venta.models import PuntoVenta
@@ -10,8 +12,8 @@ from terceros.models import Cuenta, Tercero
 
 class BilleteMoneda(models.Model):
     TIPO_CHOICES = (
-        (0, 'BILLETES'),
-        (1, 'MONEDAS'),
+        (1, 'BILLETES'),
+        (2, 'MONEDAS'),
     )
     tipo = models.IntegerField(choices=TIPO_CHOICES)
     valor = models.DecimalField(max_digits=10, decimal_places=0)
@@ -25,28 +27,61 @@ class BilleteMoneda(models.Model):
 
 
 class ArqueoCaja(TimeStampedModel):
-    usuario = models.ForeignKey(User, on_delete=models.PROTECT, related_name='bases_disponibles_entregadas')
-    punto_venta = models.ForeignKey(PuntoVenta, on_delete=models.PROTECT, related_name='bases_disponibles')
-    dolares = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    from puntos_venta.models import PuntoVentaTurno
+    punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='arqueos_caja')
+    valor_pago_efectivo_a_entregar = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor_pago_tarjeta_a_entregar = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     dolares_tasa = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    valor_tarjeta = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    nro_voucher = models.PositiveIntegerField(default=0)
+    valor_dolares_entregados = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor_tarjeta_entregados = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    nro_voucher_entregados = models.PositiveIntegerField(default=0)
+    saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    observacion = models.TextField(null=True)
+
+    @property
+    def valor_entrega_efectivo(self):
+        return self.entrega_efectivo.aggregate(
+            valor=Coalesce(Sum('valor_total'),0)
+        )['valor']
+
+    @property
+    def valor_base_dia_siguiente(self):
+        return self.base_dia_siguiente.aggregate(
+            valor=Coalesce(Sum('valor_total'),0)
+        )['valor']
+
+    @property
+    def valor_dolares_en_pesos(self):
+        return self.valor_dolares_entregados * self.dolares_tasa
+
+    @property
+    def valor_entrega_efectivo_total(self):
+        return self.valor_entrega_efectivo + self.valor_base_dia_siguiente + self.valor_dolares_en_pesos
 
 
 class BaseDisponibleDenominacion(models.Model):
     tipo = models.IntegerField()
-    arqueo_caja = models.ForeignKey(ArqueoCaja, on_delete=models.PROTECT,
-                                    related_name='base_dia_siguiente')
-    cantidad = models.PositiveIntegerField()
-    valor = models.DecimalField(max_digits=10, decimal_places=0)
+    arqueo_caja = models.ForeignKey(
+        ArqueoCaja,
+        on_delete=models.PROTECT,
+        related_name='base_dia_siguiente'
+    )
+    cantidad = models.PositiveIntegerField(default=0)
+    cantidad_recibida = models.PositiveIntegerField(default=0)
+    valor = models.DecimalField(max_digits=10, decimal_places=0, default=0)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=0, default=0)
 
 
 class EfectivoEntregaDenominacion(models.Model):
     tipo = models.IntegerField()
-    arqueo_caja = models.ForeignKey(ArqueoCaja, on_delete=models.PROTECT,
-                                    related_name='entrega_efectivo')
-    cantidad = models.PositiveIntegerField()
-    valor = models.DecimalField(max_digits=10, decimal_places=0)
+    arqueo_caja = models.ForeignKey(
+        ArqueoCaja,
+        on_delete=models.PROTECT,
+        related_name='entrega_efectivo'
+    )
+    cantidad = models.PositiveIntegerField(default=0)
+    valor = models.DecimalField(max_digits=10, decimal_places=0, default=0)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=0, default=0)
 
 
 class ConceptoOperacionCaja(models.Model):
