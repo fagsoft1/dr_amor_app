@@ -167,15 +167,28 @@ class RegistroEntradaParqueoTests(TestCase):
         )
 
     def test_registro_entrada_parqueo_crear(self):
-        from ..services import registro_entrada_parqueo_crear
-        registro_entrada_parqueo_crear(
+        from ..services import (
+            registro_entrada_parqueo_crear,
+            registro_entrada_parqueo_comprobante_entrada
+        )
+        registro_entrada = registro_entrada_parqueo_crear(
             punto_venta_turno_id=self.punto_venta_turno.id,
             modalidad_fraccion_tiempo_id=self.modalidad_fraccion_tiempo_sin_placa.id
         )
-        registro_entrada_parqueo_crear(
+
+        comprobante = registro_entrada_parqueo_comprobante_entrada(registro_entrada_id=registro_entrada.id)
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/parqueadero_comprobante_entrada_sin_vehiculo.pdf'
+        )
+
+        registro_entrada = registro_entrada_parqueo_crear(
             punto_venta_turno_id=self.punto_venta_turno.id,
             modalidad_fraccion_tiempo_id=self.modalidad_fraccion_tiempo_con_placa.id,
             placa='LLL000'
+        )
+        comprobante = registro_entrada_parqueo_comprobante_entrada(registro_entrada_id=registro_entrada.id)
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/parqueadero_comprobante_entrada_con_vehiculo.pdf'
         )
         with self.assertRaisesMessage(
                 ValidationError,
@@ -266,8 +279,12 @@ class RegistroEntradaParqueoTests(TestCase):
         self.assertEqual(minutos, 240)
         self.assertEqual(tarifa.valor, 2000)
 
-    def test_registro_entrada_parqueo_registrar_salida(self):
-        from ..services import registro_entrada_parqueo_registrar_salida
+    def test_registro_entrada_parqueo_registrar_pago(self):
+        from ..services import (
+            registro_entrada_parqueo_registrar_pago,
+            registro_entrada_parqueo_calcular_pago,
+            registro_entrada_parqueo_factura
+        )
         from ..models import RegistroEntradaParqueo
         self.crear_modalidades_tiempos_detalles()
         registro = RegistroEntradaParqueo.objects.create(
@@ -276,14 +293,52 @@ class RegistroEntradaParqueoTests(TestCase):
             vehiculo=self.vehiculo,
             hora_ingreso=timezone.now() + timezone.timedelta(seconds=-(60 * 30 * 1) - 1)
         )
-        self.assertIsNone(registro.hora_salida)
+        self.assertIsNone(registro.hora_pago)
         self.assertEqual(len(registro.transacciones_caja.all()), 0)
-        registro = registro_entrada_parqueo_registrar_salida(
+        minutos, tarifa, hora_actual = registro_entrada_parqueo_calcular_pago(
+            registro_entrada_parqueo_id=registro.id
+        )
+        registro = registro_entrada_parqueo_registrar_pago(
             registro_entrada_parqueo_id=registro.id,
-            punto_venta_turno_id=self.punto_venta_turno.id
+            punto_venta_turno_id=self.punto_venta_turno.id,
+            modalidad_fraccion_tiempo_detalle_id=tarifa.id
+        )
+        factura = registro_entrada_parqueo_factura(
+            registro_entrada_id=registro.id
+        )
+        factura.write_pdf(
+            target='media/pruebas_pdf/parqueadero_factura.pdf'
         )
         self.assertEqual(len(registro.transacciones_caja.all()), 1)
-        self.assertIsNotNone(registro.hora_salida)
+        self.assertIsNotNone(registro.hora_pago)
         self.assertEqual(registro.transacciones_caja.all().first().valor_efectivo, registro.valor_total)
         self.assertEqual(registro.transacciones_caja.all().first().tipo, 'I')
         self.assertEqual(registro.transacciones_caja.all().first().tipo_dos, 'PARQUEADERO')
+
+    def test_registro_entrada_parqueo_registrar_salida(self):
+        from ..services import (
+            registro_entrada_parqueo_registrar_pago,
+            registro_entrada_parqueo_calcular_pago,
+            registro_entrada_parqueo_registrar_salida
+        )
+        from ..models import RegistroEntradaParqueo
+        self.crear_modalidades_tiempos_detalles()
+        registro = RegistroEntradaParqueo.objects.create(
+            punto_venta_turno_id=self.punto_venta_turno.id,
+            modalidad_fraccion_tiempo_id=self.modalidad_fraccion_tiempo_con_placa.id,
+            vehiculo=self.vehiculo,
+            hora_ingreso=timezone.now() + timezone.timedelta(seconds=-(60 * 30 * 1) - 1)
+        )
+        minutos, tarifa, hora_actual = registro_entrada_parqueo_calcular_pago(
+            registro_entrada_parqueo_id=registro.id
+        )
+        registro = registro_entrada_parqueo_registrar_pago(
+            registro_entrada_parqueo_id=registro.id,
+            punto_venta_turno_id=self.punto_venta_turno.id,
+            modalidad_fraccion_tiempo_detalle_id=tarifa.id
+        )
+        self.assertIsNone(registro.hora_salida)
+        registro = registro_entrada_parqueo_registrar_salida(
+            registro_entrada_parqueo_id=registro.id
+        )
+        self.assertIsNotNone(registro.hora_salida)

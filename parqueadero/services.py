@@ -1,10 +1,12 @@
+from django.template.loader import get_template
 from django.utils import timezone
 from rest_framework import serializers
+from weasyprint import CSS, HTML
+
 from .models import (
     ModalidadFraccionTiempoDetalle,
     ModalidadFraccionTiempo,
     RegistroEntradaParqueo,
-    TipoVehiculo,
     Vehiculo
 )
 
@@ -122,19 +124,19 @@ def registro_entrada_parqueo_calcular_pago(
     return minutos, tarifa, hora_actual
 
 
-def registro_entrada_parqueo_registrar_salida(
+def registro_entrada_parqueo_registrar_pago(
         registro_entrada_parqueo_id: int,
-        punto_venta_turno_id: int
+        punto_venta_turno_id: int,
+        modalidad_fraccion_tiempo_detalle_id: int
 ) -> RegistroEntradaParqueo:
-    from .models import RegistroEntradaParqueo
+    from .models import RegistroEntradaParqueo, ModalidadFraccionTiempoDetalle
     from cajas.services import transaccion_caja_registrar_venta_parqueadero
+    tarifa = ModalidadFraccionTiempoDetalle.objects.get(
+        pk=modalidad_fraccion_tiempo_detalle_id)
 
     registro_entrada_parqueo = RegistroEntradaParqueo.objects.get(pk=registro_entrada_parqueo_id)
-    minutos, tarifa, hora_actual = registro_entrada_parqueo_calcular_pago(
-        registro_entrada_parqueo_id=registro_entrada_parqueo_id
-    )
     concepto = 'Cobro por parqueo para %s %s' % (tarifa.tipo_vehiculo_nombre, registro_entrada_parqueo.vehiculo.placa)
-    registro_entrada_parqueo.hora_salida = hora_actual
+    registro_entrada_parqueo.hora_pago = timezone.now()
     registro_entrada_parqueo.valor_parqueadero = tarifa.valor_antes_impuestos
     registro_entrada_parqueo.valor_iva_parqueadero = tarifa.impuesto_iva
     registro_entrada_parqueo.valor_impuesto_unico = tarifa.valor_unico_impuesto
@@ -157,3 +159,67 @@ def registro_entrada_parqueo_registrar_salida(
         valor_efectivo=registro_entrada_parqueo.valor_total
     )
     return registro_entrada_parqueo
+
+
+def registro_entrada_parqueo_registrar_salida(
+        registro_entrada_parqueo_id: int
+) -> RegistroEntradaParqueo:
+    from .models import RegistroEntradaParqueo
+    registro_entrada_parqueo = RegistroEntradaParqueo.objects.get(pk=registro_entrada_parqueo_id)
+    registro_entrada_parqueo.hora_salida = timezone.now()
+    registro_entrada_parqueo.save()
+    return registro_entrada_parqueo
+
+
+def registro_entrada_parqueo_comprobante_entrada(registro_entrada_id):
+    registro_entrada = RegistroEntradaParqueo.objects.select_related(
+        'vehiculo',
+        'vehiculo__tipo_vehiculo',
+        'vehiculo__tipo_vehiculo__empresa',
+        'punto_venta_turno',
+        'punto_venta_turno__punto_venta',
+        'punto_venta_turno__usuario',
+        'punto_venta_turno__usuario__tercero',
+    ).get(pk=registro_entrada_id)
+    context = {
+        "registro_entrada": registro_entrada
+    }
+    html_get_template = get_template('recibos/parqueadero/ticket_entrada.html').render(context)
+    html = HTML(
+        string=html_get_template
+    )
+    width = '80mm'
+    height = '6cm'
+    size = 'size: %s %s' % (width, height)
+    margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
+
+    css_string = '@page {text-align: justify; font-family: Arial;font-size: 0.6rem;%s;%s}' % (size, margin)
+    main_doc = html.render(stylesheets=[CSS(string=css_string)])
+    return main_doc
+
+
+def registro_entrada_parqueo_factura(registro_entrada_id):
+    registro_entrada = RegistroEntradaParqueo.objects.select_related(
+        'vehiculo',
+        'vehiculo__tipo_vehiculo',
+        'vehiculo__tipo_vehiculo__empresa',
+        'punto_venta_turno',
+        'punto_venta_turno__punto_venta',
+        'punto_venta_turno__usuario',
+        'punto_venta_turno__usuario__tercero',
+    ).get(pk=registro_entrada_id)
+    context = {
+        "registro_entrada": registro_entrada
+    }
+    html_get_template = get_template('recibos/parqueadero/factura.html').render(context)
+    html = HTML(
+        string=html_get_template
+    )
+    width = '80mm'
+    height = '8cm'
+    size = 'size: %s %s' % (width, height)
+    margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
+
+    css_string = '@page {text-align: justify; font-family: Arial;font-size: 0.6rem;%s;%s}' % (size, margin)
+    main_doc = html.render(stylesheets=[CSS(string=css_string)])
+    return main_doc

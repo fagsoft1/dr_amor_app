@@ -82,6 +82,7 @@ class RegistroEntradaParqueo(TimeStampedModel):
     )
     vehiculo = models.ForeignKey(Vehiculo, related_name='registros_de_parqueo', on_delete=models.PROTECT, null=True)
     hora_ingreso = models.DateTimeField(null=True)
+    hora_pago = models.DateTimeField(null=True)
     hora_salida = models.DateTimeField(null=True)
     valor_parqueadero = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     valor_iva_parqueadero = models.DecimalField(max_digits=12, decimal_places=2, default=0)

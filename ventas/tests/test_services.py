@@ -163,7 +163,7 @@ class VentaProductosServicesTests(BaseTest):
         )
 
     def test_venta_producto_efectuar_venta_mesero(self):
-        from ventas.services import venta_producto_efectuar_venta
+        from ventas.services import venta_producto_efectuar_venta, venta_producto_generar_comprobante_venta
         from terceros.services import tercero_generarQR
         pedido = self.crear_pedido()
         self.assertTrue(self.colaborador_dos.cuenta_abierta_mesero.compras_productos.all().count() == 0)
@@ -175,6 +175,12 @@ class VentaProductosServicesTests(BaseTest):
             cliente_usuario_id=self.colaborador_dos.usuario.id,
             cliente_qr_codigo=tercero_generarQR(self.colaborador_dos.id).qr_acceso
         )
+
+        recibo_venta = venta_producto_generar_comprobante_venta(venta_producto_id=venta.id)
+        recibo_venta.write_pdf(
+            target='media/pruebas_pdf/recibo_venta_producto_mesero.pdf'
+        )
+
         movimientos_detalles_venta = venta.movimientos.first()
         self.assertEqual(movimientos_detalles_venta.detalle, 'Salida de Mercancia x Venta')
         self.assertEqual(movimientos_detalles_venta.motivo, 'venta')

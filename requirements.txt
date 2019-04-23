@@ -26,6 +26,7 @@ django-registration-redux==2.1
 django-rest-knox==3.1.4
 django-webpack-loader==0.6.0
 djangorestframework==3.7.7
+docopt==0.6.2
 factory-boy==2.11.1
 Faker==1.0.2
 html5lib==1.0.1
@@ -33,6 +34,7 @@ hyperlink==18.0.0
 idna==2.6
 incremental==17.5.0
 msgpack-python==0.5.6
+num2words==0.5.9
 pdfrw==0.4
 pilkit==2.0
 Pillow==5.0.0

@@ -118,19 +118,17 @@ def punto_venta_cerrar(
                 cantidad=Sum('nro_vauchers')
             )['cantidad']
 
-            diferencia_nro_vauchers = cantidad_ventas_tarjeta - nro_vauchers
-
             # endregion
 
             arqueo = ArqueoCaja.objects.create(
                 punto_venta_turno_id=punto_venta_turno.id,
                 valor_pago_efectivo_a_entregar=total_a_recibir_efectivo,
                 valor_pago_tarjeta_a_entregar=total_a_recibir_tarjeta,
+                nro_voucher_a_entregar=cantidad_ventas_tarjeta,
                 dolares_tasa=tasa_dolar,
                 valor_dolares_entregados=valor_dolares,
                 valor_tarjeta_entregados=valor_tarjeta,
                 nro_voucher_entregados=nro_vauchers,
-                saldo=0,
                 observacion='PRUEBA'
             )
 

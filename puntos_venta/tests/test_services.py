@@ -131,9 +131,8 @@ class PuntoVentaTests(BaseTest):
 
     # regio Cerrar Punto de Venta
 
-    def test_punto_venta_cerrar(self):
+    def crear_cierre_caja(self, descuadre_efectivo=0, descuadre_tarjetas=0, descuadre_valets=0):
         from ..services import punto_venta_cerrar
-        from cajas.services import arqueo_generar_recibo_entrega
         punto_venta_base_inicial = self.punto_venta.turno_actual.base_inicial_efectivo
         punto_venta_saldo_cierre_caja_anterior = self.punto_venta.turno_actual.saldo_cierre_caja_anterior
 
@@ -149,7 +148,7 @@ class PuntoVentaTests(BaseTest):
         valor_dolares_en_pesos = valor_dolares_simulados * tasa_dolares_simulados
 
         total_efectivo_a_distribuir_base = 300000
-        total_efectivo_a_distribuir_entrega = ingresos_efectivo - egresos + punto_venta_base_inicial + punto_venta_saldo_cierre_caja_anterior - total_efectivo_a_distribuir_base - valor_dolares_en_pesos
+        total_efectivo_a_distribuir_entrega = ingresos_efectivo - egresos + punto_venta_base_inicial + punto_venta_saldo_cierre_caja_anterior - total_efectivo_a_distribuir_base - valor_dolares_en_pesos + descuadre_efectivo
         engrega_efectivo_simulado = self.distribuir_en_billetes_monedas(total_efectivo_a_distribuir_entrega)[
             'array_distribucion']
 
@@ -158,18 +157,50 @@ class PuntoVentaTests(BaseTest):
 
         punto_venta, arqueo_caja = punto_venta_cerrar(
             usuario_pv_id=self.punto_venta.usuario_actual.id,
-            valor_tarjeta=ingresos_tarjeta,
+            valor_tarjeta=ingresos_tarjeta + descuadre_tarjetas,
             entrega_base_dict=engrega_base_simulado,
             entrega_efectivo_dict=engrega_efectivo_simulado,
-            nro_vauchers=13,
+            nro_vauchers=13 + descuadre_valets,
             valor_dolares=valor_dolares_simulados,
             tasa_dolar=tasa_dolares_simulados
         )
+        return punto_venta, arqueo_caja
+
+    def test_punto_venta_cerrar(self):
+        from cajas.services import arqueo_generar_recibo_entrega, arqueo_generar_reporte_email
+        punto_venta, arqueo_caja = self.crear_cierre_caja()
         reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
         reporte.write_pdf(
-            target='media/reporte.pdf'
+            target='media/pruebas_pdf/reporte_caja_entrega.pdf'
         )
 
+        email = arqueo_generar_reporte_email(arqueo_caja.id)
+        email.write_pdf(
+            target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
+        )
+
+        self.assertFalse(punto_venta.abierto)
+        self.assertIsNone(punto_venta.usuario_actual)
+        self.assertIsNone(self.colaborador_cajero.turno_punto_venta_abierto)
+
+    def test_punto_venta_cerrar_descuadre(self):
+        from cajas.services import arqueo_generar_recibo_entrega, arqueo_generar_reporte_email
+        punto_venta, arqueo_caja = self.crear_cierre_caja(
+            descuadre_efectivo=15000,
+            descuadre_tarjetas=-3000,
+            descuadre_valets=-2
+        )
+        reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
+        reporte.write_pdf(
+            target='media/pruebas_pdf/reporte_caja_entrega.pdf'
+        )
+
+        email = arqueo_generar_reporte_email(arqueo_caja.id)
+        email.write_pdf(
+            target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
+        )
+
+        self.assertEqual(12000, arqueo_caja.descuadre)
         self.assertFalse(punto_venta.abierto)
         self.assertIsNone(punto_venta.usuario_actual)
         self.assertIsNone(self.colaborador_cajero.turno_punto_venta_abierto)

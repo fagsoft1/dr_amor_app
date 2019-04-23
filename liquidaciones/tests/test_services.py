@@ -62,7 +62,7 @@ class LiquidacionServicesTests(BaseTest):
             )
 
     def test_liquidar_cuenta_mesero(self):
-        from ..services import liquidar_cuenta_mesero
+        from ..services import liquidar_cuenta_mesero, liquidar_cuenta_mesero_generar_comprobante
         venta, informacion = self.hacer_venta_productos_dos(
             punto_venta=self.punto_venta,
             nro_referencias=5,
@@ -75,6 +75,13 @@ class LiquidacionServicesTests(BaseTest):
             valor_tarjetas=valor_compra_productos / 2,
             valor_efectivo=valor_compra_productos / 2,
             nro_vauchers=10
+        )
+
+        comprobante = liquidar_cuenta_mesero_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_uno.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_mesero_comprobante_1.pdf'
         )
 
         self.assertEqual(liquidacion_cuenta_uno.saldo_anterior, 0)
@@ -107,8 +114,8 @@ class LiquidacionServicesTests(BaseTest):
         )
 
         valor_compra_productos_dos = informacion['valor_venta']
-        valor_a_entregar_dos = valor_compra_productos_dos / 3
-        saldo_dos = valor_a_entregar_dos - valor_compra_productos_dos
+        valor_a_entregar_dos = valor_compra_productos_dos / 2
+        saldo_dos = valor_compra_productos_dos - valor_a_entregar_dos
 
         liquidacion_cuenta_dos = liquidar_cuenta_mesero(
             colaborador_id=self.colaborador_mesero.id,
@@ -116,6 +123,13 @@ class LiquidacionServicesTests(BaseTest):
             valor_tarjetas=valor_a_entregar_dos / 2,
             valor_efectivo=valor_a_entregar_dos / 2,
             nro_vauchers=10
+        )
+
+        comprobante = liquidar_cuenta_mesero_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_dos.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_mesero_comprobante_2.pdf'
         )
 
         self.assertEqual(liquidacion_cuenta_dos.saldo_anterior, 0)
@@ -131,19 +145,27 @@ class LiquidacionServicesTests(BaseTest):
             int(saldo_dos)
         )
 
-        self.hacer_venta_productos_dos(
+        venta, informacion = self.hacer_venta_productos_dos(
             punto_venta=self.punto_venta,
             nro_referencias=2,
             mesero=self.colaborador_mesero
         )
+        valor_compra_productos_tres = informacion['valor_venta']
         liquidacion_cuenta_tres = liquidar_cuenta_mesero(
             colaborador_id=self.colaborador_mesero.id,
             punto_venta_turno_id=self.punto_venta_turno.id,
-            valor_tarjetas=1,
-            valor_efectivo=1,
+            valor_tarjetas=int(liquidacion_cuenta_dos.saldo),
+            valor_efectivo=int(valor_compra_productos_tres) + 1000,
             nro_vauchers=10
         )
+        comprobante = liquidar_cuenta_mesero_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_tres.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_mesero_comprobante_3.pdf'
+        )
         self.assertEqual(int(liquidacion_cuenta_tres.saldo_anterior), int(saldo_dos))
+        self.assertEqual(int(liquidacion_cuenta_tres.saldo), -1000)
 
     # endregion
 
@@ -192,7 +214,10 @@ class LiquidacionServicesTests(BaseTest):
             )
 
     def test_liquidar_cuenta_acompanante(self):
-        from ..services import liquidar_cuenta_acompanante
+        from ..services import (
+            liquidar_cuenta_acompanante,
+            liquidar_cuenta_acompanante_generar_comprobante
+        )
         qs_cuenta = Cuenta.cuentas_acompanantes.filter(propietario__tercero=self.acompanante)
         self.hacer_servicios_dos(
             acompanante=self.acompanante,
@@ -226,6 +251,14 @@ class LiquidacionServicesTests(BaseTest):
             punto_venta_turno_id=self.punto_venta_turno.id,
             valor_efectivo=valor_a_pagar_a_acompanante,
             acompanante_id=self.acompanante.id
+        )
+
+        comprobante = liquidar_cuenta_acompanante_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_uno.id
+        )
+
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_acompanante_comprobante_1.pdf'
         )
 
         self.assertEqual(liquidacion_cuenta_uno.saldo_anterior, 0)
@@ -285,6 +318,14 @@ class LiquidacionServicesTests(BaseTest):
             acompanante_id=self.acompanante.id
         )
 
+        comprobante = liquidar_cuenta_acompanante_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_dos.id
+        )
+
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_acompanante_comprobante_2.pdf'
+        )
+
         self.assertEqual(liquidacion_cuenta_dos.saldo, valor_a_deber_a_acompanante_dos)
         self.assertEqual(self.acompanante.ultima_cuenta_liquidada, liquidacion_cuenta_dos.cuenta)
 
@@ -303,6 +344,13 @@ class LiquidacionServicesTests(BaseTest):
             punto_venta_turno_id=self.punto_venta_turno.id,
             valor_efectivo=100000,
             acompanante_id=self.acompanante.id
+        )
+        comprobante = liquidar_cuenta_acompanante_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_tres.id
+        )
+
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_acompanante_comprobante_3.pdf'
         )
         self.assertEqual(liquidacion_cuenta_tres.saldo_anterior, valor_a_deber_a_acompanante_dos)
 
@@ -351,7 +399,7 @@ class LiquidacionServicesTests(BaseTest):
             )
 
     def test_liquidar_cuenta_colaborador(self):
-        from ..services import liquidar_cuenta_colaborador
+        from ..services import liquidar_cuenta_colaborador, liquidar_cuenta_colaborador_generar_comprobante
         qs_cuenta = Cuenta.cuentas_colaboradores.filter(propietario__tercero=self.colaborador_dos)
 
         self.hacer_venta_productos_dos(
@@ -369,12 +417,18 @@ class LiquidacionServicesTests(BaseTest):
         ingresos = cuenta.total_ingresos
         egresos = cuenta.total_egresos
 
-        valor_a_tramitar = ingresos - egresos
+        valor_a_tramitar = egresos - ingresos
 
         liquidacion_cuenta_uno = liquidar_cuenta_colaborador(
             user_id=self.colaborador_cajero.usuario.id,
             colaborador_id=self.colaborador_dos.id,
             valor_cuadre_cierre_nomina=valor_a_tramitar
+        )
+        comprobante = liquidar_cuenta_colaborador_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_uno.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_colaborador_comprobante_1.pdf'
         )
 
         self.assertEqual(liquidacion_cuenta_uno.saldo_anterior, 0)
@@ -415,13 +469,19 @@ class LiquidacionServicesTests(BaseTest):
         ingresos = cuenta.total_ingresos
         egresos = cuenta.total_egresos
 
-        valor_a_tramitar_dos = int((ingresos - egresos) / 3)
-        saldo_dos = ingresos - egresos - valor_a_tramitar_dos
+        valor_a_tramitar_dos = int((egresos - ingresos) / 3)
+        saldo_dos = egresos - ingresos - valor_a_tramitar_dos
 
         liquidacion_cuenta_dos = liquidar_cuenta_colaborador(
             user_id=self.colaborador_cajero.usuario.id,
             colaborador_id=self.colaborador_dos.id,
             valor_cuadre_cierre_nomina=valor_a_tramitar_dos
+        )
+        comprobante = liquidar_cuenta_colaborador_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_dos.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_colaborador_comprobante_2.pdf'
         )
         self.assertEqual(liquidacion_cuenta_dos.saldo, saldo_dos)
         self.assertEqual(self.colaborador_dos.ultima_cuenta_liquidada, liquidacion_cuenta_dos.cuenta)
@@ -432,10 +492,23 @@ class LiquidacionServicesTests(BaseTest):
             cliente=self.colaborador_dos
         )
 
+        cuenta = qs_cuenta.sin_liquidar().first()
+        ingresos = cuenta.total_ingresos
+        egresos = cuenta.total_egresos
+
+        valor_a_tramitar_tres = int(egresos - ingresos) + liquidacion_cuenta_dos.saldo
+
         liquidacion_cuenta_tres = liquidar_cuenta_colaborador(
             user_id=self.colaborador_cajero.usuario.id,
             colaborador_id=self.colaborador_dos.id,
-            valor_cuadre_cierre_nomina=1
+            valor_cuadre_cierre_nomina=valor_a_tramitar_tres
+        )
+
+        comprobante = liquidar_cuenta_colaborador_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_tres.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_colaborador_comprobante_3.pdf'
         )
 
         self.assertEqual(liquidacion_cuenta_tres.saldo_anterior, saldo_dos)

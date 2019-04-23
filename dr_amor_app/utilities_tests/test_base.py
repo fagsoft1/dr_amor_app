@@ -265,7 +265,7 @@ class BaseTest(TestCase):
 
         )
         for i in range(nro_referencias):
-            producto = ProductoFactory(precio_venta=random.randrange(1000, 4000))
+            producto = ProductoFactory()
             entra_cantidad = random.randint(300, 1000)
             entra_costo = (producto.precio_venta - producto.precio_venta * 0.3) * entra_cantidad
             MovimientoInventarioDetalleFactory(
@@ -739,7 +739,7 @@ class BaseTest(TestCase):
             acompanante_dos=self.acompanante_dos,
             acompanante_tres=self.acompanante_tres,
             comision=int(random.randrange(1000, 3000)),
-            nro_servicios=random.randint(6, 10),
+            nro_servicios=random.randint(8, 15),
             terminados=True
         )
         valor_total_servicios_uno_efectivo = servicios['pago_efectivo']
@@ -752,7 +752,7 @@ class BaseTest(TestCase):
             acompanante_dos=self.acompanante_dos,
             acompanante_tres=self.acompanante_tres,
             comision=int(random.randrange(1000, 3000)),
-            nro_servicios=random.randint(6, 10),
+            nro_servicios=random.randint(8, 15),
             terminados=True
         )
         valor_total_servicios_dos_efectivo = servicios_dos['pago_efectivo']
@@ -765,7 +765,7 @@ class BaseTest(TestCase):
             acompanante_dos=self.acompanante_dos,
             acompanante_tres=self.acompanante_tres,
             comision=int(random.randrange(1000, 3000)),
-            nro_servicios=random.randint(6, 10),
+            nro_servicios=random.randint(8, 15),
             terminados=True
         )
         valor_total_servicios_tres_efectivo = servicios_tres['pago_efectivo']

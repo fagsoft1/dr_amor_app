@@ -6,16 +6,6 @@ from rest_framework.exceptions import ValidationError
 faker = Faker()
 
 
-class ArqueoCajaServicesTests(TestCase):
-    def test_prueba_pdf(self):
-        from ..services import arqueo_generar_pdf_prueba
-        arqueo_generar_pdf_prueba()
-
-    def test_generar_recibo_entrega(self, arqueo_id):
-        from ..services import arqueo_generar_recibo_entrega
-        arqueo_generar_recibo_entrega(arqueo_id)
-
-
 class TransaccionesCajaServicesTests(TestCase):
     def setUp(self):
         from terceros.factories import AcompananteFactory, ColaboradorFactory
@@ -481,7 +471,7 @@ class OperacionCajaServicesTests(TestCase):
 
     def test_operacion_caja_acompanante(self):
         from ..factories import ConceptoOperacionCajaFactory
-        from ..services import operacion_caja_crear
+        from ..services import operacion_caja_crear, operacion_caja_generar_recibo
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='I',
             grupo='A'
@@ -490,12 +480,16 @@ class OperacionCajaServicesTests(TestCase):
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.acompanante.id,
-            valor=1000,
+            valor=23000,
             descripcion='hola',
-            observacion='hola'
         )
-        self.assertEqual(operacion_caja.valor, 1000)
+        self.assertEqual(operacion_caja.valor, 23000)
         self.assertIsNotNone(operacion_caja.cuenta)
+
+        comprobante = operacion_caja_generar_recibo(operacion_caja.id)
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/comprobante_operacion_caja_egreso_acompanante.pdf'
+        )
 
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='E',
@@ -505,11 +499,16 @@ class OperacionCajaServicesTests(TestCase):
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.acompanante.id,
-            valor=1000,
+            valor=18500,
             descripcion='hola',
             observacion='hola'
         )
-        self.assertEqual(operacion_caja.valor, -1000)
+
+        comprobante = operacion_caja_generar_recibo(operacion_caja.id)
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/comprobante_operacion_caja_ingreso_acompanante.pdf'
+        )
+        self.assertEqual(operacion_caja.valor, -18500)
         self.assertIsNotNone(operacion_caja.cuenta)
 
     def test_operacion_caja_transacciones(self):

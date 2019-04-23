@@ -1,0 +1,48 @@
+{% load static l10n humanize number_to_word mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="font-size: 9px">
+{% localize on %}
+    <h3 style="text-align: center">Comprobante de consumo de Colaborador</h3>
+    <h1 style="text-align: center">${{ liquidacion.pagado|floatformat:0 }} COP</h1>
+    <p>
+        Cobrados por consumos desde {{ liquidacion.cuenta.created }} hasta {{ liquidacion.created }}
+    </p>
+    <span style="font-weight: bold">Saldo anterior: </span>{{ liquidacion.saldo_anterior|floatformat:0 }}<br/>
+    <span style="font-weight: bold">Consumos: </span>{{ liquidacion.a_cobrar_a_tercero|floatformat:0 }}<br/>
+    <span style="font-weight: bold">Deducciones: -</span>{{ liquidacion.a_pagar_a_tercero|floatformat:0 }}<br/>
+    <span style="font-weight: bold">A Cobrar: </span>
+    {{ liquidacion.a_cobrar_a_tercero|sub:liquidacion.a_pagar_a_tercero|add:liquidacion.saldo_anterior|floatformat:0 }}
+    <br/>
+    <br/>
+    <br/>
+    <span style="font-weight: bold">Cobrado: </span>{{ liquidacion.pagado|floatformat:0 }}<br/>
+    <span style="font-weight: bold">Pendiente por cobrar: </span>{{ liquidacion.saldo|floatformat:0 }}<br/>
+    <br/>
+    <br/>
+    <span style="font-weight: bold">Id Liquidación: </span>{{ liquidacion.id }}<br/>
+    <span style="font-weight: bold">Fecha Impresión: </span>{% now "j \d\e F \d\e Y" %} a las
+    {% now "H:i" %}<br/>
+    <span style="font-weight: bold">Fecha Generación: </span>{{ liquidacion.created }}<br/>
+
+    <span style="font-weight: bold">Informado a: </span>
+    {{ liquidacion.cuenta.propietario.tercero.full_name_proxy|title }}<br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    _____________________________________________<br/>
+    Firma Colaborador<br/>
+    Nombre: {{ liquidacion.cuenta.propietario.tercero.full_name_proxy|title }}<br/>
+    {{ liquidacion.cuenta.propietario.tercero.nro_identificacion }}<br/>
+    <br/>
+    {% if user %}
+        <span style="font-weight: bold">Generado por: </span>{{ user.username }}<br/>
+    {% endif %}
+{% endlocalize %}
+</body>
+</html>

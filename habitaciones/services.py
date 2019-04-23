@@ -171,7 +171,9 @@ def habitacion_iniciar_servicios(
         franquicia: str
 ) -> Habitacion:
     from servicios.services import servicio_crear_nuevo, servicio_iniciar
-    from cajas.services import transaccion_caja_registrar_pago_nuevos_servicios_habitacion
+    from cajas.services import (
+        transaccion_caja_registrar_pago_nuevos_servicios_habitacion
+    )
     turno_punto_venta = User.objects.get(pk=usuario_pdv_id).tercero.turno_punto_venta_abierto
     punto_venta = turno_punto_venta.punto_venta
     if not punto_venta.abierto:

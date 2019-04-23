@@ -1,6 +1,9 @@
+from io import BytesIO
+
 from django.contrib.auth.models import User
+from django.core.mail import EmailMultiAlternatives
 from django.db.models import Sum, F
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 from rest_framework import serializers
 from weasyprint import HTML, CSS
 
@@ -596,6 +599,25 @@ def operacion_caja_crear(
     return operacion_caja
 
 
+def operacion_caja_generar_recibo(operacion_caja_id):
+    operacion_caja = OperacionCaja.objects.get(pk=operacion_caja_id)
+    context = {
+        "operacion_caja": operacion_caja
+    }
+    html_get_template = get_template('recibos/cajas/operacion_caja_comprobante.html').render(context)
+    html = HTML(
+        string=html_get_template
+    )
+    width = '80mm'
+    height = '10cm'
+    size = 'size: %s %s' % (width, height)
+    margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
+
+    css_string = '@page {text-align: justify; font-family: Arial;font-size: 0.6rem;%s;%s}' % (size, margin)
+    main_doc = html.render(stylesheets=[CSS(string=css_string)])
+    return main_doc
+
+
 # endregion
 
 
@@ -608,18 +630,44 @@ def arqueo_generar_recibo_entrega(arqueo_id):
     html = HTML(
         string=html_get_template
     )
-    main_doc = html.render(stylesheets=[CSS('static/css/reportes_carta.css')])
+    width = '80mm'
+    height = '30cm'
+    size = 'size: %s %s' % (width, height)
+    margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
+
+    css_string = '@page {text-align: justify; font-family: Arial;font-size: 0.6rem;%s;%s}' % (size, margin)
+    main_doc = html.render(stylesheets=[CSS(string=css_string)])
     return main_doc
 
 
-def arqueo_generar_pdf_prueba():
+def arqueo_generar_reporte_email(arqueo_id):
+    arqueo = ArqueoCaja.objects.get(pk=arqueo_id)
     context = {
+        "arqueo": arqueo
     }
-    html_get_template = get_template('reportes/cajas/prueba_pdf.html').render(context)
+    html_get_template = get_template('reportes/cajas/arqueo_pdf.html').render(context)
     html = HTML(
         string=html_get_template
     )
     main_doc = html.render(stylesheets=[CSS('static/css/reportes_carta.css')])
+    output = BytesIO()
     main_doc.write_pdf(
-        target='example.pdf'
+        target=output
     )
+    text_content = render_to_string('email/cajas/arqueo_caja_envio_correo.html', {})
+    msg = EmailMultiAlternatives(
+        'Arqueo de Caja de %s' % arqueo.punto_venta_turno.usuario.username,
+        text_content,
+        bcc=['fabiogarciasanchez+dramor@gmail.com'],
+        from_email='Clínica Dr. Amor <%s>' % 'webmaster@clinicadramor.com',
+        to=['fabiogarciasanchez+dramor@gmail.com']
+    )
+    msg.attach_alternative(text_content, "text/html")
+    msg.attach('Arqueo de caja %s' % arqueo.punto_venta_turno.usuario.username, output.getvalue(), 'application/pdf')
+    try:
+        msg.send()
+    except Exception as e:
+        print('error de envio')
+        raise serializers.ValidationError(
+            {'_error': 'Se há presentado un error al intentar enviar el correo, envío fallido: %s' % e})
+    return main_doc

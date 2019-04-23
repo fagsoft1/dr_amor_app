@@ -31,23 +31,23 @@ class ArqueoCaja(TimeStampedModel):
     punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='arqueos_caja')
     valor_pago_efectivo_a_entregar = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     valor_pago_tarjeta_a_entregar = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    nro_voucher_a_entregar = models.PositiveIntegerField(default=0)
     dolares_tasa = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     valor_dolares_entregados = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     valor_tarjeta_entregados = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     nro_voucher_entregados = models.PositiveIntegerField(default=0)
-    saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     observacion = models.TextField(null=True)
 
     @property
     def valor_entrega_efectivo(self):
         return self.entrega_efectivo.aggregate(
-            valor=Coalesce(Sum('valor_total'),0)
+            valor=Coalesce(Sum('valor_total'), 0)
         )['valor']
 
     @property
     def valor_base_dia_siguiente(self):
         return self.base_dia_siguiente.aggregate(
-            valor=Coalesce(Sum('valor_total'),0)
+            valor=Coalesce(Sum('valor_total'), 0)
         )['valor']
 
     @property
@@ -57,6 +57,18 @@ class ArqueoCaja(TimeStampedModel):
     @property
     def valor_entrega_efectivo_total(self):
         return self.valor_entrega_efectivo + self.valor_base_dia_siguiente + self.valor_dolares_en_pesos
+
+    @property
+    def total(self):
+        return self.valor_entrega_efectivo_total + self.valor_tarjeta_entregados
+
+    @property
+    def total_esperado(self):
+        return self.valor_pago_efectivo_a_entregar + self.valor_pago_tarjeta_a_entregar
+
+    @property
+    def descuadre(self):
+        return self.total - self.total_esperado
 
 
 class BaseDisponibleDenominacion(models.Model):
@@ -134,7 +146,7 @@ class TransaccionCaja(TimeStampedModel):
     nro_autorizacion = models.CharField(max_length=30, null=True)
 
 
-class OperacionCaja(models.Model):
+class OperacionCaja(TimeStampedModel):
     from puntos_venta.models import PuntoVentaTurno
     concepto = models.ForeignKey(
         ConceptoOperacionCaja,

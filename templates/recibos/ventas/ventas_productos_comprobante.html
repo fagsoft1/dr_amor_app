@@ -1,0 +1,50 @@
+{% load static l10n humanize number_to_word mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="font-size: 9px">
+{% localize on %}
+    {% with usuario=venta_producto.punto_venta_turno.usuario.tercero.full_name_proxy punto_venta=venta_producto.punto_venta_turno.punto_venta.nombre %}
+        <h3 style="text-align: center">Comprobante de Venta</h3>
+        <h1 style="text-align: center">${{ venta_producto.precio_total|abs|floatformat:0 }} COP</h1>
+        <table style="width: 100%">
+            <thead>
+            <tr>
+                <th>Producto</th>
+                <th style="text-align: right">$ Unit.</th>
+                <th style="text-align: right">#</th>
+                <th style="text-align: right">$ Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in venta_producto.productos.all %}
+                <tr>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td style="text-align: right">${{ item.precio_unitario|floatformat:0 }}</td>
+                    <td style="text-align: right">{{ item.cantidad|floatformat:0 }}</td>
+                    <td style="text-align: right">${{ item.precio_total|floatformat:0 }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>Total</td>
+                <td></td>
+                <td style="text-align: right">{{ venta_producto.cantidad|floatformat:0 }}</td>
+                <td style="text-align: right">${{ venta_producto.precio_total|abs|floatformat:0 }}</td>
+            </tr>
+            </tfoot>
+        </table>
+        <span style="font-weight: bold">Generado por: </span>{{ usuario|title }}<br/>
+        <span style="font-weight: bold">Id Venta: </span>{{ venta_producto.id }}<br/>
+        <span style="font-weight: bold">Punto: </span>{{ punto_venta }}<br/>
+        <span style="font-weight: bold">Fecha Impresión: </span>{% now "j \d\e F \d\e Y" %} a las
+        {% now "H:i" %}<br/>
+        <span style="font-weight: bold">Fecha Generación: </span>{{ venta_producto.created }}<br/>
+    {% endwith %}
+{% endlocalize %}
+</body>
+</html>

@@ -1,0 +1,26 @@
+{% load static l10n humanize number_to_word mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="font-size: 9px">
+{% localize on %}
+    {% with usuario=registro_entrada.punto_venta_turno.usuario.tercero.full_name_proxy punto_venta=registro_entrada.punto_venta_turno.punto_venta.nombre %}
+        <h3 style="text-align: center">Comprobante de Ingreso a Parqueadero </h3>
+        {% if registro_entrada.vehiculo %}
+            <h1 style="text-align: center">{{ registro_entrada.vehiculo.placa }}</h1>
+            <h6 style="text-align: center">{{ registro_entrada.vehiculo.tipo_vehiculo.nombre }}</h6>
+        {% endif %}
+        <span style="font-weight: bold">Hora de Ingreso: </span>{{ registro_entrada.hora_ingreso }}<br/>
+        <span style="font-weight: bold">Generado por: </span>{{ usuario|title }}<br/>
+        <span style="font-weight: bold">Id Registro: </span>{{ registro_entrada.id }}<br/>
+        <span style="font-weight: bold">Punto: </span>{{ punto_venta }}<br/>
+        <span style="font-weight: bold">Fecha Impresión: </span>{% now "j \d\e F \d\e Y" %} a las
+        {% now "H:i" %}<br/>
+        <span style="font-weight: bold">Fecha Generación: </span>{{ registro_entrada.created }}<br/>
+    {% endwith %}
+{% endlocalize %}
+</body>
+</html>

@@ -40,5 +40,5 @@ class ProductoFactory(factory.django.DjangoModelFactory):
     categoria_dos = factory.SubFactory(CategoriaDosFactory)
     unidad_producto = factory.SubFactory(UnidadProductoFactory)
     empresa = factory.SubFactory(EmpresaFactory)
-    precio_venta = random.randint(1999, 100000)
+    precio_venta = faker.pyfloat(left_digits=4, right_digits=0, positive=True)
     activo = True

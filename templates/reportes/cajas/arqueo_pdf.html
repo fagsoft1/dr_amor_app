@@ -42,95 +42,70 @@
     <table style="width: 100%">
         <thead>
         <tr>
-            <th>Tipo</th>
-            <th class="td-valor">Valor</th>
-            <th class="td-valor">Cantidad</th>
-            <th class="td-valor">Total</th>
+            <th>Concepto</th>
+            <th class="td-valor">Esperado</th>
+            <th class="td-valor">Entrega</th>
+            <th class="td-valor">Diferencia</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td>Nro. Vouchers</td>
-            <td class="td-valor">NNN</td>
-            <td class="td-valor">NNN</td>
-            <td class="td-valor">NNN</td>
+            <td class="td-valor">{{ arqueo.nro_voucher_a_entregar }}</td>
+            <td class="td-valor">{{ arqueo.nro_voucher_entregados }}</td>
+            <td class="td-valor">{{ arqueo.nro_voucher_entregados|sub:arqueo.nro_voucher_a_entregar|floatformat:0 }}</td>
+        </tr>
+        <tr>
+            <td>Tarjeta</td>
+            <td class="td-valor">{{ arqueo.valor_pago_tarjeta_a_entregar|floatformat:0 }}</td>
+            <td class="td-valor">{{ arqueo.valor_tarjeta_entregados|floatformat:0 }}</td>
+            <td class="td-valor">{{ arqueo.valor_tarjeta_entregados|sub:arqueo.valor_pago_tarjeta_a_entregar|floatformat:0 }}</td>
+        </tr>
+        <tr>
+            <td>Efectivo</td>
+            <td colspan="3"></td>
+        </tr>
+        <tr>
+            <td style="padding-left: 10px"> - Ingresos</td>
+            <td class="td-valor">{{ arqueo.valor_pago_efectivo_a_entregar|floatformat:0 }}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="padding-left: 10px"> - Dolares {{ arqueo.valor_dolares_entregados|floatformat:0 }} USD a
+                ${{ arqueo.dolares_tasa|floatformat:0 }}</td>
+            <td></td>
+            <td class="td-valor">{{ arqueo.valor_dolares_en_pesos|floatformat:0 }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="padding-left: 10px"> - Base que pasa</td>
+            <td></td>
+            <td class="td-valor">{{ arqueo.valor_base_dia_siguiente|floatformat:0 }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="padding-left: 10px"> - Entrega</td>
+            <td></td>
+            <td class="td-valor">{{ arqueo.valor_entrega_efectivo|floatformat:0 }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="padding-left: 5px">Total Efectivo</td>
+            <td class="td-valor">{{ arqueo.valor_pago_efectivo_a_entregar|floatformat:0 }}</td>
+            <td class="td-valor">{{ arqueo.valor_entrega_efectivo_total|floatformat:0 }}</td>
+            <td class="td-valor">{{ arqueo.valor_entrega_efectivo_total|sub:arqueo.valor_pago_efectivo_a_entregar|floatformat:0 }}</td>
         </tr>
         </tbody>
+        <tfoot>
+        <tr style="background-color: lightgray">
+            <td>Total</td>
+            <td class="td-valor">{{ arqueo.total_esperado|floatformat:0 }}</td>
+            <td class="td-valor">{{ arqueo.total|floatformat:0 }}</td>
+            <td class="td-valor">{{ arqueo.total|sub:arqueo.total_esperado|floatformat:0 }}</td>
+        </tr>
+        </tfoot>
     </table>
-
-    {#    <table style="width: 100%">#}
-    {#        <thead>#}
-    {#        <tr>#}
-    {#            <th>Concepto</th>#}
-    {#            <th class="td-valor">Movimiento</th>#}
-    {#            <th class="td-valor">Entrega</th>#}
-    {#            <th class="td-valor">Diferencia</th>#}
-    {#        </tr>#}
-    {#        </thead>#}
-    {#        <tbody>#}
-    {#        <tr>#}
-    {#            <td>Nro. Vouchers</td>#}
-    {#            <td class="td-valor">{{ arqueo.mo_nro_pagos_tarjetas }}</td>#}
-    {#            <td class="td-valor">{{ arqueo.nro_voucher }}</td>#}
-    {#            <td class="td-valor">{{ arqueo.nro_voucher|sub:arqueo.mo_nro_pagos_tarjetas|floatformat:0 }}</td>#}
-    {#        </tr>#}
-    {#        <tr>#}
-    {#            <td>Tarjeta</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_mo_ingreso_tarjeta|floatformat:0 }}</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_tarjeta|floatformat:0 }}</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_tarjeta|sub:arqueo.valor_mo_ingreso_tarjeta|floatformat:0 }}</td>#}
-    {#        </tr>#}
-    {#        <tr>#}
-    {#            <td>Efectivo</td>#}
-    {#            <td colspan="3"></td>#}
-    {#        </tr>#}
-    {#        <tr>#}
-    {#            <td style="padding-left: 10px"> - Ingresos</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_mo_ingreso_efectivo|floatformat:0 }}</td>#}
-    {#            <td></td>#}
-    {#            <td></td>#}
-    {#        </tr>#}
-    {#        <tr>#}
-    {#            <td style="padding-left: 10px"> - Egresos</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_mo_egresos_efectivo|floatformat:0 }}</td>#}
-    {#            <td></td>#}
-    {#            <td></td>#}
-    {#        </tr>#}
-    {#        <tr>#}
-    {#            <td style="padding-left: 10px"> - Dolares {{ arqueo.dolares|floatformat:0 }} USD a#}
-    {#                ${{ arqueo.dolares_tasa|floatformat:0 }}</td>#}
-    {#            <td></td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_entrega_dolares|floatformat:0 }}</td>#}
-    {#            <td></td>#}
-    {#        </tr>#}
-    {#        <tr>#}
-    {#            <td style="padding-left: 10px"> - Base que pasa</td>#}
-    {#            <td></td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_entrega_base_dia_siguiente|floatformat:0 }}</td>#}
-    {#            <td></td>#}
-    {#        </tr>#}
-    {#        <tr>#}
-    {#            <td style="padding-left: 10px"> - Entrega</td>#}
-    {#            <td></td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_entrega_efectivo|floatformat:0 }}</td>#}
-    {#            <td></td>#}
-    {#        </tr>#}
-    {#        <tr>#}
-    {#            <td style="padding-left: 5px">Total Efectivo</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_mo_ingreso_efectivo|add:arqueo.valor_mo_egresos_efectivo|floatformat:0 }}</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_entrega_dolares|add:arqueo.valor_entrega_base_dia_siguiente|add:arqueo.valor_entrega_efectivo|floatformat:0 }}</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_entrega_dolares|add:arqueo.valor_entrega_base_dia_siguiente|add:arqueo.valor_entrega_efectivo|sub:arqueo.valor_mo_ingreso_efectivo|sub:arqueo.valor_mo_egresos_efectivo|floatformat:0 }}</td>#}
-    {#        </tr>#}
-    {#        </tbody>#}
-    {#        <tbody>#}
-    {#        <tr style="background-color: lightgray">#}
-    {#            <td>Total</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_mo_total|floatformat:0 }}</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_entrega_total|floatformat:0 }}</td>#}
-    {#            <td class="td-valor">{{ arqueo.valor_entrega_total|sub:arqueo.valor_mo_total|floatformat:0 }}</td>#}
-    {#        </tr>#}
-    {#        </tbody>#}
-    {#    </table>#}
 {% endlocalize %}
 </body>
 </html>

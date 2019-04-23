@@ -1,4 +1,7 @@
+from django.contrib.auth.models import User
+from django.template.loader import get_template
 from rest_framework import serializers
+from weasyprint import HTML, CSS
 
 from terceros.models import Tercero
 from .models import LiquidacionCuenta
@@ -33,7 +36,7 @@ def liquidar_cuenta_mesero(
     liquidacion_anterior = colaborador.ultima_cuenta_mesero_liquidada
     saldo_anterior = liquidacion_anterior.liquidacion.saldo if liquidacion_anterior else 0
 
-    saldo = entregado - valor_que_debe_entregar + saldo_anterior
+    saldo = valor_que_debe_entregar + saldo_anterior - entregado
     cuenta_actual.liquidada = True
     cuenta_actual.save()
 
@@ -55,6 +58,27 @@ def liquidar_cuenta_mesero(
         nro_vauchers=nro_vauchers
     )
     return liquidacion_cuenta
+
+
+def liquidar_cuenta_mesero_generar_comprobante(
+        liquidacion_id
+):
+    liquidacion = LiquidacionCuenta.objects.get(pk=liquidacion_id)
+    context = {
+        "liquidacion": liquidacion
+    }
+    html_get_template = get_template('recibos/liquidaciones/liquidacion_mesero_comprobante.html').render(context)
+    html = HTML(
+        string=html_get_template
+    )
+    width = '80mm'
+    height = '10cm'
+    size = 'size: %s %s' % (width, height)
+    margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
+
+    css_string = '@page {text-align: justify; font-family: Arial;font-size: 0.6rem;%s;%s}' % (size, margin)
+    main_doc = html.render(stylesheets=[CSS(string=css_string)])
+    return main_doc
 
 
 def liquidar_cuenta_acompanante(
@@ -117,13 +141,44 @@ def liquidar_cuenta_acompanante(
     return liquidacion_cuenta
 
 
+def liquidar_cuenta_acompanante_generar_comprobante(
+        liquidacion_id
+):
+    liquidacion = LiquidacionCuenta.objects.select_related(
+        'cuenta',
+        'cuenta__propietario',
+        'cuenta__propietario__tercero',
+        'punto_venta_turno',
+        'punto_venta_turno__usuario',
+        'punto_venta_turno__usuario__tercero',
+        'punto_venta_turno__punto_venta',
+    ).get(pk=liquidacion_id)
+    context = {
+        "liquidacion": liquidacion
+    }
+    html_get_template = get_template('recibos/liquidaciones/liquidacion_acompanante_comprobante.html').render(context)
+    html = HTML(
+        string=html_get_template
+    )
+    width = '80mm'
+    height = '12cm'
+    size = 'size: %s %s' % (width, height)
+    margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
+
+    css_string = '@page {text-align: justify; font-family: Arial;font-size: 0.6rem;%s;%s}' % (size, margin)
+    main_doc = html.render(stylesheets=[CSS(string=css_string)])
+    return main_doc
+
+
 def liquidar_cuenta_colaborador(
         colaborador_id: int,
         user_id: int,
         valor_cuadre_cierre_nomina
 ) -> LiquidacionCuenta:
     from terceros.models import Cuenta
-
+    if valor_cuadre_cierre_nomina < 0:
+        raise serializers.ValidationError(
+            {'_error': 'El valor ingresado para el cuadre de liquidación del colaborador debe ser mayor a 0'})
     colaborador = Tercero.objects.get(pk=colaborador_id)
     if not colaborador.es_colaborador:
         raise serializers.ValidationError(
@@ -146,9 +201,9 @@ def liquidar_cuenta_colaborador(
 
     liquidacion_anterior = colaborador.ultima_cuenta_liquidada
     saldo_anterior = liquidacion_anterior.liquidacion.saldo if liquidacion_anterior else 0
-    valor_a_entregar = valor_a_pagar_a_colaborador - valor_a_cobrar_a_colaborador
+    valor_a_cobrar = valor_a_cobrar_a_colaborador - valor_a_pagar_a_colaborador
     cobrado = valor_cuadre_cierre_nomina
-    saldo = valor_a_entregar - cobrado + saldo_anterior
+    saldo = valor_a_cobrar + saldo_anterior - cobrado
 
     cuenta_actual.liquidada = True
     cuenta_actual.save()
@@ -166,3 +221,34 @@ def liquidar_cuenta_colaborador(
     )
 
     return liquidacion_cuenta
+
+
+def liquidar_cuenta_colaborador_generar_comprobante(
+        liquidacion_id,
+        user_id=None
+):
+    liquidacion = LiquidacionCuenta.objects.select_related(
+        'cuenta',
+        'cuenta__propietario',
+        'cuenta__propietario__tercero'
+    ).get(pk=liquidacion_id)
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    else:
+        user = None
+    context = {
+        "liquidacion": liquidacion,
+        "user": user
+    }
+    html_get_template = get_template('recibos/liquidaciones/liquidacion_colaborador_comprobante.html').render(context)
+    html = HTML(
+        string=html_get_template
+    )
+    width = '80mm'
+    height = '12cm'
+    size = 'size: %s %s' % (width, height)
+    margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
+
+    css_string = '@page {text-align: justify; font-family: Arial;font-size: 0.6rem;%s;%s}' % (size, margin)
+    main_doc = html.render(stylesheets=[CSS(string=css_string)])
+    return main_doc

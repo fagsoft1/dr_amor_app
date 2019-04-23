@@ -1,0 +1,43 @@
+{% load static l10n humanize number_to_word mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="font-size: 9px">
+{% localize on %}
+    {% with usuario=operacion_caja.punto_venta_turno.usuario.tercero.full_name_proxy punto_venta=operacion_caja.punto_venta_turno.punto_venta.nombre %}
+        <h3 style="text-align: center">Comprobante de {{ operacion_caja.concepto.get_tipo_display }}
+            para {{ operacion_caja.concepto.get_grupo_display }}</h3>
+        <h1 style="text-align: center">${{ operacion_caja.valor|abs|floatformat:0 }} COP</h1>
+        <p>
+            Por un valor de {% number_to_word operacion_caja.valor|abs %} por concepto
+            de {{ operacion_caja.descripcion }}.
+        </p>
+        {% if operacion_caja.observacion %}
+            <h4>Observación:</h4>
+            <p>
+                {{ operacion_caja.observacion }}
+            </p>
+        {% endif %}
+        <span style="font-weight: bold">Generado por: </span>{{ usuario|title }}<br/>
+        <span style="font-weight: bold">Id Operación: </span>{{ operacion_caja.id }}<br/>
+        <span style="font-weight: bold">Punto: </span>{{ punto_venta }}<br/>
+        <span style="font-weight: bold">Fecha Generación: </span>{% now "j \d\e F \d\e Y" %} a las
+        {% now "H:i" %}<br/>
+        <span style="font-weight: bold">Fecha Impresión: </span>{{ operacion_caja.created }}<br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        _____________________________________________<br/>
+        {% if operacion_caja.concepto.tipo == 'E' %}
+            <span style="font-weight: bold">Recibido por: </span>{{ operacion_caja.tercero.full_name_proxy|title }}<br/>
+        {% elif operacion_caja.concepto.tipo == 'I' %}
+            <span style="font-weight: bold">Recibido por: </span>{{ usuario|title }}<br/>
+        {% endif %}
+    {% endwith %}
+{% endlocalize %}
+</body>
+</html>

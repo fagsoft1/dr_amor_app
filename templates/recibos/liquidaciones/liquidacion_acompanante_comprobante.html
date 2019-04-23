@@ -1,0 +1,46 @@
+{% load static l10n humanize number_to_word mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="font-size: 9px">
+{% localize on %}
+    {% with usuario=liquidacion.punto_venta_turno.usuario.tercero.full_name_proxy punto_venta=liquidacion.punto_venta_turno.punto_venta.nombre %}
+        <h3 style="text-align: center">Comprobante Entrega Dinero a Acompañante</h3>
+        <h1 style="text-align: center">${{ liquidacion.pagado|floatformat:0 }} COP</h1>
+        <p>
+            Por ventas realizadas desde {{ liquidacion.cuenta.created }} hasta {{ liquidacion.created }}
+        </p>
+        <span style="font-weight: bold">Saldo anterior: </span>{{ liquidacion.saldo_anterior|floatformat:0 }}<br/>
+        <span style="font-weight: bold">Ingresos: </span>{{ liquidacion.a_pagar_a_tercero|floatformat:0 }}<br/>
+        <span style="font-weight: bold">Egresos: </span>-{{ liquidacion.a_cobrar_a_tercero|floatformat:0 }}<br/>
+        <span style="font-weight: bold">A Pagar: </span>
+        {{ liquidacion.a_pagar_a_tercero|add:liquidacion.saldo_anterior|sub:liquidacion.a_cobrar_a_tercero|floatformat:0 }}
+        <br/>
+        <br/>
+        <br/>
+        <span style="font-weight: bold">Pagado: </span>{{ liquidacion.pagado|floatformat:0 }}<br/>
+        <span style="font-weight: bold">Saldo que queda: </span>{{ liquidacion.saldo|floatformat:0 }}<br/>
+        <br/>
+        <br/>
+        <span style="font-weight: bold">Id Liquidación: </span>{{ liquidacion.id }}<br/>
+        <span style="font-weight: bold">Punto: </span>{{ punto_venta }}<br/>
+        <span style="font-weight: bold">Fecha Impresión: </span>{% now "j \d\e F \d\e Y" %} a las
+        {% now "H:i" %}<br/>
+        <span style="font-weight: bold">Fecha Generación: </span>{{ liquidacion.created }}<br/>
+
+        <span style="font-weight: bold">Entregado por: </span>
+        {{ liquidacion.cuenta.propietario.tercero.full_name_proxy|title }}<br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        _____________________________________________<br/>
+        <span style="font-weight: bold">Recibido por: </span>
+        {{ liquidacion.cuenta.propietario.tercero.full_name_proxy|title }}<br/>
+    {% endwith %}
+{% endlocalize %}
+</body>
+</html>

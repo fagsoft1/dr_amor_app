@@ -1,7 +1,9 @@
 from decimal import Decimal
 
 from django.db.models import Sum
+from django.template.loader import get_template
 from rest_framework import serializers
+from weasyprint import CSS, HTML
 
 from ventas.models import VentaProducto
 
@@ -30,6 +32,25 @@ def venta_producto_crear(
         return VentaProducto.objects.create(
             punto_venta_turno_id=punto_venta_turno_id
         )
+
+
+def venta_producto_generar_comprobante_venta(venta_producto_id):
+    venta_producto = VentaProducto.objects.get(pk=venta_producto_id)
+    context = {
+        "venta_producto": venta_producto
+    }
+    html_get_template = get_template('recibos/ventas/ventas_productos_comprobante.html').render(context)
+    html = HTML(
+        string=html_get_template
+    )
+    width = '80mm'
+    height = '10cm'
+    size = 'size: %s %s' % (width, height)
+    margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
+
+    css_string = '@page {text-align: justify; font-family: Arial;font-size: 0.6rem;%s;%s}' % (size, margin)
+    main_doc = html.render(stylesheets=[CSS(string=css_string)])
+    return main_doc
 
 
 def venta_producto_efectuar_venta(
