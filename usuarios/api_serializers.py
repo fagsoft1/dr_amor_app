@@ -10,8 +10,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
     punto_venta_actual = PuntoVentaSerializer(read_only=True)
     qr_acceso = serializers.CharField(source='tercero.qr_acceso', read_only=True)
 
-    # sesion_trabajo_pv = serializers.IntegerField(allow_null=True)
-
     def get_imagen_perfil_url(self, obj):
         if hasattr(obj, 'tercero'):
             if obj.tercero.imagen_perfil:

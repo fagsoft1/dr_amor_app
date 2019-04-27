@@ -402,7 +402,6 @@ class TrasladoServicesTests(TestCase):
         punto_venta_abrir(
             usuario_pv_id=self.colaborador_presente.usuario.id,
             punto_venta_id=self.punto_venta_abierto.id,
-            saldo_cierre_caja_anterior=0,
             base_inicial_efectivo=0
         )
         self.punto_venta_abierto.refresh_from_db()
@@ -430,7 +429,6 @@ class TrasladoServicesTests(TestCase):
         punto_venta_abrir(
             usuario_pv_id=self.colaborador_presente_dos.usuario.id,
             punto_venta_id=self.punto_venta_abierto_dos.id,
-            saldo_cierre_caja_anterior=0,
             base_inicial_efectivo=0
         )
         self.punto_venta_abierto_dos.refresh_from_db()

@@ -33,20 +33,14 @@ class PuntoVentaTests(BaseTest):
         punto_venta, punto_venta_turno = punto_venta_abrir(
             usuario_pv_id=self.colaborador_cajero.usuario.id,
             punto_venta_id=self.punto_venta.id,
-            base_inicial_efectivo=500000,
-            saldo_cierre_caja_anterior=300000
+            base_inicial_efectivo=500000
         )
         transacciones_caja_base_inicial = punto_venta_turno.transacciones_caja.filter(
             tipo_dos='BASE_INI_CAJA'
         ).first()
-        transacciones_caja_saldo_cierre_anterior = punto_venta_turno.transacciones_caja.filter(
-            tipo_dos='SALDO_CIERRE_ANTERIOR_CAJA'
-        ).first()
 
         self.assertEqual(transacciones_caja_base_inicial.valor_efectivo, 500000)
         self.assertEqual(transacciones_caja_base_inicial.tipo, 'I')
-        self.assertEqual(transacciones_caja_saldo_cierre_anterior.valor_efectivo, 300000)
-        self.assertEqual(transacciones_caja_saldo_cierre_anterior.tipo, 'I')
 
         self.assertTrue(punto_venta.abierto)
         self.assertEqual(punto_venta_turno.punto_venta, punto_venta)
@@ -66,8 +60,7 @@ class PuntoVentaTests(BaseTest):
             punto_venta_abrir(
                 usuario_pv_id=self.colaborador_dos.usuario.id,
                 punto_venta_id=self.punto_venta.id,
-                base_inicial_efectivo=0,
-                saldo_cierre_caja_anterior=0
+                base_inicial_efectivo=0
             )
 
     def test_punto_venta_abrir_solo_para_usuarios_con_tercero(self):
@@ -80,8 +73,7 @@ class PuntoVentaTests(BaseTest):
             punto_venta_abrir(
                 usuario_pv_id=self.usuario_sin_tercero.id,
                 punto_venta_id=self.punto_venta.id,
-                base_inicial_efectivo=0,
-                saldo_cierre_caja_anterior=0
+                base_inicial_efectivo=0
             )
 
     def test_punto_venta_abrir_solo_para_colaborador_presente(self):
@@ -96,8 +88,7 @@ class PuntoVentaTests(BaseTest):
             punto_venta_abrir(
                 usuario_pv_id=self.colaborador_cajero.usuario.id,
                 punto_venta_id=self.punto_venta.id,
-                base_inicial_efectivo=0,
-                saldo_cierre_caja_anterior=0
+                base_inicial_efectivo=0
             )
 
     def test_punto_venta_abrir_solo_para_colaboradores(self):
@@ -110,8 +101,7 @@ class PuntoVentaTests(BaseTest):
             punto_venta_abrir(
                 usuario_pv_id=self.acompanante.usuario.id,
                 punto_venta_id=self.punto_venta.id,
-                base_inicial_efectivo=0,
-                saldo_cierre_caja_anterior=0
+                base_inicial_efectivo=0
             )
 
     def test_punto_venta_abrir_solo_sin_turno_abierto(self):
@@ -123,8 +113,7 @@ class PuntoVentaTests(BaseTest):
             punto_venta_abrir(
                 usuario_pv_id=self.colaborador_cajero.usuario.id,
                 punto_venta_id=self.punto_venta_dos.id,
-                base_inicial_efectivo=0,
-                saldo_cierre_caja_anterior=0
+                base_inicial_efectivo=0
             )
 
     # endregion
@@ -134,7 +123,7 @@ class PuntoVentaTests(BaseTest):
     def crear_cierre_caja(self, descuadre_efectivo=0, descuadre_tarjetas=0, descuadre_valets=0):
         from ..services import punto_venta_cerrar
         punto_venta_base_inicial = self.punto_venta.turno_actual.base_inicial_efectivo
-        punto_venta_saldo_cierre_caja_anterior = self.punto_venta.turno_actual.saldo_cierre_caja_anterior
+        punto_venta_diferencia_cierre_caja_anterior = self.punto_venta.turno_actual.diferencia_cierre_caja_anterior
 
         operaciones = self.hacer_movimiento_para_punto_venta_abierto(
             punto_venta=self.punto_venta
@@ -148,7 +137,7 @@ class PuntoVentaTests(BaseTest):
         valor_dolares_en_pesos = valor_dolares_simulados * tasa_dolares_simulados
 
         total_efectivo_a_distribuir_base = 300000
-        total_efectivo_a_distribuir_entrega = ingresos_efectivo - egresos + punto_venta_base_inicial + punto_venta_saldo_cierre_caja_anterior - total_efectivo_a_distribuir_base - valor_dolares_en_pesos + descuadre_efectivo
+        total_efectivo_a_distribuir_entrega = ingresos_efectivo - egresos + punto_venta_base_inicial + punto_venta_diferencia_cierre_caja_anterior - total_efectivo_a_distribuir_base - valor_dolares_en_pesos + descuadre_efectivo
         engrega_efectivo_simulado = self.distribuir_en_billetes_monedas(total_efectivo_a_distribuir_entrega)[
             'array_distribucion']
 
@@ -168,7 +157,19 @@ class PuntoVentaTests(BaseTest):
 
     def test_punto_venta_cerrar(self):
         from cajas.services import arqueo_generar_recibo_entrega, arqueo_generar_reporte_email
+        punto_venta_turno_abierto = self.colaborador_cajero.turno_punto_venta_abierto
+
         punto_venta, arqueo_caja = self.crear_cierre_caja()
+
+        transaccion_entrega_base = punto_venta_turno_abierto.transacciones_caja.filter(
+            tipo_dos='BASE_CIE_CAJA',
+            tipo='E'
+        ).first().valor_efectivo
+        transaccion_entrega_efectivo = punto_venta_turno_abierto.transacciones_caja.filter(
+            tipo_dos='EFEC_CIE_CAJA',
+            tipo='E'
+        ).first().valor_efectivo
+
         reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
         reporte.write_pdf(
             target='media/pruebas_pdf/reporte_caja_entrega.pdf'
@@ -179,7 +180,10 @@ class PuntoVentaTests(BaseTest):
             target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
         )
 
+        self.assertEqual(arqueo_caja.valor_base_dia_siguiente, -transaccion_entrega_base)
+        self.assertEqual(arqueo_caja.valor_entrega_efectivo_total, -transaccion_entrega_efectivo)
         self.assertFalse(punto_venta.abierto)
+        self.assertEqual(arqueo_caja.diferencia, 0)
         self.assertIsNone(punto_venta.usuario_actual)
         self.assertIsNone(self.colaborador_cajero.turno_punto_venta_abierto)
 
@@ -200,7 +204,7 @@ class PuntoVentaTests(BaseTest):
             target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
         )
 
-        self.assertEqual(12000, arqueo_caja.descuadre)
+        self.assertEqual(12000, arqueo_caja.diferencia)
         self.assertFalse(punto_venta.abierto)
         self.assertIsNone(punto_venta.usuario_actual)
         self.assertIsNone(self.colaborador_cajero.turno_punto_venta_abierto)

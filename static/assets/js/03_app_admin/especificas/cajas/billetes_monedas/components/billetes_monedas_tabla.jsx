@@ -11,7 +11,6 @@ class Tabla extends React.Component {
 
         const data = _.orderBy(this.props.data, ['tipo', 'valor'], ['asc', 'desc']);
         const {
-            updateItem,
             singular_name,
             onDelete,
             onSelectItemEdit,
@@ -37,7 +36,7 @@ class Tabla extends React.Component {
                                 Header: "Tipo",
                                 accessor: "tipo",
                                 maxWidth: 150,
-                                Cell: row => <span>{row.value === 0 ? 'Billete' : 'Moneda'}</span>
+                                Cell: row => <span>{row.value === 1 ? 'Billete' : 'Moneda'}</span>
                             },
                             {
                                 Header: "Activo",

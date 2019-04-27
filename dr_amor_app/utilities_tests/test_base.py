@@ -163,7 +163,6 @@ class BaseTest(TestCase):
         self.punto_venta, self.punto_venta_turno = punto_venta_abrir(
             usuario_pv_id=self.colaborador_cajero.usuario.id,
             punto_venta_id=self.punto_venta.id,
-            saldo_cierre_caja_anterior=1000000,
             base_inicial_efectivo=500000
         )
         # endregion

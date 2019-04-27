@@ -42,8 +42,8 @@ class Form extends Component {
                     valuesField='id'
                     textField='name'
                     data={[
-                        {id: 0, name: 'BILLETES'},
-                        {id: 1, name: 'MONEDAS'},
+                        {id: 1, name: 'BILLETES'},
+                        {id: 2, name: 'MONEDAS'},
                     ]}
                     nombre='Tipo'
                     className='col-12'

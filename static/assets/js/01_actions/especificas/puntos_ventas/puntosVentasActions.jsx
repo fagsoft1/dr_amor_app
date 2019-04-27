@@ -11,6 +11,15 @@ import {
 
 const current_url_api = 'puntos_ventas';
 
+export const abrirPuntoVenta = (id, base_inicial_efectivo, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('base_inicial_efectivo', base_inicial_efectivo);
+        const options = {...options_action, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'abrir_punto_venta', params, options)
+    }
+};
+
 export const efectuarVentaTiendaEnPuntoVenta = (id, qr_codigo, tercero_id, tipo_venta, pedido, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();

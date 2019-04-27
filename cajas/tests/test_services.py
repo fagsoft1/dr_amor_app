@@ -48,7 +48,6 @@ class TransaccionesCajaServicesTests(TestCase):
         self.punto_venta, self.punto_venta_turno = punto_venta_abrir(
             punto_venta_id=self.punto_venta.id,
             usuario_pv_id=self.colaborador.usuario.id,
-            saldo_cierre_caja_anterior=0,
             base_inicial_efectivo=0
         )
 
@@ -455,7 +454,6 @@ class OperacionCajaServicesTests(TestCase):
         punto_venta_abrir(
             usuario_pv_id=self.colaborador_pdv.usuario.id,
             punto_venta_id=self.punto_venta.id,
-            saldo_cierre_caja_anterior=0,
             base_inicial_efectivo=0
         )
 

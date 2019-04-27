@@ -8,8 +8,13 @@
 <body style="font-size: 9px">
 {% localize on %}
     {% with usuario=operacion_caja.punto_venta_turno.usuario.tercero.full_name_proxy punto_venta=operacion_caja.punto_venta_turno.punto_venta.nombre %}
-        <h3 style="text-align: center">Comprobante de {{ operacion_caja.concepto.get_tipo_display }}
-            para {{ operacion_caja.concepto.get_grupo_display }}</h3>
+        <h3 style="text-align: center">
+            {% if operacion_caja.concepto.tipo == 'E' %}
+                Comprobante de egreso
+            {% elif operacion_caja.concepto.tipo == 'I' %}
+                Recibo de caja
+            {% endif %}
+        </h3>
         <h1 style="text-align: center">${{ operacion_caja.valor|abs|floatformat:0 }} COP</h1>
         <p>
             Por un valor de {% number_to_word operacion_caja.valor|abs %} por concepto

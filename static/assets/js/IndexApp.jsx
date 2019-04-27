@@ -11,39 +11,87 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import QrIdentificacion from './00_utilities/components/system/modal_qr_acceso';
+import AbrirPuntoVentaDialog from './components/abrir_punto_venta/puntos_venta_abrir';
+import CerrarPuntoVentaDialog from './components/cerrar_punto_venta/punto_venta_cerrar';
 
 const Boton = (props) => {
-    const {nombre, icono, link, classes} = props;
+    const {nombre, icono, link, classes, onClick = null} = props;
+    const contenido = <div className={classes.bordeBoton}>
+        <div className="row">
+            <div className="col-12">
+                <FontAwesomeIcon icon={['far', icono]} size='3x' className={classes.iconoBoton}/>
+            </div>
+            <div className="col-12">
+                <Typography variant="h6" color="primary" noWrap>
+                    {nombre}
+                </Typography>
+            </div>
+        </div>
+    </div>;
+    if (!onClick) {
+        return (
+            <div className={'col-6 col-md-4 mt-3'}>
+                <Link to={link}>
+                    {contenido}
+                </Link>
+            </div>
+        )
+    }
     return (
-        <div className={'col-6 col-md-4 mt-3'}>
-            <Link to={link}>
-                <div className={classes.bordeBoton}>
-                    <div className="row">
-                        <div className="col-12">
-                            <FontAwesomeIcon icon={['far', icono]} size='3x' className={classes.iconoBoton}/>
-                        </div>
-                        <div className="col-12">
-                            <Typography variant="h6" color="primary" noWrap>
-                                {nombre}
-                            </Typography>
-                        </div>
-                    </div>
-                </div>
-            </Link>
+        <div onClick={onClick} className={'col-6 col-md-4 mt-3 puntero'}>
+            {contenido}
         </div>
     )
 };
 
 class IndexApp extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {abrir_punto_venta: false, cerrar_punto_venta: false}
+    }
+
     componentDidMount() {
-        this.props.fetchMisPermisosxListado([permisos_view])
+        const {auth: {user: {username}}} = this.props;
+        const cargarPuntosVenta = () => this.props.fetchPuntosVentas_por_usuario_username(username);
+        this.props.fetchMisPermisosxListado([permisos_view], {callback: cargarPuntosVenta})
     }
 
     render() {
-        const {classes, mi_cuenta, mi_cuenta: {punto_venta_actual}, mis_permisos} = this.props;
+        const {
+            classes,
+            puntos_ventas,
+            mi_cuenta,
+            mi_cuenta: {
+                punto_venta_actual
+            },
+            mis_permisos
+        } = this.props;
         const permisos_modulo_acceso = permisosAdapter(mis_permisos, permisos_view);
+        const {abrir_punto_venta, cerrar_punto_venta} = this.state;
         return <Loading>
             <div className="mt-3">
+                {
+                    abrir_punto_venta &&
+                    <AbrirPuntoVentaDialog
+                        modal_open={abrir_punto_venta}
+                        onCancel={() => this.setState({abrir_punto_venta: false})}
+                        onSubmit={(v) => {
+                            const callback = () => this.props.fetchMiCuenta({callback: () => this.setState({abrir_punto_venta: false})});
+                            this.props.abrirPuntoVenta(v.punto_venta_id, v.base_inicial_efectivo, {callback})
+                        }}
+                        puntos_venta_list={puntos_ventas}
+                    />
+                }
+                {
+                    cerrar_punto_venta &&
+                    <CerrarPuntoVentaDialog
+                        modal_open={cerrar_punto_venta}
+                        onCancel={() => this.setState({cerrar_punto_venta: false})}
+                        onSubmit={(v) => {
+                            console.log(v)
+                        }}
+                    />
+                }
                 {
                     mi_cuenta.tercero &&
                     <QrIdentificacion/>
@@ -73,6 +121,17 @@ class IndexApp extends Component {
                                 nombre='Admin'
                                 link='/app/admin/'
                                 icono='cogs'
+                                classes={classes}
+                            />
+                        }
+                        {
+                            _.size(puntos_ventas) > 0 &&
+                            !punto_venta_actual &&
+                            <Boton
+                                onClick={() => this.setState({abrir_punto_venta: true})}
+                                nombre='Abrir Punto Venta'
+                                link={`/app/tienda/`}
+                                icono='shopping-cart'
                                 classes={classes}
                             />
                         }
@@ -124,6 +183,15 @@ class IndexApp extends Component {
                                 classes={classes}
                             />
                         }
+                        {
+                            punto_venta_actual &&
+                            <Boton
+                                nombre='Cerrar Caja'
+                                onClick={() => this.setState({cerrar_punto_venta: true})}
+                                icono='door-open'
+                                classes={classes}
+                            />
+                        }
                         <div className="col-4"></div>
                         <div className="col-4 boton-index mt-4">
                             <div className='icono puntero' onClick={() => this.props.logout()}>
@@ -152,8 +220,10 @@ class IndexApp extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
+        auth: state.auth,
         mi_cuenta: state.mi_cuenta,
         mis_permisos: state.mis_permisos,
+        puntos_ventas: state.puntos_ventas
     }
 }
 

@@ -7,7 +7,6 @@ from puntos_venta.factories import PuntoVentaFactory
 from ..services import (
     user_cambiar_contrasena
 )
-from knox.models import AuthToken
 
 from faker import Faker
 

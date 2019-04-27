@@ -28,7 +28,7 @@ class BilleteMoneda(models.Model):
 
 class ArqueoCaja(TimeStampedModel):
     from puntos_venta.models import PuntoVentaTurno
-    punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='arqueos_caja')
+    punto_venta_turno = models.OneToOneField(PuntoVentaTurno, on_delete=models.PROTECT, related_name='arqueo_caja')
     valor_pago_efectivo_a_entregar = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     valor_pago_tarjeta_a_entregar = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     nro_voucher_a_entregar = models.PositiveIntegerField(default=0)
@@ -67,7 +67,7 @@ class ArqueoCaja(TimeStampedModel):
         return self.valor_pago_efectivo_a_entregar + self.valor_pago_tarjeta_a_entregar
 
     @property
-    def descuadre(self):
+    def diferencia(self):
         return self.total - self.total_esperado
 
 

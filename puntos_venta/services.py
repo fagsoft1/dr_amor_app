@@ -9,7 +9,6 @@ from puntos_venta.models import PuntoVenta, PuntoVentaTurno
 
 def punto_venta_abrir(
         usuario_pv_id: int,
-        saldo_cierre_caja_anterior: float,
         base_inicial_efectivo: float,
         punto_venta_id: int,
 ) -> [PuntoVenta, PuntoVentaTurno]:
@@ -40,10 +39,12 @@ def punto_venta_abrir(
         )
     if not punto_venta_turno:
         if hasattr(usuario, 'tercero'):
+            punto_venta_turno_anterior = PuntoVentaTurno.objects.filter(usuario=usuario).last()
             punto_venta_turno = PuntoVentaTurno.objects.create(
                 usuario=usuario,
                 punto_venta=punto_venta,
-                saldo_cierre_caja_anterior=saldo_cierre_caja_anterior,
+                diferencia_cierre_caja_anterior=punto_venta_turno_anterior.diferencia_cierre_caja if punto_venta_turno_anterior else 0,
+                turno_anterior=punto_venta_turno_anterior,
                 base_inicial_efectivo=base_inicial_efectivo
             )
             if base_inicial_efectivo > 0:
@@ -51,12 +52,6 @@ def punto_venta_abrir(
                 transaccion_caja_registrar_ingreso_base_inicial_apertura_caja(
                     punto_venta_turno_id=punto_venta_turno.id,
                     valor_efectivo=base_inicial_efectivo
-                )
-            if saldo_cierre_caja_anterior > 0:
-                from cajas.services import transaccion_caja_registrar_ingreso_saldo_cierre_anterior_apertura_caja
-                transaccion_caja_registrar_ingreso_saldo_cierre_anterior_apertura_caja(
-                    punto_venta_turno_id=punto_venta_turno.id,
-                    valor_efectivo=saldo_cierre_caja_anterior
                 )
 
     punto_venta.abierto = True
@@ -77,13 +72,16 @@ def punto_venta_cerrar(
         valor_dolares: float,
         tasa_dolar: float,
 ) -> [PuntoVenta, ArqueoCaja]:
-    total_entregado = 0 + valor_tarjeta
     usuario = User.objects.get(pk=usuario_pv_id)
     if hasattr(usuario, 'tercero'):
         tercero = usuario.tercero
         punto_venta_turno = tercero.turno_punto_venta_abierto
         if punto_venta_turno:
             from cajas.models import ArqueoCaja, EfectivoEntregaDenominacion, BaseDisponibleDenominacion
+            from cajas.services import (
+                transaccion_caja_registrar_egreso_entrega_base_cierre_caja,
+                transaccion_caja_registrar_egreso_entrega_efectivo_cierre_caja
+            )
 
             # region Valores Transacciones
             transacciones_egresos = punto_venta_turno.transacciones_caja.filter(
@@ -111,12 +109,12 @@ def punto_venta_cerrar(
                 total=Coalesce(Sum('valor_tarjeta'), 0)
             )['total']
 
-            total_a_recibir_efectivo = total_ingreso_efectivo - total_egreso_efectivo
-            total_a_recibir_tarjeta = total_ingreso_tarjeta - total_egreso_tarjeta
-
             cantidad_ventas_tarjeta = transacciones_ingresos.aggregate(
                 cantidad=Sum('nro_vauchers')
             )['cantidad']
+
+            total_a_recibir_efectivo = total_ingreso_efectivo - total_egreso_efectivo
+            total_a_recibir_tarjeta = total_ingreso_tarjeta - total_egreso_tarjeta
 
             # endregion
 
@@ -132,24 +130,21 @@ def punto_venta_cerrar(
                 observacion='PRUEBA'
             )
 
-            total_base = 0
             for denominacion in entrega_efectivo_dict:
-                if int(denominacion.get('cantidad')) > 0:
-                    cantidad = float(denominacion.get('cantidad'))
-                    valor = float(denominacion.get('valor'))
-                    valor_total = cantidad * valor
+                cantidad = int(denominacion.get('cantidad'))
+                valor = float(denominacion.get('valor'))
+                valor_total = cantidad * valor
+                if cantidad > 0:
                     EfectivoEntregaDenominacion.objects.create(
                         arqueo_caja=arqueo,
                         valor_total=valor_total,
                         **denominacion
                     )
-
             for denominacion in entrega_base_dict:
                 cantidad = int(denominacion.get('cantidad'))
-                valor = int(denominacion.get('valor'))
+                valor = float(denominacion.get('valor'))
                 valor_total = cantidad * valor
                 if cantidad > 0:
-                    total_base += cantidad * valor
                     BaseDisponibleDenominacion.objects.create(
                         arqueo_caja=arqueo,
                         valor_total=valor_total,
@@ -172,6 +167,16 @@ def punto_venta_cerrar(
             print('Valor a recibir transacciones en efectivo %s' % total_a_recibir_efectivo)
 
             total_entrega_efectivo = arqueo.valor_entrega_efectivo_total
+
+            transaccion_caja_registrar_egreso_entrega_efectivo_cierre_caja(
+                punto_venta_turno_id=punto_venta_turno.id,
+                valor_efectivo=total_entrega_efectivo
+            )
+            transaccion_caja_registrar_egreso_entrega_base_cierre_caja(
+                punto_venta_turno_id=punto_venta_turno.id,
+                valor_efectivo=arqueo.valor_base_dia_siguiente
+            )
+
             total_entrega_tarjeta = arqueo.valor_tarjeta_entregados
 
             descuadre_efectivo = total_a_recibir_efectivo - total_entrega_efectivo
@@ -183,20 +188,13 @@ def punto_venta_cerrar(
             print('Descuadre por efectivo %s' % descuadre_efectivo)
             print('Descuadre por tarjeta %s' % descuadre_tarjeta)
 
-            total_egreso = transacciones_egresos.aggregate(
-                total=Coalesce(Sum(F('valor_efectivo') + F('valor_tarjeta')), 0)
-            )['total']
-
-            total_ingreso = transacciones_ingresos.aggregate(
-                total=Coalesce(Sum(F('valor_efectivo') + F('valor_tarjeta')), 0)
-            )['total']
-
             punto_venta = punto_venta_turno.punto_venta
             punto_venta.abierto = False
             punto_venta.usuario_actual = None
             punto_venta.save()
             punto_venta_turno.finish = timezone.now()
-            punto_venta_turno.saldo_cierre_caja = total_ingreso - total_egreso - total_entregado
+            punto_venta_turno.saldo_cierre_caja = arqueo.diferencia
+            print('el saldo es %s' % punto_venta_turno.diferencia_cierre_caja)
             punto_venta_turno.save()
         else:
             raise serializers.ValidationError(

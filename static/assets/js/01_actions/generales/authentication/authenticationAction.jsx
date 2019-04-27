@@ -55,7 +55,7 @@ export const loadUser = (options_action = {}) => {
     }
 };
 
-export const login = (username, password, punto_venta = 0, options_action = {}) => {
+export const login = (username, password, options_action = {}) => {
     return (dispatch) => {
         const callback_error = (error) => {
             if (error.response.status === 403 || error.response.status === 401) {
@@ -78,7 +78,6 @@ export const login = (username, password, punto_venta = 0, options_action = {}) 
         let params = new URLSearchParams();
         params.append('username', username);
         params.append('password', password);
-        params.append('punto_venta', punto_venta);
         return fetchListPostURLParameters(current_url_api, 'login', params, options);
     }
 };

@@ -11,29 +11,6 @@ from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja, 
 
 
 # region Transacciones Caja
-def transaccion_caja_registrar_egreso_saldo_cierre_caja(
-        punto_venta_turno_id: int,
-        valor_efectivo: float,
-        valor_tarjeta: float,
-) -> TransaccionCaja:
-    if valor_efectivo < 0:
-        raise serializers.ValidationError(
-            {
-                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s y de la tarjeta es %s' % (
-                    valor_efectivo, valor_tarjeta)}
-        )
-
-    transaccion = TransaccionCaja.objects.create(
-        punto_venta_turno_id=punto_venta_turno_id,
-        tipo='E',
-        tipo_dos='SALDO_CIERRE_CAJA',
-        concepto='Egreso de saldo para siguiente apertura de caja',
-        valor_efectivo=-valor_efectivo,
-        valor_tarjeta=-valor_tarjeta
-    )
-    return transaccion
-
-
 def transaccion_caja_registrar_ingreso_base_inicial_apertura_caja(
         punto_venta_turno_id: int,
         valor_efectivo: float
@@ -55,9 +32,9 @@ def transaccion_caja_registrar_ingreso_base_inicial_apertura_caja(
     return transaccion
 
 
-def transaccion_caja_registrar_ingreso_saldo_cierre_anterior_apertura_caja(
+def transaccion_caja_registrar_egreso_entrega_base_cierre_caja(
         punto_venta_turno_id: int,
-        valor_efectivo: float,
+        valor_efectivo: float
 ) -> TransaccionCaja:
     if valor_efectivo < 0:
         raise serializers.ValidationError(
@@ -68,10 +45,31 @@ def transaccion_caja_registrar_ingreso_saldo_cierre_anterior_apertura_caja(
 
     transaccion = TransaccionCaja.objects.create(
         punto_venta_turno_id=punto_venta_turno_id,
-        tipo='I',
-        tipo_dos='SALDO_CIERRE_ANTERIOR_CAJA',
-        concepto='Ingreso de valor de saldo de cierre anterior de caja',
-        valor_efectivo=valor_efectivo
+        tipo='E',
+        tipo_dos='BASE_CIE_CAJA',
+        concepto='Egreso por entrega de base cierre de caja',
+        valor_efectivo=-valor_efectivo
+    )
+    return transaccion
+
+
+def transaccion_caja_registrar_egreso_entrega_efectivo_cierre_caja(
+        punto_venta_turno_id: int,
+        valor_efectivo: float
+) -> TransaccionCaja:
+    if valor_efectivo < 0:
+        raise serializers.ValidationError(
+            {
+                '_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es %s' % (
+                    valor_efectivo)}
+        )
+
+    transaccion = TransaccionCaja.objects.create(
+        punto_venta_turno_id=punto_venta_turno_id,
+        tipo='E',
+        tipo_dos='EFEC_CIE_CAJA',
+        concepto='Egreso por entrega de efectivo cierre de caja',
+        valor_efectivo=-valor_efectivo
     )
     return transaccion
 
@@ -353,7 +351,7 @@ def transaccion_caja_registrar_pago_nuevos_servicios_habitacion(
     servicios = Servicio.objects.filter(id__in=array_servicios_id)
     transaccion.servicios.set(servicios)
     valor_total = transaccion.servicios.aggregate(
-        valor=Sum(F('valor_habitacion') + F('valor_servicio') + F('valor_iva_habitacion'))
+        valor=Sum(F('valor_habitacion') + F('valor_servicio') + F('valor_iva_habitacion') + F('comision'))
     )['valor']
 
     if int(valor_tarjeta + valor_efectivo) != int(valor_total):

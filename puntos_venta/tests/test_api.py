@@ -89,8 +89,7 @@ class PuntoVentaTestApi(BaseTestsApi):
         self.punto_venta, punto_venta_turno = punto_venta_abrir(
             punto_venta_id=punto_venta.id,
             usuario_pv_id=self.user.id,
-            base_inicial_efectivo=0,
-            saldo_cierre_caja_anterior=0
+            base_inicial_efectivo=0
         )
 
         acompanante = AcompananteFactory()

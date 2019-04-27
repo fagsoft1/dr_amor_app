@@ -114,7 +114,6 @@ class RegistroEntradaParqueoTests(TestCase):
         punto_venta, self.punto_venta_turno = punto_venta_abrir(
             usuario_pv_id=colaborador.usuario.id,
             punto_venta_id=punto_venta.id,
-            saldo_cierre_caja_anterior=0,
             base_inicial_efectivo=0
         )
 

@@ -102,7 +102,7 @@
             <td>Total</td>
             <td class="td-valor">{{ arqueo.total_esperado|floatformat:0 }}</td>
             <td class="td-valor">{{ arqueo.total|floatformat:0 }}</td>
-            <td class="td-valor">{{ arqueo.total|sub:arqueo.total_esperado|floatformat:0 }}</td>
+            <td class="td-valor">{{ arqueo.diferencia|floatformat:0 }}</td>
         </tr>
         </tfoot>
     </table>

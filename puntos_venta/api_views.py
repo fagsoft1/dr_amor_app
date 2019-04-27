@@ -22,6 +22,20 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
     serializer_class = PuntoVentaSerializer
 
     @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def abrir_punto_venta(self, request, pk=None):
+        punto_venta = self.get_object()
+        base_inicial_efectivo = float(request.POST.get('base_inicial_efectivo', None))
+
+        from .services import punto_venta_abrir
+        punto_venta, punto_venta_turno = punto_venta_abrir(
+            usuario_pv_id=self.request.user.id,
+            punto_venta_id=punto_venta.id,
+            base_inicial_efectivo=base_inicial_efectivo
+        )
+
+        return Response({'result': 'El punto de venta %s se ha aperturado correctamente' % punto_venta.nombre})
+
+    @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def efectuar_venta_producto(self, request, pk=None):
         punto_venta = self.get_object()
         from ventas.services import venta_producto_efectuar_venta
