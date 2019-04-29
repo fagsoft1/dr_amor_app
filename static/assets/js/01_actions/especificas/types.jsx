@@ -1,3 +1,12 @@
+export const PUNTO_VENTA_TURNO_TYPES = {
+    create: 'create_punto_venta_turno',
+    delete: 'delete_punto_venta_turno',
+    fetch_all: 'fetch_puntos_ventas_turnos',
+    fetch: 'fetch_punto_venta_turno',
+    clear: 'clear_puntos_ventas_turnos',
+    update: 'update_punto_venta_turno',
+};
+
 export const ACOMPANANTE_TYPES = {
     create: 'create_acompanante',
     delete: 'delete_acompanante',

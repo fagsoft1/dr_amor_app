@@ -2,9 +2,11 @@
 <br/>
 <br/>
 <br/>
-{{ arqueo.punto_venta_turno.usuario|title }}<br/>
+{{ usuario|title }}<br/>
+{{ arqueo.punto_venta_turno.usuario }}<br/>
 <span style="font-weight: bold">Id Cierre: </span>{{ arqueo.id }}<br/>
 <span style="font-weight: bold">Punto: </span>{{ arqueo.punto_venta_turno.punto_venta.nombre }}<br/>
-<span style="font-weight: bold">Fecha Generación: </span>{% now "j \d\e F Y" %}<br/>
-<span style="font-weight: bold">Hora Generación: </span>{% now "H:i" %}<br/>
+<span style="font-weight: bold">Fecha Generación: </span>{{ arqueo.created }}<br/>
+<span style="font-weight: bold">Fecha Impresión: </span>{% now "j \d\e F \d\e Y" %} a las
+{% now "H:i" %}<br/>
 <br/>

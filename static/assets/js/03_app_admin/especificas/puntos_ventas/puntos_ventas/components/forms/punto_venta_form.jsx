@@ -39,7 +39,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
-                fullScreen = {false}
+                fullScreen={false}
                 error={error}
             >
                 <MyTextFieldSimple

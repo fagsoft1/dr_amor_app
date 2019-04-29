@@ -1,3 +1,5 @@
+import sys
+
 from django.test import TestCase
 from django.utils import timezone
 from faker import Faker
@@ -174,21 +176,22 @@ class RegistroEntradaParqueoTests(TestCase):
             punto_venta_turno_id=self.punto_venta_turno.id,
             modalidad_fraccion_tiempo_id=self.modalidad_fraccion_tiempo_sin_placa.id
         )
-
-        comprobante = registro_entrada_parqueo_comprobante_entrada(registro_entrada_id=registro_entrada.id)
-        comprobante.write_pdf(
-            target='media/pruebas_pdf/parqueadero_comprobante_entrada_sin_vehiculo.pdf'
-        )
+        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
+            comprobante = registro_entrada_parqueo_comprobante_entrada(registro_entrada_id=registro_entrada.id)
+            comprobante.write_pdf(
+                target='media/pruebas_pdf/parqueadero_comprobante_entrada_sin_vehiculo.pdf'
+            )
 
         registro_entrada = registro_entrada_parqueo_crear(
             punto_venta_turno_id=self.punto_venta_turno.id,
             modalidad_fraccion_tiempo_id=self.modalidad_fraccion_tiempo_con_placa.id,
             placa='LLL000'
         )
-        comprobante = registro_entrada_parqueo_comprobante_entrada(registro_entrada_id=registro_entrada.id)
-        comprobante.write_pdf(
-            target='media/pruebas_pdf/parqueadero_comprobante_entrada_con_vehiculo.pdf'
-        )
+        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
+            comprobante = registro_entrada_parqueo_comprobante_entrada(registro_entrada_id=registro_entrada.id)
+            comprobante.write_pdf(
+                target='media/pruebas_pdf/parqueadero_comprobante_entrada_con_vehiculo.pdf'
+            )
         with self.assertRaisesMessage(
                 ValidationError,
                 "{'_error': 'Faltó digitar la placa del vehiculo'}"
@@ -302,12 +305,13 @@ class RegistroEntradaParqueoTests(TestCase):
             punto_venta_turno_id=self.punto_venta_turno.id,
             modalidad_fraccion_tiempo_detalle_id=tarifa.id
         )
-        factura = registro_entrada_parqueo_factura(
-            registro_entrada_id=registro.id
-        )
-        factura.write_pdf(
-            target='media/pruebas_pdf/parqueadero_factura.pdf'
-        )
+        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
+            factura = registro_entrada_parqueo_factura(
+                registro_entrada_id=registro.id
+            )
+            factura.write_pdf(
+                target='media/pruebas_pdf/parqueadero_factura.pdf'
+            )
         self.assertEqual(len(registro.transacciones_caja.all()), 1)
         self.assertIsNotNone(registro.hora_pago)
         self.assertEqual(registro.transacciones_caja.all().first().valor_efectivo, registro.valor_total)

@@ -629,7 +629,7 @@ def arqueo_generar_recibo_entrega(arqueo_id):
         string=html_get_template
     )
     width = '80mm'
-    height = '30cm'
+    height = '28cm'
     size = 'size: %s %s' % (width, height)
     margin = 'margin: 0.8cm 0.8cm 0.8cm 0.8cm'
 
@@ -638,7 +638,7 @@ def arqueo_generar_recibo_entrega(arqueo_id):
     return main_doc
 
 
-def arqueo_generar_reporte_email(arqueo_id):
+def arqueo_generar_reporte(arqueo_id):
     arqueo = ArqueoCaja.objects.get(pk=arqueo_id)
     context = {
         "arqueo": arqueo
@@ -647,7 +647,15 @@ def arqueo_generar_reporte_email(arqueo_id):
     html = HTML(
         string=html_get_template
     )
+    width = '80mm'
+    height = '28cm'
     main_doc = html.render(stylesheets=[CSS('static/css/reportes_carta.css')])
+    return main_doc
+
+
+def arqueo_generar_reporte_email(arqueo_id):
+    arqueo = ArqueoCaja.objects.get(pk=arqueo_id)
+    main_doc = arqueo_generar_reporte(arqueo_id=arqueo_id)
     output = BytesIO()
     main_doc.write_pdf(
         target=output

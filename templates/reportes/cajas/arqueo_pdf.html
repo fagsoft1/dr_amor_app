@@ -31,10 +31,11 @@
         </tr>
         <tr>
             <td style="width: 50%">
-                <span style="font-weight: bold">Fecha Generación: </span>{% now "j \d\e F Y" %}<br/>
+                <span style="font-weight: bold">Fecha Generación: </span>{{ arqueo.created }}<br/>
             </td>
             <td style="width: 50%">
-                <span style="font-weight: bold">Hora Generación: </span>{% now "H:i" %}<br/>
+                <span style="font-weight: bold">Fecha Impresión: </span>{% now "j \d\e F \d\e Y" %} a
+                las {% now "H:i" %}<br/>
             </td>
         </tr>
     </table>

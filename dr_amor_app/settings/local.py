@@ -1,8 +1,6 @@
-import sys
-
 from .base import *
 from django.core.exceptions import ImproperlyConfigured
-
+print('Usando test.py local')
 ############### SECRET FILE
 import json
 

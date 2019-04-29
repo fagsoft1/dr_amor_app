@@ -10,8 +10,8 @@ from .models import (
 
 class OperacionCajaSerializer(serializers.ModelSerializer):
     tipo_operacion = serializers.CharField(source='concepto.tipo', read_only=True)
-    cuenta_liquidada = serializers.NullBooleanField(read_only=True, source='cuenta.liquidada')
-    cuenta_usuario = serializers.PrimaryKeyRelatedField(source='cuenta.propietario', read_only=True, allow_null=True)
+    cuenta_liquidada = serializers.NullBooleanField(read_only=True, source='cuenta.liquidada', default=None)
+    cuenta_usuario = serializers.IntegerField(source='cuenta.propietario', read_only=True, allow_null=True)
     usuario_pv = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -96,40 +96,18 @@ class BilleteMonedaSerializer(serializers.ModelSerializer):
 
 
 class ArqueoCajaSerializer(serializers.ModelSerializer):
-    usuario_username = serializers.CharField(source='usuario.username', read_only=True)
-    punto_venta_nombre = serializers.CharField(source='punto_venta.nombre', read_only=True)
-    tercero_nombre = serializers.CharField(source='usuario.tercero.full_name_proxy', read_only=True)
-    valor_entrega_base_dia_siguiente = serializers.DecimalField(decimal_places=2, max_digits=10, read_only=True)
-    valor_entrega_efectivo = serializers.DecimalField(decimal_places=2, max_digits=10, read_only=True)
-    valor_entrega_dolares = serializers.DecimalField(decimal_places=2, max_digits=10, read_only=True)
-    valor_entrega_total = serializers.DecimalField(decimal_places=2, max_digits=10, read_only=True)
-    valor_mo_egresos_efectivo = serializers.DecimalField(decimal_places=2, max_digits=10, read_only=True)
-    valor_mo_ingreso_efectivo = serializers.DecimalField(decimal_places=2, max_digits=10, read_only=True)
-    valor_mo_ingreso_tarjeta = serializers.DecimalField(decimal_places=2, max_digits=10, read_only=True)
-    valor_mo_total = serializers.DecimalField(decimal_places=2, max_digits=10, read_only=True)
-    cuadre = serializers.DecimalField(decimal_places=2, max_digits=10, read_only=True)
-
     class Meta:
         model = ArqueoCaja
         fields = (
             'id',
-            'usuario',
-            'usuario_username',
-            'tercero_nombre',
-            'created',
-            'punto_venta',
-            'punto_venta_nombre',
-            'dolares',
+            'punto_venta_turno',
+            'valor_pago_efectivo_a_entregar',
+            'valor_pago_tarjeta_a_entregar',
+            'nro_voucher_a_entregar',
             'dolares_tasa',
-            'nro_voucher',
-            'valor_entrega_total',
-            'valor_entrega_base_dia_siguiente',
-            'valor_tarjeta',
-            'valor_entrega_efectivo',
-            'valor_entrega_dolares',
-            'valor_mo_egresos_efectivo',
-            'valor_mo_ingreso_efectivo',
-            'valor_mo_ingreso_tarjeta',
-            'valor_mo_total',
-            'cuadre',
+            'valor_dolares_entregados',
+            'valor_tarjeta_entregados',
+            'nro_voucher_entregados',
+            'observacion',
+            'created',
         )

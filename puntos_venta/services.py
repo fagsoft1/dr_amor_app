@@ -7,6 +7,38 @@ from rest_framework import serializers
 from puntos_venta.models import PuntoVenta, PuntoVentaTurno
 
 
+def punto_venta_relacionar_concepto_operacion_caja_cierre(
+        punto_venta_id: int,
+        concepto_operacion_caja_id: int
+):
+    from cajas.models import ConceptoOperacionCaja
+    punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
+    concepto_operacion_caja = ConceptoOperacionCaja.objects.get(pk=concepto_operacion_caja_id)
+    existe_concepto = punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto_operacion_caja_id).exists()
+    if not existe_concepto:
+        punto_venta.conceptos_operaciones_caja_cierre.add(concepto_operacion_caja)
+    else:
+        raise serializers.ValidationError(
+            {'_error': 'Este punto de venta ya tiene asociado el concepto %s' % concepto_operacion_caja.descripcion})
+    return concepto_operacion_caja
+
+
+def punto_venta_quitar_concepto_operacion_caja_cierre(
+        punto_venta_id: int,
+        concepto_operacion_caja_id: int
+):
+    from cajas.models import ConceptoOperacionCaja
+    punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
+    concepto_operacion_caja = ConceptoOperacionCaja.objects.get(pk=concepto_operacion_caja_id)
+    existe_concepto = punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto_operacion_caja_id).exists()
+    if existe_concepto:
+        punto_venta.conceptos_operaciones_caja_cierre.remove(concepto_operacion_caja)
+    else:
+        raise serializers.ValidationError(
+            {'_error': 'Este punto de venta no tiene asociado el concepto %s' % concepto_operacion_caja.descripcion})
+    return concepto_operacion_caja
+
+
 def punto_venta_abrir(
         usuario_pv_id: int,
         base_inicial_efectivo: float,
@@ -66,6 +98,7 @@ from cajas.models import ArqueoCaja
 def punto_venta_cerrar(
         usuario_pv_id: int,
         entrega_efectivo_dict: dict,
+        operaciones_caja_dict,
         entrega_base_dict: dict,
         valor_tarjeta: float,
         nro_vauchers: int,
@@ -77,11 +110,31 @@ def punto_venta_cerrar(
         tercero = usuario.tercero
         punto_venta_turno = tercero.turno_punto_venta_abierto
         if punto_venta_turno:
-            from cajas.models import ArqueoCaja, EfectivoEntregaDenominacion, BaseDisponibleDenominacion
+            from cajas.models import (
+                ArqueoCaja,
+                EfectivoEntregaDenominacion,
+                BaseDisponibleDenominacion
+            )
             from cajas.services import (
                 transaccion_caja_registrar_egreso_entrega_base_cierre_caja,
-                transaccion_caja_registrar_egreso_entrega_efectivo_cierre_caja
+                transaccion_caja_registrar_egreso_entrega_efectivo_cierre_caja,
+                operacion_caja_crear
             )
+
+            from cajas.models import ConceptoOperacionCaja
+            for operacion_caja in operaciones_caja_dict:
+                id_concepto = int(operacion_caja.get('id'))
+                concepto = ConceptoOperacionCaja.objects.get(pk=id_concepto)
+                valor = float(operacion_caja.get('valor'))
+
+                if valor > 0:
+                    operacion_caja_crear(
+                        concepto_id=id_concepto,
+                        usuario_pdv_id=usuario_pv_id,
+                        valor=valor,
+                        descripcion=concepto.descripcion,
+                        observacion='Desde cierre de caja'
+                    )
 
             # region Valores Transacciones
             transacciones_egresos = punto_venta_turno.transacciones_caja.filter(
@@ -126,8 +179,7 @@ def punto_venta_cerrar(
                 dolares_tasa=tasa_dolar,
                 valor_dolares_entregados=valor_dolares,
                 valor_tarjeta_entregados=valor_tarjeta,
-                nro_voucher_entregados=nro_vauchers,
-                observacion='PRUEBA'
+                nro_voucher_entregados=nro_vauchers
             )
 
             for denominacion in entrega_efectivo_dict:

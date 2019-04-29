@@ -1,3 +1,5 @@
+import sys
+
 from django.test import TestCase
 from django.utils import timezone
 from faker import Faker
@@ -483,11 +485,11 @@ class OperacionCajaServicesTests(TestCase):
         )
         self.assertEqual(operacion_caja.valor, 23000)
         self.assertIsNotNone(operacion_caja.cuenta)
-
-        comprobante = operacion_caja_generar_recibo(operacion_caja.id)
-        comprobante.write_pdf(
-            target='media/pruebas_pdf/comprobante_operacion_caja_egreso_acompanante.pdf'
-        )
+        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
+            comprobante = operacion_caja_generar_recibo(operacion_caja.id)
+            comprobante.write_pdf(
+                target='media/pruebas_pdf/comprobante_operacion_caja_egreso_acompanante.pdf'
+            )
 
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='E',
@@ -501,11 +503,11 @@ class OperacionCajaServicesTests(TestCase):
             descripcion='hola',
             observacion='hola'
         )
-
-        comprobante = operacion_caja_generar_recibo(operacion_caja.id)
-        comprobante.write_pdf(
-            target='media/pruebas_pdf/comprobante_operacion_caja_ingreso_acompanante.pdf'
-        )
+        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
+            comprobante = operacion_caja_generar_recibo(operacion_caja.id)
+            comprobante.write_pdf(
+                target='media/pruebas_pdf/comprobante_operacion_caja_ingreso_acompanante.pdf'
+            )
         self.assertEqual(operacion_caja.valor, -18500)
         self.assertIsNotNone(operacion_caja.cuenta)
 

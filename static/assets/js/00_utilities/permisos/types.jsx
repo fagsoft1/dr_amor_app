@@ -1,3 +1,11 @@
+export const PUNTOS_VENTAS_TURNOS = {
+    add: 'add_puntoventaturno',
+    delete: 'delete_puntoventaturno',
+    change: 'change_puntoventaturno',
+    list: 'list_puntoventaturno',
+    detail: 'view_puntoventaturno',
+};
+
 export const GROUPS = {
     add: 'add_group',
     delete: 'delete_group',

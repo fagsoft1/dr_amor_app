@@ -1,3 +1,5 @@
+import sys
+
 from faker import Faker
 from rest_framework.exceptions import ValidationError
 
@@ -25,6 +27,56 @@ class PuntoVentaTests(BaseTest):
             valor_dolares=0,
             tasa_dolar=0
         )
+
+    # region Asociar Conceptos Operaciones Caja para Cierre
+    def test_punto_venta_relacionar_concepto_operacion_caja_cierre(self):
+        from cajas.factories import ConceptoOperacionCajaFactory
+        from ..services import punto_venta_relacionar_concepto_operacion_caja_cierre
+        concepto = ConceptoOperacionCajaFactory(tipo='I', grupo='O')
+        existe = self.punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto.id).exists()
+        self.assertFalse(existe)
+        punto_venta_relacionar_concepto_operacion_caja_cierre(
+            punto_venta_id=self.punto_venta.id,
+            concepto_operacion_caja_id=concepto.id
+        )
+        existe = self.punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto.id).exists()
+        self.assertTrue(existe)
+
+        with self.assertRaisesMessage(ValidationError, "{'_error': 'Este punto de venta ya tiene asociado el concepto"):
+            punto_venta_relacionar_concepto_operacion_caja_cierre(
+                punto_venta_id=self.punto_venta.id,
+                concepto_operacion_caja_id=concepto.id
+            )
+
+    def test_punto_venta_quitar_concepto_operacion_caja_cierre(self):
+        from cajas.factories import ConceptoOperacionCajaFactory
+        from ..services import (
+            punto_venta_quitar_concepto_operacion_caja_cierre,
+            punto_venta_relacionar_concepto_operacion_caja_cierre
+        )
+
+        concepto = ConceptoOperacionCajaFactory(tipo='I', grupo='O')
+        punto_venta_relacionar_concepto_operacion_caja_cierre(
+            punto_venta_id=self.punto_venta.id,
+            concepto_operacion_caja_id=concepto.id
+        )
+
+        existe = self.punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto.id).exists()
+        self.assertTrue(existe)
+        punto_venta_quitar_concepto_operacion_caja_cierre(
+            punto_venta_id=self.punto_venta.id,
+            concepto_operacion_caja_id=concepto.id
+        )
+        existe = self.punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto.id).exists()
+        self.assertFalse(existe)
+
+        with self.assertRaisesMessage(ValidationError, "{'_error': 'Este punto de venta no tiene asociado el concepto"):
+            punto_venta_quitar_concepto_operacion_caja_cierre(
+                punto_venta_id=self.punto_venta.id,
+                concepto_operacion_caja_id=concepto.id
+            )
+
+    # endregion
 
     # region Abrir Punto Venta
     def test_punto_venta_abrir(self):
@@ -170,15 +222,15 @@ class PuntoVentaTests(BaseTest):
             tipo='E'
         ).first().valor_efectivo
 
-        reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
-        reporte.write_pdf(
-            target='media/pruebas_pdf/reporte_caja_entrega.pdf'
-        )
-
-        email = arqueo_generar_reporte_email(arqueo_caja.id)
-        email.write_pdf(
-            target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
-        )
+        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
+            reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
+            reporte.write_pdf(
+                target='media/pruebas_pdf/reporte_caja_entrega.pdf'
+            )
+            email = arqueo_generar_reporte_email(arqueo_caja.id)
+            email.write_pdf(
+                target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
+            )
 
         self.assertEqual(arqueo_caja.valor_base_dia_siguiente, -transaccion_entrega_base)
         self.assertEqual(arqueo_caja.valor_entrega_efectivo_total, -transaccion_entrega_efectivo)
@@ -194,15 +246,15 @@ class PuntoVentaTests(BaseTest):
             descuadre_tarjetas=-3000,
             descuadre_valets=-2
         )
-        reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
-        reporte.write_pdf(
-            target='media/pruebas_pdf/reporte_caja_entrega.pdf'
-        )
-
-        email = arqueo_generar_reporte_email(arqueo_caja.id)
-        email.write_pdf(
-            target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
-        )
+        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
+            reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
+            reporte.write_pdf(
+                target='media/pruebas_pdf/reporte_caja_entrega.pdf'
+            )
+            email = arqueo_generar_reporte_email(arqueo_caja.id)
+            email.write_pdf(
+                target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
+            )
 
         self.assertEqual(12000, arqueo_caja.diferencia)
         self.assertFalse(punto_venta.abierto)

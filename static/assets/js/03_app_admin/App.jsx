@@ -35,6 +35,7 @@ import CategoriaAcompananteDetail
     from "./especificas/terceros_acompanantes/categorias/containers/categoria_detail";
 
 import PuntosVentasList from "./especificas/puntos_ventas/puntos_ventas/containers/puntos_ventas_list_container";
+import PuntoVentaDetail from "./especificas/puntos_ventas/puntos_ventas/containers/punto_venta_detail";
 
 import BilletesMonedasList from "./especificas/cajas/billetes_monedas/containers/billetes_monedas_list_container";
 import ConceptosOperacionesCajaList
@@ -74,6 +75,8 @@ class AdminApp extends Component {
                                component={CategoriaAcompananteDetail}/>
                         <Route exact path='/app/admin/puntos_ventas/puntos_ventas/list'
                                component={PuntosVentasList}/>
+                        <Route exact path='/app/admin/puntos_ventas/puntos_ventas/detail/:id'
+                               component={PuntoVentaDetail}/>
                         <Route exact path='/app/admin/cajas/billetes_monedas/list'
                                component={BilletesMonedasList}/>
                         <Route exact path='/app/admin/cajas/conceptos_operaciones_caja/list'

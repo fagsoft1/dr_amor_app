@@ -33,6 +33,7 @@ import movimientosInventariosDetallesReducer from './especificas/inventarios/mov
 import trasladosInventariosReducer from './especificas/inventarios/trasladosInventariosReducer';
 import trasladosInventariosDetallesReducer from './especificas/inventarios/trasladosInventariosDetallesReducer';
 import puntosVentasReducer from './especificas/puntos_ventas/puntosVentasReducer';
+import puntosVentasTurnosReducer from './especificas/puntos_ventas/puntosVentasTurnosReducer';
 import serviciosReducer from './especificas/servicios/serviciosReducer';
 import billetesMonedasReducer from './especificas/cajas/billetesMonedasReducer';
 import arqueosCajasReducer from './especificas/cajas/arqueosCajasReducer';
@@ -74,6 +75,7 @@ const rootReducer = combineReducers({
     traslados_inventarios: trasladosInventariosReducer,
     traslados_inventarios_detalles: trasladosInventariosDetallesReducer,
     puntos_ventas: puntosVentasReducer,
+    puntos_ventas_turnos: puntosVentasTurnosReducer,
 
     servicios: serviciosReducer,
 

@@ -20,6 +20,19 @@ export const abrirPuntoVenta = (id, base_inicial_efectivo, options_action = {}) 
     }
 };
 
+
+export const relacionarConceptoCajaCierre = (id, concepto_id, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('concepto_id', concepto_id);
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch, payload: response})
+        };
+        const options = {...options_action, dispatches, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'relacionar_concepto_caja_cierre', params, options)
+    }
+};
+
 export const efectuarVentaTiendaEnPuntoVenta = (id, qr_codigo, tercero_id, tipo_venta, pedido, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
@@ -29,6 +42,17 @@ export const efectuarVentaTiendaEnPuntoVenta = (id, qr_codigo, tercero_id, tipo_
         params.append('tipo_venta', tipo_venta);
         const options = {...options_action, dispatch_method: dispatch};
         return callApiMethodPostParameters(current_url_api, id, 'efectuar_venta_producto', params, options)
+    }
+};
+
+export const hacerCierrePuntoVenta = (id, cierre, options_action = {}) => {
+    console.log(cierre)
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('hola', 'chao');
+        params.append('cierre', JSON.stringify(cierre));
+        const options = {...options_action, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'hacer_cierre', params, options)
     }
 };
 

@@ -1,4 +1,5 @@
 import random
+import sys
 
 from django.db.models import Sum
 from rest_framework.exceptions import ValidationError
@@ -175,11 +176,11 @@ class VentaProductosServicesTests(BaseTest):
             cliente_usuario_id=self.colaborador_dos.usuario.id,
             cliente_qr_codigo=tercero_generarQR(self.colaborador_dos.id).qr_acceso
         )
-
-        recibo_venta = venta_producto_generar_comprobante_venta(venta_producto_id=venta.id)
-        recibo_venta.write_pdf(
-            target='media/pruebas_pdf/recibo_venta_producto_mesero.pdf'
-        )
+        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
+            recibo_venta = venta_producto_generar_comprobante_venta(venta_producto_id=venta.id)
+            recibo_venta.write_pdf(
+                target='media/pruebas_pdf/recibo_venta_producto_mesero.pdf'
+            )
 
         movimientos_detalles_venta = venta.movimientos.first()
         self.assertEqual(movimientos_detalles_venta.detalle, 'Salida de Mercancia x Venta')

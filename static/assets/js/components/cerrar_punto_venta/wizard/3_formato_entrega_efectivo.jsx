@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {reduxForm, formValueSelector} from 'redux-form'
-import validate from './validate';
-import classNames from 'classnames';
+import validate from './validate'
 import {MyTextFieldSimple} from '../../../00_utilities/components/ui/forms/fields';
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
@@ -18,7 +17,7 @@ const styles = theme => ({
     },
 });
 
-class EntregaBaseForm extends Component {
+class EntregaEfectivoForm extends Component {
     render() {
         const {handleSubmit, classes, getBack, valores} = this.props;
         return (
@@ -38,8 +37,8 @@ class EntregaBaseForm extends Component {
                     </Button>
                     <Button
                         onClick={getBack}
-                        variant="contained"
                         color="secondary"
+                        variant="contained"
                         className='ml-3'
                     >
                         Atras
@@ -61,11 +60,11 @@ function mapPropsToState(state, ownProps) {
     }
 }
 
-EntregaBaseForm = (connect(mapPropsToState, null)(EntregaBaseForm));
+EntregaEfectivoForm = (connect(mapPropsToState, null)(EntregaEfectivoForm));
 
 export default withStyles(styles)(reduxForm({
     form: 'wizard', // <------ same form name
     destroyOnUnmount: false, // <------ preserve form data
     forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
     validate
-})(EntregaBaseForm))
+})(EntregaEfectivoForm))

@@ -111,6 +111,7 @@ class ConceptoOperacionCaja(models.Model):
     tipo = models.CharField(choices=TIPO_CHOICES, max_length=3)
     grupo = models.CharField(choices=GRUPO_CHOICES, max_length=3)
     descripcion = models.CharField(max_length=300)
+    puntos_de_venta = models.ManyToManyField(PuntoVenta, related_name='conceptos_operaciones_caja_cierre')
 
     class Meta:
         permissions = [

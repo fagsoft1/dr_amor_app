@@ -1,4 +1,4 @@
-import {CONCEPTO_OPERACION_CAJA_TYPES as TYPES} from '../../00_types';
+import {PUNTO_VENTA_TURNO_TYPES as TYPES} from '../../00_types';
 import {
     fetchListGet,
     updateObject,
@@ -7,8 +7,8 @@ import {
     createObject,
 } from '../../00_general_fuctions'
 
-const current_url_api = 'conceptos_operaciones_caja';
-export const createConceptoOperacionCaja = (values, options_action = {}) => {
+const current_url_api = 'puntos_ventas_turnos';
+export const createPuntoVentaTurno = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -17,7 +17,7 @@ export const createConceptoOperacionCaja = (values, options_action = {}) => {
         return createObject(current_url_api, values, options);
     }
 };
-export const deleteConceptoOperacionCaja = (id, options_action = {}) => {
+export const deletePuntoVentaTurno = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -26,7 +26,7 @@ export const deleteConceptoOperacionCaja = (id, options_action = {}) => {
         return deleteObject(current_url_api, id, options);
     }
 };
-export const fetchConceptosOperacionesCajas = (options_action = {}) => {
+export const fetchPuntosVentasTurnos = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -40,7 +40,21 @@ export const fetchConceptosOperacionesCajas = (options_action = {}) => {
         return fetchListGet(current_url_api, options);
     }
 };
-export const fetchConceptoOperacionCaja = (id, options_action = {}) => {
+export const fetchPuntosVentasTurnosAbiertos = (options_action = {}) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        const {limpiar_coleccion = true} = options_action;
+        const options = {
+            dispatches, ...options_action,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        return fetchListGet(`${current_url_api}/abiertos`, options);
+    }
+};
+export const fetchPuntoVentaTurno = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
@@ -49,13 +63,13 @@ export const fetchConceptoOperacionCaja = (id, options_action = {}) => {
         return fetchObject(current_url_api, id, options);
     }
 };
-export const clearConceptosOperacionesCajas = () => {
+export const clearPuntosVentasTurnos = () => {
     return (dispatch) => {
         dispatch({type: TYPES.clear});
 
     }
 };
-export const updateConceptoOperacionCaja = (id, values, options_action = {}) => {
+export const updatePuntoVentaTurno = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

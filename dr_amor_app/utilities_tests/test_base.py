@@ -485,6 +485,7 @@ class BaseTest(TestCase):
         valor_totat_todos_los_servicio = 0
         valor_totat_todos_los_ivas = 0
         valor_totat_habitaciones = 0
+        valor_totat_comisiones = 0
 
         array_servicios_1 = []
         array_servicios_2 = []
@@ -565,6 +566,7 @@ class BaseTest(TestCase):
             valor_totat_todos_los_servicio += valor_servicio
             valor_totat_habitaciones += valor_habitacion
             valor_totat_todos_los_ivas += valor_iva
+            valor_totat_comisiones += comision
 
             if not terminados and not iniciados:
                 valores_totales_servicios['acompanante_1']['servicios'].append(servicio)
@@ -603,6 +605,7 @@ class BaseTest(TestCase):
                 valor_totat_todos_los_servicio += valor_servicio
                 valor_totat_habitaciones += valor_habitacion
                 valor_totat_todos_los_ivas += valor_iva
+                valor_totat_comisiones += comision
 
                 if not terminados and not iniciados:
                     valores_totales_servicios['acompanante_2']['servicios'].append(servicio)
@@ -640,6 +643,8 @@ class BaseTest(TestCase):
                 valor_totat_todos_los_servicio += valor_servicio
                 valor_totat_habitaciones += valor_habitacion
                 valor_totat_todos_los_ivas += valor_iva
+                valor_totat_comisiones += comision
+
                 array_servicios_3.append(servicio.pk)
                 if not terminados and not iniciados:
                     valores_totales_servicios['acompanante_3']['servicios'].append(servicio)
@@ -682,7 +687,7 @@ class BaseTest(TestCase):
         valores_totales_servicios['valor_totat_habitaciones'] = valor_totat_habitaciones
         valores_totales_servicios['valor_totat_todos_los_ivas'] = valor_totat_todos_los_ivas
         valores_totales_servicios[
-            'valor_total_todos'] = valor_totat_todos_los_ivas + valor_totat_habitaciones + valor_totat_todos_los_servicio
+            'valor_total_todos'] = valor_totat_todos_los_ivas + valor_totat_habitaciones + valor_totat_todos_los_servicio + valor_totat_comisiones
         valores_totales_servicios['array_servicios_iniciar_desde_habitacion'] = array_servicios_iniciar_desde_habitacion
 
         return valores_totales_servicios

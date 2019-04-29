@@ -3,6 +3,7 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 
 from inventarios.models import Bodega
+from puntos_venta.managers import PuntoVentaTurnoManager
 
 
 class PuntoVenta(models.Model):
@@ -40,3 +41,5 @@ class PuntoVentaTurno(TimeStampedModel):
     base_inicial_efectivo = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     diferencia_cierre_caja = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     finish = models.DateTimeField(null=True)
+
+    objects = PuntoVentaTurnoManager()

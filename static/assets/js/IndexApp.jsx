@@ -13,6 +13,8 @@ import Grid from '@material-ui/core/Grid';
 import QrIdentificacion from './00_utilities/components/system/modal_qr_acceso';
 import AbrirPuntoVentaDialog from './components/abrir_punto_venta/puntos_venta_abrir';
 import CerrarPuntoVentaDialog from './components/cerrar_punto_venta/punto_venta_cerrar';
+import Button from "@material-ui/core/Button";
+import PrinJs from 'print-js';
 
 const Boton = (props) => {
     const {nombre, icono, link, classes, onClick = null} = props;
@@ -64,10 +66,24 @@ class IndexApp extends Component {
             mi_cuenta: {
                 punto_venta_actual
             },
-            mis_permisos
+            mis_permisos,
+            arqueos_cajas
         } = this.props;
         const permisos_modulo_acceso = permisosAdapter(mis_permisos, permisos_view);
         const {abrir_punto_venta, cerrar_punto_venta} = this.state;
+
+        const callback_impresiones_dos = (response) => {
+            const url = window.URL.createObjectURL(new Blob([response], {type: 'application/pdf'}));
+            PrinJs(url);
+        };
+
+        const callback_impresiones = (response) => {
+            const url = window.URL.createObjectURL(new Blob([response], {type: 'application/pdf'}));
+            window.open(url, "_blank");
+
+        };
+        const imprimirEntrega = (arqueo) => this.props.printArqueosCajas(arqueo.id, {callback: callback_impresiones_dos});
+
         return <Loading>
             <div className="mt-3">
                 {
@@ -97,6 +113,14 @@ class IndexApp extends Component {
                     <QrIdentificacion/>
                 }
                 <div className="container text-center">
+                    <Button
+                        color="secondary"
+                        variant="contained"
+                        className='ml-3'
+                        onClick={() => this.props.fetchMiUltimoArqueoCaja({callback: imprimirEntrega})}
+                    >
+                        Imprimir
+                    </Button>
                     {
                         mi_cuenta &&
                         mi_cuenta.imagen_perfil_url &&
@@ -223,7 +247,8 @@ function mapPropsToState(state, ownProps) {
         auth: state.auth,
         mi_cuenta: state.mi_cuenta,
         mis_permisos: state.mis_permisos,
-        puntos_ventas: state.puntos_ventas
+        puntos_ventas: state.puntos_ventas,
+        arqueos_cajas: state.arqueos_cajas
     }
 }
 

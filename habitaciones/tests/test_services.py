@@ -1,8 +1,7 @@
-from django.test import TestCase
 from rest_framework.exceptions import ValidationError
 
 from cajas.models import TransaccionCaja
-from ..factories import TipoHabitacionFactory, HabitacionFactory
+from ..factories import HabitacionFactory
 from ..services import habitacion_cambiar_estado
 from dr_amor_app.utilities_tests.test_base import BaseTest
 

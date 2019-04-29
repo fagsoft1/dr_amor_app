@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 
 from rest_framework import viewsets, permissions, serializers
 from rest_framework.decorators import list_route, detail_route
@@ -6,11 +7,25 @@ from rest_framework.response import Response
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
 from .api_serializers import (
-    PuntoVentaSerializer
+    PuntoVentaSerializer,
+    PuntoVentaTurnoSerializer
 )
 from .models import (
     PuntoVenta,
+    PuntoVentaTurno
 )
+
+
+class PuntoVentaTurnoViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = PuntoVentaTurno.objects.all()
+    serializer_class = PuntoVentaTurnoSerializer
+
+    @list_route(methods=['get'])
+    def abiertos(self, request) -> Response:
+        qs = self.get_queryset().abiertos()
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
 
 
 class PuntoVentaViewSet(viewsets.ModelViewSet):
@@ -60,6 +75,28 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         mensaje = 'La venta se ha efectuado'
         return Response({'result': mensaje})
 
+    @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def relacionar_concepto_caja_cierre(self, request, pk=None):
+        from .services import (
+            punto_venta_relacionar_concepto_operacion_caja_cierre,
+            punto_venta_quitar_concepto_operacion_caja_cierre
+        )
+        punto_venta = self.get_object()
+        concepto_id = self.request.POST.get('concepto_id')
+        existe_concepto = punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto_id).exists()
+        if existe_concepto:
+            punto_venta_quitar_concepto_operacion_caja_cierre(
+                punto_venta_id=punto_venta.id,
+                concepto_operacion_caja_id=concepto_id
+            )
+        else:
+            punto_venta_relacionar_concepto_operacion_caja_cierre(
+                punto_venta_id=punto_venta.id,
+                concepto_operacion_caja_id=concepto_id
+            )
+        serializer = self.get_serializer(punto_venta)
+        return Response(serializer.data)
+
     @list_route(methods=['get'])
     def listar_por_colaborador(self, request) -> Response:
         colaborador_id = request.GET.get('colaborador_id')
@@ -77,3 +114,23 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         )
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
+
+    @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def hacer_cierre(self, request, pk=None):
+        from .services import punto_venta_cerrar
+        cierre = json.loads(request.POST.get('cierre'))
+        cierre_para_arqueo = cierre.pop('cierre_para_arqueo')
+        denominaciones_entrega = cierre.pop('denominaciones_entrega')
+        denominaciones_base = cierre.pop('denominaciones_base')
+        operaciones_caja = cierre.pop('operaciones_caja')
+        punto_venta, arqueo = punto_venta_cerrar(
+            usuario_pv_id=self.request.user.id,
+            entrega_efectivo_dict=denominaciones_entrega,
+            entrega_base_dict=denominaciones_base,
+            valor_tarjeta=Decimal(cierre_para_arqueo.get('valor_en_tarjetas', 0)),
+            nro_vauchers=Decimal(cierre_para_arqueo.get('numero_vauchers', 0)),
+            valor_dolares=Decimal(cierre_para_arqueo.get('dolares_cantidad', 0)),
+            tasa_dolar=Decimal(cierre_para_arqueo.get('dolares_tasa', 0)),
+            operaciones_caja_dict=operaciones_caja
+        )
+        return Response({'arqueo_id': arqueo.id})

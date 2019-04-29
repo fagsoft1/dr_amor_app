@@ -1,8 +1,9 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
-import EntregaBase from './wizard/formato_entrega_base';
-import EntregaEfectivo from './wizard/formato_entrega_efectivo';
-import DolaresTarjetas from './wizard/formato_dolares_y_tarjetas';
+import EntregaBase from './wizard/2_formato_entrega_base';
+import EntregaEfectivo from './wizard/3_formato_entrega_efectivo';
+import DolaresTarjetas from './wizard/1_formato_dolares_y_tarjetas';
+import Requerimientos from './wizard/4_requerimientos';
 import Resumen from './wizard/resumen_cierre_caja';
 import {withStyles} from "@material-ui/core";
 import Step from "@material-ui/core/Step";
@@ -74,12 +75,14 @@ const TablaBilletesMonedas = (props) => {
                             <td className={classes.table.td}>
                                 <input
                                     value={denominaciones && denominaciones[d.id] ? denominaciones[d.id].cantidad : 0}
-                                    name={d.valor} type='number'
+                                    name={d.valor}
+                                    type='number'
                                     onChange={(e) => onChange(d.id, e.target.value, d.valor, d.tipo)}
                                 />
                             </td>
                             <td className={classes.table.td}>
-                                {denominaciones && denominaciones[d.id] ? pesosColombianos(denominaciones[d.id].total) : 0}
+                                {denominaciones && denominaciones[d.id] ? pesosColombianos(denominaciones[d.id].total) :
+                                    <span>$0</span>}
                             </td>
                         </tr>
                     )
@@ -97,7 +100,13 @@ const TablaBilletesMonedas = (props) => {
 };
 
 const GrupoTablaDinero = (props) => {
-    const {billetes_monedas, onChange, denominaciones, titulo, classes} = props;
+    const {
+        billetes_monedas,
+        onChange,
+        denominaciones,
+        titulo,
+        classes
+    } = props;
     const sum = _.map(denominaciones, e => e.total).reduce((acu, ele) => acu + ele, 0);
     return (
         <Fragment>
@@ -135,6 +144,7 @@ class CierreCajaPanel extends Component {
         this.state = {
             activeStep: 0,
             denominaciones_entrega: {},
+            operaciones_caja: {},
             denominaciones_base: {},
             dolares_tasa: 0,
             dolares_cantidad: 0,
@@ -145,6 +155,7 @@ class CierreCajaPanel extends Component {
         this.handleBack = this.handleBack.bind(this);
         this.handleReset = this.handleReset.bind(this);
         this.onChangeBase = this.onChangeBase.bind(this);
+        this.onChangeOperacionCaja = this.onChangeOperacionCaja.bind(this);
         this.onChangeEntrega = this.onChangeEntrega.bind(this);
         this.handleChangeField = this.handleChangeField.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -157,7 +168,13 @@ class CierreCajaPanel extends Component {
     };
 
     componentDidMount() {
-        this.props.fetchBilletesMonedas()
+        this.props.fetchPuntosVentasTurnosAbiertos()
+        const cargarOperacionesCaja = (cuenta) => {
+            if (cuenta.punto_venta_actual && cuenta.punto_venta_actual.conceptos_operaciones_caja_cierre.length > 0) {
+                this.props.fetchConceptosOperacionesCajas();
+            }
+        };
+        this.props.fetchBilletesMonedas({callback: () => this.props.fetchMiCuenta({callback: cargarOperacionesCaja})})
     }
 
     handleNext = () => {
@@ -177,19 +194,49 @@ class CierreCajaPanel extends Component {
         this.setState({
             denominaciones_base: {},
             denominaciones_entrega: {},
+            operaciones_caja: 0,
             activeStep: 0,
+            dolares_tasa: 0,
+            dolares_cantidad: 0,
+            numero_vauchers: 0,
+            valor_en_tarjetas: 0
         });
     };
 
+    onChangeOperacionCaja(id, concepto_descripcion, valor, tipo) {
+        const {operaciones_caja} = this.state;
+        if (!valor) {
+            valor = 0
+        }
+        const nueva = {id, concepto_descripcion, valor: parseFloat(valor), tipo};
+        this.setState({operaciones_caja: {...operaciones_caja, [id]: nueva}});
+    }
+
     onChangeBase(id, cantidad, valor, tipo) {
         const {denominaciones_base} = this.state;
-        const nueva = {cantidad, valor, total: cantidad * valor, tipo};
+        if (!cantidad) {
+            cantidad = 0
+        }
+        const nueva = {
+            cantidad: parseInt(cantidad),
+            valor: parseFloat(valor),
+            total: parseFloat(cantidad * valor),
+            tipo
+        };
         this.setState({denominaciones_base: {...denominaciones_base, [id]: nueva}});
     }
 
     onChangeEntrega(id, cantidad, valor, tipo) {
         const {denominaciones_entrega} = this.state;
-        const nueva = {cantidad, valor, total: cantidad * valor, tipo};
+        if (!cantidad) {
+            cantidad = 0
+        }
+        const nueva = {
+            cantidad: parseInt(cantidad),
+            valor: parseFloat(valor),
+            total: parseFloat(cantidad * valor),
+            tipo
+        };
         this.setState({denominaciones_entrega: {...denominaciones_entrega, [id]: nueva}});
     }
 
@@ -197,12 +244,19 @@ class CierreCajaPanel extends Component {
     getStepContent(step) {
         const {
             denominaciones_entrega,
-            denominaciones_base
+            denominaciones_base,
+            operaciones_caja
         } = this.state;
         const {
             classes,
-            billetes_monedas
+            billetes_monedas,
+            conceptos_operaciones_caja,
+            mi_cuenta,
         } = this.props;
+        let conceptos_cierre = null;
+        if (_.size(conceptos_operaciones_caja) > 0) {
+            conceptos_cierre = _.pickBy(conceptos_operaciones_caja, e => mi_cuenta.punto_venta_actual.conceptos_operaciones_caja_cierre.includes(e.id))
+        }
         switch (step) {
             case 0:
                 return <DolaresTarjetas
@@ -237,6 +291,14 @@ class CierreCajaPanel extends Component {
                         billetes_monedas={billetes_monedas}
                     />
                 </EntregaEfectivo>;
+            case 3:
+                return <Requerimientos
+                    onChangeOperacionCaja={this.onChangeOperacionCaja}
+                    operaciones_caja={operaciones_caja}
+                    getBack={this.handleBack}
+                    onSubmit={this.handleNext}
+                    conceptos_cierre={conceptos_cierre}
+                />;
             default:
                 return <div>Otro desconocido</div>;
         }
@@ -244,12 +306,16 @@ class CierreCajaPanel extends Component {
 
     onSubmit() {
         const cierre = this.state;
+        const {hacerCierrePuntoVenta, mi_cuenta: {punto_venta_actual: {id}}} = this.props;
         const cierre2 = {
             denominaciones_base: _.map(cierre.denominaciones_base, e => {
                 return {cantidad: e.cantidad, valor: e.valor, tipo: e.tipo}
             }),
             denominaciones_entrega: _.map(cierre.denominaciones_entrega, e => {
                 return {cantidad: e.cantidad, valor: e.valor, tipo: e.tipo}
+            }),
+            operaciones_caja: _.map(cierre.operaciones_caja, e => {
+                return {id: e.id, valor: e.valor}
             }),
             cierre_para_arqueo: {
                 valor_en_tarjetas: cierre.valor_en_tarjetas,
@@ -258,33 +324,25 @@ class CierreCajaPanel extends Component {
                 dolares_tasa: cierre.dolares_tasa
             }
         };
-        console.log(cierre2)
+        hacerCierrePuntoVenta(id, cierre2)
     }
 
     render() {
         const {
             pristine,
             submitting,
-            reset,
-            initialValues,
-            onSubmit,
             onCancel,
-            handleSubmit,
             modal_open,
-            error,
-            classes
+            classes,
+            mi_cuenta,
+            puntos_ventas_turnos
         } = this.props;
-        const steps = ['Dolares y Tarjetas', 'Entrega Efectivo', 'Entrega Base'];
+        console.log(puntos_ventas_turnos);
+        const steps = ['Dolares y Tarjetas', 'Entrega Efectivo', 'Entrega Base', 'Requerimientos'];
         const {
-            activeStep,
-            denominaciones_base,
-            denominaciones_entrega,
-            dolares_cantidad,
-            dolares_tasa,
-            valor_en_tarjetas
+            activeStep
         } = this.state;
-        const suma_base = _.map(denominaciones_base, e => e.total).reduce((acu, ele) => acu + ele, 0);
-        const suma_efectivo = _.map(denominaciones_entrega, e => e.total).reduce((acu, ele) => acu + ele, 0);
+
         return (
             <Dialog
                 fullScreen={true}
@@ -307,24 +365,19 @@ class CierreCajaPanel extends Component {
                             })}
                         </Stepper>
                         <div>
-                            {activeStep === steps.length ? (
-                                <Resumen
-                                    getBack={this.handleBack}
-                                    onSubmit={this.onSubmit}
-                                    handleReset={this.handleReset}
-                                >
-                                    Total Base: {pesosColombianos(suma_base)}<br/>
-                                    Total Efectivo: {pesosColombianos(suma_efectivo)}<br/>
-                                    Total Dolares: {pesosColombianos(dolares_cantidad * dolares_tasa)}<br/>
-                                    Total Tarjetas: {pesosColombianos(dolares_cantidad * dolares_tasa)}<br/>
-                                    Total Tarjetas: {pesosColombianos(valor_en_tarjetas)}<br/>
-                                    Total Entrega: {pesosColombianos(suma_base + suma_efectivo)}<br/>
-                                </Resumen>
-                            ) : (
-                                <div>
-                                    {this.getStepContent(activeStep)}
-                                </div>
-                            )}
+                            {
+                                activeStep === steps.length ? (
+                                    <Resumen
+                                        estados={this.state}
+                                        getBack={this.handleBack}
+                                        onSubmit={this.onSubmit}
+                                        handleReset={this.handleReset}
+                                    />
+                                ) : (
+                                    <div>
+                                        {this.getStepContent(activeStep)}
+                                    </div>
+                                )}
                         </div>
                     </div>
                 </DialogContent>
@@ -345,7 +398,10 @@ class CierreCajaPanel extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        billetes_monedas: state.billetes_monedas
+        mi_cuenta: state.mi_cuenta,
+        puntos_ventas_turnos: state.puntos_ventas_turnos,
+        billetes_monedas: state.billetes_monedas,
+        conceptos_operaciones_caja: state.conceptos_operaciones_caja
     }
 }
 

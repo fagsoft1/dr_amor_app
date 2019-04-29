@@ -1,15 +1,13 @@
 import React from "react";
-import Checkbox from '@material-ui/core/Checkbox';
 import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
-import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
-import {Link} from 'react-router-dom'
 
 import ReactTable from "react-table";
+import {Link} from "react-router-dom";
+import IconButtonTableSee from "../../../../../00_utilities/components/ui/icon/table_icon_button_detail";
 
 class Tabla extends React.Component {
     render() {
-
         const data = this.props.data;
         const {
             updateItem,
@@ -18,7 +16,6 @@ class Tabla extends React.Component {
             onSelectItemEdit,
             permisos_object
         } = this.props;
-
 
         return (
             <ReactTable
@@ -52,18 +49,16 @@ class Tabla extends React.Component {
                     {
                         Header: "Opciones",
                         columns: [
-                            // {
-                            //     Header: "Activo",
-                            //     accessor: "is_active",
-                            //     show: permisos_object.make_user_active,
-                            //     maxWidth: 60,
-                            //     Cell: row => (
-                            //         <Checkbox
-                            //             checked={row.value}
-                            //             onChange={() => updateItem({...row.original, is_active: !row.value})}
-                            //         />
-                            //     )
-                            // },
+                            {
+                                Header: "Ver",
+                                show: permisos_object.detail,
+                                maxWidth: 60,
+                                Cell: row =>
+                                    <Link to={`/app/admin/puntos_ventas/puntos_ventas/detail/${row.original.id}`}>
+                                        <IconButtonTableSee/>
+                                    </Link>
+
+                            },
                             {
                                 Header: "Elimi.",
                                 show: permisos_object.delete,

@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
-import {MyTextFieldSimple, MyCombobox} from '../../../../../../00_utilities/components/ui/forms/fields';
+import {
+    MyTextFieldSimple,
+    MyCombobox
+} from '../../../../../../00_utilities/components/ui/forms/fields';
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
@@ -30,7 +33,7 @@ class Form extends Component {
                 modal_open={modal_open}
                 pristine={pristine}
                 element_type={singular_name}
-                fullScreen = {false}
+                fullScreen={false}
                 error={error}
             >
                 <MyTextFieldSimple
