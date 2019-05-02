@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, Sum, OuterRef, Subquery, DecimalField, ExpressionWrapper, F
+from django.db.models import Q, Sum, OuterRef, Subquery, DecimalField, ExpressionWrapper, F, When, Case
 from django.db.models.functions import Coalesce
 
 
@@ -73,6 +73,7 @@ class CuentaMeseroManager(models.Manager):
             tipo=2,
             propietario__tercero__es_colaborador=True
         ).annotate(
+            saldo_anterior=F('cuenta_anterior__liquidacion__saldo'),
             valor_ventas_productos=Coalesce(Sum('compras_productos__productos__precio_total'), 0)
         )
 
@@ -88,7 +89,7 @@ class CuentaAcompananteManager(models.Manager):
         from servicios.models import Servicio
         from cajas.models import OperacionCaja
 
-        ingresos_por_operaciones_caja = OperacionCaja.objects.values('cuenta__id').filter(
+        cxp_por_operaciones_caja = OperacionCaja.objects.values('cuenta__id').filter(
             valor__gt=0,
             cuenta__id=OuterRef('id')
         ).annotate(
@@ -97,7 +98,7 @@ class CuentaAcompananteManager(models.Manager):
             )
         )
 
-        egresos_por_operaciones_caja = OperacionCaja.objects.values('cuenta__id').filter(
+        cxc_por_operaciones_caja = OperacionCaja.objects.values('cuenta__id').filter(
             valor__lt=0,
             cuenta__id=OuterRef('id')
         ).annotate(
@@ -118,42 +119,56 @@ class CuentaAcompananteManager(models.Manager):
             tipo=1,
             propietario__tercero__es_acompanante=True
         ).annotate(
-            ingreso_por_servicios=Coalesce(
+            cxp_por_servicios=Coalesce(
                 ExpressionWrapper(
                     Subquery(servicios.values('valor_servicios')),
                     output_field=DecimalField(max_digits=2)
                 ),
                 0
             ),
-            ingreso_por_comisiones_habitacion=Coalesce(
+            cxp_por_comisiones_habitacion=Coalesce(
                 ExpressionWrapper(
                     Subquery(servicios.values('valor_comisiones')),
                     output_field=DecimalField(max_digits=2)
                 ),
                 0
             ),
-            ingresos_por_operaciones_caja=Coalesce(
+            cxp_por_operaciones_caja=Coalesce(
                 ExpressionWrapper(
-                    Subquery(ingresos_por_operaciones_caja.values('valor')),
-                    output_field=DecimalField(max_digits=2)
+                    Subquery(cxp_por_operaciones_caja.values('valor')),
+                    output_field=DecimalField(max_digits=12)
                 ),
                 0
             ),
-            egreso_por_compras_productos=Coalesce(
+            cxc_por_compras_productos=Coalesce(
                 Sum('compras_productos__productos__precio_total'),
                 0
             ),
-            egresos_por_operaciones_caja=Coalesce(
+            cxc_por_operaciones_caja=Coalesce(
                 ExpressionWrapper(
-                    Subquery(egresos_por_operaciones_caja.values('valor')),
-                    output_field=DecimalField(max_digits=2)
+                    Subquery(cxc_por_operaciones_caja.values('valor')),
+                    output_field=DecimalField(max_digits=12)
                 ),
                 0
-            )
+            ),
+            saldo_anterior_cxp=Case(
+                When(
+                    cuenta_anterior__liquidacion__saldo__gt=0,
+                    then=F('cuenta_anterior__liquidacion__saldo')
+                ),
+                default=0,
+                output_field=DecimalField()),
+            saldo_anterior_cxc=Case(
+                When(
+                    cuenta_anterior__liquidacion__saldo__lt=0,
+                    then=F('cuenta_anterior__liquidacion__saldo') * -1
+                ),
+                default=0,
+                output_field=DecimalField()),
         ).annotate(
-            total_egresos=F('egreso_por_compras_productos') + F('egresos_por_operaciones_caja'),
-            total_ingresos=F('ingreso_por_servicios') + F('ingreso_por_comisiones_habitacion') + F(
-                'ingresos_por_operaciones_caja')
+            cxc_total=F('cxc_por_compras_productos') + F('cxc_por_operaciones_caja') + F('saldo_anterior_cxc'),
+            cxp_total=F('cxp_por_servicios') + F('cxp_por_comisiones_habitacion') + F(
+                'cxp_por_operaciones_caja') + F('saldo_anterior_cxp')
         )
 
     def liquidada(self):
@@ -167,8 +182,8 @@ class CuentaColaboradorManager(models.Manager):
     def get_queryset(self):
         from cajas.models import OperacionCaja
 
-        ingresos_por_operaciones_caja = OperacionCaja.objects.values('cuenta__id').filter(
-            valor__gt=0,
+        cxp_por_operaciones_caja = OperacionCaja.objects.values('cuenta__id').filter(
+            tipo_cuenta='CXP',
             cuenta__id=OuterRef('id')
         ).annotate(
             valor=Coalesce(
@@ -176,8 +191,8 @@ class CuentaColaboradorManager(models.Manager):
             )
         )
 
-        egresos_por_operaciones_caja = OperacionCaja.objects.values('cuenta__id').filter(
-            valor__lt=0,
+        cxc_por_operaciones_caja = OperacionCaja.objects.values('cuenta__id').filter(
+            tipo_cuenta='CXC',
             cuenta__id=OuterRef('id')
         ).annotate(
             valor=Coalesce(
@@ -189,27 +204,28 @@ class CuentaColaboradorManager(models.Manager):
             tipo=1,
             propietario__tercero__es_colaborador=True
         ).annotate(
-            ingresos_por_operaciones_caja=Coalesce(
+            cxp_por_operaciones_caja=Coalesce(
                 ExpressionWrapper(
-                    Subquery(ingresos_por_operaciones_caja.values('valor')),
+                    Subquery(cxp_por_operaciones_caja.values('valor')),
                     output_field=DecimalField(max_digits=2)
                 ),
                 0
             ),
-            egreso_por_compras_productos=Coalesce(
+            cxc_por_compras_productos=Coalesce(
                 Sum('compras_productos__productos__precio_total'),
                 0
             ),
-            egresos_por_operaciones_caja=Coalesce(
+            cxc_por_operaciones_caja=Coalesce(
                 ExpressionWrapper(
-                    Subquery(egresos_por_operaciones_caja.values('valor')),
+                    Subquery(cxc_por_operaciones_caja.values('valor')),
                     output_field=DecimalField(max_digits=2)
                 ),
                 0
-            )
+            ),
+            saldo_anterior=F('cuenta_anterior__liquidacion__saldo')
         ).annotate(
-            total_egresos=F('egreso_por_compras_productos') + F('egresos_por_operaciones_caja'),
-            total_ingresos=F('ingresos_por_operaciones_caja')
+            cxc_total=F('cxc_por_compras_productos') + F('cxc_por_operaciones_caja'),
+            cxp_total=F('cxp_por_operaciones_caja')
         )
 
     def liquidada(self):

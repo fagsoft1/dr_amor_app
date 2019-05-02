@@ -10,7 +10,107 @@ from terceros.services import (
     colaborador_crear,
     acompanante_encriptar
 )
-from .models import Tercero
+from .models import Tercero, Cuenta
+from servicios.api_serializers import ServicioSerializer
+from cajas.api_serializers import OperacionCajaSerializer
+from ventas.api_serializers import VentaProductoConDetalleSerializer
+
+
+class CuentaSerializer(serializers.ModelSerializer):
+    nombre = serializers.CharField(source='propietario.tercero.full_name_proxy', read_only=True)
+    es_acompanante = serializers.BooleanField(source='propietario.tercero.es_acompanante', read_only=True)
+    es_colaborador = serializers.BooleanField(source='propietario.tercero.es_colaborador', read_only=True)
+    es_proveedor = serializers.BooleanField(source='propietario.tercero.es_proveedor', read_only=True)
+    presente = serializers.BooleanField(source='propietario.tercero.presente', read_only=True)
+
+    class Meta:
+        model = Cuenta
+        fields = [
+            'id',
+            'nombre',
+            'es_acompanante',
+            'es_colaborador',
+            'es_proveedor',
+            'presente',
+            'liquidada',
+            'tipo',
+        ]
+
+
+class CuentaAcompananteSerializer(serializers.ModelSerializer):
+    nombre = serializers.CharField(source='propietario.tercero.full_name_proxy', read_only=True)
+    es_acompanante = serializers.BooleanField(source='propietario.tercero.es_acompanante', read_only=True)
+    es_colaborador = serializers.BooleanField(source='propietario.tercero.es_colaborador', read_only=True)
+    es_proveedor = serializers.BooleanField(source='propietario.tercero.es_proveedor', read_only=True)
+    presente = serializers.BooleanField(source='propietario.tercero.presente', read_only=True)
+
+    saldo_anterior_cxp = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        read_only=True
+    )
+    saldo_anterior_cxc = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        read_only=True
+    )
+    pagado = serializers.DecimalField(
+        source='liquidacion.pagado',
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        read_only=True
+    )
+    saldo = serializers.DecimalField(
+        source='liquidacion.saldo',
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        read_only=True
+    )
+
+    cxp_por_servicios = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    cxp_por_comisiones_habitacion = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    cxp_por_operaciones_caja = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    cxc_por_compras_productos = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    cxc_por_operaciones_caja = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    cxc_total = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    cxp_total = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    class Meta:
+        model = Cuenta
+        fields = [
+            'id',
+            'nombre',
+            'es_acompanante',
+            'es_colaborador',
+            'es_proveedor',
+            'presente',
+            'compras_productos',
+            'operaciones_caja',
+            'servicios',
+            'pagado',
+            'saldo_anterior_cxc',
+            'saldo_anterior_cxp',
+            'saldo',
+            'liquidada',
+            'tipo',
+            'cxp_por_servicios',
+            'cxp_por_comisiones_habitacion',
+            'cxp_por_operaciones_caja',
+            'cxc_por_compras_productos',
+            'cxc_por_operaciones_caja',
+            'cxc_total',
+            'cxp_total',
+        ]
+
+
+class CuentaAcompananteDetalleSerializer(CuentaAcompananteSerializer):
+    servicios = ServicioSerializer(many=True)
+    operaciones_caja = OperacionCajaSerializer(many=True)
+    compras_productos = VentaProductoConDetalleSerializer(many=True)
 
 
 class TerceroSerializer(serializers.ModelSerializer):

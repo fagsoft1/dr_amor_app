@@ -6,6 +6,11 @@ from terceros.models import Cuenta
 
 
 class LiquidacionCuenta(TimeStampedModel):
+    TIPO_CUENTA_CHOICES = (
+        ('ACOMPANANTE', 'Acompañante'),
+        ('COLABORADOR', 'Colaborador'),
+        ('MESERO', 'Mesero'),
+    )
     creado_por = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
@@ -18,6 +23,7 @@ class LiquidacionCuenta(TimeStampedModel):
         related_name='liquidaciones',
         null=True
     )
+    tipo_cuenta = models.CharField(choices=TIPO_CUENTA_CHOICES, max_length=30)
     cuenta = models.OneToOneField(Cuenta, null=True, blank=True, on_delete=models.PROTECT, related_name='liquidacion')
     saldo_anterior = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     a_pagar_a_tercero = models.DecimalField(max_digits=10, decimal_places=2, default=0)

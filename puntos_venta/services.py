@@ -132,7 +132,6 @@ def punto_venta_cerrar(
                         concepto_id=id_concepto,
                         usuario_pdv_id=usuario_pv_id,
                         valor=valor,
-                        descripcion=concepto.descripcion,
                         observacion='Desde cierre de caja'
                     )
 

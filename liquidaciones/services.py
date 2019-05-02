@@ -48,7 +48,8 @@ def liquidar_cuenta_mesero(
         pagado=entregado,
         efectivo=valor_efectivo,
         tarjeta_o_transferencia=valor_tarjetas,
-        saldo=saldo
+        saldo=saldo,
+        tipo_cuenta='MESERO'
     )
     transaccion_caja_liquidacion_cuenta_mesero(
         liquidacion_mesero_id=liquidacion_cuenta.id,
@@ -83,12 +84,24 @@ def liquidar_cuenta_mesero_generar_comprobante(
 
 def liquidar_cuenta_acompanante(
         acompanante_id: int,
-        punto_venta_turno_id,
+        usuario_pdv_id,
         valor_transferencia: float = 0,
         valor_efectivo: float = 0
 ) -> LiquidacionCuenta:
     from cajas.services import transaccion_caja_liquidacion_cuenta_acompanante
     from terceros.models import Cuenta
+    usuario = User.objects.get(pk=usuario_pdv_id)
+
+    if not hasattr(usuario, 'tercero'):
+        raise serializers.ValidationError(
+            {'_error': 'Para poder liquidar una cuenta, el usuario del punto de venta debe tener un tercero'}
+        )
+
+    punto_venta_turno = usuario.tercero.turno_punto_venta_abierto
+    if not punto_venta_turno:
+        raise serializers.ValidationError(
+            {'_error': 'El colaborador debe de tener un turno de punto de venta abierto para poder liquidar una cuenta'}
+        )
 
     acompanante = Tercero.objects.get(pk=acompanante_id)
     if not acompanante.es_acompanante:
@@ -101,40 +114,41 @@ def liquidar_cuenta_acompanante(
 
     cuenta_actual = Cuenta.cuentas_acompanantes.sin_liquidar().filter(
         propietario__tercero__id=acompanante_id
-    ).first()
+    ).last()
 
     if not cuenta_actual:
         raise serializers.ValidationError(
             {'_error': 'No hay nada para liquidar para acompañante'})
 
-    valor_a_pagar_a_acompanante = cuenta_actual.total_ingresos
-    valor_a_cobrar_a_acompanante = cuenta_actual.total_egresos
+    cxp_a_acompanante = cuenta_actual.cxp_total
+    cxc_a_acompanante = cuenta_actual.cxc_total
 
-    liquidacion_anterior = acompanante.ultima_cuenta_liquidada
-    saldo_anterior = liquidacion_anterior.liquidacion.saldo if liquidacion_anterior else 0
-    valor_a_entregar = valor_a_pagar_a_acompanante - valor_a_cobrar_a_acompanante
+    cuenta_anterior = acompanante.ultima_cuenta_liquidada
+    saldo_anterior = cuenta_anterior.liquidacion.saldo if cuenta_anterior else 0
+    valor_a_entregar = cxp_a_acompanante - cxc_a_acompanante
     pagado = valor_transferencia + valor_efectivo
 
-    saldo = valor_a_entregar - pagado + saldo_anterior
+    saldo = valor_a_entregar - pagado
 
     cuenta_actual.liquidada = True
     cuenta_actual.save()
 
     liquidacion_cuenta = LiquidacionCuenta.objects.create(
-        punto_venta_turno_id=punto_venta_turno_id,
+        punto_venta_turno_id=punto_venta_turno.id,
         cuenta=cuenta_actual,
         saldo_anterior=saldo_anterior,
-        a_cobrar_a_tercero=valor_a_cobrar_a_acompanante,
-        a_pagar_a_tercero=valor_a_pagar_a_acompanante,
+        a_cobrar_a_tercero=cxc_a_acompanante,
+        a_pagar_a_tercero=cxp_a_acompanante,
         pagado=pagado,
         efectivo=valor_efectivo,
         tarjeta_o_transferencia=valor_transferencia,
-        saldo=saldo
+        saldo=saldo,
+        tipo_cuenta='ACOMPANANTE'
     )
     if valor_efectivo > 0:
         transaccion_caja_liquidacion_cuenta_acompanante(
             liquidacion_mesero_id=liquidacion_cuenta.id,
-            punto_venta_turno_id=punto_venta_turno_id,
+            punto_venta_turno_id=punto_venta_turno.id,
             valor_efectivo=valor_efectivo
         )
 
@@ -196,8 +210,8 @@ def liquidar_cuenta_colaborador(
         raise serializers.ValidationError(
             {'_error': 'No hay nada para liquidar para colaborador'})
 
-    valor_a_pagar_a_colaborador = cuenta_actual.total_ingresos
-    valor_a_cobrar_a_colaborador = cuenta_actual.total_egresos
+    valor_a_pagar_a_colaborador = cuenta_actual.cxp_total
+    valor_a_cobrar_a_colaborador = cuenta_actual.cxc_total
 
     liquidacion_anterior = colaborador.ultima_cuenta_liquidada
     saldo_anterior = liquidacion_anterior.liquidacion.saldo if liquidacion_anterior else 0
@@ -217,7 +231,8 @@ def liquidar_cuenta_colaborador(
         pagado=cobrado,
         efectivo=0,
         tarjeta_o_transferencia=0,
-        saldo=saldo
+        saldo=saldo,
+        tipo_cuenta='COLABORADOR'
     )
 
     return liquidacion_cuenta

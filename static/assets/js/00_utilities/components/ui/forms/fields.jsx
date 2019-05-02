@@ -315,9 +315,9 @@ const renderSelect = (
                 onChange={input.onChange}
                 onBlur={() => input.onBlur(input.value)}
                 options={options}
-                placeholder={nombre}
                 valueKey={valueKey}
                 labelKey={labelKey}
+                placeholder={nombre}
                 isDisabled={isDisabled}
                 simpleValue
             />

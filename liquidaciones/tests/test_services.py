@@ -173,6 +173,45 @@ class LiquidacionServicesTests(BaseTest):
     # endregion
 
     # region Liquidaciones Acompañantes
+    def test_liquidar_cuenta_acompanante_colaborador_con_turno_abierto(self):
+        from ..services import liquidar_cuenta_acompanante
+        self.hacer_venta_productos_dos(
+            punto_venta=self.punto_venta,
+            nro_referencias=1,
+            cliente=self.acompanante
+        )
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'El colaborador debe de tener un turno de punto de venta abierto para poder liquidar una cuenta'}"
+        ):
+            liquidar_cuenta_acompanante(
+                usuario_pdv_id=self.colaborador_mesero.usuario.id,
+                valor_efectivo=70000,
+                acompanante_id=self.acompanante.id,
+                valor_transferencia=100000
+            )
+
+    def test_liquidar_cuenta_acompanante_usuario_con_tercero(self):
+        from ..services import liquidar_cuenta_acompanante
+        self.hacer_venta_productos_dos(
+            punto_venta=self.punto_venta,
+            nro_referencias=1,
+            cliente=self.acompanante
+        )
+        usuario = self.colaborador_mesero.usuario
+        self.colaborador_mesero.usuario = None
+        self.colaborador_mesero.save()
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Para poder liquidar una cuenta, el usuario del punto de venta debe tener un tercero'}"
+        ):
+            liquidar_cuenta_acompanante(
+                usuario_pdv_id=usuario.id,
+                valor_efectivo=70000,
+                acompanante_id=self.acompanante.id,
+                valor_transferencia=100000
+            )
+
     def test_liquidar_cuenta_acompanante_solo_presentes(self):
         from ..services import liquidar_cuenta_acompanante
 
@@ -184,7 +223,7 @@ class LiquidacionServicesTests(BaseTest):
                 "{'_error': 'Sólo se puede liquidar cuenta a una acompanante presente'}"
         ):
             liquidar_cuenta_acompanante(
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
                 valor_efectivo=70000,
                 acompanante_id=self.acompanante.id,
                 valor_transferencia=100000
@@ -197,7 +236,7 @@ class LiquidacionServicesTests(BaseTest):
                 "{'_error': 'Sólo se puede liquidar una cuenta a un tercero que sea acompanante'}"
         ):
             liquidar_cuenta_acompanante(
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
                 valor_efectivo=70000,
                 acompanante_id=self.colaborador_dos.id,
                 valor_transferencia=100000
@@ -210,7 +249,7 @@ class LiquidacionServicesTests(BaseTest):
                 "{'_error': 'No hay nada para liquidar para acompañante'}"
         ):
             liquidar_cuenta_acompanante(
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
                 valor_efectivo=70000,
                 acompanante_id=self.acompanante.id,
                 valor_transferencia=100000
@@ -245,13 +284,13 @@ class LiquidacionServicesTests(BaseTest):
         )
 
         cuenta = qs_cuenta.sin_liquidar().first()
-        ingresos_acompanante = cuenta.total_ingresos
-        egresos_acompanante = cuenta.total_egresos
+        ingresos_acompanante = cuenta.cxp_total
+        egresos_acompanante = cuenta.cxc_total
 
         valor_a_pagar_a_acompanante = ingresos_acompanante - egresos_acompanante
 
         liquidacion_cuenta_uno = liquidar_cuenta_acompanante(
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             valor_efectivo=valor_a_pagar_a_acompanante,
             acompanante_id=self.acompanante.id
         )
@@ -301,7 +340,7 @@ class LiquidacionServicesTests(BaseTest):
             cantidad_operaciones=1
         )
         liquidar_cuenta_acompanante(
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             valor_efectivo=1,
             acompanante_id=self.acompanante_dos.id
         )
@@ -309,14 +348,14 @@ class LiquidacionServicesTests(BaseTest):
         # ------------------
 
         cuenta = qs_cuenta.sin_liquidar().first()
-        ingresos_acompanante = cuenta.total_ingresos
-        egresos_acompanante = cuenta.total_egresos
+        ingresos_acompanante = cuenta.cxp_total
+        egresos_acompanante = cuenta.cxc_total
 
         valor_a_pagar_a_acompanante = int((ingresos_acompanante - egresos_acompanante) / 3)
         valor_a_deber_a_acompanante_dos = ingresos_acompanante - egresos_acompanante - valor_a_pagar_a_acompanante
 
         liquidacion_cuenta_dos = liquidar_cuenta_acompanante(
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             valor_efectivo=valor_a_pagar_a_acompanante,
             acompanante_id=self.acompanante.id
         )
@@ -344,7 +383,7 @@ class LiquidacionServicesTests(BaseTest):
         )
 
         liquidacion_cuenta_tres = liquidar_cuenta_acompanante(
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             valor_efectivo=100000,
             acompanante_id=self.acompanante.id
         )
@@ -417,8 +456,8 @@ class LiquidacionServicesTests(BaseTest):
         )
 
         cuenta = qs_cuenta.sin_liquidar().first()
-        ingresos = cuenta.total_ingresos
-        egresos = cuenta.total_egresos
+        ingresos = cuenta.cxp_total
+        egresos = cuenta.cxc_total
 
         valor_a_tramitar = egresos - ingresos
 
@@ -470,8 +509,8 @@ class LiquidacionServicesTests(BaseTest):
         )
 
         cuenta = qs_cuenta.sin_liquidar().first()
-        ingresos = cuenta.total_ingresos
-        egresos = cuenta.total_egresos
+        ingresos = cuenta.cxp_total
+        egresos = cuenta.cxc_total
 
         valor_a_tramitar_dos = int((egresos - ingresos) / 3)
         saldo_dos = egresos - ingresos - valor_a_tramitar_dos
@@ -498,8 +537,8 @@ class LiquidacionServicesTests(BaseTest):
         )
 
         cuenta = qs_cuenta.sin_liquidar().first()
-        ingresos = cuenta.total_ingresos
-        egresos = cuenta.total_egresos
+        ingresos = cuenta.cxp_total
+        egresos = cuenta.cxc_total
 
         valor_a_tramitar_tres = int(egresos - ingresos) + liquidacion_cuenta_dos.saldo
 

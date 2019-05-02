@@ -323,6 +323,10 @@ def servicio_solicitar_anular(
     servicio.estado = 4
     servicio.hora_anulacion = timezone.now()
     servicio.observacion_anulacion = observacion_anulacion
+    servicio.valor_servicio = 0
+    servicio.valor_habitacion = 0
+    servicio.valor_iva_habitacion = 0
+    servicio.comision = 0
 
     servicio_anterior = servicio.servicio_anterior
     servicio_siguiente = None

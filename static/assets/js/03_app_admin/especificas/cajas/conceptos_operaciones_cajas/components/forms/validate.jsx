@@ -5,6 +5,7 @@ const validate = values => {
         'descripcion',
         'tipo',
         'grupo',
+        'tipo_cuenta',
     ];
     requiredFields.map(field => {
         if (!values[field]) {

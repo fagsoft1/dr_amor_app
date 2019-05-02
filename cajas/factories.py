@@ -13,6 +13,7 @@ class ConceptoOperacionCajaFactory(factory.django.DjangoModelFactory):
         model = ConceptoOperacionCaja
 
     tipo = random.choice(['I', 'E'])
+    tipo_cuenta = random.choice(['CXC', 'CXP', 'NA'])
     grupo = random.choice(['A', 'C', 'P', 'T', 'O'])
     descripcion = factory.Sequence(lambda n: 'descripcion %d' % n)
 

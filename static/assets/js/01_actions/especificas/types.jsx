@@ -1,3 +1,22 @@
+export const LIQUIDACION_CUENTA_TYPES = {
+    create: 'create_liquidacion_cuenta',
+    delete: 'delete_liquidacion_cuenta',
+    fetch_all: 'fetch_liquidaciones_cuentas',
+    fetch: 'fetch_liquidacion_cuenta',
+    clear: 'clear_liquidaciones_cuentas',
+    update: 'update_liquidacion_cuenta',
+};
+
+export const TERCERO_CUENTA_TYPES = {
+    create: 'create_tercero_cuenta',
+    delete: 'delete_tercero_cuenta',
+    fetch_all: 'fetch_terceros_cuentas',
+    fetch: 'fetch_tercero_cuenta',
+    clear: 'clear_terceros_cuentas',
+    update: 'update_tercero_cuenta',
+};
+
+
 export const PUNTO_VENTA_TURNO_TYPES = {
     create: 'create_punto_venta_turno',
     delete: 'delete_punto_venta_turno',

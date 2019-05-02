@@ -13,11 +13,10 @@
         <p>
             Por ventas realizadas desde {{ liquidacion.cuenta.created }} hasta {{ liquidacion.created }}
         </p>
-        <span style="font-weight: bold">Saldo anterior: </span>{{ liquidacion.saldo_anterior|floatformat:0 }}<br/>
         <span style="font-weight: bold">Ingresos: </span>{{ liquidacion.a_pagar_a_tercero|floatformat:0 }}<br/>
         <span style="font-weight: bold">Egresos: </span>-{{ liquidacion.a_cobrar_a_tercero|floatformat:0 }}<br/>
         <span style="font-weight: bold">A Pagar: </span>
-        {{ liquidacion.a_pagar_a_tercero|add:liquidacion.saldo_anterior|sub:liquidacion.a_cobrar_a_tercero|floatformat:0 }}
+        {{ liquidacion.a_pagar_a_tercero|sub:liquidacion.a_cobrar_a_tercero|floatformat:0 }}
         <br/>
         <br/>
         <br/>

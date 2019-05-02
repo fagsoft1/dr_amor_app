@@ -396,7 +396,6 @@ class BaseTest(TestCase):
             operacion_caja_crear(
                 concepto_id=concepto_egreso.id,
                 usuario_pdv_id=colaborador_cajero.usuario.id,
-                descripcion='algo egreso %s' % i,
                 valor=valor_egreso,
                 tercero_id=tercero.id if tercero else None,
                 observacion='probando'
@@ -405,7 +404,6 @@ class BaseTest(TestCase):
             operacion_caja_crear(
                 concepto_id=concepto_ingreso.id,
                 usuario_pdv_id=colaborador_cajero.usuario.id,
-                descripcion='algo ingreso %s' % i,
                 valor=valor_ingreso,
                 tercero_id=tercero.id if tercero else None,
                 observacion='probando'
@@ -827,9 +825,9 @@ class BaseTest(TestCase):
         # region Genera Liquidaciones
         liquidacion_cuenta_acompanante = liquidar_cuenta_acompanante(
             acompanante_id=self.acompanante.id,
-            punto_venta_turno_id=punto_venta.usuario_actual.tercero.turno_punto_venta_abierto.id,
+            usuario_pdv_id=punto_venta.usuario_actual.tercero.turno_punto_venta_abierto.id,
             valor_efectivo=(
-                                   self.acompanante.cuenta_abierta.total_ingresos - self.acompanante.cuenta_abierta.total_egresos) - 10000
+                                       self.acompanante.cuenta_abierta.cxp_total - self.acompanante.cuenta_abierta.cxc_total) - 10000
         )
 
         a_cobrar_a_mesero = self.colaborador_mesero.cuenta_abierta_mesero.valor_ventas_productos
@@ -848,15 +846,15 @@ class BaseTest(TestCase):
 
         total_valor_egresos = egreso_liquidacion_acompanante + valor_egresos_operaciones_caja
 
-        total_ingresos_en_efectivo = a_cobrar_a_mesero_efectivo + valor_ingresos_por_servicios_efectivo + valor_venta_producto_efectivo + valor_ingresos_operaciones_caja
-        total_ingresos_en_tarjeta = valor_ingresos_por_servicios_tarjeta + a_cobrar_a_mesero_tarjeta
-        total_ingresos = total_ingresos_en_efectivo + total_ingresos_en_tarjeta
+        cxp_total_en_efectivo = a_cobrar_a_mesero_efectivo + valor_ingresos_por_servicios_efectivo + valor_venta_producto_efectivo + valor_ingresos_operaciones_caja
+        cxp_total_en_tarjeta = valor_ingresos_por_servicios_tarjeta + a_cobrar_a_mesero_tarjeta
+        cxp_total = cxp_total_en_efectivo + cxp_total_en_tarjeta
 
         informacion = {
             'ingresos': {
-                'totales': total_ingresos,
-                'totales_efectivo': total_ingresos_en_efectivo,
-                'totales_tarjeta': total_ingresos_en_tarjeta,
+                'totales': cxp_total,
+                'totales_efectivo': cxp_total_en_efectivo,
+                'totales_tarjeta': cxp_total_en_tarjeta,
             },
             'egresos': {
                 'totales': total_valor_egresos

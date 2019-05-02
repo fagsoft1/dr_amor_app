@@ -158,7 +158,8 @@ class Tercero(models.Model):
             )
         cuenta = cuenta_sin_liquidar.first()
         if not cuenta:
-            self.usuario.cuentas.create(liquidada=False, tipo=2)
+            ultima_cuenta_liquidada = self.ultima_cuenta_mesero_liquidada
+            self.usuario.cuentas.create(liquidada=False, tipo=2, cuenta_anterior=ultima_cuenta_liquidada)
             cuenta = cuenta_sin_liquidar.first()
         return cuenta
 
@@ -207,7 +208,8 @@ class Tercero(models.Model):
                 )
         cuenta = cuentas_sin_liquidar.last()
         if not cuenta:
-            self.usuario.cuentas.create(liquidada=False, tipo=1)
+            ultima_cuenta_liquidada = self.ultima_cuenta_liquidada
+            self.usuario.cuentas.create(liquidada=False, tipo=1, cuenta_anterior=ultima_cuenta_liquidada)
             cuenta = cuentas_sin_liquidar.last()
         return cuenta
 
@@ -253,10 +255,13 @@ class Cuenta(TimeStampedModel):
         (1, 'Propia'),
         (2, 'Mesero'),
     )
+    cuenta_anterior = models.OneToOneField(
+        'self',
+        null=True,
+        on_delete=models.PROTECT,
+        related_name='cuenta_siguiente'
+    )
     propietario = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT, related_name='cuentas')
-    saldo_anterior = models.DecimalField(decimal_places=2, max_digits=12, default=0)
-    valor_pagado = models.DecimalField(decimal_places=2, max_digits=12, default=0)
-    saldo_pasa = models.DecimalField(decimal_places=2, max_digits=12, default=0)
     liquidada = models.BooleanField(default=False, db_index=True)
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES, default=1)
 

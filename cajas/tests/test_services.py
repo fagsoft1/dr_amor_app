@@ -474,16 +474,30 @@ class OperacionCajaServicesTests(TestCase):
         from ..services import operacion_caja_crear, operacion_caja_generar_recibo
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='I',
-            grupo='A'
+            grupo='A',
+            tipo_cuenta='CXP'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.acompanante.id,
-            valor=23000,
-            descripcion='hola',
+            valor=23000
         )
         self.assertEqual(operacion_caja.valor, 23000)
+        self.assertIsNotNone(operacion_caja.cuenta)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='I',
+            grupo='A',
+            tipo_cuenta='CXC'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.acompanante.id,
+            valor=23000
+        )
+        self.assertEqual(operacion_caja.valor, -23000)
         self.assertIsNotNone(operacion_caja.cuenta)
         if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
             comprobante = operacion_caja_generar_recibo(operacion_caja.id)
@@ -493,23 +507,38 @@ class OperacionCajaServicesTests(TestCase):
 
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='E',
-            grupo='A'
+            grupo='A',
+            tipo_cuenta='CXC'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.acompanante.id,
             valor=18500,
-            descripcion='hola',
             observacion='hola'
         )
+        self.assertEqual(operacion_caja.valor, -18500)
+        self.assertIsNotNone(operacion_caja.cuenta)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='A',
+            tipo_cuenta='CXP'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.acompanante.id,
+            valor=18500,
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, 18500)
+        self.assertIsNotNone(operacion_caja.cuenta)
         if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
             comprobante = operacion_caja_generar_recibo(operacion_caja.id)
             comprobante.write_pdf(
                 target='media/pruebas_pdf/comprobante_operacion_caja_ingreso_acompanante.pdf'
             )
-        self.assertEqual(operacion_caja.valor, -18500)
-        self.assertIsNotNone(operacion_caja.cuenta)
 
     def test_operacion_caja_transacciones(self):
         from ..factories import ConceptoOperacionCajaFactory
@@ -523,7 +552,6 @@ class OperacionCajaServicesTests(TestCase):
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.acompanante.id,
             valor=1000,
-            descripcion='hola',
             observacion='hola'
         )
         transaccion_caja = operacion_caja.transacciones_caja.last()
@@ -540,7 +568,6 @@ class OperacionCajaServicesTests(TestCase):
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.acompanante.id,
             valor=2000,
-            descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.transacciones_caja.all().count(), 1)
@@ -554,32 +581,62 @@ class OperacionCajaServicesTests(TestCase):
         from ..services import operacion_caja_crear
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='I',
-            grupo='C'
+            grupo='C',
+            tipo_cuenta='CXP'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.colaborador.id,
             valor=1000,
-            descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.valor, 1000)
         self.assertIsNotNone(operacion_caja.cuenta)
 
         concepto_operacion = ConceptoOperacionCajaFactory(
-            tipo='E',
-            grupo='C'
+            tipo='I',
+            grupo='C',
+            tipo_cuenta='CXC'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.colaborador.id,
             valor=1000,
-            descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.valor, -1000)
+        self.assertIsNotNone(operacion_caja.cuenta)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='C',
+            tipo_cuenta='CXC'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.colaborador.id,
+            valor=1000,
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, -1000)
+        self.assertIsNotNone(operacion_caja.cuenta)
+
+        concepto_operacion = ConceptoOperacionCajaFactory(
+            tipo='E',
+            grupo='C',
+            tipo_cuenta='CXP'
+        )
+        operacion_caja = operacion_caja_crear(
+            concepto_id=concepto_operacion.id,
+            usuario_pdv_id=self.colaborador_pdv.usuario.id,
+            tercero_id=self.colaborador.id,
+            valor=1000,
+            observacion='hola'
+        )
+        self.assertEqual(operacion_caja.valor, 1000)
         self.assertIsNotNone(operacion_caja.cuenta)
 
     def test_operacion_caja_proveedor(self):
@@ -594,7 +651,6 @@ class OperacionCajaServicesTests(TestCase):
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.proveedor.id,
             valor=1000,
-            descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.valor, 1000)
@@ -609,7 +665,6 @@ class OperacionCajaServicesTests(TestCase):
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             tercero_id=self.proveedor.id,
             valor=1000,
-            descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.valor, -1000)
@@ -626,7 +681,6 @@ class OperacionCajaServicesTests(TestCase):
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             valor=1000,
-            descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.valor, 1000)
@@ -640,7 +694,6 @@ class OperacionCajaServicesTests(TestCase):
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             valor=1000,
-            descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.valor, -1000)
@@ -657,7 +710,6 @@ class OperacionCajaServicesTests(TestCase):
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             valor=1000,
-            descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.valor, 1000)
@@ -671,7 +723,6 @@ class OperacionCajaServicesTests(TestCase):
             concepto_id=concepto_operacion.id,
             usuario_pdv_id=self.colaborador_pdv.usuario.id,
             valor=1000,
-            descripcion='hola',
             observacion='hola'
         )
         self.assertEqual(operacion_caja.valor, -1000)
@@ -698,7 +749,6 @@ class OperacionCajaServicesTests(TestCase):
                 usuario_pdv_id=self.colaborador_pdv.usuario.id,
                 tercero_id=self.acompanante.id,
                 valor=1000,
-                descripcion='hola',
                 observacion='hola'
             )
 
@@ -717,7 +767,6 @@ class OperacionCajaServicesTests(TestCase):
                 concepto_id=concepto_operacion.id,
                 usuario_pdv_id=self.colaborador_pdv.usuario.id,
                 valor=-1000,
-                descripcion='hola',
                 observacion='hola'
             )
 
@@ -740,7 +789,6 @@ class OperacionCajaServicesTests(TestCase):
                 usuario_pdv_id=self.colaborador_pdv.usuario.id,
                 tercero_id=self.acompanante.id,
                 valor=1000,
-                descripcion='hola',
                 observacion='hola'
             )
 
@@ -759,7 +807,6 @@ class OperacionCajaServicesTests(TestCase):
                 usuario_pdv_id=self.colaborador_pdv.usuario.id,
                 tercero_id=self.acompanante.id,
                 valor=1000,
-                descripcion='hola',
                 observacion='hola'
             )
 
@@ -779,7 +826,6 @@ class OperacionCajaServicesTests(TestCase):
                 usuario_pdv_id=usuario.id,
                 tercero_id=self.colaborador_pdv.id,
                 valor=1000,
-                descripcion='hola',
                 observacion='hola'
             )
 
@@ -799,7 +845,6 @@ class OperacionCajaServicesTests(TestCase):
                 usuario_pdv_id=self.colaborador_pdv.usuario.id,
                 tercero_id=self.proveedor.id,
                 valor=1000,
-                descripcion='hola',
                 observacion='hola'
             )
 
@@ -816,7 +861,6 @@ class OperacionCajaServicesTests(TestCase):
                 usuario_pdv_id=self.colaborador_pdv.usuario.id,
                 tercero_id=self.proveedor.id,
                 valor=1000,
-                descripcion='hola',
                 observacion='hola'
             )
 
@@ -833,7 +877,6 @@ class OperacionCajaServicesTests(TestCase):
                 usuario_pdv_id=self.colaborador_pdv.usuario.id,
                 tercero_id=self.acompanante.id,
                 valor=1000,
-                descripcion='hola',
                 observacion='hola'
             )
 
@@ -849,7 +892,6 @@ class OperacionCajaServicesTests(TestCase):
                 concepto_id=concepto_operacion.id,
                 usuario_pdv_id=self.colaborador_pdv.usuario.id,
                 valor=1000,
-                descripcion='hola',
                 observacion='hola'
             )
 
@@ -866,6 +908,5 @@ class OperacionCajaServicesTests(TestCase):
                 usuario_pdv_id=self.colaborador_pdv.usuario.id,
                 tercero_id=self.acompanante.id,
                 valor=1000,
-                descripcion='hola',
                 observacion='hola'
             )

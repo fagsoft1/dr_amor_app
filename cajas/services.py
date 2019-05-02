@@ -520,7 +520,6 @@ def transaccion_caja_registrar_cambio_habitacion_menor_valor(
 def operacion_caja_crear(
         concepto_id: int,
         usuario_pdv_id: int,
-        descripcion: str,
         valor: float,
         tercero_id: int = None,
         observacion: str = '',
@@ -572,14 +571,27 @@ def operacion_caja_crear(
                 raise serializers.ValidationError({'_error': 'A quien se le crea la operación debe estar presente.'})
             cuenta = tercero.cuenta_abierta
 
+    valor_operacion = abs(valor)
+
+    if concepto_operacion_caja.tipo_cuenta == 'CXC':
+        valor_operacion = valor_operacion * -1
+        tipo_cuenta = 'CXC'
+    elif concepto_operacion_caja.tipo_cuenta == 'CXP':
+        valor_operacion = valor_operacion
+        tipo_cuenta = 'CXP'
+    else:
+        valor_operacion = valor
+        tipo_cuenta = 'NA'
+
     operacion_caja = OperacionCaja.objects.create(
         concepto_id=concepto_id,
-        valor=valor,
+        valor=valor_operacion,
         tercero_id=tercero_id,
         cuenta=cuenta,
         punto_venta_turno=punto_venta_turno,
-        descripcion=descripcion,
-        observacion=observacion
+        descripcion=concepto_operacion_caja.descripcion,
+        observacion=observacion,
+        tipo_cuenta=tipo_cuenta
     )
     if concepto_operacion_caja.tipo == 'E':
         transaccion_caja = transaccion_caja_registrar_operacion_caja_egreso(

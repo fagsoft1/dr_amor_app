@@ -13,21 +13,9 @@ const Menu = () => {
                 <Fragment>
                     <DrawerListItem
                         size='lg'
-                        link='/app/cajas/registro_operaciones/'
-                        texto='Registrar Operacionese'
-                        icono='exchange-alt'
-                    />
-                    <DrawerListItem
-                        size='lg'
                         link='/app/cajas/liquidar_acompanante'
                         texto='Liquidación Acompañante'
                         icono='female'
-                    />
-                    <DrawerListItem
-                        size='lg'
-                        link='/app/cajas/cierre_caja'
-                        texto='Cierre de Caja'
-                        icono='door-open'
                     />
                 </Fragment>
             </Fragment>

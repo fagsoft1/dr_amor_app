@@ -31,16 +31,16 @@ class ManagerCuentaTests(BaseTest):
         )
         valor_compra_productos = informacion['valor_venta']
         cuenta = qs_cuenta.sin_liquidar().first()
-        self.assertEqual(valor_compra_productos, cuenta.egreso_por_compras_productos)
+        self.assertEqual(valor_compra_productos, cuenta.cxc_por_compras_productos)
 
         valor_ingresos, valor_egresos = self.hacer_operaciones_caja_dos(self.colaborador_dos, 5)
         cuenta = qs_cuenta.sin_liquidar().first()
 
-        self.assertEqual(valor_ingresos, cuenta.ingresos_por_operaciones_caja)
-        self.assertEqual(valor_egresos, cuenta.egresos_por_operaciones_caja)
+        self.assertEqual(valor_ingresos, cuenta.cxp_por_operaciones_caja)
+        self.assertEqual(valor_egresos, cuenta.cxc_por_operaciones_caja)
 
-        self.assertEqual(valor_ingresos, cuenta.total_ingresos)
-        self.assertEqual(valor_egresos + valor_compra_productos, cuenta.total_egresos)
+        self.assertEqual(valor_ingresos, cuenta.cxp_total)
+        self.assertEqual(valor_egresos + valor_compra_productos, cuenta.cxc_total)
 
         cuenta.liquidada = True
         cuenta.save()
@@ -67,17 +67,17 @@ class ManagerCuentaTests(BaseTest):
 
         valor_ingresos2, valor_egresos2 = self.hacer_operaciones_caja_dos(self.colaborador_dos, 5)
         cuenta2 = qs_cuenta.sin_liquidar().first()
-        self.assertEqual(valor_ingresos2, cuenta2.ingresos_por_operaciones_caja)
-        self.assertEqual(valor_egresos2, cuenta2.egresos_por_operaciones_caja)
-        self.assertEqual(valor_ingresos2, cuenta2.total_ingresos)
-        self.assertEqual(valor_egresos2, cuenta2.total_egresos)
+        self.assertEqual(valor_ingresos2, cuenta2.cxp_por_operaciones_caja)
+        self.assertEqual(valor_egresos2, cuenta2.cxc_por_operaciones_caja)
+        self.assertEqual(valor_ingresos2, cuenta2.cxp_total)
+        self.assertEqual(valor_egresos2, cuenta2.cxc_total)
 
         cuenta = qs_cuenta.liquidada().last()
-        self.assertEqual(valor_compra_productos, cuenta.egreso_por_compras_productos)
-        self.assertEqual(valor_ingresos, cuenta.ingresos_por_operaciones_caja)
-        self.assertEqual(valor_egresos, cuenta.egresos_por_operaciones_caja)
-        self.assertEqual(valor_ingresos, cuenta.total_ingresos)
-        self.assertEqual(valor_egresos + valor_compra_productos, cuenta.total_egresos)
+        self.assertEqual(valor_compra_productos, cuenta.cxc_por_compras_productos)
+        self.assertEqual(valor_ingresos, cuenta.cxp_por_operaciones_caja)
+        self.assertEqual(valor_egresos, cuenta.cxc_por_operaciones_caja)
+        self.assertEqual(valor_ingresos, cuenta.cxp_total)
+        self.assertEqual(valor_egresos + valor_compra_productos, cuenta.cxc_total)
 
     def test_cuentas_acompanantes(self):
         qs_cuenta = Cuenta.cuentas_acompanantes.filter(propietario__tercero__id=self.acompanante.id)
@@ -97,8 +97,8 @@ class ManagerCuentaTests(BaseTest):
         ingresos_por_comisiones = valores_servicios_totales['acompanante_1']['comision']
         ingresos_por_servicios = valores_servicios_totales['acompanante_1']['valor_servicio']
 
-        self.assertEqual(ingresos_por_servicios, cuenta.ingreso_por_servicios)
-        self.assertEqual(ingresos_por_comisiones, cuenta.ingreso_por_comisiones_habitacion)
+        self.assertEqual(ingresos_por_servicios, cuenta.cxp_por_servicios)
+        self.assertEqual(ingresos_por_comisiones, cuenta.cxp_por_comisiones_habitacion)
 
         venta, informacion = self.hacer_venta_productos_dos(
             cliente=self.acompanante,
@@ -108,7 +108,7 @@ class ManagerCuentaTests(BaseTest):
         valor_compra_productos = informacion['valor_venta']
 
         cuenta = qs_cuenta.sin_liquidar().first()
-        self.assertEqual(valor_compra_productos, cuenta.egreso_por_compras_productos)
+        self.assertEqual(valor_compra_productos, cuenta.cxc_por_compras_productos)
 
         valor_ingresos, valor_egresos = self.hacer_operaciones_caja_dos(
             tercero=self.acompanante,
@@ -116,11 +116,11 @@ class ManagerCuentaTests(BaseTest):
         )
         cuenta = qs_cuenta.sin_liquidar().first()
 
-        self.assertEqual(valor_ingresos, cuenta.ingresos_por_operaciones_caja)
-        self.assertEqual(valor_egresos, cuenta.egresos_por_operaciones_caja)
+        self.assertEqual(valor_ingresos, cuenta.cxp_por_operaciones_caja)
+        self.assertEqual(valor_egresos, cuenta.cxc_por_operaciones_caja)
 
-        self.assertEqual(valor_ingresos + ingresos_por_comisiones + ingresos_por_servicios, cuenta.total_ingresos)
-        self.assertEqual(valor_egresos + valor_compra_productos, cuenta.total_egresos)
+        self.assertEqual(valor_ingresos + ingresos_por_comisiones + ingresos_por_servicios, cuenta.cxp_total)
+        self.assertEqual(valor_egresos + valor_compra_productos, cuenta.cxc_total)
 
         cuenta.liquidada = True
         cuenta.save()
@@ -156,17 +156,17 @@ class ManagerCuentaTests(BaseTest):
 
         valor_ingresos2, valor_egresos2 = self.hacer_operaciones_caja_dos(self.acompanante, 5)
         cuenta2 = qs_cuenta.sin_liquidar().first()
-        self.assertEqual(valor_ingresos2, cuenta2.ingresos_por_operaciones_caja)
-        self.assertEqual(valor_egresos2, cuenta2.egresos_por_operaciones_caja)
-        self.assertEqual(valor_ingresos2, cuenta2.total_ingresos)
-        self.assertEqual(valor_egresos2, cuenta2.total_egresos)
+        self.assertEqual(valor_ingresos2, cuenta2.cxp_por_operaciones_caja)
+        self.assertEqual(valor_egresos2, cuenta2.cxc_por_operaciones_caja)
+        self.assertEqual(valor_ingresos2, cuenta2.cxp_total)
+        self.assertEqual(valor_egresos2, cuenta2.cxc_total)
 
         cuenta = qs_cuenta.liquidada().last()
-        self.assertEqual(valor_compra_productos, cuenta.egreso_por_compras_productos)
-        self.assertEqual(valor_ingresos, cuenta.ingresos_por_operaciones_caja)
-        self.assertEqual(valor_egresos, cuenta.egresos_por_operaciones_caja)
-        self.assertEqual(valor_ingresos + ingresos_por_comisiones + ingresos_por_servicios, cuenta.total_ingresos)
-        self.assertEqual(valor_egresos + valor_compra_productos, cuenta.total_egresos)
+        self.assertEqual(valor_compra_productos, cuenta.cxc_por_compras_productos)
+        self.assertEqual(valor_ingresos, cuenta.cxp_por_operaciones_caja)
+        self.assertEqual(valor_egresos, cuenta.cxc_por_operaciones_caja)
+        self.assertEqual(valor_ingresos + ingresos_por_comisiones + ingresos_por_servicios, cuenta.cxp_total)
+        self.assertEqual(valor_egresos + valor_compra_productos, cuenta.cxc_total)
 
     def test_cuentas_meseros(self):
         qs_cuenta = Cuenta.cuentas_meseros.filter(propietario__tercero__id=self.colaborador_mesero.id)

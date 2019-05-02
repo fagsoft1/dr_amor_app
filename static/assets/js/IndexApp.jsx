@@ -11,8 +11,8 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import QrIdentificacion from './00_utilities/components/system/modal_qr_acceso';
-import AbrirPuntoVentaDialog from './components/abrir_punto_venta/puntos_venta_abrir';
-import CerrarPuntoVentaDialog from './components/cerrar_punto_venta/punto_venta_cerrar';
+import AbrirPuntoVentaDialog from './07_cajas/apertura_de_caja/puntos_venta_abrir';
+import CerrarPuntoVentaDialog from './07_cajas/cierre_de_caja/punto_venta_cerrar';
 import Button from "@material-ui/core/Button";
 import PrinJs from 'print-js';
 

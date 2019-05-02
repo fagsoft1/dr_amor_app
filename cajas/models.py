@@ -101,6 +101,11 @@ class ConceptoOperacionCaja(models.Model):
         ('I', 'Ingreso'),
         ('E', 'Egreso'),
     )
+    TIPO_CUENTA_CHOICES = (
+        ('CXC', 'Cuenta x Cobrar'),
+        ('CXP', 'Cuenta x Pagar'),
+        ('NA', 'No Aplica'),
+    )
     GRUPO_CHOICES = (
         ('A', 'Acompañantes'),
         ('C', 'Colaboradores'),
@@ -109,6 +114,8 @@ class ConceptoOperacionCaja(models.Model):
         ('O', 'Otros'),
     )
     tipo = models.CharField(choices=TIPO_CHOICES, max_length=3)
+    tipo_cuenta = models.CharField(choices=TIPO_CUENTA_CHOICES, max_length=3, default='NA')
+    reporte_independiente = models.BooleanField(default=False)
     grupo = models.CharField(choices=GRUPO_CHOICES, max_length=3)
     descripcion = models.CharField(max_length=300)
     puntos_de_venta = models.ManyToManyField(PuntoVenta, related_name='conceptos_operaciones_caja_cierre')
@@ -173,6 +180,7 @@ class OperacionCaja(TimeStampedModel):
         null=True
     )
     grupo_operaciones = models.CharField(max_length=300)
+    tipo_cuenta = models.CharField(max_length=3, default='NA')
     descripcion = models.CharField(max_length=100)
     observacion = models.TextField(null=True)
     valor = models.DecimalField(max_digits=10, decimal_places=2, default=0)

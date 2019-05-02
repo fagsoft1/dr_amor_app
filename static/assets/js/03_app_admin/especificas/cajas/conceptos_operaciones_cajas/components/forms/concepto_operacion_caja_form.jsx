@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {reduxForm} from 'redux-form';
+import {reduxForm, formValueSelector} from 'redux-form';
 import {
     MyTextFieldSimple,
-    MyCombobox
+    MyCombobox,
+    MyCheckboxSimple
 } from '../../../../../../00_utilities/components/ui/forms/fields';
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
@@ -22,7 +23,19 @@ class Form extends Component {
             modal_open,
             singular_name,
             error,
+            form_values
         } = this.props;
+        let opciones_tipos_cuentas = [
+            {id: "NA", nombre: "No Aplica"},
+        ];
+        const mostrar_tipos_cuentas = form_values && form_values.grupo && ['A', 'C'].includes(form_values.grupo);
+        if (mostrar_tipos_cuentas) {
+            opciones_tipos_cuentas = [
+                ...opciones_tipos_cuentas,
+                {id: "CXC", nombre: "Cuenta x Cobrar"},
+                {id: "CXP", nombre: "Cuenta x Pagar"},
+            ];
+        }
         return (
             <MyFormTagModal
                 onCancel={onCancel}
@@ -71,20 +84,40 @@ class Form extends Component {
                     filter='contains'
 
                 />
+                <MyCombobox
+                    className="col-12"
+                    name="tipo_cuenta"
+                    nombre='Tipo Cuenta'
+                    data={opciones_tipos_cuentas}
+                    textField='nombre'
+                    valuesField='id'
+                    placeholder='Tipo de Cuenta...'
+                    filter='contains'
+
+                />
+                <MyCheckboxSimple
+                    className='col-12'
+                    name='reporte_independiente'
+                    nombre='En Reporte Independiente'
+                />
             </MyFormTagModal>
         )
     }
 }
 
+const selector = formValueSelector('conceptoOperacionCajaForm');
+
 function mapPropsToState(state, ownProps) {
+    const form_values = selector(state, 'grupo', 'tipo');
     const {item_seleccionado} = ownProps;
     return {
-        initialValues: item_seleccionado
+        initialValues: item_seleccionado,
+        form_values
     }
 }
 
 Form = reduxForm({
-    form: "algoForm",
+    form: "conceptoOperacionCajaForm",
     validate,
     enableReinitialize: true
 })(Form);

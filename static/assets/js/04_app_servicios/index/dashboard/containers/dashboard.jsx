@@ -8,6 +8,7 @@ import HabitacionDetailModal from '../../habitaciones/components/habitacion_moda
 import ServicioDetailModal from '../../servicios/components/servicio_modal_detail';
 import RegistroOperacionContable
     from '../../../../07_cajas/operaciones_caja/components/forms/registro_operacion_dos_form';
+import LiquidacionOpcionesDialog from '../../../../07_cajas/cuentas/ver_cuenta_abierta_listado';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 
@@ -19,11 +20,13 @@ class ServiciosDashboar extends Component {
             servicio_id: null,
             modal_habitacion_open: false,
             modal_servicio_open: false,
-            modal_operacion_caja_open: false
+            modal_operacion_caja_open: false,
+            modal_liquidacion_open: false
         });
         this.cerraModalHabitacion = this.cerraModalHabitacion.bind(this);
         this.abrirModalHabitacion = this.abrirModalHabitacion.bind(this);
         this.abrirModalServicio = this.abrirModalServicio.bind(this);
+        this.cerraModalLiquidaciones = this.cerraModalLiquidaciones.bind(this);
         this.cerraModalServicio = this.cerraModalServicio.bind(this);
         this.onClickHabitacion = this.onClickHabitacion.bind(this);
         this.cerraModalRegistroOperacionCaja = this.cerraModalRegistroOperacionCaja.bind(this);
@@ -109,6 +112,11 @@ class ServiciosDashboar extends Component {
         this.cargarDatos();
     }
 
+    cerraModalLiquidaciones() {
+        this.setState({modal_liquidacion_open: false});
+        this.cargarDatos();
+    }
+
     abrirModalHabitacion(habitacion) {
         this.props.clearServicios();
         this.props.fetchTercerosPresentes(
@@ -132,14 +140,16 @@ class ServiciosDashboar extends Component {
         const {
             terceros,
             habitaciones,
-            servicios
+            servicios,
+            history
         } = this.props;
         const {
             modal_habitacion_open,
             habitacion_id,
             modal_servicio_open,
             modal_operacion_caja_open,
-            servicio_id,
+            modal_liquidacion_open,
+            servicio_id
         } = this.state;
         return (
             <div className="row">
@@ -149,6 +159,14 @@ class ServiciosDashboar extends Component {
                         {...this.props}
                         cerrarModal={this.cerraModalRegistroOperacionCaja}
                         modal_open={modal_operacion_caja_open}
+                    />
+                }
+                {
+                    modal_liquidacion_open &&
+                    <LiquidacionOpcionesDialog
+                        onCancel={this.cerraModalLiquidaciones}
+                        is_open={modal_liquidacion_open}
+                        history={history}
                     />
                 }
                 {
@@ -198,6 +216,13 @@ class ServiciosDashboar extends Component {
                             icon={['far', 'cash-register']}
                             size='4x'
                             onClick={() => this.setState({modal_operacion_caja_open: true})}
+                        />
+                    </Button>
+                    <Button className='ml-3' variant="contained" color="secondary">
+                        <FontAwesomeIcon
+                            icon={['far', 'hand-holding-usd']}
+                            size='4x'
+                            onClick={() => this.setState({modal_liquidacion_open: true})}
                         />
                     </Button>
                 </div>

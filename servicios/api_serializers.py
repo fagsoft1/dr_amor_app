@@ -6,6 +6,10 @@ from .models import Servicio
 
 
 class ServicioSerializer(serializers.ModelSerializer):
+    usuario_cajero_username = serializers.CharField(
+        source='punto_venta_turno.usuario.username',
+        read_only=True
+    )
     acompanante = serializers.PrimaryKeyRelatedField(source='cuenta.propietario.tercero.id', read_only=True)
     empresa = serializers.IntegerField(source='habitacion.empresa.id', read_only=True)
     acompanante_nombre = serializers.CharField(source='cuenta.propietario.tercero.full_name_proxy', read_only=True)
@@ -20,6 +24,10 @@ class ServicioSerializer(serializers.ModelSerializer):
     cuenta_tipo = serializers.IntegerField(source='cuenta.tipo', read_only=True, allow_null=True)
     tiempo_nombre = serializers.SerializerMethodField()
     anulado = serializers.SerializerMethodField()
+    estado_nombre = serializers.SerializerMethodField()
+
+    def get_estado_nombre(self, obj):
+        return obj.get_estado_display()
 
     def get_termino(self, obj):
         if obj.estado == 1:
@@ -49,11 +57,13 @@ class ServicioSerializer(serializers.ModelSerializer):
             'servicio_siguiente',
             'anulado',
             'cuenta',
+            'estado_nombre',
             'cuenta_liquidada',
             'cuenta_usuario',
             'cuenta_tipo',
             'empresa',
             'habitacion_nombre',
+            'usuario_cajero_username',
             'habitacion',
             'estado',
             'hora_inicio',

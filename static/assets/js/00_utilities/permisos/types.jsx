@@ -1,3 +1,19 @@
+export const LIQUIDACIONES_CUENTAS = {
+    add: 'add_liquidacioncuenta',
+    delete: 'delete_liquidacioncuenta',
+    change: 'change_liquidacioncuenta',
+    list: 'list_liquidacioncuenta',
+    detail: 'view_liquidacioncuenta',
+};
+
+export const TERCEROS_CUENTAS = {
+    add: 'add_cuenta',
+    delete: 'delete_cuenta',
+    change: 'change_cuenta',
+    list: 'list_cuenta',
+    detail: 'view_cuenta',
+};
+
 export const PUNTOS_VENTAS_TURNOS = {
     add: 'add_puntoventaturno',
     delete: 'delete_puntoventaturno',

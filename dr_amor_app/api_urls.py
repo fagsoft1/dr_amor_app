@@ -12,6 +12,7 @@ from servicios.api_urls import router as servicios_router
 from cajas.api_urls import router as cajas_router
 from ventas.api_urls import router as ventas_router
 from parqueadero.api_urls import router as parqueadero_router
+from liquidaciones.api_urls import router as liquidaciones_router
 
 router = DefaultRouter()
 router.extend(permisos_router)
@@ -27,3 +28,4 @@ router.extend(servicios_router)
 router.extend(cajas_router)
 router.extend(ventas_router)
 router.extend(parqueadero_router)
+router.extend(liquidaciones_router)

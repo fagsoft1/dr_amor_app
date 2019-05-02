@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {pesosColombianos} from "../../../../../00_utilities/common";
-import FormaPago from '../../../movimiento_dinero/components/forms/forma_pago';
+import FormaPago from '../../../../../07_cajas/formas_de_pago/components/forms/forma_pago';
 import DropdownList from 'react-widgets/lib/DropdownList';
 import Typography from '@material-ui/core/Typography';
 

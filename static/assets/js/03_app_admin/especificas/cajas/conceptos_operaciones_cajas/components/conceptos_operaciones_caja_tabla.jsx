@@ -3,6 +3,7 @@ import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dial
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 
 import ReactTable from "react-table";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class Tabla extends React.Component {
     render() {
@@ -40,6 +41,28 @@ class Tabla extends React.Component {
                                 accessor: "tipo",
                                 maxWidth: 100,
                                 Cell: row => row.value === 'E' ? 'Egreso' : 'Ingreso'
+                            },
+                            {
+                                Header: "Tipo Cuenta",
+                                accessor: "tipo_cuenta",
+                                maxWidth: 100
+                            },
+                            {
+                                Header: "Indep. en Rep.",
+                                accessor: "reporte_independiente",
+                                maxWidth: 100,
+                                Cell: row => {
+                                    return (
+                                        <div className='text-center'>
+                                            {
+                                                row.value &&
+                                                <FontAwesomeIcon
+                                                    icon={['far', 'check-circle']}
+                                                />
+                                            }
+                                        </div>
+                                    )
+                                }
                             },
                             {
                                 Header: "Grupo",

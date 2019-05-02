@@ -5,9 +5,9 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.utils import json
 
-from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
+from dr_amor_app.custom_permissions import DjangoModelPermissionsFull, EsColaboradorPermission
 from terceros.services import tercero_generarQR, tercero_existe_documento
-from .models import Tercero
+from .models import Tercero, Cuenta
 from rest_framework import viewsets, permissions, serializers
 
 from .api_serializers import (
@@ -15,12 +15,73 @@ from .api_serializers import (
     AcompananteDesencriptadoSerializer,
     ColaboradorSerializer,
     ProveedorSerializer,
-    TerceroSerializer
+    TerceroSerializer,
+    CuentaSerializer,
+    CuentaAcompananteSerializer,
+    CuentaAcompananteDetalleSerializer
 )
 from .mixins import TerceroViewSetMixin
 
-from liquidaciones.models import LiquidacionCuenta
-from servicios.models import Servicio
+
+class CuentaViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Cuenta.objects.all()
+    serializer_class = CuentaSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        cuenta = self.get_object()
+        if hasattr(cuenta.propietario, 'tercero'):
+            if cuenta.tipo == 1 and cuenta.propietario.tercero.es_acompanante:
+                self.queryset = Cuenta.cuentas_acompanantes.prefetch_related(
+                    'operaciones_caja',
+                    'servicios',
+                    'liquidacion',
+                    'compras_productos',
+                    'compras_productos__productos',
+                    'cuenta_anterior',
+                    'cuenta_anterior__liquidacion',
+                ).all()
+                self.serializer_class = CuentaAcompananteDetalleSerializer
+            elif cuenta.tipo == 1 and cuenta.propietario.tercero.es_colaborador:
+                self.queryset = Cuenta.cuentas_colaboradores.prefetch_related(
+                    'operaciones_caja',
+                    'liquidacion',
+                    'compras_productos',
+                    'compras_productos__productos',
+                ).all()
+            elif cuenta.tipo == 2 and cuenta.propietario.tercero.es_colaborador:
+                self.queryset = Cuenta.cuentas_meseros.prefetch_related(
+                    'liquidacion',
+                    'compras_productos',
+                    'compras_productos__productos',
+                ).all()
+
+        return super().retrieve(request, *args, **kwargs)
+
+    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    def cuentas_acompanantes_sin_liquidar(self, request):
+        self.serializer_class = CuentaAcompananteSerializer
+        qs = Cuenta.cuentas_acompanantes.sin_liquidar().all()
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
+    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    def cuentas_sin_liquidar(self, request):
+        qs = Cuenta.objects.filter(liquidada=False)
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
+    @detail_route(methods=['post'])
+    def liquidar_cuenta_acompanante(self, request, pk=None):
+        from liquidaciones.services import liquidar_cuenta_acompanante
+        cuenta = self.get_object()
+        valor_efectivo = Decimal(request.POST.get('valor_efectivo'))
+        liquidacion_cuenta = liquidar_cuenta_acompanante(
+            usuario_pdv_id=self.request.user.id,
+            acompanante_id=cuenta.propietario.tercero.id,
+            valor_efectivo=valor_efectivo
+        )
+        return Response({'liquidacion_id': liquidacion_cuenta.id})
 
 
 class TerceroViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
@@ -88,46 +149,6 @@ class TerceroViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
         tercero_registra_salida(tercero.id, pin)
         mensaje = 'El registro de Salida para %s ha sido éxitoso' % (tercero.full_name_proxy)
         return Response({'result': mensaje})
-
-    # TODO: Hacer test
-    # TODO: Hacer Función
-    @detail_route(methods=['post'])
-    def liquidar_cuenta(self, request, pk=None):
-        # TODO: Hacer funcion
-        tercero = self.get_object()
-        pago = json.loads(request.POST.get('pago'))
-        a_pagar = Decimal(pago.get('valor_a_pagar', 0))
-        saldo = pago.get('saldo', 0)
-        punto_venta_id = pago.get('punto_venta_id', None)
-        cuenta = tercero.cuenta_abierta
-        cuenta.liquidada = True
-        liquidacion = LiquidacionCuenta.objects.create(
-            cuenta=cuenta,
-            pagado=a_pagar,
-            saldo=saldo,
-            punto_venta_id=punto_venta_id,
-            creado_por=self.request.user
-        )
-
-        # TODO: Hacer lo correspondiente al registro en el nuevo TransaccionCaja
-        # MovimientoDineroPDV.objects.create(
-        #     tipo="E",
-        #     tipo_dos='LIQ_ACOM',
-        #     punto_venta_id=punto_venta_id,
-        #     creado_por=request.user,
-        #     concepto='Liquidación de cuenta a Acompañante %s' % tercero.full_name_proxy,
-        #     valor_efectivo=-a_pagar,
-        #     liquidacion=liquidacion
-        # )
-        cuenta.save()
-        tercero.estado = 0
-        tercero.presente = 0
-        tercero.save()
-        servicios = Servicio.objects.filter(estado=0)
-        for servicio in servicios.all():
-            servicio.delete()
-        AuthToken.objects.filter(user=tercero.usuario).delete()
-        return Response({'result': 'se ha retirado correctamente el punto de venta'})
 
 
 class AcompananteViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):

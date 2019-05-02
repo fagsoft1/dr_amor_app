@@ -116,7 +116,7 @@ class VentaProductosServicesTests(BaseTest):
         )
 
         self.assertEqual(
-            self.colaborador_dos.cuenta_abierta.egreso_por_compras_productos,
+            self.colaborador_dos.cuenta_abierta.cxc_por_compras_productos,
             pedido_ini['valor_pedido']
         )
 
@@ -159,7 +159,7 @@ class VentaProductosServicesTests(BaseTest):
         compras_productos = self.acompanante.cuenta_abierta.compras_productos.first()
         self.assertEqual(compras_productos.productos.count(), len(pedido['pedido']))
         self.assertEqual(
-            self.acompanante.cuenta_abierta.egreso_por_compras_productos,
+            self.acompanante.cuenta_abierta.cxc_por_compras_productos,
             pedido['valor_pedido']
         )
 

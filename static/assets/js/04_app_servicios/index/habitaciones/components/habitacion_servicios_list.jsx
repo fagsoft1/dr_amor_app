@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {pesosColombianos, horaFormatoUno} from "../../../../00_utilities/common";
-import FormaPago from '../../movimiento_dinero/components/forms/forma_pago';
+import FormaPago from '../../../../07_cajas/formas_de_pago/components/forms/forma_pago';
 import CambioHabitacion from './habitacion_cambio_habitacion';
 import Button from '@material-ui/core/Button';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';

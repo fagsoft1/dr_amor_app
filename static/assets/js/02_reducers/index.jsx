@@ -14,6 +14,7 @@ import auth from './generales/authentication/authenticationReducer';
 import colaboradoresReducer from './especificas/terceros/colaboradoresReducer';
 import acompanantesReducer from './especificas/terceros/acompanantesReducer';
 import tercerosReducer from './especificas/terceros/tercerosReducer';
+import tercerosCuentasReducer from './especificas/terceros/cuentasReducer';
 import categoriasAcompanantesReducer from './especificas/terceros/categoriasAcompanantesReducer';
 import fraccionesTiemposReducer from './especificas/terceros/fraccionesTiemposAcompanantesReducer';
 import categoriasFraccionesTiemposReducer from './especificas/terceros/categoriasFraccionesTiempoAcompanantesReducer';
@@ -43,6 +44,8 @@ import operacionesCajasReducer from './especificas/cajas/operacionesCajas';
 import ventasProductosReducer from './especificas/ventas/ventasProductosReducer';
 import ventasProductosDetallesReducer from './especificas/ventas/ventasProductosDetallesReducer';
 
+import liquidacionesCuentasReducer from './especificas/liquidaciones/liquidacionesReducer';
+
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
     permisos: permisosReducer,
@@ -57,6 +60,7 @@ const rootReducer = combineReducers({
     colaboradores: colaboradoresReducer,
     acompanantes: acompanantesReducer,
     terceros: tercerosReducer,
+    terceros_cuentas: tercerosCuentasReducer,
     categorias_acompanantes: categoriasAcompanantesReducer,
     fracciones_tiempos_acompanantes: fraccionesTiemposReducer,
     categorias_fracciones_tiempos_acompanantes: categoriasFraccionesTiemposReducer,
@@ -86,6 +90,8 @@ const rootReducer = combineReducers({
 
     ventas_productos_detalles: ventasProductosDetallesReducer,
     ventas_productos: ventasProductosReducer,
+
+    liquidaciones_cuentas: liquidacionesCuentasReducer,
 });
 
 export default rootReducer;

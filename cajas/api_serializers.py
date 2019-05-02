@@ -9,21 +9,33 @@ from .models import (
 
 
 class OperacionCajaSerializer(serializers.ModelSerializer):
+    usuario_cajero_username = serializers.CharField(
+        source='punto_venta_turno.usuario.username',
+        read_only=True
+    )
     tipo_operacion = serializers.CharField(source='concepto.tipo', read_only=True)
     cuenta_liquidada = serializers.NullBooleanField(read_only=True, source='cuenta.liquidada', default=None)
-    cuenta_usuario = serializers.IntegerField(source='cuenta.propietario', read_only=True, allow_null=True)
+    cuenta_usuario = serializers.IntegerField(source='cuenta.propietario.id', read_only=True, allow_null=True)
     usuario_pv = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    reporte_independiente = serializers.BooleanField(
+        source='concepto.reporte_independiente',
+        read_only=True
+    )
 
     class Meta:
         model = OperacionCaja
         fields = (
             'id',
+            'created',
             'tercero',
             'usuario_pv',
             'cuenta',
+            'tipo_cuenta',
+            'usuario_cajero_username',
             'cuenta_liquidada',
             'cuenta_usuario',
             'concepto',
+            'reporte_independiente',
             'grupo_operaciones',
             'descripcion',
             'tipo_operacion',
@@ -34,7 +46,6 @@ class OperacionCajaSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         from .services import operacion_caja_crear
         concepto = validated_data.get('concepto', None)
-        descripcion = validated_data.get('descripcion', None)
         valor = validated_data.get('valor', None)
         tercero = validated_data.get('tercero', None)
         observacion = validated_data.get('observacion', None)
@@ -43,7 +54,6 @@ class OperacionCajaSerializer(serializers.ModelSerializer):
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto.id,
             usuario_pdv_id=usuario_pv.id,
-            descripcion=descripcion,
             valor=valor,
             tercero_id=tercero.id if tercero else None,
             observacion=observacion
@@ -71,6 +81,8 @@ class ConceptoOperacionCajaSerializer(serializers.ModelSerializer):
             'id',
             'tipo',
             'tipo_display',
+            'tipo_cuenta',
+            'reporte_independiente',
             'grupo',
             'grupo_display',
             'descripcion',
