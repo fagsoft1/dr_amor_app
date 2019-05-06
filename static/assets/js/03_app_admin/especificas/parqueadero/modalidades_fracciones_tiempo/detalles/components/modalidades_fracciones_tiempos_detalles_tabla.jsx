@@ -1,21 +1,23 @@
 import React from "react";
-import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
-import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
+import MyDialogButtonDelete from '../../../../../../00_utilities/components/ui/dialog/delete_dialog';
+import IconButtonTableSee from '../../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
+import IconButtonTableEdit from '../../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
+import {Link} from 'react-router-dom'
 
 import ReactTable from "react-table";
-import {Link} from "react-router-dom";
-import IconButtonTableSee from "../../../../../00_utilities/components/ui/icon/table_icon_button_detail";
+import {pesosColombianos} from "../../../../../../00_utilities/common";
 
 class Tabla extends React.Component {
     render() {
-        const data = this.props.data;
+
+        const data = _.orderBy(this.props.data, ['minutos'], ['asc']);
         const {
-            updateItem,
             singular_name,
             onDelete,
             onSelectItemEdit,
             permisos_object
         } = this.props;
+
 
         return (
             <ReactTable
@@ -26,39 +28,22 @@ class Tabla extends React.Component {
                         Header: "Caracteristicas",
                         columns: [
                             {
-                                Header: "Nombre",
-                                accessor: "nombre",
-                                maxWidth: 150,
-                                filterable: true,
-                                filterMethod: (filter, row) => {
-                                    return row[filter.id].includes(filter.value.toLowerCase())
-                                }
+                                Header: "Minutos",
+                                accessor: "minutos",
+                                maxWidth: 100,
+                                Cell: row => <div className='text-right'>{row.value} Minutos</div>
                             },
                             {
-                                Header: "Bodega",
-                                accessor: "bodega_nombre",
-                                maxWidth: 150
-                            },
-                            {
-                                Header: "Tipo",
-                                accessor: "tipo_nombre",
-                                maxWidth: 150
-                            },
+                                Header: "Valor",
+                                accessor: "valor",
+                                maxWidth: 100,
+                                Cell: row => <div className='text-right'>{pesosColombianos(row.value)}</div>
+                            }
                         ]
                     },
                     {
                         Header: "Opciones",
                         columns: [
-                            {
-                                Header: "Ver",
-                                show: permisos_object.view,
-                                maxWidth: 60,
-                                Cell: row =>
-                                    <Link to={`/app/admin/puntos_ventas/puntos_ventas/detail/${row.original.id}`}>
-                                        <IconButtonTableSee/>
-                                    </Link>
-
-                            },
                             {
                                 Header: "Elimi.",
                                 show: permisos_object.delete,
@@ -84,6 +69,17 @@ class Tabla extends React.Component {
                                         }}/>
 
                             },
+                            {
+                                Header: "Ver",
+                                show: permisos_object.view,
+                                maxWidth: 60,
+                                Cell: row =>
+                                    <Link
+                                        to={`/app/admin/parqueadero/modalidad_fraccion_tiempo/detail/${row.original.id}`}>
+                                        <IconButtonTableSee/>
+                                    </Link>
+
+                            }
                         ]
                     }
                 ]}

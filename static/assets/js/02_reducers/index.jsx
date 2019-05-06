@@ -48,6 +48,11 @@ import liquidacionesCuentasReducer from './especificas/liquidaciones/liquidacion
 
 import consultasVentasEmpresasReducer from './especificas/consultas/consultasVentasEmpresasReducer';
 
+import tipoVehiculoReducer from './especificas/parqueadero/parqueaderoReducer';
+import modalidadesFraccionesTiempoReducer from './especificas/parqueadero/modalidadesFraccionesTiempoReducer';
+import modalidadesFraccionesTiempoDetallesReducer
+    from './especificas/parqueadero/modalidadesFraccionesTiempoDetallesReducer';
+
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
     permisos: permisosReducer,
@@ -96,6 +101,10 @@ const rootReducer = combineReducers({
     liquidaciones_cuentas: liquidacionesCuentasReducer,
 
     consultas_ventas_empresas: consultasVentasEmpresasReducer,
+
+    parqueadero_tipos_vehiculos: tipoVehiculoReducer,
+    parqueadero_modalidades_fracciones_tiempo: modalidadesFraccionesTiempoReducer,
+    parqueadero_modalidades_fracciones_tiempo_detalles: modalidadesFraccionesTiempoDetallesReducer,
 });
 
 export default rootReducer;

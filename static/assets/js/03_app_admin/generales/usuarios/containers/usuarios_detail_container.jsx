@@ -107,7 +107,7 @@ class UsuariosDetail extends Component {
         }
 
         return (
-            <ValidarPermisos can_see={permisos.detail} nombre='detalles de usuario'>
+            <ValidarPermisos can_see={permisos.view} nombre='detalles de usuario'>
                 <Typography variant="h5" gutterBottom color="primary">
                     Detalle {usuario.username}
                 </Typography>

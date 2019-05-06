@@ -55,7 +55,7 @@ class LiquidacionDetail extends Component {
         }
         const {liquidacion_siguiente, liquidacion_anterior} = object;
         const permisos = permisosAdapter(mis_permisos, permisos_view);
-        return <ValidarPermisos can_see={permisos.detail} nombre='Liquidación Cuenta'>
+        return <ValidarPermisos can_see={permisos.view} nombre='Liquidación Cuenta'>
             <div className="row">
                 {
                     cuentas &&

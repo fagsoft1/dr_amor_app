@@ -30,3 +30,7 @@ export * from './ventas/ventasProductosAction';
 export * from './ventas/ventasProductosDetallesAction';
 export * from './liquidaciones/liquidacionesAction';
 export * from './consultas/consultasVentasEmpresasAction';
+
+export * from './parqueadero/parqueaderoAction';
+export * from './parqueadero/modalidadesFraccionesTiempoAction';
+export * from './parqueadero/modalidadesFraccionesTiempoDetallesAction';

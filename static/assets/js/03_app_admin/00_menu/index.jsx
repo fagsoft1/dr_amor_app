@@ -31,6 +31,12 @@ const Menu = () => <Fragment>
         texto='Puntos de Venta'
         icono='cash-register'
     />
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/parqueadero/dashboard'
+        texto='Parqueadero'
+        icono='car'
+    />
     <MenuPermisos/>
     <MenuTerceros/>
     <MenuInventarios/>

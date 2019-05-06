@@ -1,3 +1,30 @@
+export const MODALIDAD_FRACCION_TIEMPO_DETALLE_TYPES = {
+    create: 'create_modalidad_fraccion_tiempo_detalle',
+    delete: 'delete_modalidad_fraccion_tiempo_detalle',
+    fetch_all: 'fetch_modalidades_fracciones_tiempos_detalles',
+    fetch: 'fetch_modalidad_fraccion_tiempo_detalle',
+    clear: 'clear_modalidades_fracciones_tiempos_detalles',
+    update: 'update_modalidad_fraccion_tiempo_detalle',
+};
+
+export const MODALIDAD_FRACCION_TIEMPO_TYPES = {
+    create: 'create_modalidad_fraccion_tiempo',
+    delete: 'delete_modalidad_fraccion_tiempo',
+    fetch_all: 'fetch_modalidades_fracciones_tiempos',
+    fetch: 'fetch_modalidad_fraccion_tiempo',
+    clear: 'clear_modalidades_fracciones_tiempos',
+    update: 'update_modalidad_fraccion_tiempo',
+};
+
+export const TIPO_VEHICULO_TYPES = {
+    create: 'create_tipo_vehiculo',
+    delete: 'delete_tipo_vehiculo',
+    fetch_all: 'fetch_tipos_vehiculos',
+    fetch: 'fetch_tipo_vehiculo',
+    clear: 'clear_tipos_vehiculos',
+    update: 'update_tipo_vehiculo',
+};
+
 export const CONSULTAS_VENTAS_EMPRESAS_TYPES = {
     fetch_all: 'fetch_consulta_ventas_empresas',
     clear: 'clear_consulta_ventas_empresas',

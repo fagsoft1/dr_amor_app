@@ -41,6 +41,10 @@ import BilletesMonedasList from "./especificas/cajas/billetes_monedas/containers
 import ConceptosOperacionesCajaList
     from "./especificas/cajas/conceptos_operaciones_cajas/containers/conceptos_operaciones_caja_list_container";
 
+import ParqueaderoDashboard from './especificas/parqueadero/parqueadero_dashboard/containers/parqueadero_dashboard';
+import ParqueaderoModalidadFraccionTiempoDetail
+    from './especificas/parqueadero/modalidades_fracciones_tiempo/components/modalidad_fraccion_tiempo_detail';
+
 class AdminApp extends Component {
     render() {
         return (
@@ -57,6 +61,9 @@ class AdminApp extends Component {
                         <Route exact path='/app/admin/empresas/empresas/list' component={EmpresasList}/>
                         <Route exact path='/app/admin/habitaciones/dashboard' component={HabitacionesList}/>
                         <Route exact path='/app/admin/productos/dashboard' component={ProductosDashboard}/>
+                        <Route exact path='/app/admin/parqueadero/dashboard' component={ParqueaderoDashboard}/>
+                        <Route exact path='/app/admin/parqueadero/modalidad_fraccion_tiempo/detail/:id'
+                               component={ParqueaderoModalidadFraccionTiempoDetail}/>
                         <Route exact path='/app/admin/usuarios/detail/:id' component={UsuariosDetail}/>
                         <Route exact path='/app/admin/inventarios/bodegas/list' component={BodegasList}/>
                         <Route exact path='/app/admin/inventarios/bodegas/detail/:id'

@@ -63,6 +63,8 @@ class TipoVehiculoSerializer(serializers.ModelSerializer):
             'to_string',
             'nombre',
             'empresa',
+            'valor_impuesto_unico',
+            'porcentaje_iva',
             'tiene_placa',
             'empresa_nombre'
         ]

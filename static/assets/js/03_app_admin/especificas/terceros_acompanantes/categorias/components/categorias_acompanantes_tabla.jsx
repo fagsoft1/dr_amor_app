@@ -76,7 +76,7 @@ class Tabla extends React.Component {
                             },
                             {
                                 Header: "Ver",
-                                show: permisos_object.detail,
+                                show: permisos_object.view,
                                 maxWidth: 60,
                                 Cell: row =>
                                     <Link to={`/app/admin/usuarios/acompanantes/detail/${row.original.id}`}>

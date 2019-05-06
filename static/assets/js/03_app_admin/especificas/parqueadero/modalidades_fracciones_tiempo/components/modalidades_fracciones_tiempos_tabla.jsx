@@ -1,21 +1,22 @@
 import React from "react";
 import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
+import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
+import {Link} from 'react-router-dom'
 
 import ReactTable from "react-table";
-import {Link} from "react-router-dom";
-import IconButtonTableSee from "../../../../../00_utilities/components/ui/icon/table_icon_button_detail";
 
 class Tabla extends React.Component {
     render() {
+
         const data = this.props.data;
         const {
-            updateItem,
             singular_name,
             onDelete,
             onSelectItemEdit,
             permisos_object
         } = this.props;
+
 
         return (
             <ReactTable
@@ -28,37 +29,26 @@ class Tabla extends React.Component {
                             {
                                 Header: "Nombre",
                                 accessor: "nombre",
-                                maxWidth: 150,
+                                maxWidth: 200,
                                 filterable: true,
                                 filterMethod: (filter, row) => {
-                                    return row[filter.id].includes(filter.value.toLowerCase())
+                                    return row[filter.id].includes(filter.value.toUpperCase())
                                 }
                             },
                             {
-                                Header: "Bodega",
-                                accessor: "bodega_nombre",
-                                maxWidth: 150
-                            },
-                            {
-                                Header: "Tipo",
-                                accessor: "tipo_nombre",
-                                maxWidth: 150
+                                Header: "Tipo de Vehículo",
+                                accessor: "tipo_vehiculo_nombre",
+                                maxWidth: 250,
+                                filterable: true,
+                                filterMethod: (filter, row) => {
+                                    return row[filter.id].includes(filter.value.toUpperCase())
+                                }
                             },
                         ]
                     },
                     {
                         Header: "Opciones",
                         columns: [
-                            {
-                                Header: "Ver",
-                                show: permisos_object.view,
-                                maxWidth: 60,
-                                Cell: row =>
-                                    <Link to={`/app/admin/puntos_ventas/puntos_ventas/detail/${row.original.id}`}>
-                                        <IconButtonTableSee/>
-                                    </Link>
-
-                            },
                             {
                                 Header: "Elimi.",
                                 show: permisos_object.delete,
@@ -84,6 +74,17 @@ class Tabla extends React.Component {
                                         }}/>
 
                             },
+                            {
+                                Header: "Ver",
+                                show: permisos_object.view,
+                                maxWidth: 60,
+                                Cell: row =>
+                                    <Link
+                                        to={`/app/admin/parqueadero/modalidad_fraccion_tiempo/detail/${row.original.id}`}>
+                                        <IconButtonTableSee/>
+                                    </Link>
+
+                            }
                         ]
                     }
                 ]}

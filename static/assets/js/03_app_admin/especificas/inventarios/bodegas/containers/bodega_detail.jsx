@@ -13,7 +13,6 @@ import TablaInventarioProducto from '../components/bodegas_inventario_movimiento
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
-import FormGroup from '@material-ui/core/FormGroup';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
@@ -89,7 +88,7 @@ class Detail extends Component {
             </Typography>
         }
         return (
-            <ValidarPermisos can_see={permisos.detail} nombre='detalles de bodega'>
+            <ValidarPermisos can_see={permisos.view} nombre='detalles de bodega'>
                 <Typography variant="h5" gutterBottom color="primary">
                     Detalle {object.nombre}
                 </Typography>

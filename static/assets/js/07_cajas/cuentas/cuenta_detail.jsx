@@ -35,7 +35,7 @@ class CuentaDetail extends Component {
                 </p>
             </div>
         }
-        return <ValidarPermisos can_see={permisos.detail} nombre='Liquidar Cuenta'>
+        return <ValidarPermisos can_see={permisos.view} nombre='Liquidar Cuenta'>
             {
                 object &&
                 object.es_acompanante &&

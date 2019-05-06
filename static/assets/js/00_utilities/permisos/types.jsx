@@ -1,9 +1,32 @@
+export const MODALIDADES_FRACCIONES_TIEMPOS_DETALLES = {
+    add: 'add_modalidadfracciontiempodetalle',
+    delete: 'delete_modalidadfracciontiempodetalle',
+    change: 'change_modalidadfracciontiempodetalle',
+    list: 'list_modalidadfracciontiempodetalle',
+    view: 'view_modalidadfracciontiempodetalle',
+};
+export const MODALIDADES_FRACCIONES_TIEMPOS = {
+    add: 'add_modalidadfracciontiempo',
+    delete: 'delete_modalidadfracciontiempo',
+    change: 'change_modalidadfracciontiempo',
+    list: 'list_modalidadfracciontiempo',
+    view: 'view_modalidadfracciontiempo',
+};
+
+export const TIPOS_VEHICULOS = {
+    add: 'add_tipovehiculo',
+    delete: 'delete_tipovehiculo',
+    change: 'change_tipovehiculo',
+    list: 'list_tipovehiculo',
+    view: 'view_tipovehiculo',
+};
+
 export const LIQUIDACIONES_CUENTAS = {
     add: 'add_liquidacioncuenta',
     delete: 'delete_liquidacioncuenta',
     change: 'change_liquidacioncuenta',
     list: 'list_liquidacioncuenta',
-    detail: 'view_liquidacioncuenta',
+    view: 'view_liquidacioncuenta',
 };
 
 export const TERCEROS_CUENTAS = {
@@ -11,7 +34,7 @@ export const TERCEROS_CUENTAS = {
     delete: 'delete_cuenta',
     change: 'change_cuenta',
     list: 'list_cuenta',
-    detail: 'view_cuenta',
+    view: 'view_cuenta',
 };
 
 export const PUNTOS_VENTAS_TURNOS = {
@@ -19,7 +42,7 @@ export const PUNTOS_VENTAS_TURNOS = {
     delete: 'delete_puntoventaturno',
     change: 'change_puntoventaturno',
     list: 'list_puntoventaturno',
-    detail: 'view_puntoventaturno',
+    view: 'view_puntoventaturno',
 };
 
 export const GROUPS = {
@@ -27,7 +50,7 @@ export const GROUPS = {
     delete: 'delete_group',
     change: 'change_group',
     list: 'list_group',
-    detail: 'view_group',
+    view: 'view_group',
 };
 
 export const PERMISSION = {
@@ -41,7 +64,7 @@ export const USUARIOS = {
     delete: 'delete_user',
     change: 'change_user',
     list: 'list_user',
-    detail: 'view_user',
+    view: 'view_user',
     make_user_superuser: 'make_user_superuser',
     make_user_staff: 'make_user_staff',
     make_user_active: 'make_user_active',
@@ -52,7 +75,7 @@ export const ACOMPANANTES = {
     delete: 'delete_terceroacompanante',
     change: 'change_terceroacompanante',
     list: 'list_terceroacompanante',
-    detail: 'view_terceroacompanante',
+    view: 'view_terceroacompanante',
     detail_privado: 'view_privado_terceroacompanante',
 };
 
@@ -61,7 +84,7 @@ export const CATEGORIAS_ACOMPANANTES = {
     delete: 'delete_categoriaacompanante',
     change: 'change_categoriaacompanante',
     list: 'list_categoriaacompanante',
-    detail: 'view_categoriaacompanante',
+    view: 'view_categoriaacompanante',
 };
 
 export const COLABORADORES = {
@@ -69,7 +92,7 @@ export const COLABORADORES = {
     delete: 'delete_tercerocolaborador',
     change: 'change_tercerocolaborador',
     list: 'list_tercerocolaborador',
-    detail: 'view_tercerocolaborador',
+    view: 'view_tercerocolaborador',
 };
 
 export const EMPRESAS = {
@@ -77,7 +100,7 @@ export const EMPRESAS = {
     delete: 'delete_empresa',
     change: 'change_empresa',
     list: 'list_empresa',
-    detail: 'view_empresa',
+    view: 'view_empresa',
 };
 
 export const HABITACIONES = {
@@ -85,7 +108,7 @@ export const HABITACIONES = {
     delete: 'delete_habitacion',
     change: 'change_habitacion',
     list: 'list_habitacion',
-    detail: 'view_habitacion',
+    view: 'view_habitacion',
 };
 
 export const TIPOS_HABITACIONES = {
@@ -93,7 +116,7 @@ export const TIPOS_HABITACIONES = {
     delete: 'delete_tipohabitacion',
     change: 'change_tipohabitacion',
     list: 'list_tipohabitacion',
-    detail: 'view_tipohabitacion',
+    view: 'view_tipohabitacion',
 };
 
 export const TIPOS_REGISTRO_INGRESO = {
@@ -101,7 +124,7 @@ export const TIPOS_REGISTRO_INGRESO = {
     delete: 'delete_registroingreso',
     change: 'change_registroingreso',
     list: 'list_registroingreso',
-    detail: 'view_registroingreso',
+    view: 'view_registroingreso',
 };
 
 export const PRODUCTOS = {
@@ -109,7 +132,7 @@ export const PRODUCTOS = {
     delete: 'delete_producto',
     change: 'change_producto',
     list: 'list_producto',
-    detail: 'view_producto',
+    view: 'view_producto',
 };
 
 export const UNIDADES_PRODUCTOS = {
@@ -117,7 +140,7 @@ export const UNIDADES_PRODUCTOS = {
     delete: 'delete_unidadproducto',
     change: 'change_unidadproducto',
     list: 'list_unidadproducto',
-    detail: 'view_unidadproducto',
+    view: 'view_unidadproducto',
 };
 
 export const CATEGORIAS_PRODUCTOS = {
@@ -125,7 +148,7 @@ export const CATEGORIAS_PRODUCTOS = {
     delete: 'delete_categoriaproducto',
     change: 'change_categoriaproducto',
     list: 'list_categoriaproducto',
-    detail: 'view_categoriaproducto',
+    view: 'view_categoriaproducto',
 };
 
 export const CATEGORIAS_PRODUCTOS_DOS = {
@@ -133,7 +156,7 @@ export const CATEGORIAS_PRODUCTOS_DOS = {
     delete: 'delete_categoriadosproducto',
     change: 'change_categoriadosproducto',
     list: 'list_categoriadosproducto',
-    detail: 'view_categoriadosproducto',
+    view: 'view_categoriadosproducto',
 };
 
 export const BODEGAS = {
@@ -141,7 +164,7 @@ export const BODEGAS = {
     delete: 'delete_bodega',
     change: 'change_bodega',
     list: 'list_bodega',
-    detail: 'view_bodega',
+    view: 'view_bodega',
 };
 
 export const PROVEEDORES = {
@@ -149,7 +172,7 @@ export const PROVEEDORES = {
     delete: 'delete_terceroproveedor',
     change: 'change_terceroproveedor',
     list: 'list_terceroproveedor',
-    detail: 'view_terceroproveedor',
+    view: 'view_terceroproveedor',
 };
 
 export const MOVIMIENTOS_INVENTARIOS = {
@@ -157,7 +180,7 @@ export const MOVIMIENTOS_INVENTARIOS = {
     delete: 'delete_movimientoinventario',
     change: 'change_movimientoinventario',
     list: 'list_movimientoinventario',
-    detail: 'view_movimientoinventario',
+    view: 'view_movimientoinventario',
 };
 
 export const MOVIMIENTOS_INVENTARIOS_DETALLES = {
@@ -165,7 +188,7 @@ export const MOVIMIENTOS_INVENTARIOS_DETALLES = {
     delete: 'delete_movimientoinventariodetalle',
     change: 'change_movimientoinventariodetalle',
     list: 'list_movimientoinventariodetalle',
-    detail: 'view_movimientoinventariodetalle',
+    view: 'view_movimientoinventariodetalle',
 };
 
 export const TRASLADOS_INVENTARIOS = {
@@ -173,7 +196,7 @@ export const TRASLADOS_INVENTARIOS = {
     delete: 'delete_trasladoinventario',
     change: 'change_trasladoinventario',
     list: 'list_trasladoinventario',
-    detail: 'view_trasladoinventario',
+    view: 'view_trasladoinventario',
 };
 
 export const TRASLADOS_INVENTARIOS_DETALLE = {
@@ -181,7 +204,7 @@ export const TRASLADOS_INVENTARIOS_DETALLE = {
     delete: 'delete_trasladoinventariodetalle',
     change: 'change_trasladoinventariodetalle',
     list: 'list_trasladoinventariodetalle',
-    detail: 'view_trasladoinventariodetalle',
+    view: 'view_trasladoinventariodetalle',
 };
 
 export const PUNTOS_VENTAS = {
@@ -189,7 +212,7 @@ export const PUNTOS_VENTAS = {
     delete: 'delete_puntoventa',
     change: 'change_puntoventa',
     list: 'list_puntoventa',
-    detail: 'view_puntoventa',
+    view: 'view_puntoventa',
 };
 
 
@@ -198,7 +221,7 @@ export const FRACCIONES_TIEMPOS_ACOMPANANTES = {
     delete: 'delete_fracciontiempo',
     change: 'change_fracciontiempo',
     list: 'list_fracciontiempo',
-    detail: 'view_fracciontiempo',
+    view: 'view_fracciontiempo',
 };
 
 export const CATEGORIAS_FRACCIONES_TIEMPOS_ACOMPANANTES = {
@@ -206,7 +229,7 @@ export const CATEGORIAS_FRACCIONES_TIEMPOS_ACOMPANANTES = {
     delete: 'delete_categoriafracciontiempo',
     change: 'change_categoriafracciontiempo',
     list: 'list_categoriafracciontiempo',
-    detail: 'view_categoriafracciontiempo',
+    view: 'view_categoriafracciontiempo',
 };
 
 export const BILLETES_MONEDAS = {
@@ -214,7 +237,7 @@ export const BILLETES_MONEDAS = {
     delete: 'delete_billetemoneda',
     change: 'change_billetemoneda',
     list: 'list_billetemoneda',
-    detail: 'view_billetemoneda',
+    view: 'view_billetemoneda',
 };
 
 
@@ -223,7 +246,7 @@ export const SERVICIOS = {
     delete: 'delete_servicios',
     change: 'change_servicios',
     list: 'list_servicios',
-    detail: 'view_servicios',
+    view: 'view_servicios',
 };
 
 export const ARQUEOS_CAJAS = {
@@ -231,7 +254,7 @@ export const ARQUEOS_CAJAS = {
     delete: 'delete_arqueocaja',
     change: 'change_arqueocaja',
     list: 'list_arqueocaja',
-    detail: 'view_arqueocaja',
+    view: 'view_arqueocaja',
 };
 
 export const CONCEPTOS_OPERACIONES_CAJA = {
@@ -246,5 +269,5 @@ export const OPERACIONES_CAJA = {
     delete: 'delete_operacioncaja',
     change: 'change_operacioncaja',
     list: 'list_operacioncaja',
-    detail: 'view_operacioncaja',
+    view: 'view_operacioncaja',
 };
