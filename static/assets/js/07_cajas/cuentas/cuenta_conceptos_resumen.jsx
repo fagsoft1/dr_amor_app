@@ -4,7 +4,7 @@ import {pesosColombianos} from "../../00_utilities/common";
 import Button from "@material-ui/core/Button/index";
 
 const ResumenLiquidacion = (props) => {
-    const {cuenta, styles} = props;
+    const {cuenta, cuenta: {tipo_cuenta}, styles} = props;
     const saldo_anterior_cxp = parseFloat(cuenta.saldo_anterior_cxp);
     const saldo_anterior_cxc = parseFloat(cuenta.saldo_anterior_cxc);
     const cxp_por_servicios = parseFloat(cuenta.cxp_por_servicios);
@@ -12,6 +12,10 @@ const ResumenLiquidacion = (props) => {
     const cxp_por_operaciones_caja = parseFloat(cuenta.cxp_por_operaciones_caja);
     const cxc_por_operaciones_caja = parseFloat(cuenta.cxc_por_operaciones_caja);
     const cxc_por_compras_productos = parseFloat(cuenta.cxc_por_compras_productos);
+    let total = cuenta.cxp_total - cuenta.cxc_total;
+    if (tipo_cuenta === 'M') {
+        total = Math.abs(total)
+    }
     return (
         <Fragment>
             <div className="col-12">
@@ -36,40 +40,51 @@ const ResumenLiquidacion = (props) => {
                         <td style={styles.table.td_right}>{pesosColombianos(saldo_anterior_cxp)}</td>
                         <td style={styles.table.td_right}>{pesosColombianos(saldo_anterior_cxc)}</td>
                     </tr>
+                    {
+                        tipo_cuenta === 'A' &&
+                        <Fragment>
+
+                            <tr
+                                style={styles.table.tr}
+                            >
+                                <td style={styles.table.td}>Servicios</td>
+                                <td style={styles.table.td_right}>{pesosColombianos(cxp_por_servicios)}</td>
+                                <td style={styles.table.td_right}>{pesosColombianos(0)}</td>
+                            </tr>
+                            <tr
+                                style={styles.table.tr}
+                            >
+                                <td style={styles.table.td}>Comisiones Habitaciones</td>
+                                <td style={styles.table.td_right}>{pesosColombianos(cxp_por_comisiones_habitacion)}</td>
+                                <td style={styles.table.td_right}>{pesosColombianos(0)}</td>
+                            </tr>
+                        </Fragment>
+                    }
+                    {
+                        ['A', 'C'].includes(tipo_cuenta) &&
+                        <Fragment>
+                            <tr
+                                style={styles.table.tr}
+                            >
+                                <td style={styles.table.td}>Otras CXP</td>
+                                <td style={styles.table.td_right}>{pesosColombianos(cxp_por_operaciones_caja)}</td>
+                                <td style={styles.table.td_right}>{pesosColombianos(0)}</td>
+                            </tr>
+                            <tr
+                                style={styles.table.tr}
+                            >
+                                <td style={styles.table.td}>Otras CXC</td>
+                                <td style={styles.table.td_right}>{pesosColombianos(0)}</td>
+                                <td style={styles.table.td_right}>{pesosColombianos(cxc_por_operaciones_caja)}</td>
+                            </tr>
+                        </Fragment>
+                    }
                     <tr
                         style={styles.table.tr}
                     >
-                        <td style={styles.table.td}>Servicios</td>
-                        <td style={styles.table.td_right}>{pesosColombianos(cxp_por_servicios)}</td>
-                        <td style={styles.table.td_right}>{pesosColombianos(0)}</td>
-                    </tr>
-                    <tr
-                        style={styles.table.tr}
-                    >
-                        <td style={styles.table.td}>Comisiones Habitaciones</td>
-                        <td style={styles.table.td_right}>{pesosColombianos(cxp_por_comisiones_habitacion)}</td>
-                        <td style={styles.table.td_right}>{pesosColombianos(0)}</td>
-                    </tr>
-                    <tr
-                        style={styles.table.tr}
-                    >
-                        <td style={styles.table.td}>Otras CXP</td>
-                        <td style={styles.table.td_right}>{pesosColombianos(cxp_por_operaciones_caja)}</td>
-                        <td style={styles.table.td_right}>{pesosColombianos(0)}</td>
-                    </tr>
-                    <tr
-                        style={styles.table.tr}
-                    >
-                        <td style={styles.table.td}>Consumos Tienda</td>
+                        <td style={styles.table.td}>{`${tipo_cuenta === 'M' ? 'Venta' : 'Consumos'}`} Tienda</td>
                         <td style={styles.table.td_right}>{pesosColombianos(0)}</td>
                         <td style={styles.table.td_right}>{pesosColombianos(cxc_por_compras_productos)}</td>
-                    </tr>
-                    <tr
-                        style={styles.table.tr}
-                    >
-                        <td style={styles.table.td}>Otras CXC</td>
-                        <td style={styles.table.td_right}>{pesosColombianos(0)}</td>
-                        <td style={styles.table.td_right}>{pesosColombianos(cxc_por_operaciones_caja)}</td>
                     </tr>
                     </tbody>
                     <tfoot>
@@ -79,10 +94,10 @@ const ResumenLiquidacion = (props) => {
                         <td style={styles.table.td_right}>{pesosColombianos(cuenta.cxc_total)}</td>
                     </tr>
                     <tr>
-                        <td>Total a Pagar</td>
+                        <td>Total a {tipo_cuenta === 'M' ? 'Cobrar' : 'Pagar'}</td>
                         <td></td>
                         <td></td>
-                        <td style={styles.table.td_total}>{pesosColombianos(cuenta.cxp_total - cuenta.cxc_total)}</td>
+                        <td style={styles.table.td_total}>{pesosColombianos(total)}</td>
                     </tr>
                     </tfoot>
                 </table>

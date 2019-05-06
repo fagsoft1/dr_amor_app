@@ -66,13 +66,13 @@ class ConceptoOperacionCajaSerializer(serializers.ModelSerializer):
     tipo_display = serializers.SerializerMethodField()
     grupo_display = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return '%s de %s' % (instance.get_tipo_display(), instance.descripcion)
 
-    def get_tipo_display(self, instance):
+    def get_tipo_display(self, instance):  # pragma: no cover
         return instance.get_tipo_display()
 
-    def get_grupo_display(self, instance):
+    def get_grupo_display(self, instance):  # pragma: no cover
         return instance.get_grupo_display()
 
     class Meta:
@@ -93,7 +93,7 @@ class ConceptoOperacionCajaSerializer(serializers.ModelSerializer):
 class BilleteMonedaSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return '%s de %s' % (instance.get_tipo_display(), instance.valor)
 
     class Meta:

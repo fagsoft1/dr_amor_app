@@ -29,6 +29,7 @@ class VentaProductoDetalleSerializer(serializers.ModelSerializer):
         source='venta.punto_venta_turno.usuario.username',
         read_only=True
     )
+    empresa_nombre = serializers.CharField(source='venta.empresa.nombre', read_only=True)
 
     class Meta:
         model = VentaProductoDetalle
@@ -37,6 +38,7 @@ class VentaProductoDetalleSerializer(serializers.ModelSerializer):
             'producto_nombre',
             'venta',
             'cuenta',
+            'empresa_nombre',
             'cuenta_liquidada',
             'cuenta_tipo',
             'cuenta_usuario',

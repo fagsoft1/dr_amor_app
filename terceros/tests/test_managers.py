@@ -177,7 +177,7 @@ class ManagerCuentaTests(BaseTest):
         )
         valor_compra_productos = informacion['valor_venta']
         cuenta = qs_cuenta.sin_liquidar().first()
-        self.assertEqual(valor_compra_productos, cuenta.valor_ventas_productos)
+        self.assertEqual(valor_compra_productos, cuenta.cxc_por_compras_productos)
         valor_venta, informacion = self.hacer_venta_productos_dos(
             punto_venta=self.punto_venta,
             nro_referencias=5,
@@ -185,7 +185,7 @@ class ManagerCuentaTests(BaseTest):
         )
         valor_compra_productos += informacion['valor_venta']
         cuenta = qs_cuenta.sin_liquidar().first()
-        self.assertEqual(valor_compra_productos, cuenta.valor_ventas_productos)
+        self.assertEqual(valor_compra_productos, cuenta.cxc_por_compras_productos)
 
         cuenta.liquidada = True
         cuenta.save()
@@ -205,10 +205,10 @@ class ManagerCuentaTests(BaseTest):
         valor_compra_productos2 = informacion2['valor_venta']
 
         cuenta = qs_cuenta.liquidada().first()
-        self.assertEqual(valor_compra_productos, cuenta.valor_ventas_productos)
+        self.assertEqual(valor_compra_productos, cuenta.cxc_por_compras_productos)
 
         cuenta = qs_cuenta.sin_liquidar().first()
-        self.assertEqual(valor_compra_productos2, cuenta.valor_ventas_productos)
+        self.assertEqual(valor_compra_productos2, cuenta.cxc_por_compras_productos)
 
 
 class ManagerAcompananteTests(TestCase):

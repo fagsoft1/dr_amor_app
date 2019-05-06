@@ -11,7 +11,7 @@ class PermissionSerializer(serializers.ModelSerializer):
     content_type_label = serializers.CharField(source='content_type.app_label', read_only=True)
     content_type_model = serializers.CharField(source='content_type.app_label', read_only=True)
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         if hasattr(instance, 'plus') and instance.plus.nombre:
             return instance.plus.nombre.title()
         return instance.name.title()
@@ -48,7 +48,7 @@ class PermissionSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.name.title()
 
     class Meta:

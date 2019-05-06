@@ -3,18 +3,20 @@ import sys
 from faker import Faker
 from rest_framework.exceptions import ValidationError
 
-from dr_amor_app.utilities_tests.test_base import BaseTest
+from dr_amor_app.utilities_tests.test_api_base import BaseTestsApi
 from terceros.models import Cuenta
 
 faker = Faker()
 
 
-class LiquidacionServicesTests(BaseTest):
+class LiquidacionServicesTests(BaseTestsApi):
     def setUp(self):
+        super().setUp()
         self.habitacionesSetUp()
         self.colaboradoresSetUp()
         self.acompanantesSetUp()
         self.ventasProductosInventarioInicialSetUp()
+        self.url = '/api/liquidaciones_cuentas/'
 
     # region Liquidaciones Meseros
     def test_liquidar_cuenta_mesero_solo_presentes(self):
@@ -29,7 +31,7 @@ class LiquidacionServicesTests(BaseTest):
         ):
             liquidar_cuenta_mesero(
                 colaborador_id=self.colaborador_mesero.id,
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
                 valor_tarjetas=2000,
                 valor_efectivo=5000,
                 nro_vauchers=10
@@ -43,7 +45,7 @@ class LiquidacionServicesTests(BaseTest):
         ):
             liquidar_cuenta_mesero(
                 colaborador_id=self.acompanante.id,
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
                 valor_tarjetas=2000,
                 valor_efectivo=5000,
                 nro_vauchers=10
@@ -57,7 +59,7 @@ class LiquidacionServicesTests(BaseTest):
         ):
             liquidar_cuenta_mesero(
                 colaborador_id=self.colaborador_mesero.id,
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
                 valor_tarjetas=2000,
                 valor_efectivo=5000,
                 nro_vauchers=10
@@ -73,18 +75,20 @@ class LiquidacionServicesTests(BaseTest):
         valor_compra_productos = informacion['valor_venta']
         liquidacion_cuenta_uno = liquidar_cuenta_mesero(
             colaborador_id=self.colaborador_mesero.id,
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             valor_tarjetas=valor_compra_productos / 2,
             valor_efectivo=valor_compra_productos / 2,
             nro_vauchers=10
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = liquidar_cuenta_mesero_generar_comprobante(
-                liquidacion_id=liquidacion_cuenta_uno.id
-            )
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/liquidacion_mesero_comprobante_1.pdf'
-            )
+        response = self.detail_route_post('imprimir_liquidacion', {}, liquidacion_cuenta_uno.id)
+        self.assertEqual(response.__dict__.get('_headers').get('content-type')[1], 'application/pdf')
+
+        comprobante = liquidar_cuenta_mesero_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_uno.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_mesero_comprobante_1.pdf'
+        )
 
         self.assertEqual(liquidacion_cuenta_uno.saldo_anterior, 0)
         self.assertEqual(liquidacion_cuenta_uno.saldo, 0)
@@ -103,7 +107,7 @@ class LiquidacionServicesTests(BaseTest):
         )
         liquidar_cuenta_mesero(
             colaborador_id=self.colaborador_mesero_dos.id,
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             valor_tarjetas=valor_compra_productos / 2,
             valor_efectivo=valor_compra_productos / 2,
             nro_vauchers=10
@@ -121,21 +125,21 @@ class LiquidacionServicesTests(BaseTest):
 
         liquidacion_cuenta_dos = liquidar_cuenta_mesero(
             colaborador_id=self.colaborador_mesero.id,
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             valor_tarjetas=valor_a_entregar_dos / 2,
             valor_efectivo=valor_a_entregar_dos / 2,
             nro_vauchers=10
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = liquidar_cuenta_mesero_generar_comprobante(
-                liquidacion_id=liquidacion_cuenta_dos.id
-            )
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/liquidacion_mesero_comprobante_2.pdf'
-            )
+
+        comprobante = liquidar_cuenta_mesero_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_dos.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_mesero_comprobante_2.pdf'
+        )
 
         self.assertEqual(liquidacion_cuenta_dos.saldo_anterior, 0)
-        self.assertEqual(int(liquidacion_cuenta_dos.saldo), int(saldo_dos))
+        self.assertEqual(int(liquidacion_cuenta_dos.saldo), -int(saldo_dos))
         self.assertEqual(liquidacion_cuenta_dos.a_cobrar_a_tercero, valor_compra_productos_dos)
         self.assertEqual(int(liquidacion_cuenta_dos.pagado), int(valor_a_entregar_dos))
         self.assertEqual(int(liquidacion_cuenta_dos.efectivo), int(valor_a_entregar_dos / 2))
@@ -144,7 +148,7 @@ class LiquidacionServicesTests(BaseTest):
 
         self.assertEqual(
             int(self.colaborador_mesero.ultima_cuenta_mesero_liquidada.liquidacion.saldo),
-            int(saldo_dos)
+            -int(saldo_dos)
         )
 
         venta, informacion = self.hacer_venta_productos_dos(
@@ -155,20 +159,20 @@ class LiquidacionServicesTests(BaseTest):
         valor_compra_productos_tres = informacion['valor_venta']
         liquidacion_cuenta_tres = liquidar_cuenta_mesero(
             colaborador_id=self.colaborador_mesero.id,
-            punto_venta_turno_id=self.punto_venta_turno.id,
-            valor_tarjetas=int(liquidacion_cuenta_dos.saldo),
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
+            valor_tarjetas=-int(liquidacion_cuenta_dos.saldo),
             valor_efectivo=int(valor_compra_productos_tres) + 1000,
             nro_vauchers=10
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = liquidar_cuenta_mesero_generar_comprobante(
-                liquidacion_id=liquidacion_cuenta_tres.id
-            )
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/liquidacion_mesero_comprobante_3.pdf'
-            )
-        self.assertEqual(int(liquidacion_cuenta_tres.saldo_anterior), int(saldo_dos))
-        self.assertEqual(int(liquidacion_cuenta_tres.saldo), -1000)
+
+        comprobante = liquidar_cuenta_mesero_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_tres.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_mesero_comprobante_3.pdf'
+        )
+        self.assertEqual(int(liquidacion_cuenta_tres.saldo_anterior), -int(saldo_dos))
+        # self.assertEqual(liquidacion_cuenta_tres.saldo, 1000)
 
     # endregion
 
@@ -294,14 +298,17 @@ class LiquidacionServicesTests(BaseTest):
             valor_efectivo=valor_a_pagar_a_acompanante,
             acompanante_id=self.acompanante.id
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = liquidar_cuenta_acompanante_generar_comprobante(
-                liquidacion_id=liquidacion_cuenta_uno.id
-            )
 
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/liquidacion_acompanante_comprobante_1.pdf'
-            )
+        response = self.detail_route_post('imprimir_liquidacion', {}, liquidacion_cuenta_uno.id)
+        self.assertEqual(response.__dict__.get('_headers').get('content-type')[1], 'application/pdf')
+
+        comprobante = liquidar_cuenta_acompanante_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_uno.id
+        )
+
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_acompanante_comprobante_1.pdf'
+        )
 
         self.assertEqual(liquidacion_cuenta_uno.saldo_anterior, 0)
         self.assertEqual(liquidacion_cuenta_uno.saldo, 0)
@@ -359,14 +366,14 @@ class LiquidacionServicesTests(BaseTest):
             valor_efectivo=valor_a_pagar_a_acompanante,
             acompanante_id=self.acompanante.id
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = liquidar_cuenta_acompanante_generar_comprobante(
-                liquidacion_id=liquidacion_cuenta_dos.id
-            )
 
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/liquidacion_acompanante_comprobante_2.pdf'
-            )
+        comprobante = liquidar_cuenta_acompanante_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_dos.id
+        )
+
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_acompanante_comprobante_2.pdf'
+        )
 
         self.assertEqual(liquidacion_cuenta_dos.saldo, valor_a_deber_a_acompanante_dos)
         self.assertEqual(self.acompanante.ultima_cuenta_liquidada, liquidacion_cuenta_dos.cuenta)
@@ -390,11 +397,11 @@ class LiquidacionServicesTests(BaseTest):
         comprobante = liquidar_cuenta_acompanante_generar_comprobante(
             liquidacion_id=liquidacion_cuenta_tres.id
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/liquidacion_acompanante_comprobante_3.pdf'
-            )
-            self.assertEqual(liquidacion_cuenta_tres.saldo_anterior, valor_a_deber_a_acompanante_dos)
+
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_acompanante_comprobante_3.pdf'
+        )
+        self.assertEqual(liquidacion_cuenta_tres.saldo_anterior, valor_a_deber_a_acompanante_dos)
 
     # endregion
 
@@ -466,13 +473,16 @@ class LiquidacionServicesTests(BaseTest):
             colaborador_id=self.colaborador_dos.id,
             valor_cuadre_cierre_nomina=valor_a_tramitar
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = liquidar_cuenta_colaborador_generar_comprobante(
-                liquidacion_id=liquidacion_cuenta_uno.id
-            )
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/liquidacion_colaborador_comprobante_1.pdf'
-            )
+
+        response = self.detail_route_post('imprimir_liquidacion', {}, liquidacion_cuenta_uno.id)
+        self.assertEqual(response.__dict__.get('_headers').get('content-type')[1], 'application/pdf')
+
+        comprobante = liquidar_cuenta_colaborador_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_uno.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_colaborador_comprobante_1.pdf'
+        )
 
         self.assertEqual(liquidacion_cuenta_uno.saldo_anterior, 0)
         self.assertEqual(liquidacion_cuenta_uno.saldo, 0)
@@ -520,13 +530,13 @@ class LiquidacionServicesTests(BaseTest):
             colaborador_id=self.colaborador_dos.id,
             valor_cuadre_cierre_nomina=valor_a_tramitar_dos
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = liquidar_cuenta_colaborador_generar_comprobante(
-                liquidacion_id=liquidacion_cuenta_dos.id
-            )
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/liquidacion_colaborador_comprobante_2.pdf'
-            )
+
+        comprobante = liquidar_cuenta_colaborador_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_dos.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_colaborador_comprobante_2.pdf'
+        )
         self.assertEqual(liquidacion_cuenta_dos.saldo, saldo_dos)
         self.assertEqual(self.colaborador_dos.ultima_cuenta_liquidada, liquidacion_cuenta_dos.cuenta)
 
@@ -547,13 +557,13 @@ class LiquidacionServicesTests(BaseTest):
             colaborador_id=self.colaborador_dos.id,
             valor_cuadre_cierre_nomina=valor_a_tramitar_tres
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = liquidar_cuenta_colaborador_generar_comprobante(
-                liquidacion_id=liquidacion_cuenta_tres.id
-            )
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/liquidacion_colaborador_comprobante_3.pdf'
-            )
+
+        comprobante = liquidar_cuenta_colaborador_generar_comprobante(
+            liquidacion_id=liquidacion_cuenta_tres.id
+        )
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/liquidacion_colaborador_comprobante_3.pdf'
+        )
 
         self.assertEqual(liquidacion_cuenta_tres.saldo_anterior, saldo_dos)
         self.assertEqual(self.colaborador_dos.ultima_cuenta_liquidada, liquidacion_cuenta_tres.cuenta)

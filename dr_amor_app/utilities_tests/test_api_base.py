@@ -12,8 +12,10 @@ from usuarios.factories import UserFactory
 
 faker = Faker()
 
+from .test_base import BaseTest
 
-class BaseTestsApi(TestCase):
+
+class BaseTestsApi(BaseTest):
     def setUp(self):
         self.superuser = UserFactory(username='admin', is_superuser=True)
         self.superuser.set_password('admin')
@@ -34,6 +36,11 @@ class BaseTestsApi(TestCase):
         self.data_for_create_test = None
         self.data_for_update_test = None
 
+    def cambiar_token_admin(self, usuario_nuevo):
+        usuario_nuevo.is_superuser = True
+        usuario_nuevo.save()
+        self.token_admin = AuthToken.objects.create(usuario_nuevo)
+
     def ingreso_no_autorizado(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -42,7 +49,6 @@ class BaseTestsApi(TestCase):
         count = self.modelo.objects.count()
 
         data = self.data_for_create_test
-
         response = self.client.post(
             self.url,
             data,
@@ -52,6 +58,7 @@ class BaseTestsApi(TestCase):
 
         permiso = Permission.objects.get(codename='add_%s' % self.permiso)
         self.user.user_permissions.add(permiso)
+
         response = self.client.post(
             self.url,
             data,
@@ -71,6 +78,7 @@ class BaseTestsApi(TestCase):
 
     def update(self, callback_update: Callable = None):
         data = self.data_for_create_test
+
         permiso = Permission.objects.get(codename='add_%s' % self.permiso)
         self.user.user_permissions.add(permiso)
         response = self.client.post(
@@ -208,6 +216,17 @@ class BaseTestsApi(TestCase):
         response = self.client.post(
             url,
             values,
+            HTTP_AUTHORIZATION='Token ' + self.token_admin
+        )
+        if not espera_error:
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return response
+
+    def retrive_get(self, id_detail, espera_error=False):
+        url = '%s%s/' % (self.url, id_detail)
+
+        response = self.client.get(
+            url,
             HTTP_AUTHORIZATION='Token ' + self.token_admin
         )
         if not espera_error:

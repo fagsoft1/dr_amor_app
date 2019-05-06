@@ -198,6 +198,12 @@ class IndexApp extends Component {
                             icono='sliders-h'
                             classes={classes}
                         />
+                        <Boton
+                            nombre='Consultas'
+                            link='/app/consultas/'
+                            icono='search'
+                            classes={classes}
+                        />
                         {
                             punto_venta_actual &&
                             <Boton

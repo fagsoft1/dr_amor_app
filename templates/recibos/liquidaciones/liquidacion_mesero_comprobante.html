@@ -8,15 +8,16 @@
 <body style="font-size: 9px">
 {% localize on %}
     {% with usuario=liquidacion.punto_venta_turno.usuario.tercero.full_name_proxy punto_venta=liquidacion.punto_venta_turno.punto_venta.nombre %}
-        <h3 style="text-align: center">Cuentas por Cobrar</h3>
+        <h3 style="text-align: center">Cuentas por Cobrar (A Mesero)</h3>
         <h1 style="text-align: center">${{ liquidacion.pagado|floatformat:0 }} COP</h1>
         <p>
             Por ventas realizadas desde {{ liquidacion.cuenta.created }} hasta {{ liquidacion.created }}
         </p>
         <span style="font-weight: bold">Saldo anterior: </span>{{ liquidacion.saldo_anterior|floatformat:0 }}<br/>
-        <span style="font-weight: bold">Ventas: </span>{{ liquidacion.a_cobrar_a_tercero|floatformat:0 }}<br/>
+        <span style="font-weight: bold">Ventas: </span>
+        {{ liquidacion.a_cobrar_a_tercero|add:liquidacion.saldo_anterior|floatformat:0 }}<br/>
         <span style="font-weight: bold">A entregar: </span>
-        {{ liquidacion.saldo_anterior|add:liquidacion.a_cobrar_a_tercero|floatformat:0 }}<br/>
+        {{ liquidacion.a_cobrar_a_tercero|sub:liquidacion.a_pagar_a_tercero|floatformat:0 }}<br/>
         <br/>
         <br/>
         <span style="font-weight: bold">Entregado: </span>{{ liquidacion.pagado|floatformat:0 }}<br/>

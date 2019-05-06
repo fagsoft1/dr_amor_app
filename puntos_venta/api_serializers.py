@@ -9,7 +9,7 @@ class PuntoVentaSerializer(serializers.ModelSerializer):
     tipo_nombre = serializers.SerializerMethodField()
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -29,7 +29,7 @@ class PuntoVentaSerializer(serializers.ModelSerializer):
             'conceptos_operaciones_caja_cierre',
         ]
 
-    def get_tipo_nombre(self, obj):
+    def get_tipo_nombre(self, obj):  # pragma: no cover
         return obj.get_tipo_display()
 
 

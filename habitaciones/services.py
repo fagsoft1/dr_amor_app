@@ -93,7 +93,6 @@ def habitacion_cambiar_servicios_de_habitacion(
     habitacion_anterior_valor = habitacion_anterior.tipo.valor
     habitacion_nueva_valor = habitacion_nueva.tipo.valor
     diferencia = habitacion_nueva_valor - habitacion_anterior_valor
-
     servicios = Servicio.objects.filter(id__in=servicios_array_id)
     turno_punto_venta = User.objects.get(pk=usuario_id).tercero.turno_punto_venta_abierto
 
@@ -109,6 +108,7 @@ def habitacion_cambiar_servicios_de_habitacion(
             comision_habitacion_nueva = habitacion_nueva.tipo.comision
             servicio.valor_habitacion = habitacion_nueva.tipo.valor_antes_impuestos - comision_habitacion_nueva
             servicio.comision = comision_habitacion_nueva
+            servicio.empresa = habitacion_nueva.empresa
 
             servicio.habitacion = habitacion_nueva
             servicio.save()
@@ -128,6 +128,7 @@ def habitacion_cambiar_servicios_de_habitacion(
 
             servicio.valor_habitacion = valor_habitacion - comision_habitacion_nueva
             servicio.comision = comision_habitacion_nueva
+            servicio.empresa = habitacion_nueva.empresa
 
             servicio.valor_iva_habitacion = valor_iva_habitacion
             servicio.habitacion = habitacion_nueva

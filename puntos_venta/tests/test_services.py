@@ -25,7 +25,8 @@ class PuntoVentaTests(BaseTest):
             entrega_efectivo_dict={},
             nro_vauchers=0,
             valor_dolares=0,
-            tasa_dolar=0
+            tasa_dolar=0,
+            operaciones_caja_dict={}
         )
 
     # region Asociar Conceptos Operaciones Caja para Cierre
@@ -203,7 +204,8 @@ class PuntoVentaTests(BaseTest):
             entrega_efectivo_dict=engrega_efectivo_simulado,
             nro_vauchers=13 + descuadre_valets,
             valor_dolares=valor_dolares_simulados,
-            tasa_dolar=tasa_dolares_simulados
+            tasa_dolar=tasa_dolares_simulados,
+            operaciones_caja_dict={}
         )
         return punto_venta, arqueo_caja
 
@@ -222,15 +224,14 @@ class PuntoVentaTests(BaseTest):
             tipo='E'
         ).first().valor_efectivo
 
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
-            reporte.write_pdf(
-                target='media/pruebas_pdf/reporte_caja_entrega.pdf'
-            )
-            email = arqueo_generar_reporte_email(arqueo_caja.id)
-            email.write_pdf(
-                target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
-            )
+        reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
+        reporte.write_pdf(
+            target='media/pruebas_pdf/reporte_caja_entrega.pdf'
+        )
+        email = arqueo_generar_reporte_email(arqueo_caja.id)
+        email.write_pdf(
+            target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
+        )
 
         self.assertEqual(arqueo_caja.valor_base_dia_siguiente, -transaccion_entrega_base)
         self.assertEqual(arqueo_caja.valor_entrega_efectivo_total, -transaccion_entrega_efectivo)
@@ -246,15 +247,19 @@ class PuntoVentaTests(BaseTest):
             descuadre_tarjetas=-3000,
             descuadre_valets=-2
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            reporte = arqueo_generar_recibo_entrega(arqueo_caja.id)
-            reporte.write_pdf(
-                target='media/pruebas_pdf/reporte_caja_entrega.pdf'
-            )
-            email = arqueo_generar_reporte_email(arqueo_caja.id)
-            email.write_pdf(
-                target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
-            )
+
+        reporte = arqueo_generar_recibo_entrega(
+            arqueo_id=arqueo_caja.id
+        )
+        reporte.write_pdf(
+            target='media/pruebas_pdf/reporte_caja_entrega.pdf'
+        )
+        email = arqueo_generar_reporte_email(
+            arqueo_id=arqueo_caja.id
+        )
+        email.write_pdf(
+            target='media/pruebas_pdf/reporte_caja_entrega_email.pdf'
+        )
 
         self.assertEqual(12000, arqueo_caja.diferencia)
         self.assertFalse(punto_venta.abierto)
@@ -277,7 +282,8 @@ class PuntoVentaTests(BaseTest):
                 entrega_efectivo_dict={},
                 nro_vauchers=0,
                 valor_dolares=0,
-                tasa_dolar=0
+                tasa_dolar=0,
+                operaciones_caja_dict={}
             )
 
     def test_punto_venta_cerrar_solo_con_puntos_venta_abiertos(self):
@@ -294,7 +300,8 @@ class PuntoVentaTests(BaseTest):
                 entrega_efectivo_dict={},
                 nro_vauchers=0,
                 valor_dolares=0,
-                tasa_dolar=0
+                tasa_dolar=0,
+                operaciones_caja_dict={}
             )
 
 # endregion

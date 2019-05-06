@@ -73,8 +73,25 @@ class CuentaMeseroManager(models.Manager):
             tipo=2,
             propietario__tercero__es_colaborador=True
         ).annotate(
-            saldo_anterior=F('cuenta_anterior__liquidacion__saldo'),
-            valor_ventas_productos=Coalesce(Sum('compras_productos__productos__precio_total'), 0)
+            saldo_anterior=Coalesce(F('cuenta_anterior__liquidacion__saldo'), 0),
+            cxc_por_compras_productos=Coalesce(Sum('compras_productos__productos__precio_total'), 0),
+            saldo_anterior_cxp=Case(
+                When(
+                    cuenta_anterior__liquidacion__saldo__gt=0,
+                    then=F('cuenta_anterior__liquidacion__saldo')
+                ),
+                default=0,
+                output_field=DecimalField()),
+            saldo_anterior_cxc=Case(
+                When(
+                    cuenta_anterior__liquidacion__saldo__lt=0,
+                    then=F('cuenta_anterior__liquidacion__saldo') * -1
+                ),
+                default=0,
+                output_field=DecimalField()),
+        ).annotate(
+            cxc_total=F('cxc_por_compras_productos') + F('saldo_anterior_cxc'),
+            cxp_total=F('saldo_anterior_cxp')
         )
 
     def liquidada(self):
@@ -222,10 +239,23 @@ class CuentaColaboradorManager(models.Manager):
                 ),
                 0
             ),
-            saldo_anterior=F('cuenta_anterior__liquidacion__saldo')
+            saldo_anterior_cxp=Case(
+                When(
+                    cuenta_anterior__liquidacion__saldo__gt=0,
+                    then=F('cuenta_anterior__liquidacion__saldo')
+                ),
+                default=0,
+                output_field=DecimalField()),
+            saldo_anterior_cxc=Case(
+                When(
+                    cuenta_anterior__liquidacion__saldo__lt=0,
+                    then=F('cuenta_anterior__liquidacion__saldo') * -1
+                ),
+                default=0,
+                output_field=DecimalField()),
         ).annotate(
-            cxc_total=F('cxc_por_compras_productos') + F('cxc_por_operaciones_caja'),
-            cxp_total=F('cxp_por_operaciones_caja')
+            cxc_total=F('cxc_por_compras_productos') + F('cxc_por_operaciones_caja') + F('saldo_anterior_cxc'),
+            cxp_total=F('cxp_por_operaciones_caja') + F('saldo_anterior_cxp')
         )
 
     def liquidada(self):

@@ -33,12 +33,13 @@ class RegistroEntradaParqueoTestsApi(BaseTestsApi):
         self.modelo = RegistroEntradaParqueo
         self.modalidad_fraccion_tiempo = ModalidadFraccionTiempoFactory()
         self.data_for_create_test = self.Factory.stub().__dict__
+        self.data_for_create_test.pop('codigo_qr')
         self.data_for_create_test['modalidad_fraccion_tiempo'] = self.modalidad_fraccion_tiempo.id
         self.data_for_create_test['punto_venta_turno'] = self.punto_venta_turno.id
         self.data_for_create_test['vehiculo'] = self.vehiculo.id
         self.data_for_create_test['placa'] = self.vehiculo.placa
         self.data_for_create_test['hora_salida'] = timezone.now()
-        self.data_for_update_test = {'hora_salida': timezone.now()}
+        self.data_for_update_test = {'hora_salida': timezone.now(), 'placa': self.vehiculo.placa}
 
     def test_ingreso_no_autorizado(self):
         self.ingreso_no_autorizado()
@@ -46,8 +47,8 @@ class RegistroEntradaParqueoTestsApi(BaseTestsApi):
     def test_crear(self):
         self.crear()
 
-    # def test_update(self):
-    #     self.update()
+    def test_update(self):
+        self.update()
 
     def test_delete(self):
         self.delete()

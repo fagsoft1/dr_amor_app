@@ -1,3 +1,8 @@
+export const CONSULTAS_VENTAS_EMPRESAS_TYPES = {
+    fetch_all: 'fetch_consulta_ventas_empresas',
+    clear: 'clear_consulta_ventas_empresas',
+};
+
 export const LIQUIDACION_CUENTA_TYPES = {
     create: 'create_liquidacion_cuenta',
     delete: 'delete_liquidacion_cuenta',

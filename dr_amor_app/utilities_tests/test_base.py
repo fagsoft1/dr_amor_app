@@ -350,38 +350,46 @@ class BaseTest(TestCase):
         if tercero and tercero.es_colaborador:
             concepto_ingreso = ConceptoOperacionCajaFactory(
                 tipo='I',
-                grupo='C'
+                grupo='C',
+                tipo_cuenta='CXP'
             )
             concepto_egreso = ConceptoOperacionCajaFactory(
                 tipo='E',
-                grupo='C'
+                grupo='C',
+                tipo_cuenta='CXC'
             )
         elif tercero and tercero.es_acompanante:
             concepto_ingreso = ConceptoOperacionCajaFactory(
                 tipo='I',
-                grupo='A'
+                grupo='A',
+                tipo_cuenta='CXP'
             )
             concepto_egreso = ConceptoOperacionCajaFactory(
                 tipo='E',
-                grupo='A'
+                grupo='A',
+                tipo_cuenta='CXC'
             )
         elif tercero and tercero.es_proveedor:
             concepto_ingreso = ConceptoOperacionCajaFactory(
                 tipo='I',
-                grupo='P'
+                grupo='P',
+                tipo_cuenta='NA'
             )
             concepto_egreso = ConceptoOperacionCajaFactory(
                 tipo='E',
-                grupo='P'
+                grupo='P',
+                tipo_cuenta='NA'
             )
         else:
             concepto_ingreso = ConceptoOperacionCajaFactory(
                 tipo='I',
-                grupo=random.choice(['T', 'O'])
+                grupo=random.choice(['T', 'O']),
+                tipo_cuenta='NA'
             )
             concepto_egreso = ConceptoOperacionCajaFactory(
                 tipo='E',
-                grupo=concepto_ingreso.grupo
+                grupo=concepto_ingreso.grupo,
+                tipo_cuenta='NA'
             )
 
         valor_egresos = 0
@@ -825,17 +833,17 @@ class BaseTest(TestCase):
         # region Genera Liquidaciones
         liquidacion_cuenta_acompanante = liquidar_cuenta_acompanante(
             acompanante_id=self.acompanante.id,
-            usuario_pdv_id=punto_venta.usuario_actual.tercero.turno_punto_venta_abierto.id,
+            usuario_pdv_id=punto_venta.usuario_actual.id,
             valor_efectivo=(
-                                       self.acompanante.cuenta_abierta.cxp_total - self.acompanante.cuenta_abierta.cxc_total) - 10000
+                                   self.acompanante.cuenta_abierta.cxp_total - self.acompanante.cuenta_abierta.cxc_total) - 10000
         )
 
-        a_cobrar_a_mesero = self.colaborador_mesero.cuenta_abierta_mesero.valor_ventas_productos
+        a_cobrar_a_mesero = self.colaborador_mesero.cuenta_abierta_mesero.cxc_por_compras_productos
         a_cobrar_a_mesero_efectivo = int(a_cobrar_a_mesero / 3)
         a_cobrar_a_mesero_tarjeta = a_cobrar_a_mesero - a_cobrar_a_mesero_efectivo
         liquidar_cuenta_mesero(
             colaborador_id=self.colaborador_mesero.id,
-            punto_venta_turno_id=punto_venta.usuario_actual.tercero.turno_punto_venta_abierto.id,
+            usuario_pdv_id=self.colaborador_cajero.usuario.id,
             valor_efectivo=a_cobrar_a_mesero_efectivo,
             valor_tarjetas=a_cobrar_a_mesero_tarjeta,
             nro_vauchers=10

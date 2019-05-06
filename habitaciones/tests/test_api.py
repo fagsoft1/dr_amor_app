@@ -65,5 +65,15 @@ class HabitacionTestsApi(BaseTestsApi):
     def test_list(self):
         self.list()
 
-    # def test_cambiar_estado(self):
-    #     self.detail_route_post(url_detail_route='/cambiar_estado/', values={'estado': 0, 'cosa': 'fabio'})
+    def test_cambiar_estado(self):
+        self.crear()
+        habitacion = Habitacion.objects.first()
+        habitacion.estado = 2
+        habitacion.save()
+        response = self.detail_route_post(
+            'cambiar_estado',
+            {'estado': 0, 'cosa': 'fabio'},
+            habitacion.id
+        )
+        result = response.data.get('result')
+        self.assertTrue('Se han cambiado el estado para la habitacion' in result)

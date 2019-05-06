@@ -10,13 +10,13 @@ class UsuarioSerializer(serializers.ModelSerializer):
     punto_venta_actual = PuntoVentaSerializer(read_only=True)
     qr_acceso = serializers.CharField(source='tercero.qr_acceso', read_only=True)
 
-    def get_imagen_perfil_url(self, obj):
+    def get_imagen_perfil_url(self, obj):  # pragma: no cover
         if hasattr(obj, 'tercero'):
             if obj.tercero.imagen_perfil:
                 return obj.tercero.imagen_perfil.url
         return None
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return ('%s %s' % (instance.first_name, instance.last_name)).title()
 
     class Meta:

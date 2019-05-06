@@ -163,6 +163,24 @@ class VentaProductosServicesTests(BaseTest):
             pedido['valor_pedido']
         )
 
+    def test_venta_producto_efectuar_venta_mesero_a_acompanante(self):
+        from ventas.services import venta_producto_efectuar_venta, venta_producto_generar_comprobante_venta
+        from terceros.services import tercero_generarQR
+        pedido = self.crear_pedido()
+        self.assertTrue(self.colaborador_dos.cuenta_abierta_mesero.compras_productos.all().count() == 0)
+        with self.assertRaisesMessage(
+                ValidationError,
+                "'_error': 'No se puede crear una venta mesero a una acompañante'}"
+        ):
+            venta_producto_efectuar_venta(
+                usuario_pdv_id=self.colaborador_cajero.usuario.id,
+                punto_venta_id=self.punto_venta.id,
+                tipo_venta=2,
+                pedidos=pedido['pedido'],
+                cliente_usuario_id=self.acompanante_dos.usuario.id,
+                cliente_qr_codigo=tercero_generarQR(self.acompanante_dos.id).qr_acceso
+            )
+
     def test_venta_producto_efectuar_venta_mesero(self):
         from ventas.services import venta_producto_efectuar_venta, venta_producto_generar_comprobante_venta
         from terceros.services import tercero_generarQR
@@ -176,11 +194,11 @@ class VentaProductosServicesTests(BaseTest):
             cliente_usuario_id=self.colaborador_dos.usuario.id,
             cliente_qr_codigo=tercero_generarQR(self.colaborador_dos.id).qr_acceso
         )
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            recibo_venta = venta_producto_generar_comprobante_venta(venta_producto_id=venta.id)
-            recibo_venta.write_pdf(
-                target='media/pruebas_pdf/recibo_venta_producto_mesero.pdf'
-            )
+
+        recibo_venta = venta_producto_generar_comprobante_venta(venta_producto_id=venta.id)
+        recibo_venta.write_pdf(
+            target='media/pruebas_pdf/recibo_venta_producto_mesero.pdf'
+        )
 
         movimientos_detalles_venta = venta.movimientos.first()
         self.assertEqual(movimientos_detalles_venta.detalle, 'Salida de Mercancia x Venta')
@@ -201,7 +219,7 @@ class VentaProductosServicesTests(BaseTest):
         compras_productos = self.colaborador_dos.cuenta_abierta_mesero.compras_productos.first()
         self.assertEqual(compras_productos.productos.count(), len(pedido['pedido']))
         self.assertEqual(
-            self.colaborador_dos.cuenta_abierta_mesero.valor_ventas_productos,
+            self.colaborador_dos.cuenta_abierta_mesero.cxc_por_compras_productos,
             pedido['valor_pedido']
         )
 

@@ -52,7 +52,7 @@ class TipoVehiculoSerializer(serializers.ModelSerializer):
     empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -72,7 +72,7 @@ class ModalidadFraccionTiempoSerializer(serializers.ModelSerializer):
     tipo_vehiculo_nombre = serializers.CharField(source='tipo_vehiculo.nombre', read_only=True)
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -95,7 +95,7 @@ class ModalidadFraccionTiempoDetalleSerializer(serializers.ModelSerializer):
     )
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return '%s para %s' % (instance.minutos, instance.modalidad_fraccion_tiempo.nombre)
 
     def create(self, validated_data):
@@ -145,7 +145,7 @@ class VehiculoSerializer(serializers.ModelSerializer):
     )
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return '%s %s' % (instance.tipo_vehiculo.nombre, instance.placa)
 
     class Meta:

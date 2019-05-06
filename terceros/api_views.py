@@ -1,9 +1,7 @@
 from decimal import Decimal
 
-from knox.models import AuthToken
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
-from rest_framework.utils import json
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull, EsColaboradorPermission
 from terceros.services import tercero_generarQR, tercero_existe_documento
@@ -18,7 +16,8 @@ from .api_serializers import (
     TerceroSerializer,
     CuentaSerializer,
     CuentaAcompananteSerializer,
-    CuentaAcompananteDetalleSerializer
+    CuentaAcompananteDetalleSerializer,
+    CuentaMeseroDetalleSerializer
 )
 from .mixins import TerceroViewSetMixin
 
@@ -55,6 +54,7 @@ class CuentaViewSet(viewsets.ModelViewSet):
                     'compras_productos',
                     'compras_productos__productos',
                 ).all()
+                self.serializer_class = CuentaMeseroDetalleSerializer
 
         return super().retrieve(request, *args, **kwargs)
 
@@ -80,6 +80,20 @@ class CuentaViewSet(viewsets.ModelViewSet):
             usuario_pdv_id=self.request.user.id,
             acompanante_id=cuenta.propietario.tercero.id,
             valor_efectivo=valor_efectivo
+        )
+        return Response({'liquidacion_id': liquidacion_cuenta.id})
+
+    @detail_route(methods=['post'])
+    def liquidar_cuenta_mesero(self, request, pk=None):
+        from liquidaciones.services import liquidar_cuenta_mesero
+        cuenta = self.get_object()
+        valor_efectivo = Decimal(request.POST.get('valor_efectivo'))
+        liquidacion_cuenta = liquidar_cuenta_mesero(
+            colaborador_id=cuenta.propietario.tercero.id,
+            usuario_pdv_id=self.request.user.id,
+            valor_efectivo=valor_efectivo,
+            valor_tarjetas=0,
+            nro_vauchers=0,
         )
         return Response({'liquidacion_id': liquidacion_cuenta.id})
 

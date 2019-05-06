@@ -12,6 +12,7 @@ faker = Faker()
 class PuntoVentaTestApi(BaseTestsApi):
     def setUp(self):
         super().setUp()
+        self.colaboradoresSetUp()
         from puntos_venta.factories import PuntoVentaFactory
         from inventarios.factories import BodegaFactory
         from puntos_venta.models import PuntoVenta
@@ -23,7 +24,7 @@ class PuntoVentaTestApi(BaseTestsApi):
         self.data_for_create_test = self.Factory.stub(abierto=False).__dict__
         self.data_for_create_test['bodega'] = self.bodega.id
         self.data_for_create_test['usuario_actual'] = self.user.id
-        self.data_for_update_test = {'abierto': True}
+        self.data_for_update_test = {'abierto': True, 'conceptos_operaciones_caja_cierre': {}}
 
     def test_ingreso_no_autorizado(self):
         self.ingreso_no_autorizado()
@@ -39,6 +40,67 @@ class PuntoVentaTestApi(BaseTestsApi):
 
     def test_list(self):
         self.list()
+
+    def test_abrir_punto_venta_hacer_cierre(self):
+        from ..factories import PuntoVentaFactory
+        usuario_cajero = self.colaborador_dos.usuario
+        self.cambiar_token_admin(usuario_cajero)
+        punto_venta = PuntoVentaFactory(
+            abierto=False,
+            usuario_actual=None
+        )
+        response = self.detail_route_post(
+            'abrir_punto_venta',
+            {
+                'base_inicial_efectivo': 200000
+            },
+            punto_venta.id
+        )
+        self.assertTrue('se ha aperturado correctamente' in response.data.get('result'))
+        self.detail_route_post(
+            'hacer_cierre',
+            {
+                'cierre': json.dumps({
+                    'operaciones_caja': {},
+                    'denominaciones_base': {},
+                    'denominaciones_entrega': {},
+                    'cierre_para_arqueo': {
+                        'valor_en_tarjetas': 200000,
+                        'numero_vauchers': 3,
+                        'dolares_cantidad': 10,
+                        'dolares_tasa': 3200
+                    },
+                })
+            },
+            punto_venta.id
+        )
+
+    def test_relacionar_concepto_caja_cierre(self):
+        from ..factories import PuntoVentaFactory
+        from cajas.factories import ConceptoOperacionCajaFactory
+        punto_venta = PuntoVentaFactory(
+            abierto=False,
+            usuario_actual=None
+        )
+        concepto = ConceptoOperacionCajaFactory(
+            tipo='I',
+            tipo_cuenta='NA',
+            grupo='O'
+        )
+        self.detail_route_post(
+            'relacionar_concepto_caja_cierre',
+            {
+                'concepto_id': concepto.id
+            },
+            punto_venta.id
+        )
+        self.detail_route_post(
+            'relacionar_concepto_caja_cierre',
+            {
+                'concepto_id': concepto.id
+            },
+            punto_venta.id
+        )
 
     def crear_productos(self):
         from inventarios.services import (
@@ -121,6 +183,9 @@ class PuntoVentaTestApi(BaseTestsApi):
             },
             self.punto_venta.id
         )
+
+        self.url = '/api/puntos_ventas_turnos/'
+        self.list_route_get('abiertos/')
 
     def test_efectuar_venta_producto_sin_cuenta(self):
         self.crear_base_venta()

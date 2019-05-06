@@ -46,6 +46,8 @@ import ventasProductosDetallesReducer from './especificas/ventas/ventasProductos
 
 import liquidacionesCuentasReducer from './especificas/liquidaciones/liquidacionesReducer';
 
+import consultasVentasEmpresasReducer from './especificas/consultas/consultasVentasEmpresasReducer';
+
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
     permisos: permisosReducer,
@@ -92,6 +94,8 @@ const rootReducer = combineReducers({
     ventas_productos: ventasProductosReducer,
 
     liquidaciones_cuentas: liquidacionesCuentasReducer,
+
+    consultas_ventas_empresas: consultasVentasEmpresasReducer,
 });
 
 export default rootReducer;

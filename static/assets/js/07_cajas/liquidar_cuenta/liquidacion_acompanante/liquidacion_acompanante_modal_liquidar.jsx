@@ -13,6 +13,7 @@ class Form extends Component {
     render() {
         const {
             cuenta,
+            cuenta: {tipo_cuenta},
             modal_open,
             styles,
             onCancel,
@@ -20,9 +21,12 @@ class Form extends Component {
             pristine,
             submitting,
             handleSubmit,
-            valor_a_pagar
+            valor
         } = this.props;
-        const total_a_pagar = cuenta.cxp_total - cuenta.cxc_total;
+        let total_a_pagar = (cuenta.cxp_total - cuenta.cxc_total) - valor;
+        if (tipo_cuenta === 'M') {
+            total_a_pagar = valor - (cuenta.cxc_total - cuenta.cxp_total);
+        }
         return (
             <Dialog
                 fullScreen={false}
@@ -33,7 +37,7 @@ class Form extends Component {
                         <ResumenLiquidacion cuenta={cuenta} styles={styles}/>
                         <MyTextFieldSimple
                             className="col-6"
-                            nombre='Valor a Pagar'
+                            nombre={`Valor a ${tipo_cuenta === 'A' ? 'pagar' : 'cobrar'}`}
                             name='valor'
                             type='number'
                             InputProps={{
@@ -41,8 +45,8 @@ class Form extends Component {
                             }}
                         />
                         <div className="col-12 mb-2 mt-2">
-                            Valor a Pagar: {pesosColombianos(valor_a_pagar)}<br/>
-                            Saldo que pasa: {pesosColombianos(total_a_pagar - valor_a_pagar)}
+                            Valor a {tipo_cuenta === 'A' ? 'pagar' : 'cobrar'}: {pesosColombianos(valor)}<br/>
+                            Saldo que pasa: {pesosColombianos(total_a_pagar)}
                         </div>
                         <div>
                             <Button
@@ -76,9 +80,9 @@ Form = reduxForm({
 })(Form);
 
 function mapPropsToState(state, ownProps) {
-    const valor_a_pagar = selector(state, 'valor');
+    const valor = selector(state, 'valor');
     return {
-        valor_a_pagar: valor_a_pagar ? valor_a_pagar : 0
+        valor: valor ? valor : 0
     }
 }
 

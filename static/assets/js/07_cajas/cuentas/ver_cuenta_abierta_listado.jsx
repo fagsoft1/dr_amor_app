@@ -23,13 +23,9 @@ class LiquidacionOpciones extends Component {
         const {
             is_open,
             onCancel,
-            history,
             terceros_cuentas
         } = this.props;
         const {cuenta_id} = this.state;
-        const cuentas_acompanantes = _.pickBy(
-            terceros_cuentas, e => e.es_acompanante === true
-        );
         return (
             <Dialog
                 fullScreen={false}
@@ -39,15 +35,29 @@ class LiquidacionOpciones extends Component {
                     Liquidación
                 </DialogTitle>
                 <DialogContent>
-                    <div className="row" style={{height: '300px'}}>
+                    <div className="row" style={{height: '300px', width: '500px'}}>
                         {
-                            _.size(cuentas_acompanantes) > 0 &&
+                            _.size(terceros_cuentas) > 0 &&
                             <Fragment>
                                 <div className="col-12 text-center">
                                     <Combobox
-                                        data={_.map(cuentas_acompanantes, c => {
+                                        data={_.map(_.orderBy(terceros_cuentas, ['tipo', 'es_acompanante', 'es_colaborador', 'nombre'], ['desc', 'desc', 'desc', 'desc']), c => {
+                                            const getTipo = (c) => {
+                                                if (c.tipo === 1 && c.es_acompanante) {
+                                                    return 'Acompañante';
+                                                } else if (c.tipo === 1 && c.es_colaborador) {
+                                                    return 'Colaborador';
+                                                } else if (c.tipo === 2 && c.es_colaborador) {
+                                                    return 'Mesero';
+                                                } else {
+                                                    return 'Sin Definir'
+                                                }
+                                            };
                                             return (
-                                                {id: c.id, nombre: `${c.nombre} - Nro. ${c.id}`}
+                                                {
+                                                    id: c.id,
+                                                    nombre: `${getTipo(c)} - ${c.nombre} - Nro. ${c.id}`
+                                                }
                                             )
                                         })}
                                         filter='contains'

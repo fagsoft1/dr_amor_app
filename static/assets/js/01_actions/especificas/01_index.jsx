@@ -29,3 +29,4 @@ export * from './cajas/operacionesCajaAction';
 export * from './ventas/ventasProductosAction';
 export * from './ventas/ventasProductosDetallesAction';
 export * from './liquidaciones/liquidacionesAction';
+export * from './consultas/consultasVentasEmpresasAction';

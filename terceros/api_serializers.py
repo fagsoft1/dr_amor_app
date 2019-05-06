@@ -79,6 +79,19 @@ class CuentaAcompananteSerializer(serializers.ModelSerializer):
     cxc_total = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
     cxp_total = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
 
+    tipo_cuenta = serializers.SerializerMethodField()
+
+    def get_tipo_cuenta(self, obj):  # pragma: no cover
+        if obj.tipo == 1:
+            if obj.propietario.tercero.es_acompanante:
+                return 'A'
+            elif obj.propietario.tercero.es_colaborador:
+                return 'C'
+        elif obj.tipo == 2:
+            return 'M'
+        else:
+            return 'IND'
+
     class Meta:
         model = Cuenta
         fields = [
@@ -91,6 +104,7 @@ class CuentaAcompananteSerializer(serializers.ModelSerializer):
             'compras_productos',
             'operaciones_caja',
             'servicios',
+            'tipo_cuenta',
             'pagado',
             'saldo_anterior_cxc',
             'saldo_anterior_cxp',
@@ -110,6 +124,73 @@ class CuentaAcompananteSerializer(serializers.ModelSerializer):
 class CuentaAcompananteDetalleSerializer(CuentaAcompananteSerializer):
     servicios = ServicioSerializer(many=True)
     operaciones_caja = OperacionCajaSerializer(many=True)
+    compras_productos = VentaProductoConDetalleSerializer(many=True)
+
+
+class CuentaMeseroSerializer(serializers.ModelSerializer):
+    nombre = serializers.CharField(source='propietario.tercero.full_name_proxy', read_only=True)
+    es_acompanante = serializers.BooleanField(source='propietario.tercero.es_acompanante', read_only=True)
+    es_colaborador = serializers.BooleanField(source='propietario.tercero.es_colaborador', read_only=True)
+    es_proveedor = serializers.BooleanField(source='propietario.tercero.es_proveedor', read_only=True)
+    presente = serializers.BooleanField(source='propietario.tercero.presente', read_only=True)
+    cxc_total = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    cxp_total = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    saldo_anterior_cxp = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    saldo_anterior_cxc = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    saldo_anterior = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    cxc_por_compras_productos = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
+    pagado = serializers.DecimalField(
+        source='liquidacion.pagado',
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        read_only=True
+    )
+    saldo = serializers.DecimalField(
+        source='liquidacion.saldo',
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        read_only=True
+    )
+    tipo_cuenta = serializers.SerializerMethodField()
+
+    def get_tipo_cuenta(self, obj):  # pragma: no cover
+        if obj.tipo == 1:
+            if obj.es_acompanante:
+                return 'A'
+            elif obj.es_colaborador:
+                return 'C'
+        elif obj.tipo == 2:
+            return 'M'
+        else:
+            return 'IND'
+
+    class Meta:
+        model = Cuenta
+        fields = [
+            'id',
+            'nombre',
+            'es_acompanante',
+            'es_colaborador',
+            'es_proveedor',
+            'presente',
+            'compras_productos',
+            'pagado',
+            'tipo_cuenta',
+            'saldo_anterior',
+            'cxc_por_compras_productos',
+            'saldo',
+            'liquidada',
+            'tipo',
+            'cxc_total',
+            'cxp_total',
+            'saldo_anterior_cxc',
+            'saldo_anterior_cxp',
+        ]
+
+
+class CuentaMeseroDetalleSerializer(CuentaMeseroSerializer):
     compras_productos = VentaProductoConDetalleSerializer(many=True)
 
 
@@ -161,28 +242,28 @@ class AcompananteSerializer(serializers.ModelSerializer):
     apellido_segundo_1 = serializers.SerializerMethodField()
     nro_identificacion_1 = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.full_name_proxy
 
-    def get_nombre_1(self, instance):
+    def get_nombre_1(self, instance):  # pragma: no cover
         return None
 
-    def get_nombre_segundo_1(self, instance):
+    def get_nombre_segundo_1(self, instance):  # pragma: no cover
         return None
 
-    def get_apellido_1(self, instance):
+    def get_apellido_1(self, instance):  # pragma: no cover
         return None
 
-    def get_apellido_segundo_1(self, instance):
+    def get_apellido_segundo_1(self, instance):  # pragma: no cover
         return None
 
-    def get_nro_identificacion_1(self, instance):
+    def get_nro_identificacion_1(self, instance):  # pragma: no cover
         return None
 
-    def get_full_name(self, instance):
+    def get_full_name(self, instance):  # pragma: no cover
         return None
 
-    def get_identificacion(self, instance):
+    def get_identificacion(self, instance):  # pragma: no cover
         return None
 
     class Meta:
@@ -236,25 +317,25 @@ class AcompananteSerializer(serializers.ModelSerializer):
 
 
 class AcompananteDesencriptadoSerializer(AcompananteSerializer):
-    def get_nombre_1(self, instance):
+    def get_nombre_1(self, instance):  # pragma: no cover
         return acompanante_desencriptar(instance.nombre)
 
-    def get_nombre_segundo_1(self, instance):
+    def get_nombre_segundo_1(self, instance):  # pragma: no cover
         return acompanante_desencriptar(instance.nombre_segundo)
 
-    def get_apellido_1(self, instance):
+    def get_apellido_1(self, instance):  # pragma: no cover
         return acompanante_desencriptar(instance.apellido)
 
-    def get_apellido_segundo_1(self, instance):
+    def get_apellido_segundo_1(self, instance):  # pragma: no cover
         return acompanante_desencriptar(instance.apellido_segundo)
 
-    def get_full_name(self, instance):
+    def get_full_name(self, instance):  # pragma: no cover
         return instance.full_name
 
-    def get_identificacion(self, instance):
+    def get_identificacion(self, instance):  # pragma: no cover
         return instance.identificacion
 
-    def get_nro_identificacion_1(self, instance):
+    def get_nro_identificacion_1(self, instance):  # pragma: no cover
         return acompanante_desencriptar(instance.nro_identificacion)
 
 
@@ -264,12 +345,12 @@ class ColaboradorSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
     imagen_perfil_url = serializers.SerializerMethodField()
 
-    def get_imagen_perfil_url(self, obj):
+    def get_imagen_perfil_url(self, obj):  # pragma: no cover
         if obj.imagen_perfil:
             return obj.imagen_perfil.url
         return None
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.full_name_proxy
 
     class Meta:
@@ -314,7 +395,7 @@ class ColaboradorSerializer(serializers.ModelSerializer):
 class ProveedorSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.full_name_proxy
 
     def create(self, validated_data):

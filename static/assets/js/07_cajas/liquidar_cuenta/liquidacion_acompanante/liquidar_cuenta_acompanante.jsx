@@ -44,7 +44,7 @@ class LiquidacionAcompanante extends Component {
     constructor(props) {
         super(props);
         this.state = {modal_liquidacion_open: false};
-        this.onLiquidarCuentaAcompanante = this.onLiquidarCuentaAcompanante.bind(this);
+        this.onLiquidarCuenta = this.onLiquidarCuenta.bind(this);
     }
 
     cargarDatos() {
@@ -56,10 +56,15 @@ class LiquidacionAcompanante extends Component {
         this.props.fetchMisPermisosxListado([permisos_view], {callback: () => this.cargarDatos()});
     }
 
-    onLiquidarCuentaAcompanante(valor_efectivo) {
+    onLiquidarCuenta(valor_efectivo) {
         const {id} = this.props.match.params;
+        const {cuenta: {tipo_cuenta}} = this.props;
         const callback = (res) => this.props.history.push(`/app/servicios/liquidacion/detail/${res.liquidacion_id}`);
-        this.props.liquidarCuentaAcompananteTerceroCuenta(id, valor_efectivo, {callback})
+        if (tipo_cuenta === 'A') {
+            this.props.liquidarCuentaAcompananteTerceroCuenta(id, valor_efectivo, {callback});
+        } else if (tipo_cuenta === 'M') {
+            this.props.liquidarCuentaMeseroTerceroCuenta(id, valor_efectivo, {callback})
+        }
     }
 
     render() {
@@ -68,11 +73,13 @@ class LiquidacionAcompanante extends Component {
         if (!cuenta) {
             return <div>Cargando...</div>
         }
+        const {tipo_cuenta} = cuenta;
+        const tipo_cuenta_titulo = tipo_cuenta === 'A' ? 'Acompañante' : (tipo_cuenta === 'M' ? 'Mesero' : 'Colaborador');
         return (
             <div className='row'>
                 <div className="col-12">
                     <Typography variant="h4" gutterBottom color="primary">
-                        Liquidar Cuenta para Acompañante {cuenta.nombre}
+                        Liquidar Cuenta para {tipo_cuenta_titulo} {cuenta.nombre}
                     </Typography>
                 </div>
                 {
@@ -82,7 +89,7 @@ class LiquidacionAcompanante extends Component {
                         modal_open={modal_liquidacion_open}
                         styles={styles}
                         cuenta={cuenta}
-                        onSubmit={(v) => this.onLiquidarCuentaAcompanante(v.valor)}
+                        onSubmit={(v) => this.onLiquidarCuenta(v.valor)}
                     />
                 }
                 <DetalleCuenta cuenta={cuenta}/>

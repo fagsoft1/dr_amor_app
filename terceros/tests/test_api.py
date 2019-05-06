@@ -115,7 +115,8 @@ class ColaboradorTestsApi(BaseTestsApi):
         self.url = '/api/colaboradores/'
         self.permiso = 'tercero'
         self.modelo = Tercero
-        self.data_for_create_test = self.Factory.build(usuario=None)
+        self.data_for_create_test = self.Factory.stub().__dict__
+        self.data_for_create_test.pop('usuario')
         self.data_for_update_test = {'nombre': 'Jaime', 'imagen_perfil': None}
 
     def test_crear(self):
@@ -152,7 +153,8 @@ class AcompananteTestsApi(BaseTestsApi):
         self.permiso = 'tercero'
         categoria_modelo = CategoriaAcompananteFactory()
         self.modelo = Tercero
-        self.data_for_create_test = self.Factory.build(usuario=None)
+        self.data_for_create_test = self.Factory.stub().__dict__
+        self.data_for_create_test.pop('usuario')
         self.data_for_create_test['categoria_modelo'] = categoria_modelo.id
         self.data_for_update_test = {'nombre': 'Maria', 'imagen_perfil': None}
 
@@ -228,3 +230,72 @@ class AcompananteTestsApi(BaseTestsApi):
         response = self.list_route_get(
             'validar_documento_acompanante/?alias_modelo=%s' % acompanante.alias_modelo)
         self.assertEqual(response.data, {'alias_modelo': 'Ya exite'})
+
+
+class CuentaTerceroTestsApi(BaseTestsApi):
+    def setUp(self):
+        super().setUp()
+        self.acompanantesSetUp()
+        self.colaboradoresSetUp()
+        self.habitacionesSetUp()
+        self.usuariosSetUp()
+        self.billetesMonedasSetUp()
+        self.url = '/api/terceros_cuentas/'
+
+    def test_metodos_cuentas_api(self):
+        from ..models import Cuenta
+        usuario_cajero = self.colaborador_cajero.usuario
+        self.cambiar_token_admin(usuario_cajero)
+        self.hacer_movimiento_para_punto_venta_abierto(self.punto_venta)
+        response = self.list_route_get('cuentas_sin_liquidar/')
+        for x in response.data:
+            for s in x.items():
+                if s[0] == 'liquidada':
+                    self.assertFalse(s[1])
+
+        response = self.list_route_get('cuentas_acompanantes_sin_liquidar/')
+        for x in response.data:
+            for s in x.items():
+                if s[0] == 'liquidada':
+                    self.assertFalse(s[1])
+                if s[0] == 'es_acompanante':
+                    self.assertTrue(s[1])
+
+        cuenta_acompanante = Cuenta.cuentas_acompanantes.sin_liquidar().first()
+        response = self.retrive_get(cuenta_acompanante.id)
+
+        response = self.detail_route_post(
+            'liquidar_cuenta_acompanante',
+            {
+                'valor_efectivo': 10000
+            },
+            cuenta_acompanante.id
+        )
+        self.assertTrue('liquidacion_id' in response.data)
+
+        self.hacer_venta_productos_dos(
+            punto_venta=self.punto_venta,
+            nro_referencias=4,
+            mesero=self.colaborador_mesero
+        )
+
+        cuenta_mesero = Cuenta.cuentas_meseros.sin_liquidar().first()
+        response = self.retrive_get(cuenta_mesero.id)
+
+        self.hacer_venta_productos_dos(
+            punto_venta=self.punto_venta,
+            nro_referencias=4,
+            cliente=self.colaborador_dos
+        )
+
+        cuenta_colaborador = Cuenta.cuentas_colaboradores.sin_liquidar().first()
+        response = self.retrive_get(cuenta_colaborador.id)
+
+        response = self.detail_route_post(
+            'liquidar_cuenta_mesero',
+            {
+                'valor_efectivo': 10000
+            },
+            cuenta_mesero.id
+        )
+        self.assertTrue('liquidacion_id' in response.data)

@@ -7,7 +7,7 @@ from .models import Habitacion, TipoHabitacion
 class TipoHabitacionSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -41,7 +41,7 @@ class HabitacionSerializer(serializers.ModelSerializer):
     tiempo_final_servicio = serializers.DateTimeField(read_only=True)
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return ('%s %s') % (instance.tipo.nombre, instance.numero)
 
     class Meta:

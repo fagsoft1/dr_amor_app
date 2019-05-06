@@ -6,7 +6,7 @@ from .models import Empresa
 class EmpresaSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:

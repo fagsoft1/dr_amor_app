@@ -20,6 +20,7 @@ class Servicio(TimeStampedModel):
     cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='servicios')
     punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='ventas_servicios')
     estado = models.IntegerField(choices=ESTADO_CHOICES, default=0)
+    empresa = models.ForeignKey(Empresa, related_name='servicios', null=True, on_delete=models.PROTECT)
     hora_inicio = models.DateTimeField(null=True)
     hora_final = models.DateTimeField(null=True)
     hora_final_real = models.DateTimeField(null=True)

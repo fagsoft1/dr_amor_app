@@ -74,7 +74,6 @@ class LiquidacionDetail extends Component {
                             >
                                 Anterior Nr.{liquidacion_anterior}
                             </Button>
-
                             <Button
                                 color="primary"
                                 disabled={!liquidacion_siguiente}

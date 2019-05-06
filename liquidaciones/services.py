@@ -9,13 +9,25 @@ from .models import LiquidacionCuenta
 
 def liquidar_cuenta_mesero(
         colaborador_id: int,
-        punto_venta_turno_id,
+        usuario_pdv_id,
         valor_tarjetas: float = 0,
         nro_vauchers: int = 0,
         valor_efectivo: float = 0
 ) -> LiquidacionCuenta:
     from cajas.services import transaccion_caja_liquidacion_cuenta_mesero
     from terceros.models import Cuenta
+    usuario = User.objects.get(pk=usuario_pdv_id)
+
+    if not hasattr(usuario, 'tercero'):
+        raise serializers.ValidationError(
+            {'_error': 'Para poder liquidar una cuenta, el usuario del punto de venta debe tener un tercero'}
+        )
+
+    punto_venta_turno = usuario.tercero.turno_punto_venta_abierto
+    if not punto_venta_turno:
+        raise serializers.ValidationError(
+            {'_error': 'El colaborador debe de tener un turno de punto de venta abierto para poder liquidar una cuenta'}
+        )
 
     colaborador = Tercero.objects.get(pk=colaborador_id)
     if not colaborador.es_colaborador:
@@ -31,20 +43,24 @@ def liquidar_cuenta_mesero(
         raise serializers.ValidationError(
             {'_error': 'No hay nada que deba pagar este mesero'})
 
-    valor_que_debe_entregar = cuenta_actual.valor_ventas_productos
-    entregado = valor_tarjetas + valor_efectivo
-    liquidacion_anterior = colaborador.ultima_cuenta_mesero_liquidada
-    saldo_anterior = liquidacion_anterior.liquidacion.saldo if liquidacion_anterior else 0
+    cxc_a_mesero = cuenta_actual.cxc_total
+    cxp_a_mesero = cuenta_actual.cxp_total
+    valor_a_entregar_mesero = cxc_a_mesero - cxp_a_mesero
 
-    saldo = valor_que_debe_entregar + saldo_anterior - entregado
+    entregado = valor_tarjetas + valor_efectivo
+    cuenta_anterior = colaborador.ultima_cuenta_mesero_liquidada
+    saldo_anterior = cuenta_anterior.liquidacion.saldo if cuenta_anterior else 0
+
+    saldo = entregado - valor_a_entregar_mesero
     cuenta_actual.liquidada = True
     cuenta_actual.save()
 
     liquidacion_cuenta = LiquidacionCuenta.objects.create(
-        punto_venta_turno_id=punto_venta_turno_id,
+        punto_venta_turno_id=punto_venta_turno.id,
         cuenta=cuenta_actual,
         saldo_anterior=saldo_anterior,
-        a_cobrar_a_tercero=valor_que_debe_entregar,
+        a_cobrar_a_tercero=cxc_a_mesero,
+        a_pagar_a_tercero=cxp_a_mesero,
         pagado=entregado,
         efectivo=valor_efectivo,
         tarjeta_o_transferencia=valor_tarjetas,
@@ -53,7 +69,7 @@ def liquidar_cuenta_mesero(
     )
     transaccion_caja_liquidacion_cuenta_mesero(
         liquidacion_mesero_id=liquidacion_cuenta.id,
-        punto_venta_turno_id=punto_venta_turno_id,
+        punto_venta_turno_id=punto_venta_turno.id,
         valor_efectivo=valor_efectivo,
         valor_tarjeta=valor_tarjetas,
         nro_vauchers=nro_vauchers
@@ -213,11 +229,11 @@ def liquidar_cuenta_colaborador(
     valor_a_pagar_a_colaborador = cuenta_actual.cxp_total
     valor_a_cobrar_a_colaborador = cuenta_actual.cxc_total
 
-    liquidacion_anterior = colaborador.ultima_cuenta_liquidada
-    saldo_anterior = liquidacion_anterior.liquidacion.saldo if liquidacion_anterior else 0
+    cuenta_anterior = colaborador.ultima_cuenta_liquidada
+    saldo_anterior = cuenta_anterior.liquidacion.saldo if cuenta_anterior else 0
     valor_a_cobrar = valor_a_cobrar_a_colaborador - valor_a_pagar_a_colaborador
     cobrado = valor_cuadre_cierre_nomina
-    saldo = valor_a_cobrar + saldo_anterior - cobrado
+    saldo = valor_a_cobrar - cobrado
 
     cuenta_actual.liquidada = True
     cuenta_actual.save()

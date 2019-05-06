@@ -39,7 +39,7 @@ const styles = {
 
 class ConceptosCuenta extends Component {
     render() {
-        const {cuenta} = this.props;
+        const {cuenta, cuenta: {tipo_cuenta}} = this.props;
         return (
             <Fragment>
                 <ResumenLiquidacion
@@ -49,10 +49,13 @@ class ConceptosCuenta extends Component {
                 <div className="col-12" style={{paddingLeft: '40px'}}>
                     <div className="row">
                         <div className="col-12">
-                            <ListadoServicios
-                                styles={styles}
-                                cuenta={cuenta}
-                            />
+                            {
+                                tipo_cuenta === 'A' &&
+                                <ListadoServicios
+                                    styles={styles}
+                                    cuenta={cuenta}
+                                />
+                            }
                         </div>
                         <div className="col-12">
                             <ListadoConsumos
@@ -60,12 +63,15 @@ class ConceptosCuenta extends Component {
                                 cuenta={cuenta}
                             />
                         </div>
-                        <div className="col-12">
-                            <ListadoEgresos
-                                styles={styles}
-                                cuenta={cuenta}
-                            />
-                        </div>
+                        {
+                            ['A', 'C'].includes(tipo_cuenta) &&
+                            <div className="col-12">
+                                <ListadoEgresos
+                                    styles={styles}
+                                    cuenta={cuenta}
+                                />
+                            </div>
+                        }
                     </div>
                 </div>
             </Fragment>

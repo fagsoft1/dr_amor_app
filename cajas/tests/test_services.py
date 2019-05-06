@@ -438,6 +438,53 @@ class TransaccionesCajaServicesTests(TestCase):
 
     # endregion
 
+    # region Otras Transacciones
+    def test_transaccion_caja_registrar_egreso_entrega_base_cierre_caja(self):
+        from ..services import transaccion_caja_registrar_egreso_entrega_base_cierre_caja
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es -100000'}"
+        ):
+            transaccion_caja_registrar_egreso_entrega_base_cierre_caja(
+                punto_venta_turno_id=self.punto_venta_turno.id,
+                valor_efectivo=-100000
+            )
+        transaccion_caja_registrar_egreso_entrega_base_cierre_caja(
+            punto_venta_turno_id=self.punto_venta_turno.id,
+            valor_efectivo=100000
+        )
+
+    def test_transaccion_caja_registrar_egreso_entrega_efectivo_cierre_caja(self):
+        from ..services import transaccion_caja_registrar_egreso_entrega_efectivo_cierre_caja
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es -100000'}"
+        ):
+            transaccion_caja_registrar_egreso_entrega_efectivo_cierre_caja(
+                punto_venta_turno_id=self.punto_venta_turno.id,
+                valor_efectivo=-100000
+            )
+        transaccion_caja_registrar_egreso_entrega_efectivo_cierre_caja(
+            punto_venta_turno_id=self.punto_venta_turno.id,
+            valor_efectivo=100000
+        )
+
+    def test_transaccion_caja_registrar_ingreso_base_inicial_apertura_caja(self):
+        from ..services import transaccion_caja_registrar_ingreso_base_inicial_apertura_caja
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'Los valores en efectivo o tarjeta deben ser iguales o mayores a 0. El valor del efectivo es -100000'}"
+        ):
+            transaccion_caja_registrar_ingreso_base_inicial_apertura_caja(
+                punto_venta_turno_id=self.punto_venta_turno.id,
+                valor_efectivo=-100000
+            )
+        transaccion_caja_registrar_ingreso_base_inicial_apertura_caja(
+            punto_venta_turno_id=self.punto_venta_turno.id,
+            valor_efectivo=100000
+        )
+    # endregion
+
 
 class OperacionCajaServicesTests(TestCase):
     def setUp(self):
@@ -499,11 +546,11 @@ class OperacionCajaServicesTests(TestCase):
         )
         self.assertEqual(operacion_caja.valor, -23000)
         self.assertIsNotNone(operacion_caja.cuenta)
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = operacion_caja_generar_recibo(operacion_caja.id)
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/comprobante_operacion_caja_egreso_acompanante.pdf'
-            )
+
+        comprobante = operacion_caja_generar_recibo(operacion_caja.id)
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/comprobante_operacion_caja_egreso_acompanante.pdf'
+        )
 
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='E',
@@ -534,11 +581,11 @@ class OperacionCajaServicesTests(TestCase):
         )
         self.assertEqual(operacion_caja.valor, 18500)
         self.assertIsNotNone(operacion_caja.cuenta)
-        if 'test' not in sys.argv and 'test_coverage' not in sys.argv:
-            comprobante = operacion_caja_generar_recibo(operacion_caja.id)
-            comprobante.write_pdf(
-                target='media/pruebas_pdf/comprobante_operacion_caja_ingreso_acompanante.pdf'
-            )
+
+        comprobante = operacion_caja_generar_recibo(operacion_caja.id)
+        comprobante.write_pdf(
+            target='media/pruebas_pdf/comprobante_operacion_caja_ingreso_acompanante.pdf'
+        )
 
     def test_operacion_caja_transacciones(self):
         from ..factories import ConceptoOperacionCajaFactory
@@ -644,7 +691,8 @@ class OperacionCajaServicesTests(TestCase):
         from ..services import operacion_caja_crear
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='I',
-            grupo='P'
+            grupo='P',
+            tipo_cuenta='NA'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,
@@ -658,7 +706,8 @@ class OperacionCajaServicesTests(TestCase):
 
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='E',
-            grupo='P'
+            grupo='P',
+            tipo_cuenta='NA'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,
@@ -675,7 +724,8 @@ class OperacionCajaServicesTests(TestCase):
         from ..services import operacion_caja_crear
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='I',
-            grupo='T'
+            grupo='T',
+            tipo_cuenta='NA'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,
@@ -688,7 +738,8 @@ class OperacionCajaServicesTests(TestCase):
 
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='E',
-            grupo='T'
+            grupo='T',
+            tipo_cuenta='NA'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,
@@ -704,7 +755,8 @@ class OperacionCajaServicesTests(TestCase):
         from ..services import operacion_caja_crear
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='I',
-            grupo='O'
+            grupo='O',
+            tipo_cuenta='NA'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,
@@ -717,7 +769,8 @@ class OperacionCajaServicesTests(TestCase):
 
         concepto_operacion = ConceptoOperacionCajaFactory(
             tipo='E',
-            grupo='O'
+            grupo='O',
+            tipo_cuenta='NA'
         )
         operacion_caja = operacion_caja_crear(
             concepto_id=concepto_operacion.id,

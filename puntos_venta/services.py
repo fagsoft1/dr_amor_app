@@ -1,3 +1,5 @@
+import sys
+
 from django.contrib.auth.models import User
 from django.db.models import Sum, F
 from django.db.models.functions import Coalesce
@@ -162,14 +164,13 @@ def punto_venta_cerrar(
             )['total']
 
             cantidad_ventas_tarjeta = transacciones_ingresos.aggregate(
-                cantidad=Sum('nro_vauchers')
+                cantidad=Coalesce(Sum('nro_vauchers'), 0)
             )['cantidad']
 
             total_a_recibir_efectivo = total_ingreso_efectivo - total_egreso_efectivo
             total_a_recibir_tarjeta = total_ingreso_tarjeta - total_egreso_tarjeta
 
             # endregion
-
             arqueo = ArqueoCaja.objects.create(
                 punto_venta_turno_id=punto_venta_turno.id,
                 valor_pago_efectivo_a_entregar=total_a_recibir_efectivo,
@@ -202,20 +203,21 @@ def punto_venta_cerrar(
                         **denominacion
                     )
 
-            print('-----------------DATOS ARQUEO CAJA-------------------------')
-            print('Arqueo dinero entrega efectivo %s' % arqueo.valor_entrega_efectivo)
-            print('Arqueo dinero entrega base efectivo %s' % arqueo.valor_base_dia_siguiente)
-            print('Arqueo dinero entrega dolares %s' % arqueo.valor_dolares_en_pesos)
-            print('Arqueo dinero entrega efectivo total %s' % arqueo.valor_entrega_efectivo_total)
+            if 'test' in sys.argv:
+                print('-----------------DATOS ARQUEO CAJA-------------------------')
+                print('Arqueo dinero entrega efectivo %s' % arqueo.valor_entrega_efectivo)
+                print('Arqueo dinero entrega base efectivo %s' % arqueo.valor_base_dia_siguiente)
+                print('Arqueo dinero entrega dolares %s' % arqueo.valor_dolares_en_pesos)
+                print('Arqueo dinero entrega efectivo total %s' % arqueo.valor_entrega_efectivo_total)
 
-            print('-----------------------------------------------------------')
-            print('Valor ingresos totales %s' % (total_ingreso_efectivo + total_ingreso_tarjeta))
-            print('Valor egresos totales %s' % (total_egreso_efectivo + total_egreso_tarjeta))
-            print('Valor ingreso transacciones en efectivo %s' % total_ingreso_efectivo)
-            print('Valor ingreso transacciones en tarjeta %s' % total_ingreso_tarjeta)
-            print('Valor egresos transacciones en efectivo %s' % total_egreso_efectivo)
-            print('Valor egresos transacciones en tarjeta %s' % total_egreso_tarjeta)
-            print('Valor a recibir transacciones en efectivo %s' % total_a_recibir_efectivo)
+                print('-----------------------------------------------------------')
+                print('Valor ingresos totales %s' % (total_ingreso_efectivo + total_ingreso_tarjeta))
+                print('Valor egresos totales %s' % (total_egreso_efectivo + total_egreso_tarjeta))
+                print('Valor ingreso transacciones en efectivo %s' % total_ingreso_efectivo)
+                print('Valor ingreso transacciones en tarjeta %s' % total_ingreso_tarjeta)
+                print('Valor egresos transacciones en efectivo %s' % total_egreso_efectivo)
+                print('Valor egresos transacciones en tarjeta %s' % total_egreso_tarjeta)
+                print('Valor a recibir transacciones en efectivo %s' % total_a_recibir_efectivo)
 
             total_entrega_efectivo = arqueo.valor_entrega_efectivo_total
 
@@ -231,13 +233,12 @@ def punto_venta_cerrar(
             total_entrega_tarjeta = arqueo.valor_tarjeta_entregados
 
             descuadre_efectivo = total_a_recibir_efectivo - total_entrega_efectivo
-            print(total_a_recibir_efectivo)
-            print(total_entrega_efectivo)
             descuadre_tarjeta = total_a_recibir_tarjeta - total_entrega_tarjeta
 
-            print('-----------------------------------------------------------')
-            print('Descuadre por efectivo %s' % descuadre_efectivo)
-            print('Descuadre por tarjeta %s' % descuadre_tarjeta)
+            if 'test' in sys.argv:
+                print('-----------------------------------------------------------')
+                print('Descuadre por efectivo %s' % descuadre_efectivo)
+                print('Descuadre por tarjeta %s' % descuadre_tarjeta)
 
             punto_venta = punto_venta_turno.punto_venta
             punto_venta.abierto = False
@@ -245,8 +246,9 @@ def punto_venta_cerrar(
             punto_venta.save()
             punto_venta_turno.finish = timezone.now()
             punto_venta_turno.saldo_cierre_caja = arqueo.diferencia
-            print('el saldo es %s' % punto_venta_turno.diferencia_cierre_caja)
             punto_venta_turno.save()
+            if 'test' in sys.argv:
+                print('el saldo es %s' % punto_venta_turno.diferencia_cierre_caja)
         else:
             raise serializers.ValidationError(
                 {'_error': 'Este tercero no posee ningún punto de venta abierto actualmente'}

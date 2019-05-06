@@ -67,7 +67,7 @@ MY_APPS = [
     'cajas.apps.CajasConfig',
     'liquidaciones.apps.LiquidacionesConfig',
     'parqueadero.apps.ParqueaderoConfig',
-    # 'puntos_venta_sesiones_trabajo.apps.PuntosVentaSesionesTrabajoConfig',
+    'consultas_dr_amor.apps.ConsultasDrAmorConfig',
 ]
 
 THIRD_PART_APPS = [
@@ -134,7 +134,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

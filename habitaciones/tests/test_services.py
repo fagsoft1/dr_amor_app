@@ -1,20 +1,24 @@
+import json
+
 from rest_framework.exceptions import ValidationError
 
 from cajas.models import TransaccionCaja
 from ..factories import HabitacionFactory
 from ..services import habitacion_cambiar_estado
-from dr_amor_app.utilities_tests.test_base import BaseTest
+from dr_amor_app.utilities_tests.test_api_base import BaseTestsApi
 
 from faker import Faker
 
 faker = Faker()
 
 
-class HabitacionServicesTests(BaseTest):
+class HabitacionServicesTests(BaseTestsApi):
     def setUp(self):
+        super().setUp()
         self.acompanantesSetUp()
         self.colaboradoresSetUp()
         self.habitacionesSetUp()
+        self.url = '/api/habitaciones/'
 
         self.array_servicios = [
             {'tercero_id': self.acompanante.id, 'categoria_fraccion_tiempo_id': self.categoria_fraccion_tiempo_30.id},
@@ -157,6 +161,46 @@ class HabitacionServicesTests(BaseTest):
     # endregion
 
     # region habitacion_iniciar_servicios
+    def test_habitacion_iniciar_servicios_cambiar_habitacion_api(self):
+        from habitaciones.factories import HabitacionFactory
+        habitacion_nueva = HabitacionFactory(tipo=self.habitacion.tipo)
+        self.cambiar_token_admin(self.punto_venta.usuario_actual)
+        response = self.detail_route_post(
+            'iniciar_servicios',
+            {
+                'pago': json.dumps(
+                    {
+                        'valor_efectivo': int(800000),
+                        'valor_tarjeta': int(200000),
+                        'nro_autorizacion': 'asdfa',
+                        'franquicia': 'visa'
+                    }
+                ),
+                'servicios': json.dumps(self.array_servicios)
+            },
+            self.habitacion.id
+        )
+        result = response.data.get('result')
+        self.assertEqual('Los servicios se han iniciado correctamente', result)
+
+        from servicios.models import Servicio
+        servicios_array_id = Servicio.objects.values_list('id', flat=True).filter(habitacion=self.habitacion, estado=1)
+        response = self.detail_route_post(
+            'cambiar_habitacion',
+            {
+                'nueva_habitacion_id': habitacion_nueva.id,
+                'pago': json.dumps(
+                    {
+                        'valor_efectivo': 0,
+                        'valor_tarjeta': 0,
+                    }),
+                'servicios_array_id': json.dumps(list(servicios_array_id))
+            },
+            self.habitacion.id
+        )
+        result = response.data.get('result')
+        self.assertTrue('Se han cambiado los servicios para' in result)
+
     def test_habitacion_iniciar_servicios(self):
         from ..services import habitacion_iniciar_servicios
         from servicios.models import Servicio
@@ -187,6 +231,12 @@ class HabitacionServicesTests(BaseTest):
         ).last()
         self.assertIsNotNone(transaccion_caja)
         self.assertEqual(transaccion_caja.valor_efectivo + transaccion_caja.valor_tarjeta, valor_total_servicios)
+
+        self.cambiar_token_admin(self.punto_venta.usuario_actual)
+        response = self.detail_route_post('terminar_servicios', {}, habitacion.id)
+        result = response.data.get('result')
+        self.assertTrue('Los servicios para habitacion' in result)
+        self.assertTrue('se han terminado' in result)
 
     def test_habitacion_iniciar_servicios_valor_ingresado_efectivo_credito_igual_al_valor_total_servicios(self):
         from ..services import habitacion_iniciar_servicios

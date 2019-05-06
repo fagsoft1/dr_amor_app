@@ -286,6 +286,7 @@ def servicio_crear_nuevo(
     valor_iva_habitacion = habitacion.tipo.impuesto
     comision = habitacion.tipo.comision
     servicio_nuevo = Servicio.objects.create(
+        empresa=habitacion.empresa,
         habitacion=habitacion,
         cuenta=cuenta,
         estado=estado,

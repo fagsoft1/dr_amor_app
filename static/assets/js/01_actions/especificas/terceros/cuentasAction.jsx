@@ -11,6 +11,15 @@ import {
 
 const current_url_api = 'terceros_cuentas';
 
+export const liquidarCuentaMeseroTerceroCuenta = (id, valor_efectivo, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('valor_efectivo', valor_efectivo);
+        const options = {...options_action, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'liquidar_cuenta_mesero', params, options)
+    }
+};
+
 export const liquidarCuentaAcompananteTerceroCuenta = (id, valor_efectivo, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();

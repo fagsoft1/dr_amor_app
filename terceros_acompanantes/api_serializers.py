@@ -6,7 +6,7 @@ from .models import CategoriaAcompanante, FraccionTiempo, CategoriaFraccionTiemp
 class CategoriaAcompananteSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -22,7 +22,7 @@ class CategoriaAcompananteSerializer(serializers.ModelSerializer):
 class FraccionTiempoSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -41,7 +41,7 @@ class CategoriaFraccionTiempoSerializer(serializers.ModelSerializer):
     fraccion_tiempo_minutos = serializers.IntegerField(source='fraccion_tiempo.minutos', read_only=True)
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.fraccion_tiempo.minutos
 
     class Meta:

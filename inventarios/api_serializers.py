@@ -14,7 +14,7 @@ from .models import (
 class BodegaSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -112,15 +112,15 @@ class MovimientoInventarioDocumentoSerializer(serializers.ModelSerializer):
     imagen_documento_thumbnail_url = serializers.SerializerMethodField()
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.id
 
-    def get_imagen_documento_url(self, obj):
+    def get_imagen_documento_url(self, obj):  # pragma: no cover
         if obj.imagen_documento:
             return obj.imagen_documento.url
         return None
 
-    def get_imagen_documento_thumbnail_url(self, obj):
+    def get_imagen_documento_thumbnail_url(self, obj):  # pragma: no cover
         if obj.imagen_documento_thumbnail:
             return obj.imagen_documento_thumbnail.url
         return None
@@ -220,10 +220,10 @@ class TrasladoInventarioSerializer(serializers.ModelSerializer):
     estado_display = serializers.SerializerMethodField()
     creado_por_username = serializers.SerializerMethodField()
 
-    def get_estado_display(self, obj):
+    def get_estado_display(self, obj):  # pragma: no cover
         return obj.get_estado_display()
 
-    def get_creado_por_username(self, obj):
+    def get_creado_por_username(self, obj):  # pragma: no cover
         if obj.creado_por:
             return obj.creado_por.username
         return None

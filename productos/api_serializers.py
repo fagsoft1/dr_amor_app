@@ -6,7 +6,7 @@ from .models import Producto, CategoriaProducto, CategoriaDosProducto, UnidadPro
 class CategoriaSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -24,7 +24,7 @@ class CategoriaDosSerializer(serializers.ModelSerializer):
     categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -43,7 +43,7 @@ class CategoriaDosSerializer(serializers.ModelSerializer):
 class UnidadProductoSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:
@@ -63,7 +63,7 @@ class ProductoSerializer(serializers.ModelSerializer):
     empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)
     to_string = serializers.SerializerMethodField()
 
-    def get_to_string(self, instance):
+    def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
 
     class Meta:

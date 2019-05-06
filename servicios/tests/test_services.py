@@ -566,6 +566,32 @@ class ServiciosServicesTests(BaseTest):
             diferencia_efectiva
         )
 
+    def test_servicio_cambiar_tiempo_mismo(self):
+        from ..services import servicio_cambiar_tiempo
+        servicio = servicio_crear_nuevo(
+            habitacion_id=self.habitacion.id,
+            acompanante_id=self.acompanante.id,
+            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+        servicio = servicio_iniciar(
+            servicio_id=servicio.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'_error': 'El tiempo solicitado y el actual del servicio es el mismo'}"
+        ):
+            servicio_cambiar_tiempo(
+                servicio_id=servicio.id,
+                usuario_pdv_id=self.punto_venta.usuario_actual.id,
+                categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
+                valor_efectivo=0,
+                valor_tarjeta=0,
+                nro_autorizacion='2545',
+                franquicia='COSA'
+            )
+
     def test_servicio_cambiar_tiempo_disminucion(self):
         from ..services import servicio_cambiar_tiempo
         servicio = servicio_crear_nuevo(
@@ -758,6 +784,10 @@ class ServiciosServicesTests(BaseTest):
         self.habitacion.refresh_from_db()
         self.assertEqual(servicio.estado, 4)
         self.assertEqual(self.habitacion.estado, 2)
+        self.assertEqual(servicio.valor_iva_habitacion, 0)
+        self.assertEqual(servicio.valor_habitacion, 0)
+        self.assertEqual(servicio.valor_servicio, 0)
+        self.assertEqual(servicio.comision, 0)
 
         ultima_transaccion_caja = servicio.transacciones_caja.last()
         self.assertEqual(ultima_transaccion_caja.tipo, 'E')
@@ -769,6 +799,38 @@ class ServiciosServicesTests(BaseTest):
         ).last()
         self.assertIsNotNone(transaccion_caja)
         self.assertEqual(ultima_transaccion_caja.valor_efectivo, servicio.valor_total * -1)
+
+    def test_servicio_solicitar_anular_con_siguiente(self):
+        from ..services import servicio_solicitar_anular
+        servicio = servicio_crear_nuevo(
+            habitacion_id=self.habitacion.id,
+            acompanante_id=self.acompanante.id,
+            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+        servicio = servicio_iniciar(
+            servicio_id=servicio.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+        servicio2 = servicio_crear_nuevo(
+            habitacion_id=self.habitacion.id,
+            acompanante_id=self.acompanante.id,
+            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_60.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+        servicio2 = servicio_iniciar(
+            servicio_id=servicio2.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+
+        servicio = servicio_solicitar_anular(
+            servicio_id=servicio.id,
+            observacion_anulacion='La Razón',
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+        servicio2.refresh_from_db()
+        self.assertEqual(servicio2.hora_inicio, servicio.hora_inicio)
+        self.assertIsNone(servicio2.servicio_anterior)
 
     def test_servicio_solicitar_anular_solo_punto_venta_abierto(self):
         from ..services import servicio_solicitar_anular

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from model_utils.models import TimeStampedModel
 
+from empresas.models import Empresa
 from habitaciones.models import Habitacion
 from puntos_venta.models import PuntoVenta, PuntoVentaTurno
 from productos.models import Producto
@@ -12,6 +13,7 @@ from parqueadero.models import Vehiculo, RegistroEntradaParqueo
 
 
 class VentaProducto(TimeStampedModel):
+    empresa = models.ForeignKey(Empresa, related_name='ventas_productos', null=True, on_delete=models.PROTECT)
     punto_venta_turno = models.ForeignKey(PuntoVentaTurno, on_delete=models.PROTECT, related_name='ventas_productos')
     cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name='compras_productos', null=True)
     movimientos = models.ManyToManyField(MovimientoInventario, related_name='ventas_productos')

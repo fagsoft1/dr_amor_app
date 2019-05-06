@@ -11,7 +11,7 @@ class ServicioSerializer(serializers.ModelSerializer):
         read_only=True
     )
     acompanante = serializers.PrimaryKeyRelatedField(source='cuenta.propietario.tercero.id', read_only=True)
-    empresa = serializers.IntegerField(source='habitacion.empresa.id', read_only=True)
+    empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)
     acompanante_nombre = serializers.CharField(source='cuenta.propietario.tercero.full_name_proxy', read_only=True)
     habitacion_nombre = serializers.CharField(source='habitacion.nombre', read_only=True)
     habitacion = serializers.PrimaryKeyRelatedField(source='habitacion.id', read_only=True)
@@ -26,28 +26,28 @@ class ServicioSerializer(serializers.ModelSerializer):
     anulado = serializers.SerializerMethodField()
     estado_nombre = serializers.SerializerMethodField()
 
-    def get_estado_nombre(self, obj):
+    def get_estado_nombre(self, obj):  # pragma: no cover
         return obj.get_estado_display()
 
-    def get_termino(self, obj):
+    def get_termino(self, obj):  # pragma: no cover
         if obj.estado == 1:
             return now() > obj.hora_final
         else:
             return False
 
-    def get_en_espera(self, obj):
+    def get_en_espera(self, obj):  # pragma: no cover
         if obj.estado == 1:
             return obj.hora_inicio > now()
         else:
             return False
 
-    def get_tiempo_nombre(self, obj):
+    def get_tiempo_nombre(self, obj):  # pragma: no cover
         tiempo = '%s min.' % obj.tiempo_minutos
         if obj.tiempo_minutos > 59:
             tiempo = '%s hora' % int(int(obj.tiempo_minutos) / 60)
         return tiempo
 
-    def get_anulado(self, obj):
+    def get_anulado(self, obj):  # pragma: no cover
         return obj.estado == 4
 
     class Meta:
@@ -62,6 +62,7 @@ class ServicioSerializer(serializers.ModelSerializer):
             'cuenta_usuario',
             'cuenta_tipo',
             'empresa',
+            'empresa_nombre',
             'habitacion_nombre',
             'usuario_cajero_username',
             'habitacion',

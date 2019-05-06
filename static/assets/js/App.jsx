@@ -88,6 +88,7 @@ import AppTienda from './05_app_tienda/App';
 import AppServicios from './04_app_servicios/App';
 import AppCaja from './07_cajas/App';
 import AppAcceso from './06_app_acceso/App';
+import AppConsultas from './09_app_consultas/App';
 import Login from './authentication/login/containers/login';
 import MiCuenta from './08_app_mi_cuenta/App';
 
@@ -122,6 +123,7 @@ class RootContainerComponent extends Component {
                         <PrivateRoute path='/app/mi_cuenta' component={MiCuenta}/>
                         <PrivateRoute path='/app/admin' component={AppAdmin}/>
                         <PrivateRoute path='/app/tienda' component={AppTienda}/>
+                        <PrivateRoute path='/app/consultas' component={AppConsultas}/>
                         <PrivateRoute path='/app/servicios' component={AppServicios}/>
                         <PrivateRoute path='/app/cajas' component={AppCaja}/>
                         <PrivateRoute path='/app/acceso' component={AppAcceso}/>
