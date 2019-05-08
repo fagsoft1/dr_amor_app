@@ -37,6 +37,12 @@ const Menu = () => <Fragment>
         texto='Parqueadero'
         icono='car'
     />
+    <DrawerListItem
+        size='lg'
+        link='/app/admin/contabilidad/cuentas_contables/dashboard'
+        texto='Plan de Cuentas'
+        icono='coins'
+    />
     <MenuPermisos/>
     <MenuTerceros/>
     <MenuInventarios/>

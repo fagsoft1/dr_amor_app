@@ -1,3 +1,11 @@
+export const CUENTAS_CONTABLES = {
+    add: 'add_cuentacontable',
+    delete: 'delete_cuentacontable',
+    change: 'change_cuentacontable',
+    list: 'list_cuentacontable',
+    detail: 'view_cuentacontable',
+};
+
 export const MODALIDADES_FRACCIONES_TIEMPOS_DETALLES = {
     add: 'add_modalidadfracciontiempodetalle',
     delete: 'delete_modalidadfracciontiempodetalle',

@@ -35,3 +35,6 @@ export * from './parqueadero/parqueaderoAction';
 export * from './parqueadero/modalidadesFraccionesTiempoAction';
 export * from './parqueadero/modalidadesFraccionesTiempoDetallesAction';
 export * from './parqueadero/registrosEntradasParqueoAction';
+
+
+export * from './contabilidad/cuentas_contables/cuentasContablesAction';

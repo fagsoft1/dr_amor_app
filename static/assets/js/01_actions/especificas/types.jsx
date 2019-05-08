@@ -1,3 +1,12 @@
+export const CUENTA_CONTABLE_TYPES = {
+    create: 'create_cuenta_contable',
+    delete: 'delete_cuenta_contable',
+    fetch_all: 'fetch_cuentas_contables',
+    fetch: 'fetch_cuenta_contable',
+    clear: 'clear_cuentas_contables',
+    update: 'update_cuenta_contable',
+};
+
 export const REGISTRO_ENTRADA_PARQUEO_TYPES = {
     create: 'create_registro_entrada_parqueo',
     delete: 'delete_registro_entrada_parqueo',

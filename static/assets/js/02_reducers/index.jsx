@@ -54,6 +54,9 @@ import registrosEntradasParqueosReducer from './especificas/parqueadero/registro
 import modalidadesFraccionesTiempoDetallesReducer
     from './especificas/parqueadero/modalidadesFraccionesTiempoDetallesReducer';
 
+
+import cuentasContablesReducer from './especificas/contabilidad/cuentas_contables/cuentasContablesReducer';
+
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
     permisos: permisosReducer,
@@ -107,6 +110,7 @@ const rootReducer = combineReducers({
     parqueadero_registros_entradas_parqueos: registrosEntradasParqueosReducer,
     parqueadero_modalidades_fracciones_tiempo: modalidadesFraccionesTiempoReducer,
     parqueadero_modalidades_fracciones_tiempo_detalles: modalidadesFraccionesTiempoDetallesReducer,
+    contabilidad_cuentas_contables: cuentasContablesReducer
 });
 
 export default rootReducer;

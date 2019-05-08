@@ -68,6 +68,7 @@ MY_APPS = [
     'liquidaciones.apps.LiquidacionesConfig',
     'parqueadero.apps.ParqueaderoConfig',
     'consultas_dr_amor.apps.ConsultasDrAmorConfig',
+    'contabilidad_cuentas.apps.ContabilidadCuentasConfig',
 ]
 
 THIRD_PART_APPS = [
