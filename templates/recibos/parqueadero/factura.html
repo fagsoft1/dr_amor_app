@@ -8,7 +8,8 @@
 <body style="font-size: 9px">
 {% localize on %}
     {% with usuario=registro_entrada.punto_venta_turno.usuario.tercero.full_name_proxy punto_venta=registro_entrada.punto_venta_turno.punto_venta.nombre %}
-        <h3 style="text-align: center">Recibo Parqueadero {{ registro_entrada.vehiculo.tipo_vehiculo.empresa.nombre|title }}</h3>
+        <h3 style="text-align: center">Factura de Venta
+            Parqueadero {{ registro_entrada.vehiculo.tipo_vehiculo.empresa.nombre|title }}</h3>
         <span style="font-weight: bold">Placa: </span>{{ registro_entrada.vehiculo.placa }}<br/>
         <span style="font-weight: bold">Tipo de Vehículo: </span>{{ registro_entrada.vehiculo.tipo_vehiculo.nombre }}
         <br/>
@@ -18,12 +19,14 @@
         <span style="font-weight: bold">Id Registro: </span>{{ registro_entrada.id }}<br/>
         <br/>
         <br/>
-        <span style="font-weight: bold">Valor antes de Impuestos: </span>${{ registro_entrada.valor_parqueadero|floatformat:0 }}<br/>
+        <span style="font-weight: bold">Valor antes de Impuestos: </span>$
+        {{ registro_entrada.valor_parqueadero|floatformat:0 }}<br/>
         {% if registro_entrada.valor_iva_parqueadero %}
             <span style="font-weight: bold">Iva: </span>${{ registro_entrada.valor_iva_parqueadero|floatformat:0 }}<br/>
         {% endif %}
         {% if registro_entrada.valor_impuesto_unico %}
-            <span style="font-weight: bold">Otro Impuesto: </span>${{ registro_entrada.valor_impuesto_unico|floatformat:0 }}<br/>
+            <span style="font-weight: bold">Otro Impuesto: </span>$
+            {{ registro_entrada.valor_impuesto_unico|floatformat:0 }}<br/>
         {% endif %}
         <span style="font-weight: bold">Valor Total: </span>${{ registro_entrada.valor_total|floatformat:0 }}<br/>
         <br/>

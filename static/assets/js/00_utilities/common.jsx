@@ -16,6 +16,24 @@ export const fechaFormatoUno = (fecha) => moment.tz(fecha, "America/Bogota").for
 export const horaFormatoUno = (date) => moment.tz(date, "America/Bogota").format('hh:mm a');
 export const fechaHoraFormatoUno = (date) => moment.tz(date, "America/Bogota").format('D/MM/YYYY hh:mm a');
 
+export const diferenciaTiempo = (initial_time, actual_time) => {
+    let seconds = Math.abs(Math.floor((moment.tz(actual_time, "America/Bogota").toDate() - (initial_time)) / 1000));
+
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    let days = Math.floor(hours / 24);
+
+    hours = hours - (days * 24);
+    minutes = minutes - (days * 24 * 60) - (hours * 60);
+    seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
+
+    minutes = minutes < 9 ? `0${minutes}` : minutes;
+    hours = hours < 9 ? `0${hours}` : hours;
+    seconds = seconds < 9 ? `0${seconds}` : seconds;
+
+    return `${hours}:${minutes}:${seconds}`
+};
+
 export const upper = value => value && value.toUpperCase();
 export const lower = value => value && value.toLowerCase();
 

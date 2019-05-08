@@ -3,6 +3,7 @@ import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dial
 import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
 import {Link} from 'react-router-dom'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import ReactTable from "react-table";
 
@@ -43,6 +44,116 @@ class Tabla extends React.Component {
                                 filterMethod: (filter, row) => {
                                     return row[filter.id].includes(filter.value.toUpperCase())
                                 }
+                            },
+                            {
+                                Header: "Hora Inicio",
+                                accessor: "hora_inicio",
+                                maxWidth: 80,
+                                Cell: row => <div className='text-right'>{row.value}</div>
+                            },
+                            {
+                                Header: "# Horas",
+                                accessor: "numero_horas",
+                                maxWidth: 60,
+                                Cell: row => <div className='text-right'>{row.value}</div>
+                            },
+                            {
+                                Header: "Lun.",
+                                accessor: "lunes",
+                                maxWidth: 40,
+                                Cell: row => <div className='text-center'>
+                                    {
+                                        row.value &&
+                                        <FontAwesomeIcon
+                                            icon={['far', 'check']}
+                                            size='lg'
+                                        />
+                                    }
+                                </div>
+                            },
+                            {
+                                Header: "Mar.",
+                                accessor: "martes",
+                                maxWidth: 40,
+                                Cell: row => <div className='text-center'>
+                                    {
+                                        row.value &&
+                                        <FontAwesomeIcon
+                                            icon={['far', 'check']}
+                                            size='lg'
+                                        />
+                                    }
+                                </div>
+                            },
+                            {
+                                Header: "Mie.",
+                                accessor: "miercoles",
+                                maxWidth: 40,
+                                Cell: row => <div className='text-center'>
+                                    {
+                                        row.value &&
+                                        <FontAwesomeIcon
+                                            icon={['far', 'check']}
+                                            size='lg'
+                                        />
+                                    }
+                                </div>
+                            },
+                            {
+                                Header: "Jue.",
+                                accessor: "jueves",
+                                maxWidth: 40,
+                                Cell: row => <div className='text-center'>
+                                    {
+                                        row.value &&
+                                        <FontAwesomeIcon
+                                            icon={['far', 'check']}
+                                            size='lg'
+                                        />
+                                    }
+                                </div>
+                            },
+                            {
+                                Header: "Vie.",
+                                accessor: "viernes",
+                                maxWidth: 40,
+                                Cell: row => <div className='text-center'>
+                                    {
+                                        row.value &&
+                                        <FontAwesomeIcon
+                                            icon={['far', 'check']}
+                                            size='lg'
+                                        />
+                                    }
+                                </div>
+                            },
+                            {
+                                Header: "Sab.",
+                                accessor: "sabado",
+                                maxWidth: 40,
+                                Cell: row => <div className='text-center'>
+                                    {
+                                        row.value &&
+                                        <FontAwesomeIcon
+                                            icon={['far', 'check']}
+                                            size='lg'
+                                        />
+                                    }
+                                </div>
+                            },
+                            {
+                                Header: "Dom.",
+                                accessor: "domingo",
+                                maxWidth: 40,
+                                Cell: row => <div className='text-center'>
+                                    {
+                                        row.value &&
+                                        <FontAwesomeIcon
+                                            icon={['far', 'check']}
+                                            size='lg'
+                                        />
+                                    }
+                                </div>
                             },
                         ]
                     },

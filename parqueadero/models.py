@@ -23,6 +23,15 @@ class TipoVehiculo(models.Model):
 class ModalidadFraccionTiempo(models.Model):
     nombre = models.CharField(max_length=120)
     tipo_vehiculo = models.ForeignKey(TipoVehiculo, on_delete=models.PROTECT)
+    hora_inicio = models.TimeField(null=True)
+    numero_horas = models.IntegerField(default=0)
+    lunes = models.BooleanField(default=True)
+    martes = models.BooleanField(default=True)
+    miercoles = models.BooleanField(default=True)
+    jueves = models.BooleanField(default=True)
+    viernes = models.BooleanField(default=True)
+    sabado = models.BooleanField(default=True)
+    domingo = models.BooleanField(default=True)
 
     class Meta:
         permissions = [

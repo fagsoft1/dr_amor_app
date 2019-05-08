@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
 import {
     MyCombobox,
-    MyTextFieldSimple
+    MyTextFieldSimple,
+    MyCheckboxSimple
 } from '../../../../../../00_utilities/components/ui/forms/fields';
 import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
@@ -48,7 +49,7 @@ class Form extends Component {
                     nombre='Tipo Vehículo'
                     name='tipo_vehiculo'
                     textField='nombre'
-                    placeholder='Seleccionar Empresa'
+                    placeholder='Seleccionar Tipo Vehiculo'
                     valuesField='id'
                     data={_.map(tipos_vehiculos_list, h => {
                         return ({
@@ -58,6 +59,40 @@ class Form extends Component {
                     })}
                     filter='contains'
                 />
+                <div className="col-12">
+                    <div className="row">
+                        <div className="col-12 col-md-4">
+                            <MyTextFieldSimple
+                                name='hora_inicio'
+                                label="Hora Inicio"
+                                type="time"
+                                defaultValue="07:30"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                inputProps={{
+                                    step: 300, // 5 min
+                                }}
+                            />
+                        </div>
+                        <div className="col-12 col-md-4">
+                            <MyTextFieldSimple
+                                name="numero_horas"
+                                label="# Horas"
+                                type="number"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="col-12">
+                    <MyCheckboxSimple nombre='Lunes' name='lunes'/>
+                    <MyCheckboxSimple nombre='Martes' name='martes'/>
+                    <MyCheckboxSimple nombre='Miércoles' name='miercoles'/>
+                    <MyCheckboxSimple nombre='Jueves' name='jueves'/>
+                    <MyCheckboxSimple nombre='Viernes' name='viernes'/>
+                    <MyCheckboxSimple nombre='Sábado' name='sabado'/>
+                    <MyCheckboxSimple nombre='Domingo' name='domingo'/>
+                </div>
             </MyFormTagModal>
         )
     }

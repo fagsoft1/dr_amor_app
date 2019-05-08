@@ -10,8 +10,9 @@ class PuntoVenta(models.Model):
     TIPO_CHOICES = [
         (1, 'Servicios'),
         (2, 'Tienda'),
+        (3, 'Parqueadero'),
     ]
-    bodega = models.OneToOneField(Bodega, related_name='punto_venta', on_delete=models.PROTECT)
+    bodega = models.OneToOneField(Bodega, related_name='punto_venta', on_delete=models.PROTECT, null=True)
     nombre = models.CharField(max_length=120)
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
     usuarios = models.ManyToManyField(User, related_name='mis_puntos_venta')

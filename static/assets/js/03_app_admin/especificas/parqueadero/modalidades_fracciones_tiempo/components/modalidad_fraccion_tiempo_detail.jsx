@@ -11,6 +11,7 @@ import {
 } from "../../../../../00_utilities/permisos/types";
 
 import ModalidadTiempoDetalle from '../detalles/components/modalidades_fracciones_tiempos_detalles_list';
+import Button from "@material-ui/core/Button";
 
 class Detail extends Component {
     componentDidMount() {
@@ -24,12 +25,17 @@ class Detail extends Component {
 
     cargarDatos() {
         const {id} = this.props.match.params;
-        const cargarModalidadDetalles = () => this.props.fetchModalidadesFraccionesTiemposDetalles();
+        const cargarModalidadDetalles = () => this.props.fetchModalidadesFraccionesTiemposDetalles_por_modalidad_fraccion_tiempo(id);
         this.props.fetchModalidadFraccionTiempo(id, {callback: cargarModalidadDetalles});
     }
 
     render() {
-        const {object, modalidades_fracciones_tiempo_detalles, mis_permisos} = this.props;
+        const {
+            object,
+            modalidades_fracciones_tiempo_detalles,
+            mis_permisos,
+            history
+        } = this.props;
         const permisos = permisosAdapter(mis_permisos, permisos_view);
         const permisos_detalles = permisosAdapter(mis_permisos, permisos_view_2);
         if (!object) {
@@ -37,11 +43,13 @@ class Detail extends Component {
                 Cargando...
             </Typography>
         }
-
         return (
             <ValidarPermisos can_see={permisos.view} nombre='detalles de modalidad fraccion tiempo'>
                 <Typography variant="h5" gutterBottom color="primary">
-                    Detalle {object.to_string}
+                    Detalle Modalidad Parqueadero {object.to_string}
+                </Typography>
+                <Typography variant="body1" gutterBottom color="primary">
+                    Tipo de vehículo: {object.tipo_vehiculo_nombre}
                 </Typography>
                 <ModalidadTiempoDetalle
                     {...this.props}
@@ -49,6 +57,14 @@ class Detail extends Component {
                     object_list={modalidades_fracciones_tiempo_detalles}
                     permisos_object={permisos_detalles}
                 />
+                <Button
+                    color="secondary"
+                    variant="contained"
+                    className='ml-3'
+                    onClick={() => history.goBack()}
+                >
+                    Regresar
+                </Button>
                 <CargarDatos cargarDatos={() => this.cargarDatos()}/>
             </ValidarPermisos>
         )

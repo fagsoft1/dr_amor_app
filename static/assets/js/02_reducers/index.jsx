@@ -50,6 +50,7 @@ import consultasVentasEmpresasReducer from './especificas/consultas/consultasVen
 
 import tipoVehiculoReducer from './especificas/parqueadero/parqueaderoReducer';
 import modalidadesFraccionesTiempoReducer from './especificas/parqueadero/modalidadesFraccionesTiempoReducer';
+import registrosEntradasParqueosReducer from './especificas/parqueadero/registrosEntradasParqueoReducer';
 import modalidadesFraccionesTiempoDetallesReducer
     from './especificas/parqueadero/modalidadesFraccionesTiempoDetallesReducer';
 
@@ -103,6 +104,7 @@ const rootReducer = combineReducers({
     consultas_ventas_empresas: consultasVentasEmpresasReducer,
 
     parqueadero_tipos_vehiculos: tipoVehiculoReducer,
+    parqueadero_registros_entradas_parqueos: registrosEntradasParqueosReducer,
     parqueadero_modalidades_fracciones_tiempo: modalidadesFraccionesTiempoReducer,
     parqueadero_modalidades_fracciones_tiempo_detalles: modalidadesFraccionesTiempoDetallesReducer,
 });

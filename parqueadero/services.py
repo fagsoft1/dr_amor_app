@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.utils import timezone
 from rest_framework import serializers
@@ -59,7 +60,7 @@ def modalida_fraccion_tiempo_detalle_crear_actualizar(
         )
         modalidad_fraccion_tiempo_detalle.valor = valor
         modalidad_fraccion_tiempo_detalle.minutos = minutos
-        modalidad_fraccion_tiempo.save()
+        modalidad_fraccion_tiempo_detalle.save()
         return modalidad_fraccion_tiempo_detalle
     else:
         return ModalidadFraccionTiempoDetalle.objects.create(
@@ -70,21 +71,41 @@ def modalida_fraccion_tiempo_detalle_crear_actualizar(
 
 
 def registro_entrada_parqueo_crear(
-        punto_venta_turno_id: int,
+        usuario_pdv_id: int,
         modalidad_fraccion_tiempo_id: int,
         placa: str = None
 ) -> RegistroEntradaParqueo:
+    usuario = User.objects.get(pk=usuario_pdv_id)
+    if not hasattr(usuario, 'tercero'):
+        raise serializers.ValidationError({'_error': 'Quien registra la entrada a parqueadero debe tener un tercero'})
+    if not usuario.tercero.presente:
+        raise serializers.ValidationError({'_error': 'Quien registra la entrada a parqueadero debe de estar presente'})
+    punto_venta_turno = usuario.tercero.turno_punto_venta_abierto
+    if not punto_venta_turno:
+        raise serializers.ValidationError(
+            {'_error': 'Quien registra la entrada a parqueadero debe tener un turno de punto de venta abierto'})
+
     modalidad_fraccion_tiempo = ModalidadFraccionTiempo.objects.get(pk=modalidad_fraccion_tiempo_id)
     tipo_vehiculo = modalidad_fraccion_tiempo.tipo_vehiculo
     if tipo_vehiculo.tiene_placa and not placa:
         raise serializers.ValidationError({'_error': 'Faltó digitar la placa del vehiculo'})
+
+    if tipo_vehiculo.tiene_placa:
+        placa = placa.replace(" ", "")
+        existe_placa_actualmente = RegistroEntradaParqueo.objects.filter(
+            hora_pago__isnull=True,
+            vehiculo__placa=placa
+        ).exists()
+        if existe_placa_actualmente:
+            raise serializers.ValidationError(
+                {'_error': 'No se puede volver a registrar una placa si actualmente esta en proceso en el parqueadero'})
 
     if not tipo_vehiculo.tiene_placa and placa:
         raise serializers.ValidationError({'_error': 'Este tipo de vehiculo no requiere placa, seleccione el correcto'})
 
     if not placa:
         return RegistroEntradaParqueo.objects.create(
-            punto_venta_turno_id=punto_venta_turno_id,
+            punto_venta_turno_id=punto_venta_turno.id,
             modalidad_fraccion_tiempo_id=modalidad_fraccion_tiempo_id,
             codigo_qr='Aqui el codigo que vamos a generar',
             hora_ingreso=timezone.now()
@@ -96,7 +117,7 @@ def registro_entrada_parqueo_crear(
             placa=placa
         )
         return RegistroEntradaParqueo.objects.create(
-            punto_venta_turno_id=punto_venta_turno_id,
+            punto_venta_turno_id=punto_venta_turno.id,
             modalidad_fraccion_tiempo_id=modalidad_fraccion_tiempo_id,
             vehiculo=vehiculo,
             hora_ingreso=timezone.now(),
@@ -126,11 +147,22 @@ def registro_entrada_parqueo_calcular_pago(
 
 def registro_entrada_parqueo_registrar_pago(
         registro_entrada_parqueo_id: int,
-        punto_venta_turno_id: int,
+        usuario_pdv_id: int,
         modalidad_fraccion_tiempo_detalle_id: int
 ) -> RegistroEntradaParqueo:
     from .models import RegistroEntradaParqueo, ModalidadFraccionTiempoDetalle
     from cajas.services import transaccion_caja_registrar_venta_parqueadero
+
+    usuario = User.objects.get(pk=usuario_pdv_id)
+    if not hasattr(usuario, 'tercero'):
+        raise serializers.ValidationError({'_error': 'Quien registra la entrada a parqueadero debe tener un tercero'})
+    if not usuario.tercero.presente:
+        raise serializers.ValidationError({'_error': 'Quien registra la entrada a parqueadero debe de estar presente'})
+    punto_venta_turno = usuario.tercero.turno_punto_venta_abierto
+    if not punto_venta_turno:
+        raise serializers.ValidationError(
+            {'_error': 'Quien registra la entrada a parqueadero debe tener un turno de punto de venta abierto'})
+
     tarifa = ModalidadFraccionTiempoDetalle.objects.get(
         pk=modalidad_fraccion_tiempo_detalle_id)
 
@@ -154,7 +186,7 @@ def registro_entrada_parqueo_registrar_pago(
         )
     transaccion_caja_registrar_venta_parqueadero(
         registro_entrada_parqueo_id=registro_entrada_parqueo.id,
-        punto_venta_turno_id=punto_venta_turno_id,
+        punto_venta_turno_id=punto_venta_turno.id,
         concepto=concepto,
         valor_efectivo=registro_entrada_parqueo.valor_total
     )

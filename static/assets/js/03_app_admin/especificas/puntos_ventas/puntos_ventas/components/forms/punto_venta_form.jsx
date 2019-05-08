@@ -53,7 +53,6 @@ class Form extends Component {
                     nombre='Bodega'
                     name='bodega'
                     textField='nombre'
-                    placeholder='Seleccionar Bodega'
                     valuesField='id'
                     data={_.map(bodegas_list, h => {
                         return ({
@@ -69,10 +68,11 @@ class Form extends Component {
                     data={[
                         {id: 1, nombre: 'Servicios'},
                         {id: 2, nombre: 'Tienda'},
+                        {id: 3, nombre: 'Parqueadero'},
                     ]}
                     textField='nombre'
+                    nombre='Tipo Punto Venta'
                     name='tipo'
-                    placeholder='Seleccionar Tipo Punto Venta'
                     valuesField='id'
                 />
 

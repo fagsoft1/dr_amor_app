@@ -2,7 +2,6 @@ const validate = values => {
     const errors = {};
 
     const requiredFields = [
-        'bodega',
         'nombre',
         'tipo',
     ];

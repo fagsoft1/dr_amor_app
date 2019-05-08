@@ -28,7 +28,7 @@ const ItemTabla = (props) => {
                     element_type='Grupo Permisos'
                     onDelete={() => onDelete(item)}/>
             </td>}
-            {permisos_object.detail && <td>
+            {permisos_object.view && <td>
                 <IconButtonTableSee
                     onClick={() => {
                         onSelectItemDetail(item)

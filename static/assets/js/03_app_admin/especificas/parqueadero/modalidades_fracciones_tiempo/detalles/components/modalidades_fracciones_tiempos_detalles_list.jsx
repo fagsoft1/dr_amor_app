@@ -15,7 +15,7 @@ class List extends Component {
             createObjectMethod: this.props.createModalidadFraccionTiempoDetalle,
             updateObjectMethod: this.props.updateModalidadFraccionTiempoDetalle,
         };
-        this.plural_name = 'Modalidad Fraccion Tiempo Detalle';
+        this.plural_name = '';
         this.singular_name = 'Modalidades Fracciones Tiempos Detalles';
     }
 

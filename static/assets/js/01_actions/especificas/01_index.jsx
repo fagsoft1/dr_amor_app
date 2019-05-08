@@ -34,3 +34,4 @@ export * from './consultas/consultasVentasEmpresasAction';
 export * from './parqueadero/parqueaderoAction';
 export * from './parqueadero/modalidadesFraccionesTiempoAction';
 export * from './parqueadero/modalidadesFraccionesTiempoDetallesAction';
+export * from './parqueadero/registrosEntradasParqueoAction';

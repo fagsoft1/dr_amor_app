@@ -1,3 +1,12 @@
+export const REGISTRO_ENTRADA_PARQUEO_TYPES = {
+    create: 'create_registro_entrada_parqueo',
+    delete: 'delete_registro_entrada_parqueo',
+    fetch_all: 'fetch_registros_entradas_parqueos',
+    fetch: 'fetch_registro_entrada_parqueo',
+    clear: 'clear_registros_entradas_parqueos',
+    update: 'update_registro_entrada_parqueo',
+};
+
 export const MODALIDAD_FRACCION_TIEMPO_DETALLE_TYPES = {
     create: 'create_modalidad_fraccion_tiempo_detalle',
     delete: 'delete_modalidad_fraccion_tiempo_detalle',

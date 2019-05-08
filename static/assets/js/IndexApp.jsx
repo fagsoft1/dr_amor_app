@@ -181,6 +181,15 @@ class IndexApp extends Component {
                                         classes={classes}
                                     />
                                 }
+                                {
+                                    punto_venta_actual.tipo === 3 &&
+                                    <Boton
+                                        nombre='Parqueadero'
+                                        link='/app/parqueadero/'
+                                        icono='car'
+                                        classes={classes}
+                                    />
+                                }
                             </Fragment>
                         }
                         {

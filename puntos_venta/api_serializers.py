@@ -28,6 +28,7 @@ class PuntoVentaSerializer(serializers.ModelSerializer):
             'usuario_actual_nombre',
             'conceptos_operaciones_caja_cierre',
         ]
+        extra_kwargs = {'conceptos_operaciones_caja_cierre': {'read_only': True}}
 
     def get_tipo_nombre(self, obj):  # pragma: no cover
         return obj.get_tipo_display()

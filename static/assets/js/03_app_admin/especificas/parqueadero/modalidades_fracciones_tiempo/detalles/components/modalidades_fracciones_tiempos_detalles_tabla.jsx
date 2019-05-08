@@ -1,8 +1,6 @@
 import React from "react";
 import MyDialogButtonDelete from '../../../../../../00_utilities/components/ui/dialog/delete_dialog';
-import IconButtonTableSee from '../../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
 import IconButtonTableEdit from '../../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
-import {Link} from 'react-router-dom'
 
 import ReactTable from "react-table";
 import {pesosColombianos} from "../../../../../../00_utilities/common";
@@ -32,6 +30,12 @@ class Tabla extends React.Component {
                                 accessor: "minutos",
                                 maxWidth: 100,
                                 Cell: row => <div className='text-right'>{row.value} Minutos</div>
+                            },
+                            {
+                                Header: "Horas",
+                                accessor: "minutos",
+                                maxWidth: 100,
+                                Cell: row => <div className='text-right'>{row.value / 60} Horas</div>
                             },
                             {
                                 Header: "Valor",
@@ -68,22 +72,11 @@ class Tabla extends React.Component {
                                             onSelectItemEdit(row.original);
                                         }}/>
 
-                            },
-                            {
-                                Header: "Ver",
-                                show: permisos_object.view,
-                                maxWidth: 60,
-                                Cell: row =>
-                                    <Link
-                                        to={`/app/admin/parqueadero/modalidad_fraccion_tiempo/detail/${row.original.id}`}>
-                                        <IconButtonTableSee/>
-                                    </Link>
-
                             }
                         ]
                     }
                 ]}
-                defaultPageSize={10}
+                defaultPageSize={20}
                 className="-striped -highlight tabla-maestra"
             />
         );

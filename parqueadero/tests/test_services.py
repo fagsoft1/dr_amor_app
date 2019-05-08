@@ -111,11 +111,11 @@ class RegistroEntradaParqueoTests(TestCase):
         from puntos_venta.services import punto_venta_abrir
         from terceros.factories import ColaboradorFactory
         from ..factories import TipoVehiculoFactory, ModalidadFraccionTiempoFactory, VehiculoFactory
-        punto_venta = PuntoVentaFactory(usuario_actual=None, abierto=False)
+        self.punto_venta = PuntoVentaFactory(usuario_actual=None, abierto=False)
         colaborador = ColaboradorFactory(presente=True)
         punto_venta, self.punto_venta_turno = punto_venta_abrir(
             usuario_pv_id=colaborador.usuario.id,
-            punto_venta_id=punto_venta.id,
+            punto_venta_id=self.punto_venta.id,
             base_inicial_efectivo=0
         )
 
@@ -173,7 +173,7 @@ class RegistroEntradaParqueoTests(TestCase):
             registro_entrada_parqueo_comprobante_entrada
         )
         registro_entrada = registro_entrada_parqueo_crear(
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.punto_venta_turno.usuario.id,
             modalidad_fraccion_tiempo_id=self.modalidad_fraccion_tiempo_sin_placa.id
         )
 
@@ -183,7 +183,7 @@ class RegistroEntradaParqueoTests(TestCase):
         )
 
         registro_entrada = registro_entrada_parqueo_crear(
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.punto_venta_turno.usuario.id,
             modalidad_fraccion_tiempo_id=self.modalidad_fraccion_tiempo_con_placa.id,
             placa='LLL000'
         )
@@ -197,7 +197,7 @@ class RegistroEntradaParqueoTests(TestCase):
                 "{'_error': 'Faltó digitar la placa del vehiculo'}"
         ):
             registro_entrada_parqueo_crear(
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                usuario_pdv_id=self.punto_venta_turno.usuario.id,
                 modalidad_fraccion_tiempo_id=self.modalidad_fraccion_tiempo_con_placa.id,
             )
         with self.assertRaisesMessage(
@@ -205,7 +205,7 @@ class RegistroEntradaParqueoTests(TestCase):
                 "{'_error': 'Este tipo de vehiculo no requiere placa, seleccione el correcto'}"
         ):
             registro_entrada_parqueo_crear(
-                punto_venta_turno_id=self.punto_venta_turno.id,
+                usuario_pdv_id=self.punto_venta_turno.usuario.id,
                 modalidad_fraccion_tiempo_id=self.modalidad_fraccion_tiempo_sin_placa.id,
                 placa='LLL000'
             )
@@ -302,7 +302,7 @@ class RegistroEntradaParqueoTests(TestCase):
         )
         registro = registro_entrada_parqueo_registrar_pago(
             registro_entrada_parqueo_id=registro.id,
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.punto_venta_turno.usuario.id,
             modalidad_fraccion_tiempo_detalle_id=tarifa.id
         )
 
@@ -337,7 +337,7 @@ class RegistroEntradaParqueoTests(TestCase):
         )
         registro = registro_entrada_parqueo_registrar_pago(
             registro_entrada_parqueo_id=registro.id,
-            punto_venta_turno_id=self.punto_venta_turno.id,
+            usuario_pdv_id=self.punto_venta_turno.usuario.id,
             modalidad_fraccion_tiempo_detalle_id=tarifa.id
         )
         self.assertIsNone(registro.hora_salida)

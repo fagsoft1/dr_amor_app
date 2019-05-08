@@ -13,14 +13,19 @@ class RegistroEntradaParqueoSerializer(serializers.ModelSerializer):
     placa = serializers.CharField(write_only=True)
     tipo_vehiculo_nombre = serializers.CharField(source='vehiculo.tipo_vehiculo.nombre', read_only=True)
     tipo_vehiculo = serializers.PrimaryKeyRelatedField(source='vehiculo.tipo_vehiculo', read_only=True)
+    modalidad_fraccion_tiempo_nombre = serializers.PrimaryKeyRelatedField(
+        source='modalidad_fraccion_tiempo.nombre',
+        read_only=True
+    )
+    usuario_pv = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     def create(self, validated_data):
         from .services import registro_entrada_parqueo_crear
-        punto_venta_turno = validated_data.get('punto_venta_turno')
+        usuario_pv = validated_data.get('usuario_pv')
         modalidad_fraccion_tiempo = validated_data.get('modalidad_fraccion_tiempo')
         placa = validated_data.get('placa', None)
         registro = registro_entrada_parqueo_crear(
-            punto_venta_turno_id=punto_venta_turno.id,
+            usuario_pdv_id=usuario_pv.id,
             modalidad_fraccion_tiempo_id=modalidad_fraccion_tiempo.id,
             placa=placa
         )
@@ -33,14 +38,16 @@ class RegistroEntradaParqueoSerializer(serializers.ModelSerializer):
             'id',
             'created',
             'vehiculo',
-            'punto_venta_turno',
+            'usuario_pv',
             'hora_ingreso',
             'hora_salida',
+            'hora_pago',
             'vehiculo_placa',
             'valor_parqueadero',
             'valor_iva_parqueadero',
             'valor_impuesto_unico',
             'modalidad_fraccion_tiempo',
+            'modalidad_fraccion_tiempo_nombre',
             'placa',
             'detalle',
             'tipo_vehiculo',
@@ -86,6 +93,15 @@ class ModalidadFraccionTiempoSerializer(serializers.ModelSerializer):
             'nombre',
             'tipo_vehiculo',
             'tipo_vehiculo_nombre',
+            'hora_inicio',
+            'numero_horas',
+            'lunes',
+            'martes',
+            'miercoles',
+            'jueves',
+            'viernes',
+            'sabado',
+            'domingo',
         ]
 
 
