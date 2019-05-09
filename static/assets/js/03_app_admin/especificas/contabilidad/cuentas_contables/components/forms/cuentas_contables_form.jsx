@@ -41,6 +41,7 @@ class Form extends Component {
                     className="col-12 col-md-8"
                     nombre='Descripción'
                     name='descripcion'
+                    case='U'
                 />
                 <MyCombobox
                     className="col-12 col-md-4"
@@ -68,7 +69,13 @@ class Form extends Component {
                     })}
                     filter='contains'
                 />
-                <div className="col-12" style={{height:'300px'}}>
+                <MyTextFieldSimple
+                    className="col-12 col-md-5"
+                    nombre='Código'
+                    name='codigo'
+                    type='number'
+                />
+                <div className="col-12" style={{height: '300px'}}>
 
                 </div>
             </MyFormTagModal>

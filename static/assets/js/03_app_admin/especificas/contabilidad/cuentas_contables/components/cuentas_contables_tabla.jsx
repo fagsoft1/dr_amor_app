@@ -152,18 +152,13 @@ class Tabla extends React.Component {
                                 Header: "Elimi.",
                                 show: permisos_object.delete,
                                 maxWidth: 60,
-                                Cell: row => <div>
-                                    {
-                                        row.original.tipo === 'D' &&
-                                        <MyDialogButtonDelete
-                                            onDelete={() => {
-                                                onDelete(row.original)
-                                            }}
-                                            element_name={row.original.to_string}
-                                            element_type={singular_name}
-                                        />
-                                    }
-                                </div>
+                                Cell: row => <MyDialogButtonDelete
+                                    onDelete={() => {
+                                        onDelete(row.original)
+                                    }}
+                                    element_name={row.original.to_string}
+                                    element_type={singular_name}
+                                />
 
                             },
                             {
@@ -171,15 +166,10 @@ class Tabla extends React.Component {
                                 show: permisos_object.change,
                                 maxWidth: 60,
                                 Cell: row =>
-                                    <div>
-                                        {
-                                            row.original.tipo === 'D' &&
-                                            <IconButtonTableEdit
-                                                onClick={() => {
-                                                    onSelectItemEdit(row.original);
-                                                }}/>
-                                        }
-                                    </div>
+                                    <IconButtonTableEdit
+                                        onClick={() => {
+                                            onSelectItemEdit(row.original);
+                                        }}/>
                             },
                         ]
                     }
