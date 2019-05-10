@@ -4,7 +4,7 @@ from contabilidad_cuentas.models import CuentaContable
 
 # Create your models here.
 class ImpuestoGrupo(models.Model):
-    nombre = models.CharField(unique=True)
+    nombre = models.CharField(unique=True, max_length=120)
 
 
 class Impuesto(models.Model):
@@ -19,9 +19,9 @@ class Impuesto(models.Model):
         ('Porcentaje sobre precio', 'Porcentaje sobre el precio'),
         ('Porcentaje sobre precio impuestos incluidos', 'Porcentaje sobre el precio con impuestos incluidos'),
     )
-    nombre = models.CharField(unique=True)
-    ambito = models.CharField(choices=AMBITO_CHOICES)
-    tipo_calculo_impuesto = models.CharField(choices=TIPO_CALCULO_CHOICES)
+    nombre = models.CharField(unique=True, max_length=120)
+    ambito = models.CharField(choices=AMBITO_CHOICES, max_length=120)
+    tipo_calculo_impuesto = models.CharField(choices=TIPO_CALCULO_CHOICES, max_length=150)
     cuenta_impuesto = models.ForeignKey(CuentaContable, on_delete=models.PROTECT, related_name='impuestos')
     cuenta_impuesto_notas_credito = models.ForeignKey(
         CuentaContable,

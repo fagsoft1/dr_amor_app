@@ -93,6 +93,7 @@ function crudHOC(CreateForm, Tabla) {
             const {
                 list,
                 plural_name,
+                con_titulo = true,
                 permisos_object,
             } = this.props;
             const {
@@ -103,9 +104,12 @@ function crudHOC(CreateForm, Tabla) {
 
             return (
                 <ValidarPermisos can_see={permisos_object.list} nombre={plural_name}>
-                    <Typography variant="h5" gutterBottom color="primary">
-                        {plural_name}
-                    </Typography>
+                    {
+                        con_titulo &&
+                        <Typography variant="h5" gutterBottom color="primary">
+                            {plural_name}
+                        </Typography>
+                    }
                     {
                         permisos_object.add &&
                         <Button

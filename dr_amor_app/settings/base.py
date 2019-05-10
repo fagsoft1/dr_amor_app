@@ -69,6 +69,10 @@ MY_APPS = [
     'parqueadero.apps.ParqueaderoConfig',
     'consultas_dr_amor.apps.ConsultasDrAmorConfig',
     'contabilidad_cuentas.apps.ContabilidadCuentasConfig',
+    'contabilidad_bancos.apps.ContabilidadBancosConfig',
+    'contabilidad_diario.apps.ContabilidadDiarioConfig',
+    'contabilidad_impuestos.apps.ContabilidadImpuestosConfig',
+    'contabilidad_movimientos.apps.ContabilidadMovimientosConfig',
 ]
 
 THIRD_PART_APPS = [

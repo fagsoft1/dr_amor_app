@@ -55,7 +55,14 @@ import modalidadesFraccionesTiempoDetallesReducer
     from './especificas/parqueadero/modalidadesFraccionesTiempoDetallesReducer';
 
 
-import cuentasContablesReducer from './especificas/contabilidad/cuentas_contables/cuentasContablesReducer';
+import cuentasContablesReducer from './especificas/contabilidad/configuracion/cuentasContablesReducer';
+import diariosContablesReducer from './especificas/contabilidad/configuracion/diariosContablesReducer';
+import cuentasBancariasContablesReducer from './especificas/contabilidad/configuracion/cuentasBancariasReducer';
+import impuestosContablesReducer from './especificas/contabilidad/configuracion/impuestosReducer';
+import impuestosGruposReducer from './especificas/contabilidad/configuracion/impuestosGruposReducer';
+import bancosReducer from './especificas/contabilidad/configuracion/bancosReducer';
+import asientosContablesReducer from './especificas/contabilidad/contabilidad/asientosContablesReducer';
+import apuntesContablesReducer from './especificas/contabilidad/contabilidad/apuntesContablesReducer';
 
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
@@ -110,7 +117,16 @@ const rootReducer = combineReducers({
     parqueadero_registros_entradas_parqueos: registrosEntradasParqueosReducer,
     parqueadero_modalidades_fracciones_tiempo: modalidadesFraccionesTiempoReducer,
     parqueadero_modalidades_fracciones_tiempo_detalles: modalidadesFraccionesTiempoDetallesReducer,
-    contabilidad_cuentas_contables: cuentasContablesReducer
+
+
+    contabilidad_cuentas_contables: cuentasContablesReducer,
+    contabilidad_diarios_contables: diariosContablesReducer,
+    contabilidad_cuentas_bancarias: cuentasBancariasContablesReducer,
+    contabilidad_impuestos: impuestosContablesReducer,
+    contabilidad_impuestos_grupos: impuestosGruposReducer,
+    contabilidad_bancos: bancosReducer,
+    contabilidad_asientos_contables: asientosContablesReducer,
+    contabilidad_apuntes_contables: apuntesContablesReducer,
 });
 
 export default rootReducer;

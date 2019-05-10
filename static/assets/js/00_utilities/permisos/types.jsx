@@ -1,3 +1,58 @@
+export const APUNTES_CONTABLES = {
+    add: 'add_apuntecontable',
+    delete: 'delete_apuntecontable',
+    change: 'change_apuntecontable',
+    list: 'list_apuntecontable',
+    detail: 'view_apuntecontable',
+};
+
+export const ASIENTOS_CONTABLES = {
+    add: 'add_asientocontable',
+    delete: 'delete_asientocontable',
+    change: 'change_asientocontable',
+    list: 'list_asientocontable',
+    detail: 'view_asientocontable',
+};
+
+export const IMPUESTOS_GRUPOS = {
+    add: 'add_impuestogrupo',
+    delete: 'delete_impuestogrupo',
+    change: 'change_impuestogrupo',
+    list: 'list_impuestogrupo',
+    detail: 'view_impuestogrupo',
+};
+
+export const IMPUESTOS = {
+    add: 'add_impuesto',
+    delete: 'delete_impuesto',
+    change: 'change_impuesto',
+    list: 'list_impuesto',
+    detail: 'view_impuesto',
+};
+
+export const BANCOS = {
+    add: 'add_banco',
+    delete: 'delete_banco',
+    change: 'change_banco',
+    list: 'list_banco',
+    detail: 'view_banco',
+};
+
+export const CUENTAS_BANCARIAS_BANCOS = {
+    add: 'add_cuentabancariabanco',
+    delete: 'delete_cuentabancariabanco',
+    change: 'change_cuentabancariabanco',
+    list: 'list_cuentabancariabanco',
+    detail: 'view_cuentabancariabanco',
+};
+export const DIARIOS_CONTABLES = {
+    add: 'add_diariocontable',
+    delete: 'delete_diariocontable',
+    change: 'change_diariocontable',
+    list: 'list_diariocontable',
+    detail: 'view_diariocontable',
+};
+
 export const CUENTAS_CONTABLES = {
     add: 'add_cuentacontable',
     delete: 'delete_cuentacontable',

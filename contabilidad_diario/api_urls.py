@@ -4,4 +4,4 @@ from .api_views import (
 )
 
 router = routers.DefaultRouter()
-router.register(r'contabilidad_diario_diario_contable', DiarioContableViewSet)
+router.register(r'contabilidad_diario_diarios_contables', DiarioContableViewSet)

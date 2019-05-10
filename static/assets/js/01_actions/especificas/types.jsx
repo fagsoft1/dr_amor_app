@@ -1,3 +1,65 @@
+export const APUNTE_CONTABLE_TYPES = {
+    create: 'create_apunte_contable',
+    delete: 'delete_apunte_contable',
+    fetch_all: 'fetch_apuntes_contables',
+    fetch: 'fetch_apunte_contable',
+    clear: 'clear_apuntes_contables',
+    update: 'update_apunte_contable',
+};
+
+export const ASIENTO_CONTABLE_TYPES = {
+    create: 'create_asiento_contable',
+    delete: 'delete_asiento_contable',
+    fetch_all: 'fetch_asientos_contables',
+    fetch: 'fetch_asiento_contable',
+    clear: 'clear_asientos_contables',
+    update: 'update_asiento_contable',
+};
+
+export const IMPUESTO_GRUPO_TYPES = {
+    create: 'create_impuesto_grupo',
+    delete: 'delete_impuesto_grupo',
+    fetch_all: 'fetch_impuestos_grupos',
+    fetch: 'fetch_impuesto_grupo',
+    clear: 'clear_impuestos_grupos',
+    update: 'update_impuesto_grupo',
+};
+
+export const IMPUESTO_TYPES = {
+    create: 'create_impuesto',
+    delete: 'delete_impuesto',
+    fetch_all: 'fetch_impuestos',
+    fetch: 'fetch_impuesto',
+    clear: 'clear_impuestos',
+    update: 'update_impuesto',
+};
+
+export const BANCO_TYPES = {
+    create: 'create_banco',
+    delete: 'delete_banco',
+    fetch_all: 'fetch_bancos',
+    fetch: 'fetch_banco',
+    clear: 'clear_bancos',
+    update: 'update_banco',
+};
+
+export const CUENTA_BANCARIA_BANCO_TYPES = {
+    create: 'create_cuenta_bancaria_banco',
+    delete: 'delete_cuenta_bancaria_banco',
+    fetch_all: 'fetch_cuentas_bancarias_bancos',
+    fetch: 'fetch_cuenta_bancaria_banco',
+    clear: 'clear_cuentas_bancarias_bancos',
+    update: 'update_cuenta_bancaria_banco',
+};
+export const DIARIO_CONTABLE_TYPES = {
+    create: 'create_diario_contable',
+    delete: 'delete_diario_contable',
+    fetch_all: 'fetch_diarios_contables',
+    fetch: 'fetch_diario_contable',
+    clear: 'clear_diarios_contables',
+    update: 'update_diario_contable',
+};
+
 export const CUENTA_CONTABLE_TYPES = {
     create: 'create_cuenta_contable',
     delete: 'delete_cuenta_contable',
