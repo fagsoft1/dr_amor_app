@@ -42,7 +42,7 @@ class ListadoElementos extends Component {
         let index = value !== null ? value : this.state.slideIndex;
 
         if (index === 0) {
-            const cargarCategorias =()=> this.props.fetchCategoriasAcompanantes();
+            const cargarCategorias = () => this.props.fetchCategoriasAcompanantes();
             this.props.fetchAcompanantes({callback: cargarCategorias});
         } else if (index === 1) {
             this.props.fetchCategoriasAcompanantes();
@@ -92,26 +92,26 @@ class ListadoElementos extends Component {
                 {
                     this.state.slideIndex === 0 &&
                     <BloqueAcompanantes
+                        {...this.props}
                         object_list={bloque_1_list}
                         permisos_object={permisos_object_1}
-                        {...this.props}
                         categorias_list={bloque_2_list}
                     />
                 }
                 {
                     this.state.slideIndex === 1 &&
                     <BloqueCategorias
+                        {...this.props}
                         object_list={bloque_2_list}
                         permisos_object={permisos_object_2}
-                        {...this.props}
                     />
                 }
                 {
                     this.state.slideIndex === 2 &&
                     <BloqueFraccionesTiempo
+                        {...this.props}
                         object_list={bloque_3_list}
                         permisos_object={permisos_object_3}
-                        {...this.props}
                     />
                 }
                 <CargarDatos

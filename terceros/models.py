@@ -99,7 +99,7 @@ class Tercero(models.Model):
     def full_name_proxy(self) -> str:
         if self.es_acompanante:
             return self.alias_modelo
-        else:
+        elif self.es_colaborador:
             nombre_segundo = ''
             if self.nombre_segundo:
                 nombre_segundo = ' %s' % (self.nombre_segundo)
@@ -113,6 +113,8 @@ class Tercero(models.Model):
                 apellido_segundo = ' %s' % (self.apellido_segundo)
 
             return '%s%s %s%s' % (self.nombre, nombre_segundo, apellido, apellido_segundo)
+        else:
+            return self.nombre
 
     @property
     def full_name(self) -> str:

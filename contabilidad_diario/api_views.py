@@ -11,7 +11,7 @@ from .models import (
 class DiarioContableViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissionsFull]
     queryset = DiarioContable.objects.select_related(
-        'cuenta_debito_credito',
+        'cuenta_debito_defecto',
         'cuenta_credito_defecto',
         'banco',
         'cuenta_bancaria',

@@ -1,22 +1,23 @@
 from rest_framework import viewsets
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
 from .api_serializers import (
-    ImpuestoGrupoSerializer,
     ImpuestoSerializer
 )
 from .models import (
-    Impuesto,
-    ImpuestoGrupo
+    Impuesto
 )
 
 
 class ImpuestoViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissionsFull]
-    queryset = Impuesto.objects.all()
+    queryset = Impuesto.objects.select_related(
+        'cuenta_impuesto',
+        'cuenta_impuesto_notas_credito',
+    ).all()
     serializer_class = ImpuestoSerializer
 
+# Carrera 47 A 13-86 Santo Domingo
 
-class ImpuestoGrupoViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissionsFull]
-    queryset = ImpuestoGrupo.objects.all()
-    serializer_class = ImpuestoGrupoSerializer
+
+# 08
+# VCR417

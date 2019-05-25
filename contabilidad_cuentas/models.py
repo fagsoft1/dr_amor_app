@@ -30,3 +30,12 @@ class CuentaContable(models.Model):
         permissions = [
             ['list_cuentacontable', 'Puede listar Cuentas Contables'],
         ]
+
+    @property
+    def debe_ser_detalle(self):
+        tiene_hijas = self.cuentas_hijas.exists()
+        tiene_detalles = self.apuntes_contables.exists()
+        esta_en_diarios_credito = self.diarios_contables_credito.exists()
+        esta_en_diarios_debito = self.diarios_contables_debito.exists()
+
+        return tiene_hijas | tiene_detalles | esta_en_diarios_credito | esta_en_diarios_debito

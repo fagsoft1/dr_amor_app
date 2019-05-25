@@ -31,13 +31,16 @@ class CuentaContableSerializer(serializers.ModelSerializer):
         codigo = validated_data.get('codigo')
         naturaleza = validated_data.get('naturaleza')
         cuenta_padre = validated_data.get('cuenta_padre', None)
+        tipo = validated_data.get('tipo')
+        print(tipo)
         from .services import cuenta_contable_crear_actualizar
         return cuenta_contable_crear_actualizar(
             descripcion=descripcion,
             codigo=codigo,
-            cuenta_padre_id=cuenta_padre.id,
+            cuenta_padre_id=cuenta_padre.id if cuenta_padre else None,
             naturaleza=naturaleza,
-            cuenta_contable_id=instance.id
+            cuenta_contable_id=instance.id,
+            tipo=tipo
         )
 
     class Meta:
@@ -73,5 +76,4 @@ class CuentaContableSerializer(serializers.ModelSerializer):
             'cuenta_nivel_6': {'read_only': True},
             'cuenta_nivel_7': {'read_only': True},
             'cuenta_nivel_8': {'read_only': True},
-            'tipo': {'read_only': True},
         }

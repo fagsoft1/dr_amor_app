@@ -58,7 +58,7 @@ class PermissionViewSet(viewsets.ModelViewSet):
     def tengo_permisos(self, request):
         listado_split = request.GET.get('listado_permisos').split(',')[0:-1]
         if request.user.is_superuser:
-            permissions_list = Permission.objects.all().filter(codename__in=listado_split)
+            permissions_list = self.queryset.all().filter(codename__in=listado_split)
             serializer = self.get_serializer(permissions_list, many=True)
             return Response(serializer.data)
         permissions_list = self.queryset.filter(

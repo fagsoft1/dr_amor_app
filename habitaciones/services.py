@@ -4,7 +4,19 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from .models import Habitacion
+from .models import Habitacion, TipoHabitacion
+
+
+def tipo_habitacion_adicionar_quitar_impuesto(
+        tipo_habitacion_id: int,
+        impuesto_id
+) -> TipoHabitacion:
+    tipo_habitacion = TipoHabitacion.objects.get(pk=tipo_habitacion_id)
+    if tipo_habitacion.impuestos.filter(pk=impuesto_id).exists():
+        tipo_habitacion.impuestos.remove(impuesto_id)
+    else:
+        tipo_habitacion.impuestos.add(impuesto_id)
+    return tipo_habitacion
 
 
 def habitacion_terminar_servicios(
@@ -105,9 +117,7 @@ def habitacion_cambiar_servicios_de_habitacion(
                 punto_venta_turno_id=turno_punto_venta.id
             )
 
-            comision_habitacion_nueva = habitacion_nueva.tipo.comision
-            servicio.valor_habitacion = habitacion_nueva.tipo.valor_antes_impuestos - comision_habitacion_nueva
-            servicio.comision = comision_habitacion_nueva
+            servicio.valor_habitacion = habitacion_nueva.tipo.valor_antes_impuestos
             servicio.empresa = habitacion_nueva.empresa
 
             servicio.habitacion = habitacion_nueva
@@ -123,14 +133,11 @@ def habitacion_cambiar_servicios_de_habitacion(
                 observacion_devolucion=observacion_devolucion
             )
             valor_habitacion = habitacion_nueva.tipo.valor_antes_impuestos
-            valor_iva_habitacion = habitacion_nueva.tipo.impuesto
-            comision_habitacion_nueva = habitacion_nueva.tipo.comision
-
-            servicio.valor_habitacion = valor_habitacion - comision_habitacion_nueva
-            servicio.comision = comision_habitacion_nueva
+            impuestos = habitacion_nueva.tipo.impuesto
+            servicio.valor_habitacion = valor_habitacion
             servicio.empresa = habitacion_nueva.empresa
 
-            servicio.valor_iva_habitacion = valor_iva_habitacion
+            servicio.impuestos = impuestos
             servicio.habitacion = habitacion_nueva
             servicio.save()
             array_servicios_id.append(servicio.id)

@@ -22,116 +22,22 @@ class ServiciosServicesTests(BaseTest):
     # region servicio_crear_nuevo
     def test_servicio_crear_nuevo(self):
         from servicios.models import Servicio
-        self.assertTrue(self.habitacion.estado == 0)
 
-        valor_comision = self.habitacion.tipo.comision
-        valor_habitacion = self.habitacion.tipo.valor_antes_impuestos - valor_comision
-        valor_impuesto = self.habitacion.tipo.impuesto
-        valor_servicio = self.categoria_fraccion_tiempo_30.valor
-
-        valor_esperado_servicio = valor_habitacion + valor_impuesto + valor_comision + valor_servicio
-
-        count = Servicio.objects.filter(estado=0).count()
-        servicio = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        self.assertEqual(int(valor_esperado_servicio), int(servicio.valor_total))
-
-        self.assertEqual(int(servicio.comision), 0)
-        self.assertEqual(int(servicio.valor_habitacion), int(valor_habitacion))
-        self.assertEqual(int(servicio.valor_iva_habitacion), int(valor_impuesto))
-        count_dos = Servicio.objects.filter(estado=0).count()
-        self.assertEqual(count + 1, count_dos)
-        self.habitacion.refresh_from_db()
-        self.assertTrue(self.habitacion.estado == 1)
-
-    def test_servicio_crear_nuevo_con_comision(self):
-        from servicios.models import Servicio
-        self.assertTrue(self.habitacion.estado == 0)
-
-        tipo_habitacion = self.habitacion.tipo
-        tipo_habitacion.comision = 5000
-        tipo_habitacion.save()
-
-        valor_comision = self.habitacion.tipo.comision
-        valor_habitacion = self.habitacion.tipo.valor_antes_impuestos - valor_comision
-        valor_impuesto = self.habitacion.tipo.impuesto
-        valor_servicio = self.categoria_fraccion_tiempo_30.valor
-
-        valor_esperado_servicio = valor_habitacion + valor_impuesto + valor_comision + valor_servicio
-
-        count = Servicio.objects.filter(estado=0).count()
-        servicio = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        self.assertEqual(int(valor_esperado_servicio), int(servicio.valor_total))
-
-        self.assertEqual(int(servicio.comision), 5000)
-        self.assertEqual(int(servicio.valor_habitacion), int(valor_habitacion))
-        self.assertEqual(int(servicio.valor_iva_habitacion), int(valor_impuesto))
-        count_dos = Servicio.objects.filter(estado=0).count()
-        self.assertEqual(count + 1, count_dos)
-        self.habitacion.refresh_from_db()
-        self.assertTrue(self.habitacion.estado == 1)
-
-    def test_servicio_crear_nuevo_solo_acompanante(self):
-        self.acompanante.es_acompanante = False
-        self.acompanante.save()
+        # Valida que no se pueda crear un servicio a menos que haya hecho registro de acceso
+        from terceros.services import tercero_registra_salida
+        tercero_registra_salida(self.acompanante_tres.id, '0000')
         with self.assertRaisesMessage(
                 ValidationError,
-                'No se puede crear un servicio para un tercero que no sea acompanante'
+                'No se pueden crear servicios para acompanantes que no esten presentes'
         ):
             servicio_crear_nuevo(
                 habitacion_id=self.habitacion.id,
-                acompanante_id=self.acompanante.id,
+                acompanante_id=self.acompanante_tres.id,
                 categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
                 usuario_pdv_id=self.punto_venta.usuario_actual.id
             )
 
-    def test_servicio_crear_nuevo_solo_punto_venta_abierto(self):
-        self.punto_venta.abierto = False
-        self.punto_venta.save()
-        with self.assertRaisesMessage(ValidationError, 'No se pueden crear servicios desde un punto de venta cerrado'):
-            servicio_crear_nuevo(
-                habitacion_id=self.habitacion.id,
-                acompanante_id=self.acompanante.id,
-                categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-                usuario_pdv_id=self.punto_venta.usuario_actual.id
-            )
-
-    def test_servicio_crear_nuevo_misma_modelo_diferentes_habitaciones(self):
-        servicio_inicial = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_iniciar(
-            servicio_id=servicio_inicial.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        with self.assertRaisesMessage(
-                ValidationError,
-                'No se pueden crear servicios para una habitacion diferente a la que esta actualmente'
-        ):
-            servicio_crear_nuevo(
-                habitacion_id=self.habitacion_dos.id,
-                acompanante_id=self.acompanante.id,
-                categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-                usuario_pdv_id=self.punto_venta.usuario_actual.id
-            )
-
-    def test_servicio_crear_nuevo_fraccion_tiempo_no_perteneciente(self):
+        # Revisa que la categorias de la modelo coincida con la fracción de tiempo seleccionada
         from terceros_acompanantes.factories import CategoriaFraccionTiempoFactory
         categoria_fraccion_tiempo_nueva = CategoriaFraccionTiempoFactory(fraccion_tiempo=self.fraccion_tiempo_45)
         with self.assertRaisesMessage(
@@ -145,20 +51,93 @@ class ServiciosServicesTests(BaseTest):
                 usuario_pdv_id=self.punto_venta.usuario_actual.id
             )
 
-    def test_servicio_crear_nuevo_sin_registro_acceso(self):
-        # valida que no se pueda crear un servicio a menos que haya hecho registro de acceso
-        from terceros.services import tercero_registra_salida
-        tercero_registra_salida(self.acompanante.id, '0000')
+        # Solo se crea para acompañantes
+        self.acompanante_tres.es_acompanante = False
+        self.acompanante_tres.save()
         with self.assertRaisesMessage(
                 ValidationError,
-                'No se pueden crear servicios para acompanantes que no esten presentes'
+                'No se puede crear un servicio para un tercero que no sea acompanante'
         ):
+            servicio_crear_nuevo(
+                habitacion_id=self.habitacion.id,
+                acompanante_id=self.acompanante_tres.id,
+                categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
+                usuario_pdv_id=self.punto_venta.usuario_actual.id
+            )
+
+        self.acompanante_tres.es_acompanante = False
+        self.acompanante_tres.save()
+
+        # Solo desde puntos de venta abiertos
+        self.punto_venta.abierto = False
+        self.punto_venta.save()
+        with self.assertRaisesMessage(ValidationError, 'No se pueden crear servicios desde un punto de venta cerrado'):
             servicio_crear_nuevo(
                 habitacion_id=self.habitacion.id,
                 acompanante_id=self.acompanante.id,
                 categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
                 usuario_pdv_id=self.punto_venta.usuario_actual.id
             )
+        self.punto_venta.abierto = True
+        self.punto_venta.save()
+
+        self.assertTrue(self.habitacion.estado == 0)
+
+        valor_habitacion = self.habitacion.tipo.valor_antes_impuestos
+        valor_impuesto = self.habitacion.tipo.impuesto
+        valor_servicio = self.categoria_fraccion_tiempo_30.valor
+        valor_adicional_servicio = self.habitacion.tipo.valor_adicional_servicio
+
+        valor_esperado_servicio = valor_habitacion + valor_impuesto + valor_servicio + valor_adicional_servicio
+
+        count = Servicio.objects.filter(estado=0).count()
+
+        servicio = servicio_crear_nuevo(
+            habitacion_id=self.habitacion.id,
+            acompanante_id=self.acompanante.id,
+            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+
+        self.assertEqual(int(valor_esperado_servicio), int(servicio.valor_total))
+
+        self.assertEqual(int(servicio.valor_habitacion), int(valor_habitacion))
+        self.assertEqual(int(servicio.impuestos), int(valor_impuesto))
+        count_dos = Servicio.objects.filter(estado=0).count()
+        self.assertEqual(count + 1, count_dos)
+        self.habitacion.refresh_from_db()
+        self.assertTrue(self.habitacion.estado == 1)
+
+        # Evalua que no se pueda crear un servicio con igual modelo en diferentes habitaciones
+        servicio_inicial = servicio_iniciar(
+            servicio_id=servicio.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+        with self.assertRaisesMessage(
+                ValidationError,
+                'No se pueden crear servicios para una habitacion diferente a la que esta actualmente'
+        ):
+            servicio_crear_nuevo(
+                habitacion_id=self.habitacion_dos.id,
+                acompanante_id=self.acompanante.id,
+                categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
+                usuario_pdv_id=self.punto_venta.usuario_actual.id
+            )
+
+        # Permite crear servicios de la misma modelo en la misma habitacion
+        servicio_siguiente = servicio_crear_nuevo(
+            habitacion_id=self.habitacion.id,
+            acompanante_id=self.acompanante.id,
+            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+
+        servicio_siguiente = servicio_iniciar(
+            servicio_id=servicio_siguiente.id,
+            usuario_pdv_id=self.punto_venta.usuario_actual.id
+        )
+
+        self.assertEqual(servicio_inicial.id, servicio_siguiente.servicio_anterior.id)
 
     def test_servicio_crear_nuevo_habitacion_solo_estado_disponible_ocupada(self):
         self.habitacion.estado = 0
@@ -208,42 +187,12 @@ class ServiciosServicesTests(BaseTest):
                 usuario_pdv_id=self.punto_venta.usuario_actual.id
             )
 
-    def test_servicio_crear_nuevo_misma_modelo_habitaciones_iguales(self):
-        servicio_inicial = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_iniciar(
-            servicio_id=servicio_inicial.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_siguiente = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        servicio_siguiente = servicio_iniciar(
-            servicio_id=servicio_siguiente.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-
-        # Valida que cuando se vaya a crear más de un servicio, para una misma modelo,
-        # el segundo o siguente tenga como anterior a inmediatamente anterior
-        self.assertEqual(servicio_inicial.id, servicio_siguiente.servicio_anterior.id)
-
     # endregion
 
     # region servicio_iniciar
     def test_servicio_iniciar(self):
         self.assertTrue(self.habitacion.estado == 0)
         self.assertTrue(self.acompanante.estado == 0)
-
         servicios = self.hacer_servicios_dos(
             acompanante=self.acompanante,
             habitacion=self.habitacion,
@@ -254,6 +203,20 @@ class ServiciosServicesTests(BaseTest):
         )
         servicios = servicios['acompanante_1']['servicios']
         for servicio in servicios:
+            self.punto_venta.abierto = False
+            self.punto_venta.save()
+
+            # Solo deja iniciar servicios desde un punto de venta abierto
+            with self.assertRaisesMessage(
+                    ValidationError,
+                    'No se pueden iniciar servicios desde un punto de venta cerrado'
+            ):
+                servicio_iniciar(
+                    servicio_id=servicio.id,
+                    usuario_pdv_id=self.punto_venta.usuario_actual.id
+                )
+            self.punto_venta.abierto = True
+            self.punto_venta.save()
             servicio_iniciar(
                 servicio_id=servicio.id,
                 usuario_pdv_id=self.punto_venta.usuario_actual.id
@@ -349,24 +312,6 @@ class ServiciosServicesTests(BaseTest):
                     servicio_id=servicio.id,
                     usuario_pdv_id=self.punto_venta.usuario_actual.id
                 )
-
-    def test_servicio_iniciar_solo_punto_venta_abierto(self):
-        servicio = servicio_crear_nuevo(
-            habitacion_id=self.habitacion.id,
-            acompanante_id=self.acompanante.id,
-            categoria_fraccion_tiempo_id=self.categoria_fraccion_tiempo_30.id,
-            usuario_pdv_id=self.punto_venta.usuario_actual.id
-        )
-        self.punto_venta.abierto = False
-        self.punto_venta.save()
-        with self.assertRaisesMessage(
-                ValidationError,
-                'No se pueden iniciar servicios desde un punto de venta cerrado'
-        ):
-            servicio_iniciar(
-                servicio_id=servicio.id,
-                usuario_pdv_id=self.punto_venta.usuario_actual.id
-            )
 
     def test_servicio_iniciar_hora_final_adecuada(self):
         servicio = servicio_crear_nuevo(
@@ -530,8 +475,8 @@ class ServiciosServicesTests(BaseTest):
             servicio_id=servicio.id,
             usuario_pdv_id=self.punto_venta.usuario_actual.id
         )
-        valor_esperado_anterior_servicio = self.categoria_fraccion_tiempo_30.valor
-        valor_esperado_nuevo_servicio = self.categoria_fraccion_tiempo_60.valor
+        valor_esperado_anterior_servicio = self.categoria_fraccion_tiempo_30.valor + self.habitacion.tipo.valor_adicional_servicio
+        valor_esperado_nuevo_servicio = self.categoria_fraccion_tiempo_60.valor + self.habitacion.tipo.valor_adicional_servicio
         valor_a_pagar_esperado = valor_esperado_nuevo_servicio - valor_esperado_anterior_servicio
 
         valor_servicio_anterior_efectivo = servicio.valor_servicio
@@ -784,10 +729,9 @@ class ServiciosServicesTests(BaseTest):
         self.habitacion.refresh_from_db()
         self.assertEqual(servicio.estado, 4)
         self.assertEqual(self.habitacion.estado, 2)
-        self.assertEqual(servicio.valor_iva_habitacion, 0)
+        self.assertEqual(servicio.impuestos, 0)
         self.assertEqual(servicio.valor_habitacion, 0)
         self.assertEqual(servicio.valor_servicio, 0)
-        self.assertEqual(servicio.comision, 0)
 
         ultima_transaccion_caja = servicio.transacciones_caja.last()
         self.assertEqual(ultima_transaccion_caja.tipo, 'E')

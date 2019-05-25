@@ -69,6 +69,18 @@ class Form extends Component {
                     })}
                     filter='contains'
                 />
+                <MyCombobox
+                    className="col-12 col-md-4"
+                    nombre='Tipo de cuenta'
+                    name='tipo'
+                    textField='nombre'
+                    valuesField='id'
+                    data={[
+                        {id: 'T', nombre: 'Título'},
+                        {id: 'D', nombre: 'Detalle'},
+                    ]}
+                    filter='contains'
+                />
                 <MyTextFieldSimple
                     className="col-12 col-md-5"
                     nombre='Código'

@@ -280,11 +280,10 @@ def servicio_crear_nuevo(
     estado = 0
     tiempo_minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
     categoria = tercero.categoria_modelo.nombre
-    valor_servicio = categoria_fraccion_tiempo.valor
-    valor_habitacion = habitacion.tipo.valor_antes_impuestos - habitacion.tipo.comision
+    valor_servicio = categoria_fraccion_tiempo.valor + habitacion.tipo.valor_adicional_servicio
+    valor_habitacion = habitacion.tipo.valor_antes_impuestos
     cuenta = tercero.cuenta_abierta
-    valor_iva_habitacion = habitacion.tipo.impuesto
-    comision = habitacion.tipo.comision
+    impuestos = habitacion.tipo.impuesto
     servicio_nuevo = Servicio.objects.create(
         empresa=habitacion.empresa,
         habitacion=habitacion,
@@ -293,9 +292,8 @@ def servicio_crear_nuevo(
         tiempo_minutos=tiempo_minutos,
         categoria=categoria,
         valor_servicio=valor_servicio,
-        comision=comision,
         valor_habitacion=valor_habitacion,
-        valor_iva_habitacion=valor_iva_habitacion,
+        impuestos=impuestos,
         punto_venta_turno=turno_punto_venta
     )
     return servicio_nuevo
@@ -326,8 +324,7 @@ def servicio_solicitar_anular(
     servicio.observacion_anulacion = observacion_anulacion
     servicio.valor_servicio = 0
     servicio.valor_habitacion = 0
-    servicio.valor_iva_habitacion = 0
-    servicio.comision = 0
+    servicio.impuestos = 0
 
     servicio_anterior = servicio.servicio_anterior
     servicio_siguiente = None
@@ -409,7 +406,7 @@ def servicio_cambiar_tiempo(
         servicio_recursivo_asignacion_horas(None, servicio.id)
 
     valor_servicio_actual = servicio.valor_servicio
-    valor_servicio_nuevo = categoria_fraccion_tiempo.valor
+    valor_servicio_nuevo = categoria_fraccion_tiempo.valor + servicio.habitacion.tipo.valor_adicional_servicio
     diferencia = valor_servicio_nuevo - valor_servicio_actual
 
     if diferencia > 0:

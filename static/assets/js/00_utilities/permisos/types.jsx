@@ -14,14 +14,6 @@ export const ASIENTOS_CONTABLES = {
     detail: 'view_asientocontable',
 };
 
-export const IMPUESTOS_GRUPOS = {
-    add: 'add_impuestogrupo',
-    delete: 'delete_impuestogrupo',
-    change: 'change_impuestogrupo',
-    list: 'list_impuestogrupo',
-    detail: 'view_impuestogrupo',
-};
-
 export const IMPUESTOS = {
     add: 'add_impuesto',
     delete: 'delete_impuesto',

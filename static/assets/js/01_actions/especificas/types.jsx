@@ -16,15 +16,6 @@ export const ASIENTO_CONTABLE_TYPES = {
     update: 'update_asiento_contable',
 };
 
-export const IMPUESTO_GRUPO_TYPES = {
-    create: 'create_impuesto_grupo',
-    delete: 'delete_impuesto_grupo',
-    fetch_all: 'fetch_impuestos_grupos',
-    fetch: 'fetch_impuesto_grupo',
-    clear: 'clear_impuestos_grupos',
-    update: 'update_impuesto_grupo',
-};
-
 export const IMPUESTO_TYPES = {
     create: 'create_impuesto',
     delete: 'delete_impuesto',

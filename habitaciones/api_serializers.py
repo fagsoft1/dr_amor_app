@@ -2,6 +2,7 @@ from channels.binding.websockets import WebsocketBinding
 from rest_framework import serializers
 
 from .models import Habitacion, TipoHabitacion
+from contabilidad_impuestos.api_serializers import ImpuestoSerializer
 
 
 class TipoHabitacionSerializer(serializers.ModelSerializer):
@@ -17,22 +18,26 @@ class TipoHabitacionSerializer(serializers.ModelSerializer):
             'nombre',
             'to_string',
             'valor',
-            'porcentaje_impuesto',
             'valor_antes_impuestos',
+            'impuestos',
             'impuesto',
-            'comision',
+            'valor_adicional_servicio',
         )
         extra_kwargs = {
             'valor_antes_impuestos': {'read_only': True},
-            'impuesto': {'read_only': True},
+            'impuestos': {'read_only': True},
         }
+
+
+class TipoHabitacionConDetalleSerializer(TipoHabitacionSerializer):
+    impuestos = ImpuestoSerializer(many=True, read_only=True)
 
 
 class HabitacionSerializer(serializers.ModelSerializer):
     tipo_habitacion_nombre = serializers.CharField(source='tipo.nombre', read_only=True)
     valor = serializers.DecimalField(source='tipo.valor', max_digits=10, decimal_places=0, read_only=True)
-    porcentaje_impuesto = serializers.DecimalField(
-        source='tipo.porcentaje_impuesto',
+    valor_adicional_servicio = serializers.DecimalField(
+        source='tipo.valor_adicional_servicio',
         max_digits=10,
         decimal_places=2,
         read_only=True
@@ -53,13 +58,13 @@ class HabitacionSerializer(serializers.ModelSerializer):
             'nombre',
             'tipo',
             'tipo_habitacion_nombre',
-            'porcentaje_impuesto',
             'empresa',
             'empresa_nombre',
             'numero',
             'to_string',
             'tiempo_final_servicio',
             'fecha_ultimo_estado',
+            'valor_adicional_servicio',
             'estado',
             'valor',
         ]

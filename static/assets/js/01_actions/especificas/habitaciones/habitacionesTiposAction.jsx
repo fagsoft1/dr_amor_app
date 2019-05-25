@@ -7,10 +7,11 @@ import {
     fetchObject,
     deleteObject,
     createObject,
+    callApiMethodPostParameters
 } from '../../00_general_fuctions'
 
 const current_url_api = 'habitaciones_tipos';
-export const createTipoHabitacion = (values, options_action={}) => {
+export const createTipoHabitacion = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.create, payload: response})
@@ -19,7 +20,20 @@ export const createTipoHabitacion = (values, options_action={}) => {
         return createObject(current_url_api, values, options);
     }
 };
-export const deleteTipoHabitacion = (id, options_action={}) => {
+
+export const adicionarQuitarImpuestoTipoHabitacion = (id, impuesto_id, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('impuesto_id', impuesto_id);
+        const dispatches = (response) => {
+            dispatch({type: TYPES.update, payload: response})
+        };
+        const options = {...options_action, dispatches, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'adicionar_quitar_impuesto', params, options)
+    }
+};
+
+export const deleteTipoHabitacion = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.delete, payload: id})
@@ -28,7 +42,7 @@ export const deleteTipoHabitacion = (id, options_action={}) => {
         return deleteObject(current_url_api, id, options);
     }
 };
-export const fetchTiposHabitaciones = (options_action={}) => {
+export const fetchTiposHabitaciones = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch_all, payload: response})
@@ -59,7 +73,7 @@ export const clearTiposHabitaciones = () => {
 
     }
 };
-export const updateTipoHabitacion = (id, values, options_action={}) => {
+export const updateTipoHabitacion = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
             dispatch({type: TYPES.update, payload: response})

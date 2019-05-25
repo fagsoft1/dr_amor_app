@@ -1,6 +1,5 @@
 import {combineReducers} from 'redux';
 import {reducer as formReducer} from 'redux-form';
-import NotifyReducer from 'react-redux-notify';
 import misPermisosReducer from './generales/permisos/misPermisosReducer';
 import gruposPermisosReducer from './generales/permisos/gruposPermisosReducer';
 import permisosReducer from './generales/permisos/permisosReducer';
@@ -59,10 +58,11 @@ import cuentasContablesReducer from './especificas/contabilidad/configuracion/cu
 import diariosContablesReducer from './especificas/contabilidad/configuracion/diariosContablesReducer';
 import cuentasBancariasContablesReducer from './especificas/contabilidad/configuracion/cuentasBancariasReducer';
 import impuestosContablesReducer from './especificas/contabilidad/configuracion/impuestosReducer';
-import impuestosGruposReducer from './especificas/contabilidad/configuracion/impuestosGruposReducer';
 import bancosReducer from './especificas/contabilidad/configuracion/bancosReducer';
 import asientosContablesReducer from './especificas/contabilidad/contabilidad/asientosContablesReducer';
 import apuntesContablesReducer from './especificas/contabilidad/contabilidad/apuntesContablesReducer';
+
+import {reducer as notificationsReducers} from 'react-notification-system-redux';
 
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
@@ -71,7 +71,7 @@ const rootReducer = combineReducers({
     mi_cuenta: miCuentaReducer,
     usuarios: usuariosReducer,
     esta_cargando: loadingReducer,
-    notifications: NotifyReducer,
+    notifications: notificationsReducers,
     form: formReducer,
     menu_status: menuReducer,
     auth,
@@ -123,7 +123,6 @@ const rootReducer = combineReducers({
     contabilidad_diarios_contables: diariosContablesReducer,
     contabilidad_cuentas_bancarias: cuentasBancariasContablesReducer,
     contabilidad_impuestos: impuestosContablesReducer,
-    contabilidad_impuestos_grupos: impuestosGruposReducer,
     contabilidad_bancos: bancosReducer,
     contabilidad_asientos_contables: asientosContablesReducer,
     contabilidad_apuntes_contables: apuntesContablesReducer,

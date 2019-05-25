@@ -1,41 +1,35 @@
-import {NOTIFICATION_TYPE_SUCCESS, NOTIFICATION_TYPE_ERROR} from 'react-redux-notify';
-import {createNotification} from 'react-redux-notify';
 import React from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import Notifications from 'react-notification-system-redux';
 
-export function notificarAction(mensaje, tipo = 'success', tiempo = 5000) {
+export function notificarAction(mensaje, options = {}) {
+    const {
+        tipo = 'success',
+        title = 'Información de Acción',
+        tiempo = 10
+    } = options;
     return function (dispatch) {
-        let tipo_notificacion = NOTIFICATION_TYPE_SUCCESS;
-        switch (tipo) {
-            case 'success':
-                tipo_notificacion = NOTIFICATION_TYPE_SUCCESS;
-                break;
-            case 'error':
-                tipo_notificacion = NOTIFICATION_TYPE_ERROR;
-                break;
-        }
-        const mySuccessNotification = {
+        const notificationOpts = {
+            title,
             message: mensaje,
-            type: tipo_notificacion,
-            duration: tiempo,
-            position: 'BottomRight',
-            canDimiss: true,
-            icon: <FontAwesomeIcon icon={['far', 'check']}/>
+            position: 'tr',
+            autoDismiss: tiempo
         };
-        dispatch(createNotification(mySuccessNotification));
+        dispatch(Notifications.success(notificationOpts));
     }
 }
 
-export function notificarErrorAction(error, tiempo = 7000) {
+export function notificarErrorAction(error, options = {}) {
+    const {
+        tiempo = 7
+    } = options;
     return function (dispatch) {
-        const mySuccessNotification = {
+        const notificationOpts = {
+            // uid: 'once-please', // you can specify your own uid if required
+            title: 'Error Sistema',
             message: error,
-            type: NOTIFICATION_TYPE_ERROR,
-            duration: tiempo,
-            position: 'BottomRight',
-            canDimiss: true,
-            icon: <FontAwesomeIcon icon={['far', 'exclamation']}/>
+            autoDismiss: tiempo,
+            position: 'tc',
         };
-        dispatch(createNotification(mySuccessNotification));
+        dispatch(Notifications.error(notificationOpts));
     }
 }

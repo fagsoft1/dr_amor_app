@@ -170,7 +170,8 @@ class HabitacionServicesTests(BaseTestsApi):
             {
                 'pago': json.dumps(
                     {
-                        'valor_efectivo': int(800000),
+                        'valor_efectivo': int(800000) + (
+                                self.habitacion.tipo.valor_adicional_servicio * len(self.array_servicios)),
                         'valor_tarjeta': int(200000),
                         'nro_autorizacion': 'asdfa',
                         'franquicia': 'visa'
@@ -207,7 +208,7 @@ class HabitacionServicesTests(BaseTestsApi):
         habitacion = habitacion_iniciar_servicios(
             usuario_pdv_id=self.punto_venta.usuario_actual.id,
             habitacion_id=self.habitacion.id,
-            valor_efectivo=800000,
+            valor_efectivo=800000 + (self.habitacion.tipo.valor_adicional_servicio * len(self.array_servicios)),
             valor_tarjeta=200000,
             nro_autorizacion='asdfa',
             franquicia='visa',
@@ -217,7 +218,8 @@ class HabitacionServicesTests(BaseTestsApi):
         for servicio in habitacion.servicios.all():
             valor_total_servicios += servicio.valor_total
 
-        self.assertEqual(valor_total_servicios, 800000 + 200000)
+        self.assertEqual(valor_total_servicios,
+                         800000 + 200000 + (self.habitacion.tipo.valor_adicional_servicio * len(self.array_servicios)))
 
         count_dos = Servicio.objects.filter(habitacion_id=self.habitacion.id, estado=1).count()
         count_tres = self.habitacion.servicios.filter(estado=1).count()
@@ -296,8 +298,7 @@ class HabitacionServicesTests(BaseTestsApi):
     def habitacion_cambiar_de_habitacion_igual_tarifa(
             self,
             habitacion_inicial,
-            habitacion_nueva_igual_tarifa,
-            comision=0
+            habitacion_nueva_igual_tarifa
     ):
         from ..services import habitacion_cambiar_servicios_de_habitacion
 
@@ -308,8 +309,7 @@ class HabitacionServicesTests(BaseTestsApi):
             terminados=True,
             iniciados=True,
             nro_servicios=5,
-            acompanante_dos=self.acompanante_dos,
-            comision=comision
+            acompanante_dos=self.acompanante_dos
         )
         array_servicios_acompanante_1 = servicios['acompanante_1']['array_servicios']
         array_servicios_acompanante_2 = servicios['acompanante_2']['array_servicios']
@@ -330,15 +330,13 @@ class HabitacionServicesTests(BaseTestsApi):
         diferencia_valor = habitacion_inicial.tipo.valor - habitacion_nueva_igual_tarifa.tipo.valor
 
         for servicio in servicios_acompanante_1:
-            iva_anterior = int(servicio.valor_iva_habitacion)
+            iva_anterior = int(servicio.impuestos)
             valor_habitacion_anterior = int(servicio.valor_habitacion)
-            valor_comision_anterior = int(servicio.comision)
             valor_servicio_anterior = int(servicio.valor_servicio)
             valor_total_anterior = int(servicio.valor_total)
             servicio.refresh_from_db()
-            iva_nuevo = int(servicio.valor_iva_habitacion)
+            iva_nuevo = int(servicio.impuestos)
             valor_habitacion_nuevo = int(servicio.valor_habitacion)
-            valor_comision_nuevo = int(servicio.comision)
             valor_total_nuevo = int(servicio.valor_total)
             valor_servicio_nuevo = int(servicio.valor_servicio)
 
@@ -346,23 +344,17 @@ class HabitacionServicesTests(BaseTestsApi):
             self.assertEqual(valor_total_nuevo - valor_total_anterior, diferencia_valor)
             self.assertEqual(iva_nuevo, int(habitacion_nueva.tipo.impuesto))
             self.assertEqual(iva_anterior, int(habitacion_anterior.tipo.impuesto))
-            self.assertEqual(valor_habitacion_anterior,
-                             int(habitacion_anterior.tipo.valor_antes_impuestos - habitacion_anterior.tipo.comision))
-            self.assertEqual(valor_habitacion_nuevo,
-                             int(habitacion_nueva.tipo.valor_antes_impuestos - habitacion_nueva.tipo.comision))
-            self.assertEqual(valor_comision_anterior, habitacion_anterior.tipo.comision)
-            self.assertEqual(valor_comision_nuevo, habitacion_nueva.tipo.comision)
+            self.assertEqual(valor_habitacion_anterior, int(habitacion_anterior.tipo.valor_antes_impuestos))
+            self.assertEqual(valor_habitacion_nuevo, int(habitacion_nueva.tipo.valor_antes_impuestos))
 
         for servicio in servicios_acompanante_2:
-            iva_anterior = int(servicio.valor_iva_habitacion)
+            iva_anterior = int(servicio.impuestos)
             valor_habitacion_anterior = int(servicio.valor_habitacion)
-            valor_comision_anterior = int(servicio.comision)
             valor_servicio_anterior = int(servicio.valor_servicio)
             valor_total_anterior = int(servicio.valor_total)
             servicio.refresh_from_db()
-            iva_nuevo = int(servicio.valor_iva_habitacion)
+            iva_nuevo = int(servicio.impuestos)
             valor_habitacion_nuevo = int(servicio.valor_habitacion)
-            valor_comision_nuevo = int(servicio.comision)
             valor_total_nuevo = int(servicio.valor_total)
             valor_servicio_nuevo = int(servicio.valor_servicio)
 
@@ -370,12 +362,8 @@ class HabitacionServicesTests(BaseTestsApi):
             self.assertEqual(valor_total_nuevo - valor_total_anterior, diferencia_valor)
             self.assertEqual(iva_nuevo, int(habitacion_nueva.tipo.impuesto))
             self.assertEqual(iva_anterior, int(habitacion_anterior.tipo.impuesto))
-            self.assertEqual(valor_habitacion_anterior,
-                             int(habitacion_anterior.tipo.valor_antes_impuestos - habitacion_anterior.tipo.comision))
-            self.assertEqual(valor_habitacion_nuevo,
-                             int(habitacion_nueva.tipo.valor_antes_impuestos - habitacion_nueva.tipo.comision))
-            self.assertEqual(valor_comision_anterior, habitacion_anterior.tipo.comision)
-            self.assertEqual(valor_comision_nuevo, habitacion_nueva.tipo.comision)
+            self.assertEqual(valor_habitacion_anterior, int(habitacion_anterior.tipo.valor_antes_impuestos))
+            self.assertEqual(valor_habitacion_nuevo, int(habitacion_nueva.tipo.valor_antes_impuestos))
 
         self.assertTrue(habitacion_anterior.estado == 2)
         self.assertTrue(habitacion_nueva.estado == 1)
@@ -389,73 +377,10 @@ class HabitacionServicesTests(BaseTestsApi):
         habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=self.habitacion.tipo, estado=0)
         self.habitacion_cambiar_de_habitacion_igual_tarifa(self.habitacion, habitacion_nueva_igual_tarifa)
 
-    def test_habitacion_cambiar_de_habitacion_igual_tarifa_comision_en_ambas(self):
-        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=self.tipo_habitacion_uno, estado=0)
-        servicios = self.habitacion_cambiar_de_habitacion_igual_tarifa(
-            self.habitacion,
-            habitacion_nueva_igual_tarifa,
-            comision=1000
-        )
-        servicios_acompanante_1 = servicios['acompanante_1']['servicios']
-        servicios_acompanante_2 = servicios['acompanante_2']['servicios']
-
-        for servicio in servicios_acompanante_1:
-            self.assertEqual(servicio.comision, 1000)
-
-        for servicio in servicios_acompanante_2:
-            self.assertEqual(servicio.comision, 1000)
-
-    def test_habitacion_cambiar_de_habitacion_igual_tarifa_comision_en_inicial(self):
-        from ..factories import TipoHabitacionFactory
-        tipo_habitacion_sin_comision = TipoHabitacionFactory(
-            valor=self.tipo_habitacion_uno.valor,
-            porcentaje_impuesto=self.tipo_habitacion_uno.porcentaje_impuesto
-        )
-
-        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=tipo_habitacion_sin_comision, estado=0)
-
-        servicios = self.habitacion_cambiar_de_habitacion_igual_tarifa(
-            self.habitacion,
-            habitacion_nueva_igual_tarifa,
-            comision=1000
-        )
-        servicios_acompanante_1 = servicios['acompanante_1']['servicios']
-        servicios_acompanante_2 = servicios['acompanante_2']['servicios']
-
-        for servicio in servicios_acompanante_1:
-            self.assertEqual(servicio.comision, 0)
-
-        for servicio in servicios_acompanante_2:
-            self.assertEqual(servicio.comision, 0)
-
-    def test_habitacion_cambiar_de_habitacion_igual_tarifa_comision_en_nueva(self):
-        from ..factories import TipoHabitacionFactory
-        tipo_habitacion_con_comision = TipoHabitacionFactory(
-            valor=self.tipo_habitacion_uno.valor,
-            porcentaje_impuesto=self.tipo_habitacion_uno.porcentaje_impuesto,
-            comision=1000
-        )
-        habitacion_nueva_igual_tarifa = HabitacionFactory(tipo=tipo_habitacion_con_comision, estado=0)
-
-        servicios = self.habitacion_cambiar_de_habitacion_igual_tarifa(
-            self.habitacion,
-            habitacion_nueva_igual_tarifa,
-            comision=0
-        )
-        servicios_acompanante_1 = servicios['acompanante_1']['servicios']
-        servicios_acompanante_2 = servicios['acompanante_2']['servicios']
-
-        for servicio in servicios_acompanante_1:
-            self.assertEqual(servicio.comision, 1000)
-
-        for servicio in servicios_acompanante_2:
-            self.assertEqual(servicio.comision, 1000)
-
     def habitacion_cambiar_de_habitacion_mayor_tarifa(
             self,
             habitacion_inicial,
-            habitacion_nueva_mayor_tarifa,
-            comision=0
+            habitacion_nueva_mayor_tarifa
     ):
         from ..services import habitacion_cambiar_servicios_de_habitacion
 
@@ -466,8 +391,7 @@ class HabitacionServicesTests(BaseTestsApi):
             terminados=True,
             iniciados=True,
             nro_servicios=5,
-            acompanante_dos=self.acompanante_dos,
-            comision=comision
+            acompanante_dos=self.acompanante_dos
         )
         array_servicios_acompanante_1 = servicios['acompanante_1']['array_servicios']
         array_servicios_acompanante_2 = servicios['acompanante_2']['array_servicios']
@@ -503,15 +427,13 @@ class HabitacionServicesTests(BaseTestsApi):
         )
 
         for servicio in servicios_acompanante_1:
-            iva_anterior = int(servicio.valor_iva_habitacion)
+            iva_anterior = int(servicio.impuestos)
             valor_habitacion_anterior = int(servicio.valor_habitacion)
-            valor_comision_anterior = int(servicio.comision)
             valor_servicio_anterior = int(servicio.valor_servicio)
             valor_total_anterior = int(servicio.valor_total)
             servicio.refresh_from_db()
-            iva_nuevo = int(servicio.valor_iva_habitacion)
+            iva_nuevo = int(servicio.impuestos)
             valor_habitacion_nuevo = int(servicio.valor_habitacion)
-            valor_comision_nuevo = int(servicio.comision)
             valor_total_nuevo = int(servicio.valor_total)
             valor_servicio_nuevo = int(servicio.valor_servicio)
 
@@ -519,23 +441,17 @@ class HabitacionServicesTests(BaseTestsApi):
             self.assertEqual(valor_total_nuevo - valor_total_anterior, diferencia_valor)
             self.assertEqual(iva_nuevo, int(habitacion_nueva.tipo.impuesto))
             self.assertEqual(iva_anterior, int(habitacion_anterior.tipo.impuesto))
-            self.assertEqual(valor_habitacion_anterior,
-                             int(habitacion_anterior.tipo.valor_antes_impuestos - habitacion_anterior.tipo.comision))
-            self.assertEqual(valor_habitacion_nuevo,
-                             int(habitacion_nueva.tipo.valor_antes_impuestos - habitacion_nueva.tipo.comision))
-            self.assertEqual(valor_comision_anterior, habitacion_anterior.tipo.comision)
-            self.assertEqual(valor_comision_nuevo, habitacion_nueva.tipo.comision)
+            self.assertEqual(valor_habitacion_anterior, int(habitacion_anterior.tipo.valor_antes_impuestos))
+            self.assertEqual(valor_habitacion_nuevo, int(habitacion_nueva.tipo.valor_antes_impuestos))
 
         for servicio in servicios_acompanante_2:
-            iva_anterior = int(servicio.valor_iva_habitacion)
+            iva_anterior = int(servicio.impuestos)
             valor_habitacion_anterior = int(servicio.valor_habitacion)
-            valor_comision_anterior = int(servicio.comision)
             valor_servicio_anterior = int(servicio.valor_servicio)
             valor_total_anterior = int(servicio.valor_total)
             servicio.refresh_from_db()
-            iva_nuevo = int(servicio.valor_iva_habitacion)
+            iva_nuevo = int(servicio.impuestos)
             valor_habitacion_nuevo = int(servicio.valor_habitacion)
-            valor_comision_nuevo = int(servicio.comision)
             valor_total_nuevo = int(servicio.valor_total)
             valor_servicio_nuevo = int(servicio.valor_servicio)
 
@@ -543,12 +459,8 @@ class HabitacionServicesTests(BaseTestsApi):
             self.assertEqual(valor_total_nuevo - valor_total_anterior, diferencia_valor)
             self.assertEqual(iva_nuevo, int(habitacion_nueva.tipo.impuesto))
             self.assertEqual(iva_anterior, int(habitacion_anterior.tipo.impuesto))
-            self.assertEqual(valor_habitacion_anterior,
-                             int(habitacion_anterior.tipo.valor_antes_impuestos - habitacion_anterior.tipo.comision))
-            self.assertEqual(valor_habitacion_nuevo,
-                             int(habitacion_nueva.tipo.valor_antes_impuestos - habitacion_nueva.tipo.comision))
-            self.assertEqual(valor_comision_anterior, habitacion_anterior.tipo.comision)
-            self.assertEqual(valor_comision_nuevo, habitacion_nueva.tipo.comision)
+            self.assertEqual(valor_habitacion_anterior, int(habitacion_anterior.tipo.valor_antes_impuestos))
+            self.assertEqual(valor_habitacion_nuevo, int(habitacion_nueva.tipo.valor_antes_impuestos))
 
         self.assertTrue(habitacion_anterior.estado == 2)
         self.assertTrue(habitacion_nueva.estado == 1)
@@ -566,62 +478,10 @@ class HabitacionServicesTests(BaseTestsApi):
     def test_habitacion_cambiar_de_habitacion_mayor_tarifa(self):
         self.habitacion_cambiar_de_habitacion_mayor_tarifa(self.habitacion, self.habitacion_dos)
 
-    def test_habitacion_cambiar_de_habitacion_mayor_tarifa_comision_en_inicial(self):
-        servicios = self.habitacion_cambiar_de_habitacion_mayor_tarifa(
-            self.habitacion,
-            self.habitacion_dos,
-            comision=1000
-        )
-        servicios_acompanante_1 = servicios['acompanante_1']['servicios']
-        servicios_acompanante_2 = servicios['acompanante_2']['servicios']
-
-        for servicio in servicios_acompanante_1:
-            self.assertEqual(servicio.comision, 0)
-
-        for servicio in servicios_acompanante_2:
-            self.assertEqual(servicio.comision, 0)
-
-    def test_habitacion_cambiar_de_habitacion_mayor_tarifa_comision_en_nueva(self):
-        self.tipo_habitacion_dos.comision = 1000
-        self.tipo_habitacion_dos.save()
-        servicios = self.habitacion_cambiar_de_habitacion_mayor_tarifa(
-            self.habitacion,
-            self.habitacion_dos,
-        )
-        servicios_acompanante_1 = servicios['acompanante_1']['servicios']
-        servicios_acompanante_2 = servicios['acompanante_2']['servicios']
-
-        for servicio in servicios_acompanante_1:
-            self.assertEqual(servicio.comision, 1000)
-
-        for servicio in servicios_acompanante_2:
-            self.assertEqual(servicio.comision, 1000)
-
-    def test_habitacion_cambiar_de_habitacion_mayor_tarifa_comision_en_ambas(self):
-        self.tipo_habitacion_dos.comision = 1000
-        self.tipo_habitacion_dos.save()
-
-        self.tipo_habitacion_dos.comision = 1000
-        self.tipo_habitacion_dos.save()
-        servicios = self.habitacion_cambiar_de_habitacion_mayor_tarifa(
-            self.habitacion,
-            self.habitacion_dos,
-            comision=1000
-        )
-        servicios_acompanante_1 = servicios['acompanante_1']['servicios']
-        servicios_acompanante_2 = servicios['acompanante_2']['servicios']
-
-        for servicio in servicios_acompanante_1:
-            self.assertEqual(servicio.comision, 1000)
-
-        for servicio in servicios_acompanante_2:
-            self.assertEqual(servicio.comision, 1000)
-
     def habitacion_cambiar_de_habitacion_menor_tarifa(
             self,
             habitacion_inicial,
-            habitacion_nueva_menor_tarifa,
-            comision=0
+            habitacion_nueva_menor_tarifa
     ):
         from ..services import habitacion_cambiar_servicios_de_habitacion
         servicios = self.hacer_servicios_dos(
@@ -631,8 +491,7 @@ class HabitacionServicesTests(BaseTestsApi):
             terminados=True,
             iniciados=True,
             nro_servicios=5,
-            acompanante_dos=self.acompanante_dos,
-            comision=comision
+            acompanante_dos=self.acompanante_dos
         )
         array_servicios_acompanante_1 = servicios['acompanante_1']['array_servicios']
         array_servicios_acompanante_2 = servicios['acompanante_2']['array_servicios']
@@ -668,15 +527,13 @@ class HabitacionServicesTests(BaseTestsApi):
         )
 
         for servicio in servicios_acompanante_1:
-            iva_anterior = int(servicio.valor_iva_habitacion)
+            iva_anterior = int(servicio.impuestos)
             valor_habitacion_anterior = int(servicio.valor_habitacion)
-            valor_comision_anterior = int(servicio.comision)
             valor_servicio_anterior = int(servicio.valor_servicio)
             valor_total_anterior = int(servicio.valor_total)
             servicio.refresh_from_db()
-            iva_nuevo = int(servicio.valor_iva_habitacion)
+            iva_nuevo = int(servicio.impuestos)
             valor_habitacion_nuevo = int(servicio.valor_habitacion)
-            valor_comision_nuevo = int(servicio.comision)
             valor_total_nuevo = int(servicio.valor_total)
             valor_servicio_nuevo = int(servicio.valor_servicio)
 
@@ -684,23 +541,17 @@ class HabitacionServicesTests(BaseTestsApi):
             self.assertEqual(valor_total_anterior - valor_total_nuevo, diferencia_valor)
             self.assertEqual(iva_nuevo, int(habitacion_nueva.tipo.impuesto))
             self.assertEqual(iva_anterior, int(habitacion_anterior.tipo.impuesto))
-            self.assertEqual(valor_habitacion_anterior,
-                             int(habitacion_anterior.tipo.valor_antes_impuestos - habitacion_anterior.tipo.comision))
-            self.assertEqual(valor_habitacion_nuevo,
-                             int(habitacion_nueva.tipo.valor_antes_impuestos - habitacion_nueva.tipo.comision))
-            self.assertEqual(valor_comision_anterior, habitacion_anterior.tipo.comision)
-            self.assertEqual(valor_comision_nuevo, habitacion_nueva.tipo.comision)
+            self.assertEqual(valor_habitacion_anterior, int(habitacion_anterior.tipo.valor_antes_impuestos))
+            self.assertEqual(valor_habitacion_nuevo, int(habitacion_nueva.tipo.valor_antes_impuestos))
 
         for servicio in servicios_acompanante_2:
-            iva_anterior = int(servicio.valor_iva_habitacion)
+            iva_anterior = int(servicio.impuestos)
             valor_habitacion_anterior = int(servicio.valor_habitacion)
-            valor_comision_anterior = int(servicio.comision)
             valor_servicio_anterior = int(servicio.valor_servicio)
             valor_total_anterior = int(servicio.valor_total)
             servicio.refresh_from_db()
-            iva_nuevo = int(servicio.valor_iva_habitacion)
+            iva_nuevo = int(servicio.impuestos)
             valor_habitacion_nuevo = int(servicio.valor_habitacion)
-            valor_comision_nuevo = int(servicio.comision)
             valor_total_nuevo = int(servicio.valor_total)
             valor_servicio_nuevo = int(servicio.valor_servicio)
 
@@ -708,12 +559,8 @@ class HabitacionServicesTests(BaseTestsApi):
             self.assertEqual(valor_total_anterior - valor_total_nuevo, diferencia_valor)
             self.assertEqual(iva_nuevo, int(habitacion_nueva.tipo.impuesto))
             self.assertEqual(iva_anterior, int(habitacion_anterior.tipo.impuesto))
-            self.assertEqual(valor_habitacion_anterior,
-                             int(habitacion_anterior.tipo.valor_antes_impuestos - habitacion_anterior.tipo.comision))
-            self.assertEqual(valor_habitacion_nuevo,
-                             int(habitacion_nueva.tipo.valor_antes_impuestos - habitacion_nueva.tipo.comision))
-            self.assertEqual(valor_comision_anterior, habitacion_anterior.tipo.comision)
-            self.assertEqual(valor_comision_nuevo, habitacion_nueva.tipo.comision)
+            self.assertEqual(valor_habitacion_anterior, int(habitacion_anterior.tipo.valor_antes_impuestos))
+            self.assertEqual(valor_habitacion_nuevo, int(habitacion_nueva.tipo.valor_antes_impuestos))
 
         self.assertTrue(habitacion_anterior.estado == 2)
         self.assertTrue(habitacion_nueva.estado == 1)
@@ -729,56 +576,6 @@ class HabitacionServicesTests(BaseTestsApi):
 
     def test_habitacion_cambiar_de_habitacion_menor_tarifa(self):
         self.habitacion_cambiar_de_habitacion_menor_tarifa(self.habitacion_dos, self.habitacion)
-
-    def test_habitacion_cambiar_de_habitacion_menor_tarifa_comision_en_inicial(self):
-        servicios = self.habitacion_cambiar_de_habitacion_menor_tarifa(
-            self.habitacion_dos,
-            self.habitacion,
-            comision=1000
-        )
-        servicios_acompanante_1 = servicios['acompanante_1']['servicios']
-        servicios_acompanante_2 = servicios['acompanante_2']['servicios']
-
-        for servicio in servicios_acompanante_1:
-            self.assertEqual(servicio.comision, 0)
-
-        for servicio in servicios_acompanante_2:
-            self.assertEqual(servicio.comision, 0)
-
-    def test_habitacion_cambiar_de_habitacion_menor_tarifa_comision_en_nueva(self):
-        self.tipo_habitacion_uno.comision = 1000
-        self.tipo_habitacion_uno.save()
-
-        servicios = self.habitacion_cambiar_de_habitacion_menor_tarifa(
-            self.habitacion_dos,
-            self.habitacion
-        )
-        servicios_acompanante_1 = servicios['acompanante_1']['servicios']
-        servicios_acompanante_2 = servicios['acompanante_2']['servicios']
-
-        for servicio in servicios_acompanante_1:
-            self.assertEqual(servicio.comision, 1000)
-
-        for servicio in servicios_acompanante_2:
-            self.assertEqual(servicio.comision, 1000)
-
-    def test_habitacion_cambiar_de_habitacion_menor_tarifa_comision_en_ambas(self):
-        self.tipo_habitacion_uno.comision = 1000
-        self.tipo_habitacion_uno.save()
-        servicios = self.habitacion_cambiar_de_habitacion_menor_tarifa(
-            self.habitacion_dos,
-            self.habitacion,
-            comision=1000
-        )
-
-        servicios_acompanante_1 = servicios['acompanante_1']['servicios']
-        servicios_acompanante_2 = servicios['acompanante_2']['servicios']
-
-        for servicio in servicios_acompanante_1:
-            self.assertEqual(servicio.comision, 1000)
-
-        for servicio in servicios_acompanante_2:
-            self.assertEqual(servicio.comision, 1000)
 
     def test_habitacion_cambiar_de_habitacion_solo_punto_venta_abierto(self):
         from ..services import habitacion_cambiar_servicios_de_habitacion

@@ -86,7 +86,6 @@ class ManagerCuentaTests(BaseTest):
             habitacion=self.habitacion,
             acompanante_dos=self.acompanante_dos,
             punto_venta=self.punto_venta,
-            comision=1000,
             terminados=True,
             iniciados=True,
             nro_servicios=5
@@ -94,11 +93,9 @@ class ManagerCuentaTests(BaseTest):
 
         cuenta = qs_cuenta.sin_liquidar().first()
 
-        ingresos_por_comisiones = valores_servicios_totales['acompanante_1']['comision']
         ingresos_por_servicios = valores_servicios_totales['acompanante_1']['valor_servicio']
 
         self.assertEqual(ingresos_por_servicios, cuenta.cxp_por_servicios)
-        self.assertEqual(ingresos_por_comisiones, cuenta.cxp_por_comisiones_habitacion)
 
         venta, informacion = self.hacer_venta_productos_dos(
             cliente=self.acompanante,
@@ -119,7 +116,7 @@ class ManagerCuentaTests(BaseTest):
         self.assertEqual(valor_ingresos, cuenta.cxp_por_operaciones_caja)
         self.assertEqual(valor_egresos, cuenta.cxc_por_operaciones_caja)
 
-        self.assertEqual(valor_ingresos + ingresos_por_comisiones + ingresos_por_servicios, cuenta.cxp_total)
+        self.assertEqual(valor_ingresos + ingresos_por_servicios, cuenta.cxp_total)
         self.assertEqual(valor_egresos + valor_compra_productos, cuenta.cxc_total)
 
         cuenta.liquidada = True
@@ -148,7 +145,6 @@ class ManagerCuentaTests(BaseTest):
             acompanante=self.acompanante_dos,
             habitacion=self.habitacion,
             punto_venta=self.punto_venta,
-            comision=1000,
             terminados=True,
             iniciados=True,
             nro_servicios=5
@@ -165,7 +161,7 @@ class ManagerCuentaTests(BaseTest):
         self.assertEqual(valor_compra_productos, cuenta.cxc_por_compras_productos)
         self.assertEqual(valor_ingresos, cuenta.cxp_por_operaciones_caja)
         self.assertEqual(valor_egresos, cuenta.cxc_por_operaciones_caja)
-        self.assertEqual(valor_ingresos + ingresos_por_comisiones + ingresos_por_servicios, cuenta.cxp_total)
+        self.assertEqual(valor_ingresos + ingresos_por_servicios, cuenta.cxp_total)
         self.assertEqual(valor_egresos + valor_compra_productos, cuenta.cxc_total)
 
     def test_cuentas_meseros(self):

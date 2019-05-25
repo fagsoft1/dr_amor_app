@@ -22,7 +22,6 @@ class ServicioTestsApi(BaseTestsApi):
             acompanante=self.acompanante,
             acompanante_dos=self.acompanante_dos,
             acompanante_tres=self.acompanante_tres,
-            comision=0,
             nro_servicios=5,
             terminados=True
         )
@@ -43,7 +42,6 @@ class ServicioTestsApi(BaseTestsApi):
             habitacion=self.habitacion,
             punto_venta=self.punto_venta,
             acompanante=self.acompanante,
-            comision=0,
             nro_servicios=3,
             terminados=False
         )
@@ -102,8 +100,8 @@ class ServicioTestsApi(BaseTestsApi):
             servicio_id=servicio.id,
             usuario_pdv_id=self.punto_venta.usuario_actual.id
         )
-        valor_esperado_anterior_servicio = self.categoria_fraccion_tiempo_30.valor
-        valor_esperado_nuevo_servicio = self.categoria_fraccion_tiempo_60.valor
+        valor_esperado_anterior_servicio = self.categoria_fraccion_tiempo_30.valor + self.habitacion.tipo.valor_adicional_servicio
+        valor_esperado_nuevo_servicio = self.categoria_fraccion_tiempo_60.valor + self.habitacion.tipo.valor_adicional_servicio
         valor_a_pagar_esperado = valor_esperado_nuevo_servicio - valor_esperado_anterior_servicio
 
         usuario_cajero = self.colaborador_cajero.usuario

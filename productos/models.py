@@ -3,6 +3,7 @@ from model_utils.models import TimeStampedModel
 
 from empresas.models import Empresa
 from terceros.models import Cuenta
+from contabilidad_impuestos.models import Impuesto
 
 
 class UnidadProducto(models.Model):
@@ -43,6 +44,7 @@ class Producto(models.Model):
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
     comision = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     activo = models.BooleanField(default=True)
+    impuestos = models.ManyToManyField(Impuesto, related_name='productos')
 
     class Meta:
         permissions = [

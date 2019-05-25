@@ -9,9 +9,11 @@ class DiarioContable(models.Model):
         ('Compra', 'Compra'),
         ('Efectivo', 'Efectivo'),
         ('Banco', 'Banco'),
+        ('General', 'General'),
     )
     nombre = models.CharField(max_length=300)
     codigo = models.CharField(max_length=4)
+    tipo = models.CharField(choices=TIPO_CHOICES, default='General', max_length=120)
     cuenta_debito_defecto = models.ForeignKey(
         CuentaContable,
         on_delete=models.PROTECT,
@@ -27,10 +29,17 @@ class DiarioContable(models.Model):
     banco = models.ForeignKey(
         Banco,
         on_delete=models.PROTECT,
-        related_name='diarios_contables'
+        related_name='diarios_contables',
+        null=True
     )
     cuenta_bancaria = models.ForeignKey(
         CuentaBancariaBanco,
         on_delete=models.PROTECT,
-        related_name='diarios_contables'
+        related_name='diarios_contables',
+        null=True
     )
+
+    class Meta:
+        permissions = [
+            ['list_diariocontable', 'Puede listar Diarios Contables'],
+        ]

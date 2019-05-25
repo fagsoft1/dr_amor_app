@@ -46,13 +46,13 @@ class List extends Component {
         return (
             <Fragment>
                 <CRUD
+                    {...this.props}
                     method_pool={method_pool}
                     list={object_list}
                     posCreateMethod={(res) => this.props.history.push(`/app/admin/inventarios/traslados/detail/${res.id}`)}
                     permisos_object={permisos_object}
                     plural_name='Traslados Inventarios'
                     singular_name='Traslado Inventario'
-                    {...this.props}
                 />
                 <CargarDatos
                     cargarDatos={this.cargarDatos}

@@ -7,6 +7,7 @@ from .models import (
 
 class DiarioContableSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
+    tipo_nombre = serializers.SerializerMethodField()
     cuenta_debito_defecto_nombre = serializers.CharField(source='cuenta_debito_defecto.nombre', read_only=True)
     cuenta_credito_defecto_nombre = serializers.CharField(source='cuenta_credito_defecto.nombre', read_only=True)
     banco_nombre = serializers.CharField(source='banco.nombre', read_only=True)
@@ -14,6 +15,9 @@ class DiarioContableSerializer(serializers.ModelSerializer):
 
     def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
+
+    def get_tipo_nombre(self, instance):  # pragma: no cover
+        return instance.get_tipo_display()
 
     class Meta:
         model = DiarioContable
@@ -23,6 +27,8 @@ class DiarioContableSerializer(serializers.ModelSerializer):
             'to_string',
             'nombre',
             'codigo',
+            'tipo',
+            'tipo_nombre',
             'cuenta_debito_defecto',
             'cuenta_debito_defecto_nombre',
             'cuenta_credito_defecto',

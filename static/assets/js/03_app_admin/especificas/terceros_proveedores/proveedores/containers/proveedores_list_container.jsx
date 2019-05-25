@@ -34,9 +34,9 @@ class List extends Component {
         return (
             <Fragment>
                 <ListCrud
+                    {...this.props}
                     object_list={object_list}
                     permisos_object={bloque_1_list}
-                    {...this.props}
                 />
                 <CargarDatos
                     cargarDatos={this.cargarDatos}

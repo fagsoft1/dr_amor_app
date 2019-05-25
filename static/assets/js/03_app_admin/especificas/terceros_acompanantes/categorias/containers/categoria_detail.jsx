@@ -50,10 +50,10 @@ class Detail extends Component {
                     Detalle {object.nombre}
                 </Typography>
                 <ListCrud
+                    {...this.props}
                     object_list={categorias_fracciones_tiempo_list}
                     fracciones_tiempo_list={fracciones_tiempo_list}
                     permisos_object={permisos}
-                    {...this.props}
                 />
                 <CargarDatos cargarDatos={this.cargarDatos}/>
                 <Link to={`/app/admin/usuarios/acompanantes/dashboard`}>

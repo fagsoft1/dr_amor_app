@@ -93,13 +93,13 @@ class List extends Component {
         return (
             <Fragment>
                 <CRUD
+                    {...this.props}
                     method_pool={method_pool}
                     list={object_list}
                     permisos_object={permisos_object}
                     plural_name='Grupos Permisos'
                     singular_name='Grupo Permiso'
                     onSelectItemDetail={this.onSelectItemDetail}
-                    {...this.props}
                 />
                 {
                     grupo_seleccionado &&

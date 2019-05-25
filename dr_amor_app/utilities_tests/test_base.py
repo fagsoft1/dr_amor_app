@@ -37,18 +37,17 @@ class BaseTest(TestCase):
         self.empresa = EmpresaFactory()
 
         self.tipo_habitacion_uno = TipoHabitacionFactory(
-            valor=40000,
-            porcentaje_impuesto=19,
+            valor=40000
         )
 
         self.tipo_habitacion_dos = TipoHabitacionFactory(
             valor=60000,
-            porcentaje_impuesto=19,
+            valor_adicional_servicio=0
         )
 
         self.tipo_habitacion_tres = TipoHabitacionFactory(
             valor=35000,
-            porcentaje_impuesto=19,
+            valor_adicional_servicio=5000
         )
 
         self.habitacion = HabitacionFactory(tipo=self.tipo_habitacion_uno)
@@ -423,7 +422,6 @@ class BaseTest(TestCase):
             acompanante,
             habitacion,
             punto_venta,
-            comision=0,
             terminados=False,
             acompanante_dos=None,
             acompanante_tres=None,
@@ -436,7 +434,6 @@ class BaseTest(TestCase):
             habitacion,
             punto_venta,
             terminados=False,
-            comision=comision,
             iniciados=False,
             acompanante_dos=acompanante_dos,
             acompanante_tres=acompanante_tres,
@@ -473,7 +470,6 @@ class BaseTest(TestCase):
             habitacion,
             punto_venta,
             terminados=False,
-            comision=0,
             iniciados=False,
             acompanante_dos=None,
             acompanante_tres=None,
@@ -486,12 +482,10 @@ class BaseTest(TestCase):
             nro_servicios = 3
 
         tipo_habitacion = habitacion.tipo
-        tipo_habitacion.comision = comision
         tipo_habitacion.save()
         valor_totat_todos_los_servicio = 0
         valor_totat_todos_los_ivas = 0
         valor_totat_habitaciones = 0
-        valor_totat_comisiones = 0
 
         array_servicios_1 = []
         array_servicios_2 = []
@@ -513,7 +507,6 @@ class BaseTest(TestCase):
                 'valor_servicio': 0,
                 'valor_habitacion': 0,
                 'valor_iva': 0,
-                'comision': 0,
                 'servicios': [],
                 'array_servicios': [],
                 'array_servicios_iniciar_desde_habitacion': [],
@@ -522,7 +515,6 @@ class BaseTest(TestCase):
                 'valor_servicio': 0,
                 'valor_habitacion': 0,
                 'valor_iva': 0,
-                'comision': 0,
                 'servicios': [],
                 'array_servicios': [],
                 'array_servicios_iniciar_desde_habitacion': [],
@@ -531,7 +523,6 @@ class BaseTest(TestCase):
                 'valor_servicio': 0,
                 'valor_habitacion': 0,
                 'valor_iva': 0,
-                'comision': 0,
                 'servicios': [],
                 'array_servicios': [],
                 'array_servicios_iniciar_desde_habitacion': [],
@@ -561,18 +552,15 @@ class BaseTest(TestCase):
                 }
             )
 
-            valor_iva = servicio.valor_iva_habitacion
+            valor_iva = servicio.impuestos
             valor_habitacion = servicio.valor_habitacion
-            valor_servicio = servicio.valor_servicio
-            comision = servicio.comision
+            valor_servicio = servicio.valor_servicio + habitacion.tipo.valor_adicional_servicio
             valores_totales_servicios['acompanante_1']['valor_servicio'] += valor_servicio
             valores_totales_servicios['acompanante_1']['valor_iva'] += valor_iva
             valores_totales_servicios['acompanante_1']['valor_habitacion'] += valor_habitacion
-            valores_totales_servicios['acompanante_1']['comision'] += comision
             valor_totat_todos_los_servicio += valor_servicio
             valor_totat_habitaciones += valor_habitacion
             valor_totat_todos_los_ivas += valor_iva
-            valor_totat_comisiones += comision
 
             if not terminados and not iniciados:
                 valores_totales_servicios['acompanante_1']['servicios'].append(servicio)
@@ -600,18 +588,15 @@ class BaseTest(TestCase):
                     }
                 )
 
-                valor_iva = servicio.valor_iva_habitacion
+                valor_iva = servicio.impuestos
                 valor_habitacion = servicio.valor_habitacion
-                valor_servicio = servicio.valor_servicio
-                comision = servicio.comision
+                valor_servicio = servicio.valor_servicio + habitacion.tipo.valor_adicional_servicio
                 valores_totales_servicios['acompanante_2']['valor_servicio'] += valor_servicio
                 valores_totales_servicios['acompanante_2']['valor_iva'] += valor_iva
                 valores_totales_servicios['acompanante_2']['valor_habitacion'] += valor_habitacion
-                valores_totales_servicios['acompanante_2']['comision'] += comision
                 valor_totat_todos_los_servicio += valor_servicio
                 valor_totat_habitaciones += valor_habitacion
                 valor_totat_todos_los_ivas += valor_iva
-                valor_totat_comisiones += comision
 
                 if not terminados and not iniciados:
                     valores_totales_servicios['acompanante_2']['servicios'].append(servicio)
@@ -638,18 +623,15 @@ class BaseTest(TestCase):
                     }
                 )
 
-                valor_iva = servicio.valor_iva_habitacion
+                valor_iva = servicio.impuestos
                 valor_habitacion = servicio.valor_habitacion
-                valor_servicio = servicio.valor_servicio
-                comision = servicio.comision
+                valor_servicio = servicio.valor_servicio + habitacion.tipo.valor_adicional_servicio
                 valores_totales_servicios['acompanante_3']['valor_servicio'] += valor_servicio
                 valores_totales_servicios['acompanante_3']['valor_iva'] += valor_iva
                 valores_totales_servicios['acompanante_3']['valor_habitacion'] += valor_habitacion
-                valores_totales_servicios['acompanante_3']['comision'] += comision
                 valor_totat_todos_los_servicio += valor_servicio
                 valor_totat_habitaciones += valor_habitacion
                 valor_totat_todos_los_ivas += valor_iva
-                valor_totat_comisiones += comision
 
                 array_servicios_3.append(servicio.pk)
                 if not terminados and not iniciados:
@@ -693,7 +675,7 @@ class BaseTest(TestCase):
         valores_totales_servicios['valor_totat_habitaciones'] = valor_totat_habitaciones
         valores_totales_servicios['valor_totat_todos_los_ivas'] = valor_totat_todos_los_ivas
         valores_totales_servicios[
-            'valor_total_todos'] = valor_totat_todos_los_ivas + valor_totat_habitaciones + valor_totat_todos_los_servicio + valor_totat_comisiones
+            'valor_total_todos'] = valor_totat_todos_los_ivas + valor_totat_habitaciones + valor_totat_todos_los_servicio
         valores_totales_servicios['array_servicios_iniciar_desde_habitacion'] = array_servicios_iniciar_desde_habitacion
 
         return valores_totales_servicios
@@ -748,7 +730,6 @@ class BaseTest(TestCase):
             acompanante=self.acompanante,
             acompanante_dos=self.acompanante_dos,
             acompanante_tres=self.acompanante_tres,
-            comision=int(random.randrange(1000, 3000)),
             nro_servicios=random.randint(8, 15),
             terminados=True
         )
@@ -761,7 +742,6 @@ class BaseTest(TestCase):
             acompanante=self.acompanante,
             acompanante_dos=self.acompanante_dos,
             acompanante_tres=self.acompanante_tres,
-            comision=int(random.randrange(1000, 3000)),
             nro_servicios=random.randint(8, 15),
             terminados=True
         )
@@ -774,7 +754,6 @@ class BaseTest(TestCase):
             acompanante=self.acompanante,
             acompanante_dos=self.acompanante_dos,
             acompanante_tres=self.acompanante_tres,
-            comision=int(random.randrange(1000, 3000)),
             nro_servicios=random.randint(8, 15),
             terminados=True
         )

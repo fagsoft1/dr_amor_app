@@ -130,9 +130,11 @@ def cuenta_contable_crear_actualizar(
         codigo: str,
         naturaleza: str,
         cuenta_padre_id: int = None,
-        cuenta_contable_id: int = None
+        cuenta_contable_id: int = None,
+        tipo: str = 'T'
 ) -> CuentaContable:
     cuenta_padre = None
+
     if cuenta_padre_id:
         cuenta_padre = CuentaContable.objects.get(pk=cuenta_padre_id)
         if cuenta_padre.tipo == 'D':
@@ -158,6 +160,9 @@ def cuenta_contable_crear_actualizar(
             )
             nivel = cuenta_padre.cuenta_nivel + 1
 
+            if tipo == 'D' and cuenta_padre.tipo == 'D':
+                raise ValidationError({'_error': 'No se puede crear una cuenta detalle dentro de otra detalle'})
+
         cuenta = CuentaContable.objects.create(
             descripcion=descripcion,
             codigo=codigo,
@@ -171,7 +176,7 @@ def cuenta_contable_crear_actualizar(
             cuenta_nivel_6=codigo,
             cuenta_nivel_7=codigo,
             cuenta_nivel_8=codigo,
-            tipo='T',
+            tipo=tipo,
             naturaleza=naturaleza
         )
         cuenta = asignar_codigos_cuentas_niveles(cuenta)
@@ -182,10 +187,22 @@ def cuenta_contable_crear_actualizar(
         coloco_padre = not cuenta.cuenta_padre and cuenta_padre_id
         cambio_padre = cuenta.cuenta_padre and cuenta.cuenta_padre.id != cuenta_padre_id
         cambio_codigo = cuenta.codigo != codigo
+        cambio_tipo = cuenta.tipo != tipo
 
         cuenta.naturaleza = naturaleza
         cuenta.descripcion = descripcion
+        cuenta.tipo = tipo
         cuenta.save()
+
+        if cambio_tipo:
+            if tipo == 'D' and cuenta.cuentas_hijas.exists():
+                raise ValidationError(
+                    {'_error': 'No se puede cambiar a una cuenta tipo detalle si se tiene cuentas internas'}
+                )
+            if tipo == 'T' and cuenta.debe_ser_detalle:
+                raise ValidationError(
+                    {'_error': 'No se puede cambiar de tipo detalle a títulos la cuenta %s' % cuenta.descripcion}
+                )
 
         if quito_padre:
             cuenta_contable_evaluar_codigo_formato(

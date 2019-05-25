@@ -5,7 +5,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
-from .api_serializers import HabitacionSerializer, TipoHabitacionSerializer
+from .api_serializers import HabitacionSerializer, TipoHabitacionSerializer, TipoHabitacionConDetalleSerializer
 from .models import Habitacion, TipoHabitacion
 from servicios.models import Servicio
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
@@ -20,8 +20,29 @@ from .services import (
 
 class TipoHabitacionViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissionsFull]
-    queryset = TipoHabitacion.objects.all()
+    queryset = TipoHabitacion.objects.prefetch_related('impuestos').all()
     serializer_class = TipoHabitacionSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = TipoHabitacionConDetalleSerializer
+        return super().retrieve(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        self.serializer_class = TipoHabitacionConDetalleSerializer
+        return super().update(request, *args, **kwargs)
+
+    @detail_route(methods=['post'])
+    def adicionar_quitar_impuesto(self, request, pk=None):
+        from .services import tipo_habitacion_adicionar_quitar_impuesto
+        tipo_habitacion = self.get_object()
+        impuesto_id = self.request.POST.get('impuesto_id', None)
+        tipo_habitacion = tipo_habitacion_adicionar_quitar_impuesto(
+            tipo_habitacion_id=tipo_habitacion.id,
+            impuesto_id=impuesto_id
+        )
+        self.serializer_class = TipoHabitacionConDetalleSerializer
+        serializer = self.get_serializer(tipo_habitacion)
+        return Response(serializer.data)
 
 
 class HabitacionViewSet(viewsets.ModelViewSet):

@@ -3,9 +3,9 @@ import {Route, Switch} from 'react-router-dom';
 import Loading from '../00_utilities/components/system/loading_overlay';
 import DrawerMenu from '../00_utilities/components/ui/drawer/drawer_menu';
 
-import PuntoVenta from "./tienda/containers/punto_venta_tienda";
+import PuntoVenta from "./tienda/containers/PuntoVentaTienda";
 import Menu from "./00_menu/index";
-import DashboarInventarios from "./inventarios/containers/dashboard";
+import DashboarInventarios from "./inventarios/containers/InventarioTiendaDashboard";
 
 const AdminApp = () => {
     return (

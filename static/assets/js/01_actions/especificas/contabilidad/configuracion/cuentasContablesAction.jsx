@@ -40,6 +40,20 @@ export const fetchCuentasContables = (options_action = {}) => {
         return fetchListGet(current_url_api, options);
     }
 };
+export const fetchCuentasContablesDetalles = (options_action = {}) => {
+    return (dispatch) => {
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch_all, payload: response})
+        };
+        const {limpiar_coleccion = true} = options_action;
+        const options = {
+            dispatches, ...options_action,
+            dispatch_method: dispatch,
+            clear_action_type: limpiar_coleccion ? TYPES.clear : null
+        };
+        return fetchListGet(`${current_url_api}/cuentas_detalles`, options);
+    }
+};
 export const fetchCuentaContable = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {

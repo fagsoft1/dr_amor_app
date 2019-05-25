@@ -42,7 +42,6 @@ export * from './contabilidad/configuracion/diariosContablesAction';
 export * from './contabilidad/configuracion/cuentasBancariasAction';
 export * from './contabilidad/configuracion/bancosAction';
 export * from './contabilidad/configuracion/impuestosAction';
-export * from './contabilidad/configuracion/impuestosGruposAction';
 
 export * from './contabilidad/contabilidad/apuntesContablesAction';
 export * from './contabilidad/contabilidad/asientosContablesAction';

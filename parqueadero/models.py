@@ -5,11 +5,13 @@ from django.db import models
 from empresas.models import Empresa
 from model_utils.models import TimeStampedModel
 from puntos_venta.models import PuntoVentaTurno
+from contabilidad_impuestos.models import Impuesto
 
 
 class TipoVehiculo(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT)
     nombre = models.CharField(max_length=120, unique=True)
+    impuestos = models.ManyToManyField(Impuesto, related_name='tipos_vehiculos')
     porcentaje_iva = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     valor_impuesto_unico = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tiene_placa = models.BooleanField(default=False)

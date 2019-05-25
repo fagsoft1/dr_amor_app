@@ -43,12 +43,12 @@ class List extends Component {
         return (
             <Fragment>
                 <CRUD
+                    {...this.props}
                     method_pool={method_pool}
                     list={object_list}
                     permisos_object={permisos}
                     plural_name='Conceptos Operaciones Cajas'
                     singular_name='Concepto Operación Caja'
-                    {...this.props}
                 />
                 <CargarDatos
                     cargarDatos={this.cargarDatos}

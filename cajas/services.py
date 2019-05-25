@@ -239,7 +239,7 @@ def transaccion_caja_registrar_cambio_tiempo_servicio_menor_tiempo(
     servicio = Servicio.objects.get(pk=servicio_id)
     categoria_fraccion_tiempo = CategoriaFraccionTiempo.objects.get(id=categoria_fraccion_tiempo_nueva_id)
     minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
-    valor_nuevo = categoria_fraccion_tiempo.valor
+    valor_nuevo = categoria_fraccion_tiempo.valor + servicio.habitacion.tipo.valor_adicional_servicio
     diferencia = valor_nuevo - servicio.valor_servicio
 
     turno_punto_venta = User.objects.get(pk=usuario_pdv_id).tercero.turno_punto_venta_abierto
@@ -286,7 +286,7 @@ def transaccion_caja_registrar_cambio_tiempo_servicio_mayor_tiempo(
     servicio = Servicio.objects.get(pk=servicio_id)
     categoria_fraccion_tiempo = CategoriaFraccionTiempo.objects.get(id=categoria_fraccion_tiempo_nueva_id)
     minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
-    valor_nuevo = categoria_fraccion_tiempo.valor
+    valor_nuevo = categoria_fraccion_tiempo.valor + servicio.habitacion.tipo.valor_adicional_servicio
     diferencia = valor_nuevo - servicio.valor_servicio
 
     turno_punto_venta = User.objects.get(pk=usuario_pdv_id).tercero.turno_punto_venta_abierto
@@ -352,7 +352,7 @@ def transaccion_caja_registrar_pago_nuevos_servicios_habitacion(
     servicios = Servicio.objects.filter(id__in=array_servicios_id)
     transaccion.servicios.set(servicios)
     valor_total = transaccion.servicios.aggregate(
-        valor=Coalesce(Sum(F('valor_habitacion') + F('valor_servicio') + F('valor_iva_habitacion') + F('comision')),0)
+        valor=Coalesce(Sum(F('valor_habitacion') + F('valor_servicio') + F('impuestos')), 0)
     )['valor']
 
     if int(valor_tarjeta + valor_efectivo) != int(valor_total):

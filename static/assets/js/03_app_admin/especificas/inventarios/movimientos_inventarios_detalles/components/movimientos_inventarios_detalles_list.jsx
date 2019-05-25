@@ -33,6 +33,7 @@ class List extends Component {
         const {object_list, permisos_object} = this.props;
         return (
             <CRUD
+                {...this.props}
                 posDeleteMethod={this.posDeleteMethod}
                 posSummitMethod={this.posSummitMethod}
                 method_pool={this.method_pool}
@@ -40,7 +41,6 @@ class List extends Component {
                 permisos_object={permisos_object}
                 plural_name={this.plural_name}
                 singular_name={this.singular_name}
-                {...this.props}
             />
         )
     }

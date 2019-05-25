@@ -4,7 +4,7 @@ import Loading from '../00_utilities/components/system/loading_overlay';
 import DrawerMenu from '../00_utilities/components/ui/drawer/drawer_menu';
 
 import Menu from "./00_menu/index";
-import DashboardParqueadero from "./parqueadero/dashboard/containers/parqueadero_dashboard";
+import DashboardParqueadero from "./parqueadero/dashboard/containers/ParqueaderoDashboard";
 
 const AdminApp = () => {
     return (

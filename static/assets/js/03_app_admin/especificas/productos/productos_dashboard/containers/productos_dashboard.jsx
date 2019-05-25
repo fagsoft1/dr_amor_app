@@ -106,9 +106,9 @@ class ListadoElementos extends Component {
                         {
                             this.state.slideIndex === 0 &&
                             <BloqueProductos
+                                {...this.props}
                                 object_list={bloque_1_list}
                                 permisos_object={permisos_object_1}
-                                {...this.props}
                                 categorias_dos_list={bloque_3_list}
                                 unidades_list={bloque_4_list}
                             />
@@ -116,26 +116,26 @@ class ListadoElementos extends Component {
                         {
                             this.state.slideIndex === 1 &&
                             <BloqueCategorias
+                                {...this.props}
                                 object_list={bloque_2_list}
                                 permisos_object={permisos_object_2}
-                                {...this.props}
                             />
                         }
                         {
                             this.state.slideIndex === 2 &&
                             <BloqueCategoriasDos
+                                {...this.props}
                                 object_list={bloque_3_list}
                                 permisos_object={permisos_object_3}
-                                {...this.props}
                                 categorias_list={bloque_2_list}
                             />
                         }
                         {
                             this.state.slideIndex === 3 &&
                             <BloqueUnidadesProductos
+                                {...this.props}
                                 object_list={bloque_4_list}
                                 permisos_object={permisos_object_4}
-                                {...this.props}
                             />
                         }
                     </div>

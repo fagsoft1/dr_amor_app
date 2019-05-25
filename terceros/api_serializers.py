@@ -72,7 +72,6 @@ class CuentaAcompananteSerializer(serializers.ModelSerializer):
     )
 
     cxp_por_servicios = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
-    cxp_por_comisiones_habitacion = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
     cxp_por_operaciones_caja = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
     cxc_por_compras_productos = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
     cxc_por_operaciones_caja = serializers.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -112,7 +111,6 @@ class CuentaAcompananteSerializer(serializers.ModelSerializer):
             'liquidada',
             'tipo',
             'cxp_por_servicios',
-            'cxp_por_comisiones_habitacion',
             'cxp_por_operaciones_caja',
             'cxc_por_compras_productos',
             'cxc_por_operaciones_caja',

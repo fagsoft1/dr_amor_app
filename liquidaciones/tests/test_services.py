@@ -270,7 +270,6 @@ class LiquidacionServicesTests(BaseTestsApi):
             habitacion=self.habitacion,
             acompanante_dos=self.acompanante,
             punto_venta=self.punto_venta,
-            comision=1000,
             terminados=True,
             iniciados=True,
             nro_servicios=5
@@ -323,7 +322,6 @@ class LiquidacionServicesTests(BaseTestsApi):
             habitacion=self.habitacion,
             acompanante_dos=self.acompanante,
             punto_venta=self.punto_venta,
-            comision=1000,
             terminados=True,
             iniciados=True,
             nro_servicios=8
@@ -383,7 +381,6 @@ class LiquidacionServicesTests(BaseTestsApi):
             habitacion=self.habitacion,
             acompanante_dos=self.acompanante,
             punto_venta=self.punto_venta,
-            comision=1000,
             terminados=True,
             iniciados=True,
             nro_servicios=8

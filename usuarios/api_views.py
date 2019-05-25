@@ -16,6 +16,8 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = User.objects.select_related(
         'tercero',
         'punto_venta_actual'
+    ).prefetch_related(
+        'groups',
     ).all()
     serializer_class = UsuarioSerializer
 

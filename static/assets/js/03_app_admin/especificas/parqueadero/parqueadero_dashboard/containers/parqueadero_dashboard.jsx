@@ -92,18 +92,18 @@ class ListadoElementos extends Component {
                         {
                             this.state.slideIndex === 0 &&
                             <BloqueTiposVehiculos
+                                {...this.props}
                                 object_list={tipos_vehiculos}
                                 permisos_object={permisos_object_1}
-                                {...this.props}
                             />
                         }
                         {
                             this.state.slideIndex === 1 &&
                             <BloqueModalidadFraccionTiempo
+                                {...this.props}
                                 object_list={modalidades_fracciones_tiempo}
                                 permisos_object={permisos_object_2}
                                 tipos_vehiculos_list={tipos_vehiculos}
-                                {...this.props}
                             />
                         }
                     </div>

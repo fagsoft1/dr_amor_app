@@ -6,12 +6,11 @@ import {createStore, applyMiddleware} from 'redux';
 import ReduxPromise from 'redux-promise';
 import thunk from 'redux-thunk';
 import reducers from './02_reducers/index';
-import {Notify} from 'react-redux-notify';
 import {connect} from "react-redux";
 import * as actions from "./01_actions/01_index";
 import NotFound from "./00_utilities/components/system/no_found_page";
+import Notification from './00_utilities/components/system/Notifications';
 
-import 'react-redux-notify/dist/ReactReduxNotify.css';
 import "react-table/react-table.css";
 import 'react-widgets/dist/css/react-widgets.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -90,7 +89,7 @@ import AppParqueadero from './10_app_parqueadero/App';
 import AppCaja from './07_cajas/App';
 import AppAcceso from './06_app_acceso/App';
 import AppConsultas from './09_app_consultas/App';
-import Login from './authentication/login/containers/login';
+import Login from './authentication/login/containers/LoginForm';
 import MiCuenta from './08_app_mi_cuenta/App';
 
 class RootContainerComponent extends Component {
@@ -116,7 +115,7 @@ class RootContainerComponent extends Component {
         return (
             <BrowserRouter>
                 <Fragment>
-                    <Notify/>
+                    <Notification/>
                     <Switch>
                         <PrivateRoute exact path="/" component={AppIndex}/>
                         <PrivateRoute exact path='/app' component={AppIndex}/>

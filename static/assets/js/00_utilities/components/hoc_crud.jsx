@@ -25,7 +25,10 @@ function crudHOC(CreateForm, Tabla) {
             } else {
                 const callback = () => {
                     const {to_string} = item;
-                    notificarAction(`Se ha eliminado con éxito ${singular_name.toLowerCase()} ${to_string}`);
+                    const options = {
+                        title: 'Eliminación Exitosa'
+                    };
+                    notificarAction(`Se ha eliminado con éxito ${singular_name.toLowerCase()} ${to_string}`, options);
                     this.setState({modal_open: false, item_seleccionado: null});
                     if (posDeleteMethod) {
                         posDeleteMethod(item);
@@ -46,7 +49,10 @@ function crudHOC(CreateForm, Tabla) {
             } = this.props;
             const callback = (response) => {
                 const {to_string} = response;
-                notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${singular_name.toLowerCase()} ${to_string}`);
+                const options = {
+                    title: item.id ? 'Actualizacion Exitosa' : 'Creación Exitosa'
+                };
+                notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${singular_name.toLowerCase()} ${to_string}`, options);
                 this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : response});
 
                 if (item.id && posUpdateMethod) {
@@ -76,7 +82,7 @@ function crudHOC(CreateForm, Tabla) {
 
         onSelectItemEdit(item) {
             const {method_pool} = this.props;
-            const callback = () => this.setState({modal_open: true, item_seleccionado: item});
+            const callback = (res) => this.setState({modal_open: true, item_seleccionado: res});
             if (method_pool.fetchObjectMethod === null) {
                 console.log('No se ha asignado ningún método para FETCH OBJECT')
             } else {
@@ -127,7 +133,7 @@ function crudHOC(CreateForm, Tabla) {
                         modal_open &&
                         <CreateForm
                             {...this.props}
-                            item_seleccionado={item_seleccionado}
+                            item_seleccionado={item_seleccionado ? list[item_seleccionado.id] : null}
                             modal_open={modal_open}
                             onCancel={() => this.setState({modal_open: false, item_seleccionado: null})}
                             onSubmit={this.onSubmit}

@@ -15,6 +15,10 @@ from parqueadero.api_urls import router as parqueadero_router
 from liquidaciones.api_urls import router as liquidaciones_router
 from consultas_dr_amor.api_urls import router as consultas_dr_amor_router
 from contabilidad_cuentas.api_urls import router as contabilidad_cuentas_router
+from contabilidad_diario.api_urls import router as contabilidad_diarios_router
+from contabilidad_bancos.api_urls import router as contabilidad_bancos_router
+from contabilidad_impuestos.api_urls import router as contabilidad_impuestos_router
+from contabilidad_movimientos.api_urls import router as contabilidad_movimientos_router
 
 router = DefaultRouter()
 router.extend(permisos_router)
@@ -33,3 +37,7 @@ router.extend(parqueadero_router)
 router.extend(liquidaciones_router)
 router.extend(consultas_dr_amor_router)
 router.extend(contabilidad_cuentas_router)
+router.extend(contabilidad_bancos_router)
+router.extend(contabilidad_diarios_router)
+router.extend(contabilidad_movimientos_router)
+router.extend(contabilidad_impuestos_router)

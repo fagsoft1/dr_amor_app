@@ -40,7 +40,8 @@ class ListadoElementos extends Component {
         let index = value !== null ? value : this.state.slideIndex;
         const cargarHabitacionesTipos = () => this.props.fetchTiposHabitaciones();
         if (index === 0) {
-            const cargarEmpresas = () => this.props.fetchEmpresas({callback: cargarHabitacionesTipos});
+            const cargarImpuestos = () => this.props.fetchImpuestos({callback: cargarHabitacionesTipos});
+            const cargarEmpresas = () => this.props.fetchEmpresas({callback: cargarImpuestos});
             this.props.fetchHabitaciones({callback: cargarEmpresas});
         } else if (index === 1) {
             cargarHabitacionesTipos();
@@ -89,18 +90,18 @@ class ListadoElementos extends Component {
                 {
                     this.state.slideIndex === 0 &&
                     <BloqueHabitaciones
+                        {...this.props}
                         object_list={bloque_1_list}
                         permisos_object={permisos_object_1}
-                        {...this.props}
                         habitaciones_tipos_list={bloque_2_list}
                     />
                 }
                 {
                     this.state.slideIndex === 1 &&
                     <BloqueHabitacionesTipos
+                        {...this.props}
                         object_list={bloque_2_list}
                         permisos_object={permisos_object_2}
-                        {...this.props}
                     />
                 }
                 <CargarDatos
@@ -114,6 +115,7 @@ class ListadoElementos extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         bloque_1_list: state.habitaciones,
+        impuestos: state.contabilidad_impuestos,
         mis_permisos: state.mis_permisos,
         bloque_2_list: state.habitaciones_tipos,
         empresas_list: state.empresas,

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Route, Switch} from 'react-router-dom';
 import Loading from '../00_utilities/components/system/loading_overlay';
 
-import AppIndex from './index/dashboard/containers/dashboard';
+import AppIndex from './index/dashboard/containers/ServicioDashboard';
 import CuentaDetail from '../07_cajas/cuentas/cuenta_detail';
 import LiquidacionDetail from '../07_cajas/liquidar_cuenta/liquidacion_detail';
 import LiquidarCuenta from '../07_cajas/liquidar_cuenta/liquidacion_acompanante/liquidar_cuenta_acompanante';

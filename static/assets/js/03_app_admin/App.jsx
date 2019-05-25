@@ -45,8 +45,10 @@ import ParqueaderoDashboard from './especificas/parqueadero/parqueadero_dashboar
 import ParqueaderoModalidadFraccionTiempoDetail
     from './especificas/parqueadero/modalidades_fracciones_tiempo/components/modalidad_fraccion_tiempo_detail';
 
-import ConfiguracionDashboard
-    from './especificas/contabilidad/configuracion/configuracion_dashboard/containers/contabilidad_dashboard';
+import ContabilidadDashboard
+    from './especificas/contabilidad/contabilidad/contabilidad_dashboard/containers/contabilidad_dashboard';
+import ConfiguracionContabilidadDashboard
+    from './especificas/contabilidad/configuracion/configuracion_dashboard/containers/configuracion_contabilidad_dashboard';
 
 class AdminApp extends Component {
     render() {
@@ -92,7 +94,9 @@ class AdminApp extends Component {
                         <Route exact path='/app/admin/cajas/conceptos_operaciones_caja/list'
                                component={ConceptosOperacionesCajaList}/>
                         <Route exact path='/app/admin/contabilidad/configuracion/dashboard'
-                               component={ConfiguracionDashboard}/>
+                               component={ConfiguracionContabilidadDashboard}/>
+                        <Route exact path='/app/admin/contabilidad/contabilidad/dashboard'
+                               component={ContabilidadDashboard}/>
                     </Switch>
                 </DrawerMenu>
             </Loading>

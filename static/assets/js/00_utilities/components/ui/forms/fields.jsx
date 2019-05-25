@@ -136,7 +136,7 @@ const renderCombobox = ({input, data, valueField, textField, placeholder, onSele
                       valueField={valueField}
                       textField={textField}
                       onChange={e => {
-                          input.onChange(typeof(e) === 'string' ? e : e[valueField])
+                          input.onChange(typeof (e) === 'string' ? e : e[valueField])
                       }}
                       onSelect={onSelect}
                       onBlur={() => input.onBlur()}
@@ -298,20 +298,21 @@ MyRadioButtonGroup.propTypes = {
 };
 
 
-const renderSelect = (
-    {
+const renderSelect = (props) => {
+    const {
         input,
         options,
         meta: {touched, error, warning},
         nombre,
         valueKey = 'value',
         labelKey = 'label',
-        isDisabled = false
-    }) => {
+        isDisabled = false,
+        valor
+    } = props;
     return (
         <Fragment>
             <Select
-                value={input.value}
+                value={valor ? valor : null}
                 onChange={input.onChange}
                 onBlur={() => input.onBlur(input.value)}
                 options={options}
@@ -328,7 +329,7 @@ const renderSelect = (
 };
 
 export const MySelect = (props) => {
-    const {data, name, nombre, onChangeMethod = null, className = 'col-12'} = props;
+    const {data, name, nombre, onChangeMethod = null, className = 'col-12', value} = props;
     return (
         <div className={className}>
             <Field
@@ -336,6 +337,7 @@ export const MySelect = (props) => {
                 autoComplete={props.autoComplete ? props.autoComplete : props.name}
                 onChangeMethod={onChangeMethod}
                 nombre={nombre}
+                valor={value}
                 name={name}
                 options={data}
                 component={renderSelect}
@@ -397,4 +399,4 @@ export const MySelectAsync = (props) => {
             />
         </div>
     )
-}
+};

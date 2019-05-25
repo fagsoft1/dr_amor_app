@@ -36,35 +36,35 @@ class Tabla extends React.Component {
                                 }
                             },
                             {
-                                Header: "% Iva",
-                                accessor: "porcentaje_impuesto",
-                                maxWidth: 150,
-                                Cell: row => <span>{`${row.value}%`}</span>
-                            },
-                            {
-                                Header: "Impuesto",
+                                Header: "$ Impuestos",
                                 accessor: "impuesto",
                                 maxWidth: 150,
                                 Cell: row => pesosColombianos(row.value)
                             },
                             {
-                                Header: "Valor sin Iva ni Comisión",
+                                Header: "$ Ant. Impuesto",
                                 maxWidth: 150,
                                 accessor: "valor_antes_impuestos",
-                                Cell: row => pesosColombianos(row.value - row.original.comision)
-                            },
-                            {
-                                Header: "Comisión",
-                                accessor: "comision",
-                                maxWidth: 150,
                                 Cell: row => pesosColombianos(row.value)
                             },
                             {
-                                Header: "Valor",
+                                Header: "$ Habitación",
                                 accessor: "valor",
                                 maxWidth: 150,
                                 Cell: row => pesosColombianos(row.value)
-                            }
+                            },
+                            {
+                                Header: "$ Adi. Servicio",
+                                accessor: "valor_adicional_servicio",
+                                maxWidth: 150,
+                                Cell: row => pesosColombianos(row.value)
+                            },
+                            {
+                                Header: "$ Total",
+                                accessor: "valor_adicional_servicio",
+                                maxWidth: 150,
+                                Cell: row => pesosColombianos(parseFloat(row.value) + parseFloat(row.original.valor))
+                            },
                         ]
                     },
                     {

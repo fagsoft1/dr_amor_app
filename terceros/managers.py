@@ -129,7 +129,6 @@ class CuentaAcompananteManager(models.Manager):
             estado=2
         ).annotate(
             valor_servicios=Coalesce(Sum('valor_servicio'), 0),
-            valor_comisiones=Coalesce(Sum('comision'), 0),
         )
 
         return CuentaQuerySet(self.model, using=self._db).filter(
@@ -139,13 +138,6 @@ class CuentaAcompananteManager(models.Manager):
             cxp_por_servicios=Coalesce(
                 ExpressionWrapper(
                     Subquery(servicios.values('valor_servicios')),
-                    output_field=DecimalField(max_digits=2)
-                ),
-                0
-            ),
-            cxp_por_comisiones_habitacion=Coalesce(
-                ExpressionWrapper(
-                    Subquery(servicios.values('valor_comisiones')),
                     output_field=DecimalField(max_digits=2)
                 ),
                 0
@@ -184,8 +176,7 @@ class CuentaAcompananteManager(models.Manager):
                 output_field=DecimalField()),
         ).annotate(
             cxc_total=F('cxc_por_compras_productos') + F('cxc_por_operaciones_caja') + F('saldo_anterior_cxc'),
-            cxp_total=F('cxp_por_servicios') + F('cxp_por_comisiones_habitacion') + F(
-                'cxp_por_operaciones_caja') + F('saldo_anterior_cxp')
+            cxp_total=F('cxp_por_servicios') + F('cxp_por_operaciones_caja') + F('saldo_anterior_cxp')
         )
 
     def liquidada(self):

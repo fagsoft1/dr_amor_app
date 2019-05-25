@@ -137,6 +137,7 @@ class Detail extends Component {
                 }
 
                 <ListCrud
+                    {...this.props}
                     movimiento={object}
                     movimiento_inventario_object={object}
                     object_list={_.map(movimientos_inventarios_detalles_list, e => e)}
@@ -146,7 +147,6 @@ class Detail extends Component {
                         delete: (permisos.delete && !object.cargado),
                         change: (permisos.change && !object.cargado),
                     }}
-                    {...this.props}
                 />
 
                 <CargarDatos cargarDatos={this.cargarDatos}/>

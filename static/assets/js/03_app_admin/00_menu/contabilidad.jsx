@@ -7,7 +7,7 @@ const MenuPermisos = (props) => (
     <ListCollapse icono='coins' texto='Contabilidad'>
         <DrawerListItem
             size='1x'
-            link='/app/admin/permisos/list'
+            link='/app/admin/contabilidad/contabilidad/dashboard'
             texto='Contabilidad'
             type='nested'
         />

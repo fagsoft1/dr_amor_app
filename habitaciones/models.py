@@ -2,17 +2,32 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from empresas.models import Empresa
+from contabilidad_impuestos.models import Impuesto
 
 
 class TipoHabitacion(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
-    valor = models.DecimalField(max_digits=10, decimal_places=0, default=0, verbose_name='Valor con Iva')
-    comision = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    porcentaje_impuesto = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor = models.DecimalField(max_digits=10, decimal_places=0, default=0)
+    valor_adicional_servicio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    impuestos = models.ManyToManyField(Impuesto, related_name='tipos_habitaciones')
 
     @property
     def valor_antes_impuestos(self):
-        return self.valor / (1 + (self.porcentaje_impuesto / 100))
+        valor = self.valor
+        valor_impuestos_tipo_3 = 0
+        impuestos_tipo_3 = self.impuestos.filter(tipo_calculo_impuesto=3)
+        if impuestos_tipo_3:
+            for impuesto in impuestos_tipo_3:
+                if impuesto.tipo_calculo_impuesto == 3:
+                    valor_impuestos_tipo_3 += impuesto.tasa_importe_venta
+                    valor -= impuesto.tasa_importe_venta
+
+        impuestos_tipo_1 = self.impuestos.filter(tipo_calculo_impuesto=1)
+        if impuestos_tipo_1:
+            for impuesto in impuestos_tipo_1:
+                if impuesto.tipo_calculo_impuesto == 1:
+                    valor = valor / (1 + (impuesto.tasa_importe_venta / 100))
+        return valor
 
     @property
     def impuesto(self):
