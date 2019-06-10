@@ -1,4 +1,4 @@
-from channels.binding.websockets import WebsocketBinding
+
 from .services import acompanante_desencriptar
 from rest_framework import serializers
 
@@ -209,21 +209,21 @@ class TerceroSerializer(serializers.ModelSerializer):
         ]
 
 
-class TercerosBinding(WebsocketBinding):
-    model = Tercero
-    stream = "terceros"
-    fields = ["id", ]
-
-    def serialize_data(self, instance):
-        serializado = TerceroSerializer(instance, context={'request': None})
-        return serializado.data
-
-    @classmethod
-    def group_names(cls, *args, **kwargs):
-        return ["binding.pos_servicios"]
-
-    def has_permission(self, user, action, pk):
-        return True
+# class TercerosBinding(WebsocketBinding):
+#     model = Tercero
+#     stream = "terceros"
+#     fields = ["id", ]
+#
+#     def serialize_data(self, instance):
+#         serializado = TerceroSerializer(instance, context={'request': None})
+#         return serializado.data
+#
+#     @classmethod
+#     def group_names(cls, *args, **kwargs):
+#         return ["binding.pos_servicios"]
+#
+#     def has_permission(self, user, action, pk):
+#         return True
 
 
 class AcompananteSerializer(serializers.ModelSerializer):

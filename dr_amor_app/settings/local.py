@@ -75,11 +75,10 @@ DEFAULT_FROM_EMAIL = get_secret("EMAIL_SERVER", "DEFAULT_FROM_EMAIL")
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
         "CONFIG": {
             "hosts": [("localhost", 6379)],
-        },
-        "ROUTING": "dr_amor_app.ws_routing.channel_routing",
+        }
     },
 }
 

@@ -1,4 +1,3 @@
-from channels.binding.websockets import WebsocketBinding
 from rest_framework import serializers
 from django.utils.timezone import now
 
@@ -88,20 +87,3 @@ class ServicioSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'valor_total': {'read_only': True},
         }
-
-
-class ServicioBinding(WebsocketBinding):
-    model = Servicio
-    stream = "servicios"
-    fields = ["id", ]
-
-    def serialize_data(self, instance):
-        serializado = ServicioSerializer(instance, context={'request': None})
-        return serializado.data
-
-    @classmethod
-    def group_names(cls, *args, **kwargs):
-        return ["binding.pos_servicios"]
-
-    def has_permission(self, user, action, pk):
-        return True

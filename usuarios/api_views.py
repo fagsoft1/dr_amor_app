@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.models import User
 from knox.settings import knox_settings
 from rest_framework import viewsets, permissions, serializers
@@ -81,12 +83,20 @@ class LoginViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['post'], permission_classes=[permissions.AllowAny])
     def login(self, request) -> Response:
+        import channels.layers
+        from asgiref.sync import async_to_sync
         from .services import usuario_obtener_token
         serializer = self.get_serializer(data=self.request.POST)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         token = usuario_obtener_token(usuario_id=user.id)
         UserSerializer = knox_settings.USER_SERIALIZER
+        channel_layer = channels.layers.get_channel_layer('Operativo')
+        # Send message to WebSocket
+        async_to_sync(channel_layer.send)(text_data=json.dumps(
+            {'message': 'HOLA'}
+        ))
+
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": token

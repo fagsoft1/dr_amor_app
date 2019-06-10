@@ -1,4 +1,3 @@
-from channels.binding.websockets import WebsocketBinding
 from rest_framework import serializers
 from .models import Producto, CategoriaProducto, CategoriaDosProducto, UnidadProducto
 
@@ -84,20 +83,3 @@ class ProductoSerializer(serializers.ModelSerializer):
             'comision',
             'activo'
         ]
-
-
-class ProductoBinding(WebsocketBinding):
-    model = Producto
-    stream = "productos"
-    fields = ["id", ]
-
-    def serialize_data(self, instance):
-        serializado = ProductoSerializer(instance, context={'request': None})
-        return serializado.data
-
-    @classmethod
-    def group_names(cls, *args, **kwargs):
-        return ["binding.pos_servicios"]
-
-    def has_permission(self, user, action, pk):
-        return True

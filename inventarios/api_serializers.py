@@ -1,4 +1,3 @@
-from channels.binding.websockets import WebsocketBinding
 from rest_framework import serializers
 
 from .models import (
@@ -88,24 +87,6 @@ class MovimientoInventarioDetalleSerializer(serializers.ModelSerializer):
                 producto_id=producto.id
             )
         return instance
-
-
-class MovimientoInventarioDetalleBinding(WebsocketBinding):
-    model = MovimientoInventarioDetalle
-    stream = "movimientos_inventarios_detalles"
-    fields = ["id", ]
-
-    def serialize_data(self, instance):
-        serializado = MovimientoInventarioDetalleSerializer(instance, context={'request': None})
-        return serializado.data
-
-    @classmethod
-    def group_names(cls, *args, **kwargs):
-        return ["binding.pos_servicios"]
-
-    def has_permission(self, user, action, pk):
-        return True
-
 
 class MovimientoInventarioDocumentoSerializer(serializers.ModelSerializer):
     imagen_documento_url = serializers.SerializerMethodField()

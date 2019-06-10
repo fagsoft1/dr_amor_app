@@ -10,6 +10,7 @@ from knox.views import LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^chat/', include('chat.urls')),
     path('api/auth/logout', LogoutView.as_view()),
     path('api/', include(router.urls)),
     url(r'^app/*', IndexView.as_view()),

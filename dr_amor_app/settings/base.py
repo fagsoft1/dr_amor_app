@@ -181,3 +181,5 @@ USE_THOUSAND_SEPARATOR = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = "media"
+
+ASGI_APPLICATION = "dr_amor_app.ws_routing.application"
