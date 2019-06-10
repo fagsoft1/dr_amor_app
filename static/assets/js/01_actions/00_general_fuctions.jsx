@@ -59,7 +59,10 @@ export function createRequest(request, options = {}) {
                             throw new SubmissionError(error.response.data)
                         }
                     } else if (error.response.status === 401) {
-
+                        const {response: {data: detail}} = error;
+                        if (detail && detail.detail && detail.detail.includes('Token')) {
+                            dispatch_method(actions.mostrar_error_loading('Debe de autenticarse de nuevo', 'Problemas de Autenticación!'))
+                        }
                     } else if (error.response.status === 403) {
                         dispatch_method(actions.mostrar_error_loading(error.response.data['detail'], `${error.response.status}: ${error.response.statusText}`));
                         dispatch_method(actions.notificarErrorAction(error.response.data['detail']));

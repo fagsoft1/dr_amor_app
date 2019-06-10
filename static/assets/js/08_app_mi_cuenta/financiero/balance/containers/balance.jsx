@@ -19,43 +19,41 @@ class Balance extends Component {
     }
 
     cargarDatos() {
-        const cargarComprasTienda = (tercero_id) => this.props.fetchVentasProductosDetalles_por_tercero_cuenta_abierta(tercero_id);
-        const cargarOperacionesCaja = (tercero_id) => this.props.fetchOperacionesCajas_por_tercero_cuenta_abierta(tercero_id, {callback: () => cargarComprasTienda(tercero_id)});
-        const cargarServicios = (tercero_id) => {
-            if (tercero_id) {
-                this.props.fetchServicios_por_tercero_cuenta_abierta(
-                    tercero_id,
-                    {callback: () => cargarOperacionesCaja(tercero_id)}
-                )
-            }
-        };
-        this.props.fetchMiCuenta({callback: res => cargarServicios(res.tercero)});
+        const {auth: {user: {tercero}}} = this.props;
+        if (tercero) {
+            const cargarComprasTienda = (tercero_id) => this.props.fetchVentasProductosDetalles_por_tercero_cuenta_abierta(tercero_id);
+            const cargarOperacionesCaja = (tercero_id) => this.props.fetchOperacionesCajas_por_tercero_cuenta_abierta(tercero_id, {callback: () => cargarComprasTienda(tercero_id)});
+            this.props.fetchServicios_por_tercero_cuenta_abierta(
+                tercero,
+                {callback: () => cargarOperacionesCaja(tercero)}
+            )
+        }
     }
 
     render() {
-        const {mi_cuenta, classes} = this.props;
+        const {auth: {user}, classes} = this.props;
         let {movimientos_inventarios_detalles, servicios, operaciones_caja, ventas_productos_detalles} = this.props;
 
-        ventas_productos_detalles = mi_cuenta ? _.pickBy(
+        ventas_productos_detalles = user ? _.pickBy(
             ventas_productos_detalles,
             e => (
-                e.cuenta_usuario === mi_cuenta.id &&
+                e.cuenta_usuario === user.id &&
                 e.cuenta_liquidada === false &&
                 e.cuenta_tipo === 1
             )
         ) : null;
-        servicios = mi_cuenta ? _.pickBy(
+        servicios = user ? _.pickBy(
             servicios,
             e => (
-                e.cuenta_usuario === mi_cuenta.id &&
+                e.cuenta_usuario === user.id &&
                 e.cuenta_liquidada === false &&
                 !e.anulado &&
                 e.cuenta_tipo === 1
             )
         ) : null;
-        operaciones_caja = mi_cuenta ? _.pickBy(
+        operaciones_caja = user ? _.pickBy(
             operaciones_caja,
-            e => (e.cuenta_usuario === mi_cuenta.id &&
+            e => (e.cuenta_usuario === user.id &&
                 e.cuenta_liquidada === false &&
                 e.tipo_operacion === 'E'
             )
@@ -121,7 +119,7 @@ function mapPropsToState(state, ownProps) {
     return {
         operaciones_caja: state.operaciones_caja,
         servicios: state.servicios,
-        mi_cuenta: state.mi_cuenta,
+        auth: state.auth,
         ventas_productos_detalles: state.ventas_productos_detalles,
         movimientos_inventarios_detalles: state.movimientos_inventarios_detalles
     }

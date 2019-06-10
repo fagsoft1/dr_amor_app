@@ -237,7 +237,7 @@ class ServiciosDashboar extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         terceros: state.terceros,
-        mi_cuenta: state.mi_cuenta,
+        auth: state.auth,
         habitaciones: state.habitaciones,
         servicios: state.servicios,
         categorias_fracciones_tiempo_list: state.categorias_fracciones_tiempos_acompanantes

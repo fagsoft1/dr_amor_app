@@ -25,8 +25,7 @@ class LoginForm extends Component {
 
     onSubmit(e) {
         const {username, password} = e;
-        const callback = () => this.props.fetchMiCuenta();
-        return this.props.login(username, password, {callback});
+        return this.props.login(username, password);
     }
 
     render() {
@@ -40,7 +39,6 @@ class LoginForm extends Component {
             esta_cargando,
             classes
         } = this.props;
-        console.log(esta_cargando)
 
         if (auth.isAuthenticated) {
             return <Redirect to="/"/>

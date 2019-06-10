@@ -42,20 +42,6 @@ export const addGrupoUsuario = (id, grupo_id, options_action = {}) => {
     }
 };
 
-export const fetchMiCuenta = (options_action = {}) => {
-    return (dispatch) => {
-        const dispatches = (response) => {
-            dispatch({type: TYPES.cuenta, payload: response})
-        };
-        const options = {
-            dispatches,
-            ...options_action,
-            dispatch_method: dispatch,
-        };
-        return fetchListGet(`${current_url_api}/mi_cuenta`, options);
-    }
-};
-
 export const fetchUsuario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {

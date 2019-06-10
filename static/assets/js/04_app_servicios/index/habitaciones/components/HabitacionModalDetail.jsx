@@ -90,7 +90,7 @@ class HabitacionDetailModal extends Component {
             cambiarHabitacion,
             habitacion,
             cerraModal,
-            mi_cuenta: {punto_venta_actual}
+            auth: {user: {punto_venta_actual}}
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
         cambiarHabitacion(
@@ -108,7 +108,7 @@ class HabitacionDetailModal extends Component {
             fetchHabitacion,
             habitacion,
             cerraModal,
-            mi_cuenta: {punto_venta_actual}
+            auth: {user: {punto_venta_actual}}
         } = this.props;
 
         fetchHabitacion(
@@ -133,7 +133,7 @@ class HabitacionDetailModal extends Component {
             iniciarServiciosHabitacion,
             habitacion,
             cerraModal,
-            mi_cuenta: {punto_venta_actual}
+            auth: {user: {punto_venta_actual}},
         } = this.props;
         const {servicios_nuevos} = this.state;
         iniciarServiciosHabitacion(

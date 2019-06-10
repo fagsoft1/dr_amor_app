@@ -17,13 +17,13 @@ class QrIdentificacion extends Component {
     }
 
     onClickOpenModal() {
-        const {mi_cuenta: {tercero}} = this.props;
-        const cargarCuenta = () => this.props.fetchMiCuenta({callback: () => this.setState({open_modal: true})});
+        const {auth: {user: {tercero}}} = this.props;
+        const cargarCuenta = () => this.props.loadUser({callback: () => this.setState({open_modal: true})});
         this.props.generaQrTercero(tercero, {callback: cargarCuenta})
     }
 
     render() {
-        const {mi_cuenta: {qr_acceso}} = this.props;
+        const {auth: {user: {qr_acceso}}} = this.props;
         const {open_modal} = this.state;
         return (
             <Fragment>
@@ -61,7 +61,7 @@ class QrIdentificacion extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mi_cuenta: state.mi_cuenta
+        auth: state.auth
     }
 }
 

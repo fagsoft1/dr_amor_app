@@ -14,18 +14,20 @@ class DashboarInventarios extends Component {
     }
 
     cargarDatos() {
-        const cargarTrasladosParaValidar = (bodega_id) => this.props.fetchTrasladosInventariosxBodegaDestino(bodega_id);
-        this.props.fetchMiCuenta({callback: e => cargarTrasladosParaValidar(e.punto_venta_actual.bodega)});
+        const {auth: {user: {punto_venta_actual: {bodega}}}} = this.props;
+        if (bodega) {
+            this.props.fetchTrasladosInventariosxBodegaDestino(bodega);
+        }
     }
 
     render() {
         const {
-            mi_cuenta,
-            mi_cuenta: {punto_venta_actual},
+            auth: {user},
+            auth: {user: {punto_venta_actual}},
             traslados_inventarios,
             traslados_inventarios_detalles
         } = this.props;
-        if (!mi_cuenta) {
+        if (!user) {
             return <Fragment></Fragment>
         }
         return (
@@ -47,7 +49,7 @@ class DashboarInventarios extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mi_cuenta: state.mi_cuenta,
+        auth: state.auth,
         traslados_inventarios: state.traslados_inventarios,
         traslados_inventarios_detalles: state.traslados_inventarios_detalles
     }

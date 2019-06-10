@@ -101,7 +101,6 @@ class DashboardParqueadero extends Component {
     }
 
     cargarDatos() {
-        this.props.fetchMiCuenta();
         this.props.fetchRegistrosEntradasParqueos_por_salir();
     }
 
@@ -329,7 +328,7 @@ class DashboardParqueadero extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mi_cuenta: state.mi_cuenta,
+        auth: state.auth,
         tipos_vehiculos: state.parqueadero_tipos_vehiculos,
         modalidades_fracciones_tiempo: state.parqueadero_modalidades_fracciones_tiempo,
         modalidades_fracciones_tiempo_detalles: state.parqueadero_modalidades_fracciones_tiempo_detalles,

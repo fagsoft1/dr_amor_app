@@ -17,7 +17,7 @@ class Tabla extends React.Component {
             onDelete,
             onSelectItemEdit,
             permisos_object,
-            mi_cuenta
+            auth:{user}
         } = this.props;
         return (
             <div>
@@ -72,7 +72,7 @@ class Tabla extends React.Component {
                                     show: permisos_object.make_user_active,
                                     maxWidth: 50,
                                     Cell: row => (
-                                        mi_cuenta.id !== row.original.id &&
+                                        user.id !== row.original.id &&
                                         <div className='text-center' style={{width: '100%'}}>
                                             <Checkbox
                                                 style={{margin: 0, padding: 0}}
@@ -89,7 +89,7 @@ class Tabla extends React.Component {
                                     show: permisos_object.make_user_superuser,
                                     maxWidth: 50,
                                     Cell: row => (
-                                        mi_cuenta.id !== row.original.id &&
+                                        user.id !== row.original.id &&
                                         <div className='text-center' style={{width: '100%'}}>
                                             <Checkbox
                                                 style={{margin: 0, padding: 0}}
@@ -106,7 +106,7 @@ class Tabla extends React.Component {
                                     show: permisos_object.make_user_staff,
                                     maxWidth: 50,
                                     Cell: row => (
-                                        mi_cuenta.id !== row.original.id &&
+                                        user.id !== row.original.id &&
                                         <div className='text-center' style={{width: '100%'}}>
                                             <Checkbox
                                                 style={{margin: 0, padding: 0}}
@@ -122,9 +122,9 @@ class Tabla extends React.Component {
                                     show: permisos_object.delete,
                                     maxWidth: 50,
                                     Cell: row =>
-                                        mi_cuenta.id !== row.original.id &&
+                                        user.id !== row.original.id &&
                                         (
-                                            (mi_cuenta.is_superuser && row.original.is_superuser) ||
+                                            (user.is_superuser && row.original.is_superuser) ||
                                             (!row.original.is_superuser)
                                         )
                                         &&

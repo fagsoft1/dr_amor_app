@@ -1,6 +1,6 @@
 import React, {Fragment, Component} from 'react';
 import {hot} from 'react-hot-loader'
-import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
+import {BrowserRouter, Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import ReduxPromise from 'redux-promise';
@@ -10,6 +10,7 @@ import {connect} from "react-redux";
 import * as actions from "./01_actions/01_index";
 import NotFound from "./00_utilities/components/system/no_found_page";
 import Notification from './00_utilities/components/system/Notifications';
+import RouteLocationManager from './00_utilities/components/system/RouteLocationManager';
 
 import "react-table/react-table.css";
 import 'react-widgets/dist/css/react-widgets.css';
@@ -92,9 +93,10 @@ import AppConsultas from './09_app_consultas/App';
 import Login from './authentication/login/containers/LoginForm';
 import MiCuenta from './08_app_mi_cuenta/App';
 
+
 class RootContainerComponent extends Component {
     componentDidMount() {
-        this.props.loadUser({callback: () => this.props.fetchMiCuenta()});
+        this.props.loadUser();
     }
 
     PrivateRoute = ({component: ChildComponent, ...rest}) => {
@@ -111,10 +113,11 @@ class RootContainerComponent extends Component {
 
     render() {
         let {PrivateRoute} = this;
-        const {mi_cuenta, mi_cuenta: {punto_venta_actual}} = this.props;
+        const {auth: {user}} = this.props;
         return (
             <BrowserRouter>
                 <Fragment>
+                    <RouteLocationManager/>
                     <Notification/>
                     <Switch>
                         <PrivateRoute exact path="/" component={AppIndex}/>
@@ -140,19 +143,20 @@ class RootContainerComponent extends Component {
                         backgroundColor: 'white'
                     }}>
                         {
-                            punto_venta_actual &&
-                            punto_venta_actual.nombre &&
+                            user &&
+                            user.punto_venta_actual &&
+                            user.punto_venta_actual.nombre &&
                             <Fragment>
                                 <strong>Punto de Venta: </strong>
-                                <small>{punto_venta_actual.nombre}</small>
+                                <small>{user.punto_venta_actual.nombre}</small>
                                 <br/>
                             </Fragment>
                         }
                         {
-                            mi_cuenta &&
+                            user &&
                             <Fragment>
                                 <strong>Usuario: </strong>
-                                <small>{mi_cuenta.username}</small>
+                                <small>{user.username}</small>
                             </Fragment>
                         }
                     </div>
@@ -164,8 +168,7 @@ class RootContainerComponent extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        auth: state.auth,
-        mi_cuenta: state.mi_cuenta
+        auth: state.auth
     }
 }
 

@@ -174,7 +174,7 @@ class CierreCajaPanel extends Component {
                 this.props.fetchConceptosOperacionesCajas();
             }
         };
-        this.props.fetchBilletesMonedas({callback: () => this.props.fetchMiCuenta({callback: cargarOperacionesCaja})})
+        this.props.fetchBilletesMonedas({callback: cargarOperacionesCaja})
     }
 
     handleNext = () => {
@@ -251,11 +251,11 @@ class CierreCajaPanel extends Component {
             classes,
             billetes_monedas,
             conceptos_operaciones_caja,
-            mi_cuenta,
+            auth: {user},
         } = this.props;
         let conceptos_cierre = null;
         if (_.size(conceptos_operaciones_caja) > 0) {
-            conceptos_cierre = _.pickBy(conceptos_operaciones_caja, e => mi_cuenta.punto_venta_actual.conceptos_operaciones_caja_cierre.includes(e.id))
+            conceptos_cierre = _.pickBy(conceptos_operaciones_caja, e => user.punto_venta_actual.conceptos_operaciones_caja_cierre.includes(e.id))
         }
         switch (step) {
             case 0:
@@ -306,7 +306,7 @@ class CierreCajaPanel extends Component {
 
     onSubmit() {
         const cierre = this.state;
-        const {hacerCierrePuntoVenta, mi_cuenta: {punto_venta_actual: {id}}} = this.props;
+        const {hacerCierrePuntoVenta, user: {punto_venta_actual: {id}}} = this.props;
         const cierre2 = {
             denominaciones_base: _.map(cierre.denominaciones_base, e => {
                 return {cantidad: e.cantidad, valor: e.valor, tipo: e.tipo}
@@ -334,7 +334,6 @@ class CierreCajaPanel extends Component {
             onCancel,
             modal_open,
             classes,
-            mi_cuenta,
             puntos_ventas_turnos
         } = this.props;
         console.log(puntos_ventas_turnos);
@@ -398,7 +397,7 @@ class CierreCajaPanel extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mi_cuenta: state.mi_cuenta,
+        auth: state.auth,
         puntos_ventas_turnos: state.puntos_ventas_turnos,
         billetes_monedas: state.billetes_monedas,
         conceptos_operaciones_caja: state.conceptos_operaciones_caja

@@ -27,16 +27,13 @@ class PuntoVentaTienda extends Component {
     }
 
     cargarDatos() {
-        const cargarSaldosInventario = () => {
-            const {mi_cuenta: {punto_venta_actual}} = this.props;
-            this.props.fetchMovimientosInventariosDetallesSaldosxPDV(punto_venta_actual.id)
-        };
-        this.props.fetchMiCuenta({callback: cargarSaldosInventario});
+        const {auth: {user: {punto_venta_actual}}} = this.props;
+        this.props.fetchMovimientosInventariosDetallesSaldosxPDV(punto_venta_actual.id)
     }
 
     efectuarVenta(qr_codigo, id_usuario, tipo_venta) {
         const {pedido_actual} = this.state;
-        const {mi_cuenta: {punto_venta_actual}} = this.props;
+        const {auth: {user: {punto_venta_actual}}} = this.props;
         this.props.efectuarVentaTiendaEnPuntoVenta(
             punto_venta_actual.id,
             qr_codigo,
@@ -129,7 +126,7 @@ class PuntoVentaTienda extends Component {
 
     render() {
         const {categoria_uno_seleccionada, pedido_actual} = this.state;
-        let {mi_cuenta: {punto_venta_actual}, inventarios_bodega_origen_list} = this.props;
+        let {auth: {user: {punto_venta_actual}}, inventarios_bodega_origen_list} = this.props;
         if (!punto_venta_actual) {
             return <div>Cargando</div>
         }
@@ -219,7 +216,7 @@ class PuntoVentaTienda extends Component {
 
 function mapPropsToState(state, ownProps) {
     return {
-        mi_cuenta: state.mi_cuenta,
+        auth: state.auth,
         inventarios_bodega_origen_list: state.movimientos_inventarios_detalles,
         traslados_inventarios: state.traslados_inventarios
     }

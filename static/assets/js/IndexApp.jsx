@@ -60,12 +60,10 @@ class IndexApp extends Component {
 
     render() {
         const {
+            auth: {user},
+            auth: {user: {punto_venta_actual}},
             classes,
             puntos_ventas,
-            mi_cuenta,
-            mi_cuenta: {
-                punto_venta_actual
-            },
             mis_permisos,
             arqueos_cajas
         } = this.props;
@@ -92,7 +90,7 @@ class IndexApp extends Component {
                         modal_open={abrir_punto_venta}
                         onCancel={() => this.setState({abrir_punto_venta: false})}
                         onSubmit={(v) => {
-                            const callback = () => this.props.fetchMiCuenta({callback: () => this.setState({abrir_punto_venta: false})});
+                            const callback = () => this.props.loadUser({callback: () => this.setState({abrir_punto_venta: false})});
                             this.props.abrirPuntoVenta(v.punto_venta_id, v.base_inicial_efectivo, {callback})
                         }}
                         puntos_venta_list={puntos_ventas}
@@ -109,7 +107,7 @@ class IndexApp extends Component {
                     />
                 }
                 {
-                    mi_cuenta.tercero &&
+                    user.tercero &&
                     <QrIdentificacion/>
                 }
                 <div className="container text-center">
@@ -122,15 +120,15 @@ class IndexApp extends Component {
                         Imprimir
                     </Button>
                     {
-                        mi_cuenta &&
-                        mi_cuenta.imagen_perfil_url &&
+                        user &&
+                        user.imagen_perfil_url &&
                         <div style={{
                             position: 'absolute',
                             top: -10,
                             right: 10
                         }}>
                             <Grid container justify="center" alignItems="center">
-                                <Avatar alt="Remy Sharp" src={mi_cuenta.imagen_perfil_url}
+                                <Avatar alt="Remy Sharp" src={user.imagen_perfil_url}
                                         className={classes.bigAvatar}/>
                             </Grid>
                         </div>
@@ -140,7 +138,7 @@ class IndexApp extends Component {
                             <img width='400px' className='img-fluid' src={`${img_static_url}/logo.png`} alt=""/>
                         </div>
                         {
-                            (mi_cuenta && (mi_cuenta.is_staff || mi_cuenta.is_superuser)) &&
+                            (user && (user.is_staff || user.is_superuser)) &&
                             <Boton
                                 nombre='Admin'
                                 link='/app/admin/'
@@ -260,7 +258,6 @@ class IndexApp extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         auth: state.auth,
-        mi_cuenta: state.mi_cuenta,
         mis_permisos: state.mis_permisos,
         puntos_ventas: state.puntos_ventas,
         arqueos_cajas: state.arqueos_cajas

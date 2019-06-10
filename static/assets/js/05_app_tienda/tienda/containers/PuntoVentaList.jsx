@@ -26,7 +26,7 @@ class App extends Component {
     }
 
     render() {
-        const {puntos_ventas, mi_cuenta: {punto_venta_actual}} = this.props;
+        const {puntos_ventas} = this.props;
         return (
             <div className="p-3">
                 <div className="row">
@@ -40,7 +40,7 @@ class App extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         puntos_ventas: _.pickBy(state.puntos_ventas, e => e.tipo === 1),
-        mi_cuenta: state.mi_cuenta
+        auth: state.auth
     }
 }
 

@@ -5,7 +5,6 @@ import gruposPermisosReducer from './generales/permisos/gruposPermisosReducer';
 import permisosReducer from './generales/permisos/permisosReducer';
 import usuariosReducer from './generales/usuariosReducer';
 import loadingReducer from './generales/loadingReducer';
-import miCuentaReducer from './generales/miCuentaReducer';
 import menuReducer from './generales/menuReducer';
 import auth from './generales/authentication/authenticationReducer';
 
@@ -68,7 +67,6 @@ const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
     permisos: permisosReducer,
     grupos_permisos: gruposPermisosReducer,
-    mi_cuenta: miCuentaReducer,
     usuarios: usuariosReducer,
     esta_cargando: loadingReducer,
     notifications: notificationsReducers,

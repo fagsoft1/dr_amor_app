@@ -21,14 +21,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = UsuarioSerializer
 
-    @list_route(methods=['get'], permission_classes=[permissions.IsAuthenticated])
-    def mi_cuenta(self, request):
-        qs = self.queryset.filter(
-            id=request.user.id
-        ).distinct().first()
-        serializer = self.get_serializer(qs)
-        return Response(serializer.data)
-
     @detail_route(methods=['post'])
     def adicionar_permiso(self, request, pk=None):
         usuario = self.get_object()
@@ -102,6 +94,5 @@ class LoginViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'], permission_classes=[permissions.IsAuthenticated, ])
     def cargar_usuario(self, request) -> Response:
-        UserSerializer = knox_settings.USER_SERIALIZER
-        serializer = UserSerializer(self.request.user)
+        serializer = UsuarioSerializer(self.request.user, context={'request': request})
         return Response(serializer.data)

@@ -26,7 +26,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'first_name',
             'punto_venta_actual',
             'last_name',
-            # 'sesion_trabajo_pv',
             'email',
             'is_active',
             'is_staff',

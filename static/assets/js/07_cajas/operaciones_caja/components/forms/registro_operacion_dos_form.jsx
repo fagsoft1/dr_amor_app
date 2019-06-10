@@ -33,7 +33,7 @@ class RegistroOperacionForm extends Component {
             submitting,
             pristine,
             reset,
-            mi_cuenta: {punto_venta_actual},
+            auth: {user: {punto_venta_actual}},
             cerrarModal,
             form_values,
             error,
@@ -182,7 +182,7 @@ const selector = formValueSelector('registroOperacionForm');
 function mapPropsToState(state, ownProps) {
     const form_values = selector(state, 'tipo', 'grupo', 'tercero', 'concepto', 'valor');
     return {
-        mi_cuenta: state.mi_cuenta,
+        auth: state.auth,
         form_values,
         conceptos_operaciones_caja: state.conceptos_operaciones_caja,
         acompanantes: state.acompanantes,

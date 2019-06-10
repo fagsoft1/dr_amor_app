@@ -41,7 +41,7 @@ class ServicioDetailModal extends Component {
             servicio,
             solicitarAnulacionServicio,
             cerraModal,
-            mi_cuenta: {punto_venta_actual}
+            auth: {user: {punto_venta_actual}},
         } = this.props;
         solicitarAnulacionServicio(
             servicio.id,
@@ -56,7 +56,7 @@ class ServicioDetailModal extends Component {
             servicio,
             cambiarTiempoServicio,
             cerraModal,
-            mi_cuenta: {punto_venta_actual}
+            auth: {user: {punto_venta_actual}},
         } = this.props;
         cambiarTiempoServicio(
             servicio.id,
@@ -70,7 +70,7 @@ class ServicioDetailModal extends Component {
             cambiarHabitacion,
             servicio,
             cerraModal,
-            mi_cuenta: {punto_venta_actual}
+            auth: {user: {punto_venta_actual}},
         } = this.props;
         const servicios_array_id = _.map(servicios, s => s.id);
         cambiarHabitacion(

@@ -112,7 +112,7 @@ class DrawerMenu extends Component {
             lista_menu = null,
             titulo = 'Colocar Titulo',
             menu_status: {open_menu, submenu_abiertos},
-            mi_cuenta
+            auth:{user}
         } = this.props;
         const menu_abierto = submenu_abiertos > 0 || open_menu;
         return (
@@ -142,15 +142,15 @@ class DrawerMenu extends Component {
                             {titulo}
                         </Typography>
                         {
-                            mi_cuenta &&
-                            mi_cuenta.imagen_perfil_url &&
+                            user &&
+                            user.imagen_perfil_url &&
                             <div style={{
                                 position: 'absolute',
                                 bottom: -10,
                                 right: 0
                             }}>
                                 <Grid container justify="center" alignItems="center">
-                                    <Avatar alt="Remy Sharp" src={mi_cuenta.imagen_perfil_url}
+                                    <Avatar alt="Remy Sharp" src={user.imagen_perfil_url}
                                             className={classes.bigAvatar}/>
                                 </Grid>
                             </div>
@@ -217,7 +217,7 @@ class DrawerMenu extends Component {
 function mapPropsToState(state, ownProps) {
     return {
         menu_status: state.menu_status,
-        mi_cuenta: state.mi_cuenta
+        auth: state.auth
     }
 }
 

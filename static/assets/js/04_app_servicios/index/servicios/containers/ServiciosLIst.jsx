@@ -16,7 +16,7 @@ class ServicioList extends Component {
             fetchServicios_en_proceso,
             terminarServicio,
             fetchHabitaciones,
-            mi_cuenta: {punto_venta_actual}
+            auth: {user: {punto_venta_actual}},
         } = this.props;
 
         const cargarHabitaciones = () => fetchHabitaciones();
