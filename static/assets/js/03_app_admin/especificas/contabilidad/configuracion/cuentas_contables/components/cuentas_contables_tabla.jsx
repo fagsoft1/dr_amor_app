@@ -1,8 +1,8 @@
 import React from "react";
 import Checkbox from '@material-ui/core/Checkbox/index';
-import MyDialogButtonDelete from '../../../../../../00_utilities/components/ui/dialog/delete_dialog';
-import IconButtonTableSee from '../../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
-import IconButtonTableEdit from '../../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
+import MyDialogButtonDelete from '../../../../../../00_utilities/components/ui/dialog/DeleteDialog';
+import IconButtonTableSee from '../../../../../../00_utilities/components/ui/icon/TableIconButtonDetail';
+import IconButtonTableEdit from '../../../../../../00_utilities/components/ui/icon/TableIconButtonEdit';
 import {Link} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome/index';
 
@@ -10,7 +10,7 @@ import ReactTable from "react-table";
 
 class Tabla extends React.Component {
     render() {
-        let data = _.orderBy(this.props.data, ['cuenta_nivel'], ['asc']);
+        let data = _.orderBy(_.map(this.props.list), ['cuenta_nivel'], ['asc']);
         data = _.orderBy(data, ['cuenta_nivel_8'], ['asc']);
         data = _.orderBy(data, ['cuenta_nivel_7'], ['asc']);
         data = _.orderBy(data, ['cuenta_nivel_5'], ['asc']);

@@ -1,11 +1,11 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
-import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
+import CargarDatos from "../../../../../00_utilities/components/system/CargarDatos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 import AddPuntoVenta from '../components/add_punto_venta';
-import IconButtonTableDelete from '../../../../../00_utilities/components/ui/icon/table_icon_button_delete';
+import IconButtonTableDelete from '../../../../../00_utilities/components/ui/icon/TableIconButtonDelete';
 import {
     COLABORADORES as permisos_view
 } from "../../../../../00_utilities/permisos/types";

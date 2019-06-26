@@ -1,6 +1,6 @@
 import React from "react";
-import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
-import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/table_icon_button_edit';
+import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/DeleteDialog';
+import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/TableIconButtonEdit';
 
 import ReactTable from "react-table";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -8,7 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 class Tabla extends React.Component {
     render() {
 
-        const data = this.props.data;
+        const data = _.map(this.props.list);
         const {
             updateItem,
             singular_name,

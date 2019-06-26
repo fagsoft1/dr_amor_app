@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import DrawerListItem from '../../../00_utilities/components/ui/drawer/drawer_list_item';
+import DrawerListItem from '../../../00_utilities/components/ui/drawer/DrawerMenuListItem';
 
 const Menu = () => <Fragment>
     <DrawerListItem

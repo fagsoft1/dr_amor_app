@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import CategoriaUnoMenu from '../components/MenuCategoriaUno';
 import TablaPedidoActual from '../components/PedidoActualTable';
 import Combobox from 'react-widgets/lib/Combobox';
-import QrReaderComponent from '../../../00_utilities/components/system/qrreader';
+import QrReaderComponent from '../../../00_utilities/components/system/QrReader';
 
 class PuntoVentaTienda extends Component {
     constructor(props) {

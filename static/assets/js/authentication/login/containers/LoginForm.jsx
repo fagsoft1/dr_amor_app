@@ -1,5 +1,5 @@
-import React, {Component, Fragment} from "react";
-import {connect} from "react-redux";
+import React, {Fragment} from "react";
+import {useSelector, useDispatch} from "react-redux";
 import {reduxForm} from 'redux-form';
 
 import {Redirect} from "react-router-dom";
@@ -12,103 +12,81 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {withStyles} from "@material-ui/core/styles/index";
 import Button from '@material-ui/core/Button';
 
-class LoginForm extends Component {
-    constructor(props) {
-        super(props);
-        this.onSubmit = this.onSubmit.bind(this);
+let LoginForm = (props) => {
+    const {
+        handleSubmit,
+        pristine,
+        submitting,
+        reset,
+        error,
+        classes
+    } = props;
+    const esta_cargando = useSelector(state => state.esta_cargando);
+    const auth = useSelector(state => state.auth);
+    const dispatch = useDispatch();
+    const onSubmit = (e) => dispatch(actions.login(e.username, e.password));
+    if (auth.isAuthenticated) {
+        return <Redirect to="/"/>
     }
 
-    componentWillUnmount() {
-        this.props.clearPuntosVentas();
-    }
-
-
-    onSubmit(e) {
-        const {username, password} = e;
-        return this.props.login(username, password);
-    }
-
-    render() {
-        const {
-            handleSubmit,
-            pristine,
-            submitting,
-            reset,
-            auth,
-            error,
-            esta_cargando,
-            classes
-        } = this.props;
-
-        if (auth.isAuthenticated) {
-            return <Redirect to="/"/>
-        }
-        return (
-            <div className="container form-signin pt-3 text-center" style={{width: '400px'}}>
-                <FontAwesomeIcon
-                    className={classes.iconoMain}
-                    icon={['far', 'lock']}
-                    size='5x'
+    return (
+        <div className="container form-signin pt-3 text-center" style={{width: '400px'}}>
+            <FontAwesomeIcon
+                className={classes.iconoMain}
+                icon={['far', 'lock']}
+                size='5x'
+            />
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <MyTextFieldSimple
+                    name='username'
+                    nombre='Nombre de Usuario'
+                    disabled={esta_cargando.cargando}
+                    className='col-12'
+                    onChange={() => {
+                        dispatch(actions.clear_authentication_errors())
+                    }}
                 />
-                <form onSubmit={handleSubmit(this.onSubmit)}>
+                <Fragment>
                     <MyTextFieldSimple
-                        name='username'
-                        nombre='Nombre de Usuario'
-                        disabled={esta_cargando.cargando}
+                        name='password'
+                        nombre='Contraseña'
                         className='col-12'
+                        type='password'
+                        disabled={esta_cargando.cargando}
+                        autoFocus={true}
                         onChange={() => {
-                            this.props.clear_authentication_errors();
+                            dispatch(actions.clear_authentication_errors())
                         }}
                     />
-                    <Fragment>
-                        <MyTextFieldSimple
-                            name='password'
-                            nombre='Contraseña'
-                            className='col-12'
-                            type='password'
-                            disabled={esta_cargando.cargando}
-                            autoFocus={true}
-                            onChange={() => {
-                                this.props.clear_authentication_errors();
-                            }}
-                        />
-                    </Fragment>
-                    <div className='mt-3'>
-                        <Typography variant="caption" gutterBottom color="error">
-                            {error && <strong>{error}</strong>}
-                        </Typography>
-                    </div>
-                    <Button
-                        variant="contained"
-                        className='ml-3'
-                        color='primary'
-                        disabled={submitting || pristine || esta_cargando.cargando}
-                        type='submit'
-                    >
-                        Ingresar
-                    </Button>
+                </Fragment>
+                <div className='mt-3'>
+                    <Typography variant="caption" gutterBottom color="error">
+                        {error && <strong>{error}</strong>}
+                    </Typography>
+                </div>
+                <Button
+                    variant="contained"
+                    className='ml-3'
+                    color='primary'
+                    disabled={submitting || pristine || esta_cargando.cargando}
+                    type='submit'
+                >
+                    Ingresar
+                </Button>
 
-                    <Button
-                        color="secondary"
-                        variant="contained"
-                        className='ml-3'
-                        onClick={reset}
-                        disabled={submitting || pristine || esta_cargando.cargando}
-                    >
-                        Limpiar
-                    </Button>
-                </form>
-            </div>
-        )
-    }
-}
-
-function mapPropsToState(state, ownProps) {
-    return {
-        esta_cargando: state.esta_cargando,
-        auth: state.auth
-    }
-}
+                <Button
+                    color="secondary"
+                    variant="contained"
+                    className='ml-3'
+                    onClick={reset}
+                    disabled={submitting || pristine || esta_cargando.cargando}
+                >
+                    Limpiar
+                </Button>
+            </form>
+        </div>
+    )
+};
 
 LoginForm = reduxForm({
     form: "loginForm",
@@ -125,5 +103,4 @@ const styles = theme => (
         },
     })
 ;
-
-export default withStyles(styles, {withTheme: true})(connect(mapPropsToState, actions)(LoginForm));
+export default withStyles(styles, {withTheme: true})(LoginForm);

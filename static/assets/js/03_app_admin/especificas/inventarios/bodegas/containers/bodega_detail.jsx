@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
-import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
+import CargarDatos from "../../../../../00_utilities/components/system/CargarDatos";
 import ValidarPermisos from "../../../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 import Typography from '@material-ui/core/Typography';

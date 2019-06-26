@@ -4,7 +4,7 @@ import CreateForm from './forms/AccesoForm';
 import CategoriaModelo from './CategoriaModeloGrupo';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import CargarDatos from "../../../00_utilities/components/system/cargar_datos";
+import CargarDatos from "../../../00_utilities/components/system/CargarDatos";
 
 class List extends Component {
     constructor(props) {

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
-import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from '../../../../terceros/componentes/forms/validate';
 import asyncValidate from './asyncValidate';
@@ -51,13 +50,6 @@ class Form extends Component {
     }
 }
 
-function mapPropsToState(state, ownProps) {
-    const {item_seleccionado} = ownProps;
-    return {
-        initialValues: item_seleccionado
-    }
-}
-
 Form = reduxForm({
     form: "colaboradorForm",
     validate,
@@ -66,6 +58,5 @@ Form = reduxForm({
     enableReinitialize: true
 })(Form);
 
-Form = (connect(mapPropsToState, null)(Form));
 
 export default Form;

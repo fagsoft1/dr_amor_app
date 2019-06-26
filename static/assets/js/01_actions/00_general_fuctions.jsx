@@ -88,7 +88,7 @@ export function createRequest(request, options = {}) {
 export function fetchListGet(url, options) {
     console.log(`%cFETCH LIST - %c${url.toUpperCase()}`, 'color:red', 'color:blue');
     const mensaje_cargando = `Consultando ${url.toUpperCase()}`;
-    const FULL_URL = `${url}/?format=json`;
+    const FULL_URL = `${url}/`;
     const headers = {"Content-Type": "application/json"};
     if (localStorage.token) {
         headers["Authorization"] = `Token ${localStorage.token}`;
@@ -101,7 +101,7 @@ export function fetchListGet(url, options) {
 export function fetchListGetURLParameters(url, options) {
     console.log(`%cFETCH LIST PARAMETROS - %c${url.toUpperCase()}`, 'color:red', 'color:blue');
     const mensaje_cargando = `Consultando ${url.toUpperCase()}`;
-    const FULL_URL = `${url}&format=json`;
+    const FULL_URL = `${url}`;
     const headers = {"Content-Type": "application/json"};
     if (localStorage.token) {
         headers["Authorization"] = `Token ${localStorage.token}`;
@@ -131,7 +131,7 @@ export function fetchListPostURLParameters(url, method, values, options) {
 export function fetchObject(url, id, options) {
     console.log(`%cFETCH OBJETO - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
     const mensaje_cargando = `Consultando elemento en ${url.toUpperCase()}`;
-    const FULL_URL = `${url}/${id}/?format=json`;
+    const FULL_URL = `${url}/${id}/`;
     const request = axios_instance.get(FULL_URL);
     const headers = {"Content-Type": "application/json"};
     if (localStorage.token) {
@@ -235,7 +235,7 @@ export function callApiMethodPostParametersPDF(url, id, method, parameters, opti
 export function fetchObjectWithParameterPDF(url, options) {
     console.log(`%cFETCH LIST PARAMETROS - %c${url.toUpperCase()} PARA PDF`, 'color:red', 'color:blue');
     const mensaje_cargando = `Ejecutando PDF ${method.toUpperCase()} en ${url.toUpperCase()}`;
-    const FULL_URL = `${url}&format=json`;
+    const FULL_URL = `${url}`;
     const request = axios_instance.get(FULL_URL, {responseType: 'arraybuffer'});
     return createRequest(request, {...options, mensaje_cargando});
 }

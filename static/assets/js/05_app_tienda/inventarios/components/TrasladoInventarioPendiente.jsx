@@ -1,7 +1,7 @@
 import React, {Fragment} from "react";
 import {fechaHoraFormatoUno} from "../../../00_utilities/common";
 import GeneralDialog from '../../../00_utilities/components/ui/dialog/general_dialog';
-import IconButtonTableSee from '../../../00_utilities/components/ui/icon/table_icon_button_detail';
+import IconButtonTableSee from '../../../00_utilities/components/ui/icon/TableIconButtonDetail';
 import PropTypes from "prop-types";
 import Typography from '@material-ui/core/Typography';
 

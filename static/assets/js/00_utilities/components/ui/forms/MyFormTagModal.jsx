@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {memo} from 'react';
 import PropTypes from "prop-types";
-import MyDialogCreate from '../../../../00_utilities/components/ui/dialog/create_dialog';
-import BotoneriaModalForm from '../../../../00_utilities/components/ui/forms/botoneria_modal_form';
+import MyDialogCreate from '../dialog/CreateDialog';
+import BotoneriaModalForm from './BotoneriaModalForm';
 import Typography from '@material-ui/core/Typography';
 
-export const MyFormTagModal = (props) => {
+export const MyFormTagModal = memo((props) => {
     const {
         pristine,
         submitting,
@@ -52,7 +52,7 @@ export const MyFormTagModal = (props) => {
             </form>
         </MyDialogCreate>
     )
-};
+});
 MyFormTagModal.propTypes = {
     element_type: PropTypes.string,
     onSubmit: PropTypes.func,

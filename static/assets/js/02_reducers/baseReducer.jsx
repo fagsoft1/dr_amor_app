@@ -12,22 +12,29 @@ export default function (actions_types, state = {}, action, id = 'id') {
     switch (action.type) {
         case actions_types.create:
             mostrarLogs('create');
-            return {...state, [action.payload.data.id]: action.payload.data};
+            state = {...state, [action.payload.data.id]: action.payload.data};
+            return state;
         case actions_types.delete:
             mostrarLogs('delete');
-            return omit(state, action.payload);
+            state = omit(state, action.payload);
+            return state;
         case actions_types.fetch_all:
             mostrarLogs('fetch_all');
-            return mapKeys(action.payload.data, id);
+            state = mapKeys(action.payload.data, id);
+            return state;
         case actions_types.fetch:
             mostrarLogs('fetch');
-            return {...state, [action.payload.data.id]: action.payload.data};
+            if (!_.isEqual(action.payload.data, state[action.payload.data.id])) {
+                state = {...state, [action.payload.data.id]: action.payload.data};
+            }
+            return state;
         case actions_types.clear:
             mostrarLogs('clear');
             return {};
         case actions_types.update:
             mostrarLogs('update');
-            return {...state, [action.payload.data.id]: action.payload.data};
+            state = {...state, [action.payload.data.id]: action.payload.data};
+            return state;
         default:
             return state;
     }

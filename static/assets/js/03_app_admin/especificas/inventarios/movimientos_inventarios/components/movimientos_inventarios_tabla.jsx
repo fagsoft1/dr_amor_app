@@ -1,7 +1,7 @@
 import React from "react";
-import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/delete_dialog';
+import MyDialogButtonDelete from '../../../../../00_utilities/components/ui/dialog/DeleteDialog';
 import {fechaFormatoUno} from '../../../../../00_utilities/common';
-import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
+import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/TableIconButtonDetail';
 import {Link} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
@@ -10,7 +10,7 @@ import ReactTable from "react-table";
 class Tabla extends React.Component {
     render() {
 
-        const data = this.props.data;
+        const data = _.map(this.props.list);
         const {
             updateItem,
             singular_name,

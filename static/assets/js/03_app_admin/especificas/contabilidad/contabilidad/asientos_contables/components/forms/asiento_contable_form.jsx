@@ -5,7 +5,6 @@ import {
     MyCombobox
 } from '../../../../../../../00_utilities/components/ui/forms/fields';
 import TextField from '@material-ui/core/TextField';
-import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
 import {pesosColombianos, fechaFormatoUno} from "../../../../../../../00_utilities/common";
@@ -431,19 +430,10 @@ class Form extends Component {
     }
 }
 
-function mapPropsToState(state, ownProps) {
-    const {item_seleccionado} = ownProps;
-    return {
-        initialValues: item_seleccionado
-    }
-}
-
 Form = reduxForm({
     form: "habitacionesForm",
     validate,
     enableReinitialize: true
 })(Form);
-
-Form = (connect(mapPropsToState, null)(Form));
 
 export default Form;

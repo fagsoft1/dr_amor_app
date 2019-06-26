@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import * as actions from "../../../../01_actions/01_index";
 import HabitacionList from '../../habitaciones/containers/HabitacionList';
 import ServiciosList from '../../servicios/containers/ServiciosLIst';
-import CargarDatos from "../../../../00_utilities/components/system/cargar_datos";
+import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
 import {connect} from "react-redux";
 import HabitacionDetailModal from '../../habitaciones/components/HabitacionModalDetail';
 import ServicioDetailModal from '../../servicios/components/ServicioModalDetail';

@@ -155,10 +155,8 @@ const selector = formValueSelector('movimientosInventariosForm');
 
 
 function mapPropsToState(state, ownProps) {
-    const {item_seleccionado} = ownProps;
     const values = selector(state, 'motivo', '');
     return {
-        initialValues: item_seleccionado,
         valores: values
     }
 }

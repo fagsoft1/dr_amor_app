@@ -109,9 +109,7 @@ const selector = formValueSelector('conceptoOperacionCajaForm');
 
 function mapPropsToState(state, ownProps) {
     const form_values = selector(state, 'grupo', 'tipo');
-    const {item_seleccionado} = ownProps;
     return {
-        initialValues: item_seleccionado,
         form_values
     }
 }

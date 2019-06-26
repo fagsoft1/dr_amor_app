@@ -1,13 +1,13 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
-import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
+import CargarDatos from "../../../../../00_utilities/components/system/CargarDatos";
 import {COLABORADORES as permisos_view} from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 
 import CreateForm from '../components/forms/colaboradores_form';
 import Tabla from '../components/colaboradores_tabla';
-import crudHOC from '../../../../../00_utilities/components/hoc_crud';
+import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 
 
 const CRUD = crudHOC(CreateForm, Tabla);

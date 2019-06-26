@@ -1,14 +1,14 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
-import CargarDatos from "../../../../00_utilities/components/system/cargar_datos";
+import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
 import {
     GROUPS as permisos_view_groups
 } from "../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../00_utilities/common";
 import CreateForm from '../components/forms/grupo_permiso_form';
 import Tabla from '../components/grupos_permisos_tabla';
-import crudHOC from '../../../../00_utilities/components/hoc_crud';
+import crudHOC from '../../../../00_utilities/components/HOCCrud';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';

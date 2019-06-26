@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../../../../../01_actions/01_index";
-import CargarDatos from "../../../../../00_utilities/components/system/cargar_datos";
+import CargarDatos from "../../../../../00_utilities/components/system/CargarDatos";
 import {BODEGAS as permisos_view} from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import DrawerListItem from './../../00_utilities/components/ui/drawer/drawer_list_item';
-import ListCollapse from './../../00_utilities/components/ui/drawer/drawer_list_collapse';
+import DrawerListItem from '../../00_utilities/components/ui/drawer/DrawerMenuListItem';
+import ListCollapse from '../../00_utilities/components/ui/drawer/DrawerMenuListCollapse';
 
 
-const MenuTerceros = (props) => (
+const MenuTerceros = () => (
     <ListCollapse icono='users' texto='Terceros'>
         <DrawerListItem
             size='1x'

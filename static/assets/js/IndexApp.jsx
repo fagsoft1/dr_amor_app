@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import * as actions from "./01_actions/01_index";
-import Loading from "./00_utilities/components/system/loading_overlay";
+import Loading from "./00_utilities/components/system/LoadingOverlay";
 import {Link} from 'react-router-dom'
 import {TIPOS_REGISTRO_INGRESO as permisos_view} from './00_utilities/permisos/types';
 import {permisosAdapter} from "./00_utilities/common";

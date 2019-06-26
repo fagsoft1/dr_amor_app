@@ -52,10 +52,8 @@ class EntregaEfectivoForm extends Component {
 const selector = formValueSelector('wizard');
 
 function mapPropsToState(state, ownProps) {
-    const {item_seleccionado} = ownProps;
     const values = selector(state, 'dolares_cantidad', 'dolares_tasa');
     return {
-        initialValues: item_seleccionado,
         valores: values,
     }
 }

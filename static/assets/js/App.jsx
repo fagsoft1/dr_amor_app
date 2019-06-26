@@ -1,12 +1,12 @@
-import React, {Fragment, Component} from 'react';
+import React, {Fragment, Component, memo, useEffect, Suspense, lazy, useCallback} from 'react';
 import {hot} from 'react-hot-loader'
-import {BrowserRouter, Switch, Route, Redirect, withRouter} from 'react-router-dom';
+import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import ReduxPromise from 'redux-promise';
 import thunk from 'redux-thunk';
 import reducers from './02_reducers/index';
-import {connect} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import * as actions from "./01_actions/01_index";
 import NotFound from "./00_utilities/components/system/no_found_page";
 import Notification from './00_utilities/components/system/Notifications';
@@ -19,9 +19,6 @@ import 'bootstrap/dist/js/bootstrap';
 import './../../css/custom.css';
 import {far} from '@fortawesome/pro-regular-svg-icons';
 import {library} from '@fortawesome/fontawesome-svg-core'
-//import {fas} from '@fortawesome/pro-solid-svg-icons';
-//import {fal} from '@fortawesome/pro-light-svg-icons';
-//import {fab} from '@fortawesome/free-brands-svg-icons';
 
 library.add(far);
 
@@ -30,6 +27,7 @@ import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
 import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
+
 
 const theme = createMuiTheme({
     typography: {
@@ -52,12 +50,7 @@ const theme = createMuiTheme({
         primary: green,
         secondary: indigo,
         error: red,
-        // Used by `getContrastText()` to maximize the contrast between the background and
-        // the text.
         contrastThreshold: 3,
-        // Used to shift a color's luminance by approximately
-        // two indexes within its tonal palette.
-        // E.g., shift from Red 500 to Red 300 or Red 700.
         tonalOffset: 0.2,
     },
 });
@@ -83,42 +76,81 @@ function configureStore() {
 }
 
 import AppIndex from './IndexApp';
-import AppAdmin from './03_app_admin/App';
-import AppTienda from './05_app_tienda/App';
-import AppServicios from './04_app_servicios/App';
-import AppParqueadero from './10_app_parqueadero/App';
-import AppCaja from './07_cajas/App';
-import AppAcceso from './06_app_acceso/App';
-import AppConsultas from './09_app_consultas/App';
+
+const AppAdmin = lazy(() => import('./03_app_admin/App'));
+const AppTienda = lazy(() => import('./05_app_tienda/App'));
+const AppServicios = lazy(() => import('./04_app_servicios/App'));
+const AppParqueadero = lazy(() => import('./10_app_parqueadero/App'));
+const AppCaja = lazy(() => import('./07_cajas/App'));
+const AppAcceso = lazy(() => import('./06_app_acceso/App'));
+const AppConsultas = lazy(() => import('./09_app_consultas/App'));
+const MiCuenta = lazy(() => import('./08_app_mi_cuenta/App'));
 import Login from './authentication/login/containers/LoginForm';
-import MiCuenta from './08_app_mi_cuenta/App';
 
 
-class RootContainerComponent extends Component {
-    componentDidMount() {
-        this.props.loadUser();
+const InfoUsuario = memo(() => {
+    const auth = useSelector(state => state.auth);
+    console.log('Renderizó InfoUsuario')
+    if (!auth) {
+        return <Fragment></Fragment>
     }
-
-    PrivateRoute = ({component: ChildComponent, ...rest}) => {
-        return <Route {...rest} render={props => {
-            if (this.props.auth.isLoading) {
-                return <em>Loading...</em>;
-            } else if (!this.props.auth.isAuthenticated) {
-                return <Redirect to="/app/login"/>;
-            } else {
-                return <ChildComponent {...props} />
-            }
-        }}/>
-    };
-
-    render() {
-        let {PrivateRoute} = this;
-        const {auth: {user}} = this.props;
-        return (
-            <BrowserRouter>
+    const {user} = auth;
+    return (
+        <div style={{
+            position: 'fixed',
+            right: 10,
+            bottom: 10,
+            borderRadius: '10px',
+            border: 'solid black 2px',
+            padding: '2px',
+            backgroundColor: 'white'
+        }}>
+            {
+                user &&
+                user.punto_venta_actual &&
+                user.punto_venta_actual.nombre &&
                 <Fragment>
-                    <RouteLocationManager/>
-                    <Notification/>
+                    <strong>Punto de Venta: </strong>
+                    <small>{user.punto_venta_actual.nombre}</small>
+                    <br/>
+                </Fragment>
+            }
+            {
+                user &&
+                <Fragment>
+                    <strong>Usuario: </strong>
+                    <small>{user.username}</small>
+                </Fragment>
+            }
+        </div>
+    )
+});
+
+const PrivateRoute = ({component: ChildComponent, ...rest}) => {
+    const auth = useSelector(state => state.auth);
+    return <Route {...rest} render={props => {
+        if (auth.isLoading) {
+            return <em>Loading...</em>;
+        } else if (!auth.isAuthenticated) {
+            return <Redirect to="/app/login"/>;
+        } else {
+            return <ChildComponent {...props} />
+        }
+    }}/>
+};
+
+let ContainerRoot = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        console.log('useEffect de container rootss');
+        dispatch(actions.loadUser());
+    });
+    return (
+        <BrowserRouter>
+            <Fragment>
+                <Notification/>
+                <RouteLocationManager/>
+                <Suspense fallback={<div>Loading...</div>}>
                     <Switch>
                         <PrivateRoute exact path="/" component={AppIndex}/>
                         <PrivateRoute exact path='/app' component={AppIndex}/>
@@ -133,46 +165,14 @@ class RootContainerComponent extends Component {
                         <PrivateRoute path='/app/acceso' component={AppAcceso}/>
                         <PrivateRoute component={NotFound}/>
                     </Switch>
-                    <div style={{
-                        position: 'fixed',
-                        right: 10,
-                        bottom: 10,
-                        borderRadius: '10px',
-                        border: 'solid black 2px',
-                        padding: '2px',
-                        backgroundColor: 'white'
-                    }}>
-                        {
-                            user &&
-                            user.punto_venta_actual &&
-                            user.punto_venta_actual.nombre &&
-                            <Fragment>
-                                <strong>Punto de Venta: </strong>
-                                <small>{user.punto_venta_actual.nombre}</small>
-                                <br/>
-                            </Fragment>
-                        }
-                        {
-                            user &&
-                            <Fragment>
-                                <strong>Usuario: </strong>
-                                <small>{user.username}</small>
-                            </Fragment>
-                        }
-                    </div>
-                </Fragment>
-            </BrowserRouter>
-        )
-    }
-}
+                </Suspense>
+                <InfoUsuario/>
+            </Fragment>
+        </BrowserRouter>
+    )
+};
 
-function mapPropsToState(state, ownProps) {
-    return {
-        auth: state.auth
-    }
-}
-
-let RootContainer = hot(module)(connect(mapPropsToState, actions)(RootContainerComponent));
+ContainerRoot = hot(module)(ContainerRoot);
 
 
 export default class App extends Component {
@@ -180,7 +180,7 @@ export default class App extends Component {
         return (
             <Provider store={store}>
                 <MuiThemeProvider theme={theme}>
-                    <RootContainer/>
+                    <ContainerRoot/>
                 </MuiThemeProvider>
             </Provider>
         )

@@ -1,5 +1,5 @@
-import React, {Fragment} from 'react';
-import DrawerListItem from '../../00_utilities/components/ui/drawer/drawer_list_item';
+import React, {Fragment, memo} from 'react';
+import DrawerListItem from '../../00_utilities/components/ui/drawer/DrawerMenuListItem';
 
 
 const Menu = () => <Fragment>
@@ -17,4 +17,4 @@ const Menu = () => <Fragment>
     />
 </Fragment>;
 
-export default Menu;
+export default memo(Menu);

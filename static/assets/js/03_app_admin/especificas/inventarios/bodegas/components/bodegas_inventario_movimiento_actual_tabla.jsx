@@ -1,7 +1,7 @@
 import React from "react";
 import {numerosFormato, pesosColombianos} from '../../../../../00_utilities/common'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/table_icon_button_detail';
+import IconButtonTableSee from '../../../../../00_utilities/components/ui/icon/TableIconButtonDetail';
 
 import ReactTable from "react-table";
 

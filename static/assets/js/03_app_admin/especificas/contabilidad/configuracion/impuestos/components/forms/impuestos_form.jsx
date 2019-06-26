@@ -117,11 +117,9 @@ class Form extends Component {
 const selector = formValueSelector('impuestosForm');
 
 function mapPropsToState(state, ownProps) {
-    const {item_seleccionado} = ownProps;
     const values = selector(state, 'tipo_calculo_impuesto', '');
     return {
-        valores: values,
-        initialValues: item_seleccionado
+        valores: values
     }
 }
 

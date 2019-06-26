@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
 import {MyTextFieldSimple, MyCheckboxSimple} from '../../../../../../00_utilities/components/ui/forms/fields';
-import {connect} from "react-redux";
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
 
@@ -48,19 +47,10 @@ class Form extends Component {
     }
 }
 
-function mapPropsToState(state, ownProps) {
-    const {item_seleccionado} = ownProps;
-    return {
-        initialValues: item_seleccionado
-    }
-}
-
 Form = reduxForm({
     form: "bodegasForm",
     validate,
     enableReinitialize: true
 })(Form);
-
-Form = (connect(mapPropsToState, null)(Form));
 
 export default Form;
