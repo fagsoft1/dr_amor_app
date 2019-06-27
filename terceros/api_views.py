@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull, EsColaboradorPermission
@@ -58,20 +58,20 @@ class CuentaViewSet(viewsets.ModelViewSet):
 
         return super().retrieve(request, *args, **kwargs)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def cuentas_acompanantes_sin_liquidar(self, request):
         self.serializer_class = CuentaAcompananteSerializer
         qs = Cuenta.cuentas_acompanantes.sin_liquidar().all()
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def cuentas_sin_liquidar(self, request):
         qs = Cuenta.objects.filter(liquidada=False)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def liquidar_cuenta_acompanante(self, request, pk=None):
         from liquidaciones.services import liquidar_cuenta_acompanante
         cuenta = self.get_object()
@@ -83,7 +83,7 @@ class CuentaViewSet(viewsets.ModelViewSet):
         )
         return Response({'liquidacion_id': liquidacion_cuenta.id})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def liquidar_cuenta_mesero(self, request, pk=None):
         from liquidaciones.services import liquidar_cuenta_mesero
         cuenta = self.get_object()
@@ -106,7 +106,7 @@ class TerceroViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
     ).all()
     serializer_class = TerceroSerializer
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def cambiar_pin(self, request, pk=None):
         from terceros.services import tercero_cambiar_pin
         tercero = self.get_object()
@@ -115,7 +115,7 @@ class TerceroViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
         tercero_cambiar_pin(tercero_id=tercero.id, password=password, pin=pin)
         return Response({'result': 'El pin se ha cambiado correctamente'})
 
-    @list_route(methods=['post'])
+    @action(detail=False, methods=['post'])
     def buscar_por_qr(self, request):
         codigo_qr = request.POST.get('codigo_qr')
         qs = Tercero.internos.presentes().filter(
@@ -127,26 +127,26 @@ class TerceroViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
             raise serializers.ValidationError({'_error': 'No se encuentra usuario con este codigo qr'})
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def listar_presentes(self, request) -> Response:
         qs = Tercero.internos.presentes()
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def listar_ausentes(self, request) -> Response:
         qs = Tercero.internos.ausentes().activos()
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def generar_qr(self, request, pk=None):
         tercero = self.get_object()
         tercero_generarQR(tercero.id)
         serializer = self.get_serializer(tercero)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def registrar_ingreso(self, request, pk=None):
         from terceros.services import tercero_registra_entrada
         tercero = self.get_object()
@@ -155,7 +155,7 @@ class TerceroViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
         mensaje = 'El registro de Entrada para %s ha sido éxitoso' % (tercero.full_name_proxy)
         return Response({'result': mensaje})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def registrar_salida(self, request, pk=None):
         from terceros.services import tercero_registra_salida
         tercero = self.get_object()
@@ -189,7 +189,7 @@ class AcompananteViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def validar_documento_acompanante(self, request) -> Response:
         from terceros.services import acompanante_encriptar
         validacion_reponse = {}
@@ -205,7 +205,7 @@ class AcompananteViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
             validacion_reponse.update({'alias_modelo': 'Ya exite'})
         return Response(validacion_reponse)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def listar_presentes(self, request) -> Response:
         qs = Tercero.acompanantes.presentes()
         serializer = self.get_serializer(qs, many=True)
@@ -218,7 +218,7 @@ class ColaboradorViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
     serializer_class = ColaboradorSerializer
     search_fields = ['=nro_identificacion', 'nombre', 'nombre_segundo', 'apellido', 'apellido_segundo']
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def adicionar_punto_venta(self, request, pk=None):
         # TODO: Hacer funcion
         colaborador = self.get_object()
@@ -230,7 +230,7 @@ class ColaboradorViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
                 usuario.mis_puntos_venta.add(punto_venta_id)
         return Response({'result': 'se ha adicionado correctamente el punto de venta'})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def quitar_punto_venta(self, request, pk=None):
         # TODO: Hacer funcion
         colaborador = self.get_object()
@@ -241,7 +241,7 @@ class ColaboradorViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
                 usuario.mis_puntos_venta.remove(punto_venta_id)
         return Response({'result': 'se ha retirado correctamente el punto de venta'})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def upload_archivo(self, request, pk=None):  # pragma: no cover
         colaborador = self.get_object()
         archivo = self.request.FILES['archivo']

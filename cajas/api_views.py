@@ -2,7 +2,7 @@ from io import BytesIO
 
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull, EsColaboradorPermission
@@ -28,7 +28,7 @@ class OperacionCajaViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = OperacionCajaSerializer
 
-    @list_route(methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def consultar_por_tercero_cuenta_abierta(self, request):
         tercero_id = request.GET.get('tercero_id', None)
         qs = self.queryset.filter(
@@ -61,14 +61,14 @@ class ArqueoCajaViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = ArqueoCajaSerializer
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def mi_ultimo_arqueo_caja(self, request):
         usuario = self.request.user
         arqueo = ArqueoCaja.objects.filter(punto_venta_turno__usuario=usuario).last()
         serializer = self.get_serializer(arqueo)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def imprimir_entrega(self, request, pk=None):
         from .services import arqueo_generar_recibo_entrega
         arqueo = self.get_object()
@@ -84,7 +84,7 @@ class ArqueoCajaViewSet(viewsets.ModelViewSet):
         output.close()
         return response
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def imprimir_arqueo(self, request, pk=None):
         from .services import arqueo_generar_reporte
         arqueo = self.get_object()
@@ -100,7 +100,7 @@ class ArqueoCajaViewSet(viewsets.ModelViewSet):
         output.close()
         return response
 
-    # @detail_route(methods=['post'])
+    # @action(detail=True, methods=['post'])
     # def enviar_arqueo_email(self, request, pk=None):
     #     arqueo = self.get_object()
     #     main_doc = self.generar_pdf_arqueo(request)

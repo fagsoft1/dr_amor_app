@@ -1,5 +1,5 @@
 from rest_framework import viewsets, permissions
-from rest_framework.decorators import list_route
+from rest_framework.decorators  import action
 from rest_framework.response import Response
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull, EsColaboradorPermission
@@ -18,7 +18,7 @@ class CuentaContableViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = CuentaContableSerializer
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def cuentas_detalles(self, request):
         qs = self.queryset.filter(
             tipo='D'
@@ -26,7 +26,7 @@ class CuentaContableViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def cuentas_titulo(self, request):
         qs = self.queryset.filter(
             tipo='T'

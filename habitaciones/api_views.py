@@ -2,7 +2,7 @@ import json
 
 from django.db.models import Max, Subquery, OuterRef, ExpressionWrapper, DateTimeField
 from rest_framework import viewsets, permissions
-from rest_framework.decorators import detail_route
+from rest_framework.decorators  import action
 from rest_framework.response import Response
 
 from .api_serializers import HabitacionSerializer, TipoHabitacionSerializer, TipoHabitacionConDetalleSerializer
@@ -31,7 +31,7 @@ class TipoHabitacionViewSet(viewsets.ModelViewSet):
         self.serializer_class = TipoHabitacionConDetalleSerializer
         return super().update(request, *args, **kwargs)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def adicionar_quitar_impuesto(self, request, pk=None):
         from .services import tipo_habitacion_adicionar_quitar_impuesto
         tipo_habitacion = self.get_object()
@@ -68,7 +68,7 @@ class HabitacionViewSet(viewsets.ModelViewSet):
         ).all()
         return qs
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def terminar_servicios(self, request, pk=None):
         habitacion = self.get_object()
         punto_venta_id = self.request.POST.get('punto_venta_id', None)
@@ -79,7 +79,7 @@ class HabitacionViewSet(viewsets.ModelViewSet):
         mensaje = 'Los servicios para habitacion %s se han terminado.' % (habitacion.numero)
         return Response({'result': mensaje})
 
-    @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def iniciar_servicios(self, request, pk=None):
         habitacion = self.get_object()
         pago = json.loads(request.POST.get('pago'))
@@ -103,7 +103,7 @@ class HabitacionViewSet(viewsets.ModelViewSet):
         )
         return Response({'result': 'Los servicios se han iniciado correctamente'})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def cambiar_habitacion(self, request, pk=None):
         pago = json.loads(request.POST.get('pago'))
         # punto_venta_id = pago.get('punto_venta_id', None)
@@ -124,7 +124,7 @@ class HabitacionViewSet(viewsets.ModelViewSet):
         mensaje = 'Se han cambiado los servicios para la habitacion %s.' % (habitacion_nueva.nombre)
         return Response({'result': mensaje})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def cambiar_estado(self, request, pk=None):
         nuevo_estado = int(request.POST.get('estado'))
         habitacion = self.get_object()

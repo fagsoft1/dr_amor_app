@@ -1,6 +1,6 @@
 import json
 from rest_framework import viewsets, permissions
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from servicios.services import servicio_terminar, servicio_cambiar_tiempo
@@ -22,7 +22,7 @@ class ServicioViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = ServicioSerializer
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def consultar_por_tercero_cuenta_abierta(self, request):
         tercero_id = request.GET.get('tercero_id', None)
         qs = self.queryset.filter(
@@ -33,13 +33,13 @@ class ServicioViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def en_proceso(self, request):
         qs = self.queryset.filter(estado__in=[1, 0])
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def pendientes_por_habitacion(self, request):
         habitacion_id = self.request.GET.get('habitacion_id')
         servicios_list = self.queryset.filter(
@@ -49,13 +49,13 @@ class ServicioViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(servicios_list, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def terminados(self, request):
         qs = self.queryset.filter(estado=2)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def solicitar_anulacion(self, request, pk=None):
         servicio = self.get_object()
         observacion_anulacion = request.POST.get('observacion_anulacion')
@@ -70,7 +70,7 @@ class ServicioViewSet(viewsets.ModelViewSet):
         mensaje = 'Se ha solicitado anulación para el servicio de %s.' % (tercero.full_name_proxy)
         return Response({'result': mensaje})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def terminar_servicio(self, request, pk=None):
         servicio = self.get_object()
         # TODO: evaluar quitar del post, ya viene del usuario activo
@@ -84,7 +84,7 @@ class ServicioViewSet(viewsets.ModelViewSet):
             mensaje = 'El servicios de %s se ha terminado.' % (tercero.full_name_proxy)
             return Response({'result': mensaje})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def cambiar_tiempo(self, request, pk=None):
         servicio = self.get_object()
         pago = json.loads(request.POST.get('pago'))

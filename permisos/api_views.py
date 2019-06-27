@@ -2,7 +2,7 @@ from django.contrib.auth.models import User, Permission, Group
 from django.db.models import Q
 
 from rest_framework import viewsets, permissions
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
@@ -14,7 +14,7 @@ class PermissionViewSet(viewsets.ModelViewSet):
     queryset = Permission.objects.select_related('plus', 'content_type').all()
     serializer_class = PermissionSerializer
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def mis_permisos(self, request):
         if request.user.is_superuser:
             permissions_list = Permission.objects.all()
@@ -27,7 +27,7 @@ class PermissionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(permissions_list, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def por_grupo(self, request):
         grupo_id = int(self.request.GET.get('grupo_id'))
         grupo = Group.objects.get(id=grupo_id)
@@ -35,7 +35,7 @@ class PermissionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(permissions_list, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def permiso_x_usuario(self, request):
         user_id = int(request.GET.get('user_id'))
         user = User.objects.get(id=user_id)
@@ -46,7 +46,7 @@ class PermissionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(permissions_list, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def permisos_activos(self, request):
         permissions_list = self.queryset.filter(
             plus__activo=True
@@ -54,7 +54,7 @@ class PermissionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(permissions_list, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def tengo_permisos(self, request):
         listado_split = request.GET.get('listado_permisos').split(',')[0:-1]
         if request.user.is_superuser:
@@ -77,7 +77,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def adicionar_permiso(self, request, pk=None):
         grupo = self.get_object()
         id_permiso = int(request.POST.get('id_permiso'))
@@ -91,7 +91,7 @@ class GroupViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(grupo)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def validar_nombre(self, request) -> Response:
         qs = self.get_queryset()
         validacion_reponse = {}

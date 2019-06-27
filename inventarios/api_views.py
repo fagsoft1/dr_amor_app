@@ -1,5 +1,5 @@
 from rest_framework import viewsets, serializers
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from datetime import datetime
 
@@ -34,7 +34,7 @@ class MovimientoInventarioViewSet(viewsets.ModelViewSet):
     queryset = MovimientoInventario.objects.all()
     serializer_class = MovimientoInventarioSerializer
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def upload_foto_documento(self, request, pk=None):  # pragma: no cover
         movimiento = self.get_object()
         archivo = self.request.FILES['archivo']
@@ -42,7 +42,7 @@ class MovimientoInventarioViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(movimiento)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def delete_foto_documento(self, request, pk=None):  # pragma: no cover
         movimiento = self.get_object()
         documento_id = int(request.POST.get('documento_id', None))
@@ -50,13 +50,13 @@ class MovimientoInventarioViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(movimiento)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def saldos_iniciales(self, request):
         qs = MovimientoInventario.saldos_iniciales.all()
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def cargar_inventario(self, request, pk=None):
         movimiento_inventario = self.get_object()
         movimiento_inventario = movimiento_inventario_aplicar_movimiento(movimiento_inventario.id)
@@ -76,28 +76,28 @@ class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = MovimientoInventarioDetalleSerializer
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_movimiento(self, request):
         movimiento_id = int(request.GET.get('movimiento_id'))
         qs = self.queryset.filter(movimiento_id=movimiento_id)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def actual_por_bodega(self, request):
         bodega_id = int(request.GET.get('bodega_id'))
         qs = self.queryset.filter(movimiento__bodega_id=bodega_id, es_ultimo_saldo=True)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def actual_por_pdv(self, request):
         punto_venta_id = int(request.GET.get('punto_venta_id'))
         qs = self.queryset.filter(movimiento__bodega__punto_venta__id=punto_venta_id, es_ultimo_saldo=True)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_bodega_por_fecha(self, request):
         bodega_id = int(request.GET.get('bodega_id'))
         fecha_inicial = datetime.strptime(request.GET.get('fecha_inicial'), "%d/%m/%Y").date()
@@ -110,7 +110,7 @@ class MovimientoInventarioDetalleViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_bodega_por_producto(self, request):
         bodega_id = int(request.GET.get('bodega_id'))
         producto_id = int(request.GET.get('producto_id'))
@@ -130,7 +130,7 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = TrasladoInventarioSerializer
 
-    @detail_route(methods=['post'], permission_classes=[EsColaboradorPermission])
+    @action(detail=True, methods=['post'], permission_classes=[EsColaboradorPermission])
     def trasladar(self, request, pk=None):
         traslado = self.get_object()
         user = self.request.user
@@ -139,7 +139,7 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(traslado)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def cambiar_estado(self, request, pk=None):
         # TODO: Hacer test
         traslado = self.get_object()
@@ -163,7 +163,7 @@ class TrasladoInventarioViewSet(viewsets.ModelViewSet):
             raise serializers.ValidationError(
                 {'_error': 'El inventario ya se encuentra trasladado, no se puede cambiar estado'})
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def pendiente_verificacion_por_bodega_destino(self, request):
         # TODO: Hacer test
         bodega_id = int(request.GET.get('bodega_id'))
@@ -178,7 +178,7 @@ class TrasladoInventarioDetallesViewSet(viewsets.ModelViewSet):
     queryset = TrasladoInventarioDetalle.objects.all()
     serializer_class = TrasladoInventarioDetalleSerializer
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_traslado(self, request):
         traslado_id = int(request.GET.get('traslado_id'))
         qs = self.queryset.filter(traslado_id=traslado_id)

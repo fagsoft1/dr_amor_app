@@ -4,7 +4,7 @@ from io import BytesIO
 from django.db.models import Q, F, Value
 from django.http import HttpResponse
 from rest_framework import viewsets
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
 
@@ -33,13 +33,13 @@ class RegistroEntradaParqueoViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = RegistroEntradaParqueoSerializer
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_salir(self, request):
         qs = self.queryset.filter(hora_salida__isnull=True)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_en_proceso(self, request):
         qs = self.queryset.filter(
             Q(hora_salida__isnull=True) |
@@ -48,7 +48,7 @@ class RegistroEntradaParqueoViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def valor_a_pagar(self, request, pk=None):
         from .services import registro_entrada_parqueo_calcular_pago
         registro = self.get_object()
@@ -60,7 +60,7 @@ class RegistroEntradaParqueoViewSet(viewsets.ModelViewSet):
             'modalidad_fraccion_tiempo_id': tarifa.id
         })
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def registrar_salida(self, request, pk=None):
         from .services import registro_entrada_parqueo_registrar_salida
         registro = self.get_object()
@@ -69,7 +69,7 @@ class RegistroEntradaParqueoViewSet(viewsets.ModelViewSet):
         )
         return Response({'result': 'La salida del vehiculo se ha registrado correctamente'})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def pagar(self, request, pk=None):
         from .services import registro_entrada_parqueo_registrar_pago
         modalidad_fraccion_tiempo_detalle_id = self.request.POST.get('modalidad_fraccion_tiempo_detalle_id', None)
@@ -81,7 +81,7 @@ class RegistroEntradaParqueoViewSet(viewsets.ModelViewSet):
         )
         return Response({'result': 'Pago Realizado'})
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def imprimir_recibo(self, request, pk=None):
         from .services import registro_entrada_parqueo_comprobante_entrada
         registro = self.get_object()
@@ -97,7 +97,7 @@ class RegistroEntradaParqueoViewSet(viewsets.ModelViewSet):
         output.close()
         return response
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def imprimir_factura(self, request, pk=None):
         from .services import registro_entrada_parqueo_factura
         registro = self.get_object()
@@ -200,7 +200,7 @@ class ModalidadFraccionTiempoViewSet(viewsets.ModelViewSet):
             if fecha_hora_actual > fecha_limite_inicio_dia_cero and fecha_hora_actual < fecha_limite_fin_dia_cero:
                 return self.aplica_dia(fecha_hora_actual, obj)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def por_tipo_vehiculo(self, request):
 
         tipo_vehiculo_id = self.request.GET.get('tipo_vehiculo_id')
@@ -233,14 +233,14 @@ class ModalidadFraccionTiempoDetalleViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = ModalidadFraccionTiempoDetalleSerializer
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_modalidad_fraccion_tiempo(self, request):
         modalidad_fraccion_tiempo_id = int(request.GET.get('modalidad_fraccion_tiempo_id'))
         qs = self.queryset.filter(modalidad_fraccion_tiempo_id=modalidad_fraccion_tiempo_id)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_movimiento(self, request):
         modalidad_fraccion_tiempo_id = int(request.GET.get('modalidad_fraccion_tiempo_id'))
         qs = self.queryset.filter(modalidad_fraccion_tiempo_id=modalidad_fraccion_tiempo_id)

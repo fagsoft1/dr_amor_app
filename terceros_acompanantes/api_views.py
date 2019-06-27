@@ -1,5 +1,5 @@
 from rest_framework import viewsets, permissions
-from rest_framework.decorators import list_route
+from rest_framework.decorators  import action
 from rest_framework.response import Response
 
 from .models import CategoriaAcompanante, FraccionTiempo, CategoriaFraccionTiempo
@@ -27,7 +27,7 @@ class CategoriaFraccionTiempoViewSet(viewsets.ModelViewSet):
     serializer_class = CategoriaFraccionTiempoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def listar_x_categoria(self, request) -> Response:
         categoria_id = request.GET.get('categoria_id')
         qs = self.get_queryset().filter(

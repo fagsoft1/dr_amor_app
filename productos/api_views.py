@@ -1,6 +1,6 @@
 from django.db.models import Q
 from rest_framework import viewsets
-from rest_framework.decorators import list_route
+from rest_framework.decorators  import action
 from rest_framework.response import Response
 
 from .api_serializers import CategoriaSerializer, CategoriaDosSerializer, ProductoSerializer, UnidadProductoSerializer
@@ -32,7 +32,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = ProductoSerializer
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def sin_saldos_iniciales(self, request):
         qs = self.queryset.filter(
             ~Q(movimientos_inventarios__movimiento__motivo='saldo_inicial')

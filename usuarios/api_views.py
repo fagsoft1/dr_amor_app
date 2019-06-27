@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from knox.settings import knox_settings
 from rest_framework import viewsets, permissions, serializers
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
@@ -21,7 +21,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = UsuarioSerializer
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def adicionar_permiso(self, request, pk=None):
         usuario = self.get_object()
         from usuarios.services import adicionar_permiso
@@ -33,7 +33,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(usuario)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def adicionar_grupo(self, request, pk=None):
         usuario = self.get_object()
         id_grupo = int(request.POST.get('id_grupo'))
@@ -45,7 +45,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(usuario)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def cambiar_contrasena(self, request, pk=None):
         usuario = self.get_object()
         password_old = request.POST.get('password_old')
@@ -54,7 +54,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         user_cambiar_contrasena(usuario.id, password_old, password, password_2)
         return Response({'result': 'La contraseña se ha cambiado correctamente'})
 
-    @list_route(methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def validar_nuevo_usuario(self, request) -> Response:
         validacion_reponse = {}
         from usuarios.services import usuario_existe_username
@@ -64,7 +64,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             raise serializers.ValidationError({'username': 'Ya exite'})
         return Response(validacion_reponse)
 
-    @list_route(methods=['get'], permission_classes=[permissions.AllowAny])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
     def validar_username_login(self, request) -> Response:
         from usuarios.services import usuario_existe_username
         validacion_reponse = {}
@@ -79,7 +79,7 @@ class LoginViewSet(viewsets.ModelViewSet):
     serializer_class = LoginUserSerializer
     queryset = User.objects.all()
 
-    @list_route(methods=['post'], permission_classes=[permissions.AllowAny])
+    @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def login(self, request) -> Response:
         from .services import usuario_obtener_token
         serializer = self.get_serializer(data=self.request.POST)
@@ -92,7 +92,7 @@ class LoginViewSet(viewsets.ModelViewSet):
             "token": token
         })
 
-    @list_route(methods=['get'], permission_classes=[permissions.IsAuthenticated, ])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated, ])
     def cargar_usuario(self, request) -> Response:
         serializer = UsuarioSerializer(self.request.user, context={'request': request})
         return Response(serializer.data)

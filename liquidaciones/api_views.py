@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions
-from rest_framework.decorators import detail_route
+from rest_framework.decorators  import action
 from io import BytesIO
 
 from .api_serializers import LiquidacionCuentaSerializer
@@ -12,7 +12,7 @@ class LiquidacionCuentaViewSet(viewsets.ModelViewSet):
     queryset = LiquidacionCuenta.objects.all()
     serializer_class = LiquidacionCuentaSerializer
 
-    @detail_route(methods=['post'])
+    @action(detail=True, methods=['post'])
     def imprimir_liquidacion(self, request, pk=None):
         from .services import (
             liquidar_cuenta_acompanante_generar_comprobante,

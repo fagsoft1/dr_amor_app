@@ -2,7 +2,7 @@ import json
 from decimal import Decimal
 
 from rest_framework import viewsets, permissions, serializers
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
@@ -21,7 +21,7 @@ class PuntoVentaTurnoViewSet(viewsets.ModelViewSet):
     queryset = PuntoVentaTurno.objects.all()
     serializer_class = PuntoVentaTurnoSerializer
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def abiertos(self, request) -> Response:
         qs = self.get_queryset().abiertos()
         serializer = self.get_serializer(qs, many=True)
@@ -36,7 +36,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = PuntoVentaSerializer
 
-    @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def abrir_punto_venta(self, request, pk=None):
         punto_venta = self.get_object()
         base_inicial_efectivo = float(request.POST.get('base_inicial_efectivo', None))
@@ -50,7 +50,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
 
         return Response({'result': 'El punto de venta %s se ha aperturado correctamente' % punto_venta.nombre})
 
-    @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def efectuar_venta_producto(self, request, pk=None):
         punto_venta = self.get_object()
         from ventas.services import venta_producto_efectuar_venta
@@ -75,7 +75,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         mensaje = 'La venta se ha efectuado'
         return Response({'result': mensaje})
 
-    @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def relacionar_concepto_caja_cierre(self, request, pk=None):
         from .services import (
             punto_venta_relacionar_concepto_operacion_caja_cierre,
@@ -97,7 +97,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(punto_venta)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def listar_por_colaborador(self, request) -> Response:
         colaborador_id = request.GET.get('colaborador_id')
         qs = self.get_queryset().filter(
@@ -106,7 +106,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[permissions.AllowAny])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
     def listar_por_usuario_username(self, request) -> Response:
         username = request.GET.get('username')
         qs = self.get_queryset().filter(
@@ -115,7 +115,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def hacer_cierre(self, request, pk=None):
         from .services import punto_venta_cerrar
         cierre = json.loads(request.POST.get('cierre'))

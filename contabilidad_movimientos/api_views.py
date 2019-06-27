@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull, EsColaboradorPermission
@@ -84,7 +84,7 @@ class AsientoContableViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(asiento)
         return Response(serializer.data)
 
-    @list_route(methods=['get'], permission_classes=[EsColaboradorPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
     def por_fecha_empresa_diario(self, request):
         empresa_id = int(request.GET.get('empresa_id'))
         diario_id = int(request.GET.get('diario_id'))

@@ -1,4 +1,4 @@
-from rest_framework.decorators import list_route
+from rest_framework.decorators  import action
 from rest_framework.response import Response
 
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull, EsInternoPermission
@@ -21,7 +21,7 @@ class VentaProductoDetalleViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = VentaProductoDetalleSerializer
 
-    @list_route(methods=['get'], permission_classes=[EsInternoPermission])
+    @action(detail=False, methods=['get'], permission_classes=[EsInternoPermission])
     def consultar_por_tercero_cuenta_abierta(self, request):
         tercero_id = request.GET.get('tercero_id', None)
         qs = self.queryset.filter(

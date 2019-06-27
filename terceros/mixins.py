@@ -1,5 +1,5 @@
 from django.db.models import OuterRef, ExpressionWrapper, DecimalField, Subquery
-from rest_framework.decorators import list_route
+from rest_framework.decorators  import action
 from rest_framework.response import Response
 
 from dr_amor_app.utils_queryset import query_varios_campos_or
@@ -34,7 +34,7 @@ class TerceroViewSetMixin(object):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @list_route(methods=['get'])
+    @action(detail=False, methods=['get'])
     def validar_documento_tercero(self, request) -> Response:
         validacion_reponse = {}
         nro_identificacion = self.request.GET.get('nro_identificacion', None)
