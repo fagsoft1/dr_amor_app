@@ -118,7 +118,7 @@ class Detail extends Component {
             thumbnail: d.imagen_documento_thumbnail_url
         }));
         return (
-            <ValidarPermisos can_see={permisos.view} nombre='detalles de movimiento inventario'>
+            <ValidarPermisos can_see={permisos.detail} nombre='detalles de movimiento inventario'>
                 <Typography variant="h5" gutterBottom color="primary">
                     Detalle
                 </Typography>

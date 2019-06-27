@@ -7,8 +7,8 @@ import {
 } from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
 
-import CreateForm from '../components/forms/billetes_monedas_form';
-import Tabla from '../components/billetes_monedas_tabla';
+import CreateForm from '../components/forms/BilleteMonedaForm';
+import Tabla from '../components/BilleteMonedaTabla';
 import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 
 const CRUD = crudHOC(CreateForm, Tabla);

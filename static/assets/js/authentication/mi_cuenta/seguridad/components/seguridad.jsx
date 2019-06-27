@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import CambiarPinForm from './forms/cambiar_pin_form'
-import CambiarContrasenaForm from './forms/cambiar_contrasena_form'
+import CambiarPinForm from './forms/CambiarPinForm'
+import CambiarContrasenaForm from './forms/CambiarContrasenaForm'
 import {connect} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
 import Typography from '@material-ui/core/Typography';
@@ -15,12 +15,12 @@ class Seguridad extends Component {
     onCambiarPin(values, callback) {
         const {auth: {user}} = this.props;
         alert('Organizar el metodo cambiar pin ahora con tercero y no usuario, sacar el tercero de mi cuenta')
-        this.props.cambiarPinTercero(user.id, values.pin, values.password, {callback});
+        return this.props.cambiarPinTercero(user.id, values.pin, values.password, {callback});
     }
 
     onCambiarPassword(values, callback) {
         const {auth: {user}} = this.props;
-        this.props.cambiarContrasenaUsuario(
+        return this.props.cambiarContrasenaUsuario(
             user.id,
             values.password_old,
             values.password,

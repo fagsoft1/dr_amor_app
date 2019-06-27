@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import CreateForm from './forms/impuestos_form';
+import CreateForm from './forms/ImpuestoForm';
 import Tabla from './impuestos_tabla';
 import crudHOC from '../../../../../../00_utilities/components/HOCCrud';
 

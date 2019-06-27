@@ -187,7 +187,7 @@ const Tabla = memo((props) => {
                         },
                         {
                             Header: "Ver",
-                            show: permisos_object.view,
+                            show: permisos_object.detail,
                             maxWidth: 60,
                             Cell: row =>
                                 <Link

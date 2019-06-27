@@ -54,7 +54,7 @@ const Tabla = memo((props) => {
                     columns: [
                         {
                             Header: "Ver",
-                            show: permisos_object.view,
+                            show: permisos_object.detail,
                             maxWidth: 60,
                             Cell: row =>
                                 <Link to={`/app/admin/puntos_ventas/puntos_ventas/detail/${row.original.id}`}>

@@ -93,7 +93,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.MultiPartRenderer',
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.TemplateHTMLRenderer'
-    )
+    ),
+    'COERCE_DECIMAL_TO_STRING': False
 }
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

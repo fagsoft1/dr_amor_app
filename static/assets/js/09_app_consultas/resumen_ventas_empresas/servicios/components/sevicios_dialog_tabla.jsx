@@ -6,8 +6,6 @@ import DialogActions from "@material-ui/core/DialogActions/index";
 import Button from "@material-ui/core/Button/index";
 import {fechaHoraFormatoUno, pesosColombianos} from "../../../../00_utilities/common";
 import ReactTable from "react-table";
-import MyDialogButtonDelete from "../../../../00_utilities/components/ui/dialog/DeleteDialog";
-import IconButtonTableEdit from "../../../../00_utilities/components/ui/icon/TableIconButtonEdit";
 
 export default class ServiciosDialog extends Component {
     render() {

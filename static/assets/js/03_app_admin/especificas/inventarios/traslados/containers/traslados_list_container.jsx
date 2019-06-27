@@ -6,8 +6,8 @@ import {
     TRASLADOS_INVENTARIOS as permisos_view
 } from "../../../../../00_utilities/permisos/types";
 import {permisosAdapter} from "../../../../../00_utilities/common";
-import CreateForm from '../components/forms/traslado_form';
-import Tabla from '../components/traslados_tabla';
+import CreateForm from '../components/forms/TrasladoForm';
+import Tabla from '../components/TrasladoTabla';
 import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 
 

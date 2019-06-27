@@ -4,6 +4,16 @@ import PropTypes from "prop-types";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {notificarAction} from '../../01_actions/01_index';
+import ExcelDownload from "../../00_utilities/components/system/ExcelDownload";
+
+const style = {
+    seleccionar_todo: {
+        position: 'absolute',
+        bottom: 0,
+        right: 50,
+        zIndex: 10000
+    }
+};
 
 function crudHOC(CreateForm, Tabla) {
     class CRUD extends Component {
@@ -11,12 +21,24 @@ function crudHOC(CreateForm, Tabla) {
             super(props);
             this.state = ({
                 item_seleccionado: null,
-                modal_open: false
+                modal_open: false,
+                data_to_excel: {},
             });
             this.onSubmit = this.onSubmit.bind(this);
             this.onDelete = this.onDelete.bind(this);
             this.onSelectItemEdit = this.onSelectItemEdit.bind(this);
+            this.onSelectDataToExcel = this.onSelectDataToExcel.bind(this);
             this.setSelectItem = this.setSelectItem.bind(this);
+        }
+
+        onSelectDataToExcel(item) {
+            let {data_to_excel} = this.state;
+            if (data_to_excel[item.id]) {
+                data_to_excel = _.omit(data_to_excel, item.id);
+            } else {
+                data_to_excel = {...data_to_excel, [item.id]: item}
+            }
+            this.setState({data_to_excel})
         }
 
         onDelete(item) {
@@ -40,6 +62,8 @@ function crudHOC(CreateForm, Tabla) {
         }
 
         onSubmit(item, uno = null, dos = null, cerrar_modal = true, callback_error = null) {
+            const es_form_data = item instanceof FormData;
+            const form_data_id = es_form_data ? item.get('id') : null;
             const {
                 method_pool,
                 notificarAction,
@@ -66,11 +90,14 @@ function crudHOC(CreateForm, Tabla) {
                     posSummitMethod(response)
                 }
             };
-            if (item.id) {
+            if (item.id || (es_form_data && form_data_id)) {
                 if (method_pool.updateObjectMethod === null) {
                     console.log('No se ha asignado ningún método para UPDATE')
                 } else {
-                    return method_pool.updateObjectMethod(item.id, item, {callback, callback_error});
+                    if (es_form_data) {
+                        return method_pool.updateObjectMethod(form_data_id, item, {callback});
+                    }
+                    return method_pool.updateObjectMethod(item.id, item, {callback});
                 }
             } else {
                 if (method_pool.createObjectMethod === null) {
@@ -106,9 +133,19 @@ function crudHOC(CreateForm, Tabla) {
             } = this.props;
             const {
                 item_seleccionado,
-                modal_open
+                modal_open,
+                data_to_excel,
             } = this.state;
             console.log('--------renderizó crud----------')
+
+            const onSeleccionarTodo = () => {
+                if (_.size(data_to_excel) === _.size(list)) {
+                    this.setState({data_to_excel: {}})
+                } else {
+                    this.setState({data_to_excel: list})
+                }
+
+            };
 
             if (!permisos_object.list) {
                 return <Fragment>{`No tiene suficientes permisos para ver ${plural_name}.`}</Fragment>
@@ -136,6 +173,14 @@ function crudHOC(CreateForm, Tabla) {
 
                     }
                     {
+                        _.size(data_to_excel) > 0 &&
+                        <ExcelDownload
+                            data={_.map(data_to_excel)}
+                            name={plural_name ? plural_name : 'documento'}
+                            file_name={plural_name ? plural_name : 'documento'}
+                        />
+                    }
+                    {
                         modal_open &&
                         <CreateForm
                             {...this.props}
@@ -146,7 +191,15 @@ function crudHOC(CreateForm, Tabla) {
                             setSelectItem={this.setSelectItem}
                         />
                     }
+                    <span
+                        style={style.seleccionar_todo}
+                        className='puntero'
+                        onClick={onSeleccionarTodo}
+                    >
+                            {_.size(data_to_excel) === _.size(list) ? 'Quitar Selección' : 'Seleccionar Todo'}
+                        </span>
                     <Tabla
+                        {...this.props}
                         auth={auth}
                         permisos_object={permisos_object}
                         list={list}
@@ -154,6 +207,7 @@ function crudHOC(CreateForm, Tabla) {
                         updateItem={this.onSubmit}
                         onDelete={this.onDelete}
                         onSelectItemEdit={this.onSelectItemEdit}
+                        onSelectDataToExcel={this.onSelectDataToExcel}
                     />
                 </Fragment>
             )

@@ -31,9 +31,9 @@ let Form = memo((props) => {
     const valores = useSelector(state => selector(state, 'precio_venta', 'comision'));
 
     useEffect(() => {
-        dispatch(actions.fetchCategoriasProductos());
+        dispatch(actions.fetchCategoriasProductosDos());
         return () => {
-            dispatch(actions.clearCategoriasProductos())
+            dispatch(actions.clearCategoriasProductosDos())
         };
     }, []);
 

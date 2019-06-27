@@ -18,7 +18,6 @@ const Tabla = memo((props) => {
         permisos_object
     } = props;
     return (
-
         <ReactTable
             data={data}
             noDataText={`No hay elementos para mostrar tipo ${singular_name}`}

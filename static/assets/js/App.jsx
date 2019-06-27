@@ -1,4 +1,4 @@
-import React, {Fragment, Component, memo, useEffect, Suspense, lazy, useCallback} from 'react';
+import React, {Fragment, Component, memo, useEffect, Suspense, lazy} from 'react';
 import {hot} from 'react-hot-loader'
 import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
 import {Provider} from 'react-redux';

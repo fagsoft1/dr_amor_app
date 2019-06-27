@@ -91,8 +91,11 @@ export const updateColaborador = (id, values, options_action = {}) => {
 };
 
 export const uploadColaboradorFoto = (id, values, options_action = {}) => {
+    console.log(id)
+    console.log(values)
+    console.log(options_action)
     return (dispatch) => {
         const options = {...options_action, dispatch_method: dispatch};
-        uploadArchivo(current_url_api, id, 'upload_archivo', values, options)
+        return uploadArchivo(current_url_api, id, 'upload_archivo', values, options)
     }
 };

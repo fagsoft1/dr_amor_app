@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import CreateForm from './forms/asiento_contable_form';
-import Tabla from './asiento_contables_tabla';
+import Tabla from './ImpuestoTabla';
 import crudHOC from '../../../../../../00_utilities/components/HOCCrud';
 import DatePicker from 'react-widgets/lib/DatePicker';
 import Combobox from "react-widgets/lib/Combobox";

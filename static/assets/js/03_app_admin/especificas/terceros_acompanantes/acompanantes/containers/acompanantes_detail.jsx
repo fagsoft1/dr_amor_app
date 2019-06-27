@@ -43,7 +43,7 @@ class Detail extends Component {
         }
 
         return (
-            <ValidarPermisos can_see={permisos.view} nombre='detalles de algo'>
+            <ValidarPermisos can_see={permisos.detail} nombre='detalles de algo'>
                 <Typography variant="h5" gutterBottom color="primary">
                     Detalle {object.username}
                 </Typography>

@@ -1,5 +1,10 @@
 var path = require('path');
 module.exports = {
+    externals: [
+        {'./cptable': 'var cptable'},
+        {'./jszip': 'jszip'}
+    ],
+    node: {fs: 'empty'},
     context: __dirname,
     entry: {
         'app': './static/assets/js/index'

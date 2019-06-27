@@ -84,7 +84,7 @@ class Detail extends Component {
         const inventario_disponible_para_trasladar = _.pickBy(inventarios_bodega_origen_list, e => !productos_ya_cargados_id.includes(e.producto));
         const editable = object.estado === 1;
         return (
-            <ValidarPermisos can_see={permisos.view} nombre='detalles de algo'>
+            <ValidarPermisos can_see={permisos.detail} nombre='detalles de algo'>
                 <Typography variant="h5" gutterBottom color="primary">
                     Detalle {object.username}
                 </Typography>

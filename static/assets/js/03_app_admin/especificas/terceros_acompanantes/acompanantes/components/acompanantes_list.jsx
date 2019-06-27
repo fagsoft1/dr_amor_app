@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import CreateForm from './forms/acompanantes_form';
-import Tabla from './acompanantes_tabla';
+import CreateForm from './forms/AcompananteForm';
+import Tabla from './AcompananteTabla';
 import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 
 

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import CreateForm from './forms/movimiento_inventario_detalle_form';
-import Tabla from './movimientos_inventarios_detalles_tabla';
+import CreateForm from './forms/MovimientoInventarioDetalle';
+import Tabla from './MovimientoInventarioDetalleTabla';
 import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 
 

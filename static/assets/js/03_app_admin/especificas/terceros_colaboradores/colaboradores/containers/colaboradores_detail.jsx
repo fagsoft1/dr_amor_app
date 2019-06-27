@@ -97,7 +97,7 @@ class Detail extends Component {
             </Typography>
         }
         return (
-            <ValidarPermisos can_see={permisos.view} nombre='detalles de Colaborador'>
+            <ValidarPermisos can_see={permisos.detail} nombre='detalles de Colaborador'>
                 <Typography variant="h5" gutterBottom color="primary">
                     Detalle Colaborador {object.full_name_proxy}
                 </Typography>

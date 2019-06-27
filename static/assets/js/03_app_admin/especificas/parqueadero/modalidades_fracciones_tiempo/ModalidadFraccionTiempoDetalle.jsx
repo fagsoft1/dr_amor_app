@@ -45,7 +45,7 @@ const Detail = (props) => {
         </Typography>
     }
     return (
-        <ValidarPermisos can_see={permisos.view} nombre='detalles de modalidad fraccion tiempo'>
+        <ValidarPermisos can_see={permisos.detail} nombre='detalles de modalidad fraccion tiempo'>
             <Typography variant="h5" gutterBottom color="primary">
                 Detalle Modalidad Parqueadero {modalidad_fraccion_tiempo.to_string}
             </Typography>

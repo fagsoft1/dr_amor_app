@@ -13,8 +13,6 @@ class List extends Component {
     componentDidMount() {
         this.props.fetchMisPermisosxListado([permisos_view]);
     }
-
-
     render() {
         const {terceros_list, mis_permisos} = this.props;
         const bloque_1_list = permisosAdapter(mis_permisos, permisos_view);

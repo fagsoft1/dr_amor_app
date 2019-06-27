@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import CreateForm from './forms/bodega_form';
-import Tabla from './bodegas_tabla';
+import CreateForm from './forms/BodegaForm';
+import Tabla from './BodegaTabla';
 import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 
 

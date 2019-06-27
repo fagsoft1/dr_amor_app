@@ -8,8 +8,8 @@ import {
 import {permisosAdapter} from "../../../../../00_utilities/common";
 import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 
-import CreateForm from '../components/forms/movimiento_inventario_form';
-import Tabla from '../components/movimientos_inventarios_tabla';
+import CreateForm from '../components/forms/MovimientoInventarioForm';
+import Tabla from '../components/MovimientoInventarioTabla';
 
 const CRUD = crudHOC(CreateForm, Tabla);
 

@@ -10,7 +10,7 @@ import {
 } from '../../../../00_utilities/permisos/types';
 
 
-import {Tabla} from '../components/permisos_tabla';
+import {Tabla} from '../components/PermisoTabla';
 
 class PermisosList extends Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import CreateForm from './forms/categoria_fraccion_tiempo_form';
-import Tabla from './categorias_fracciones_tiempos_tabla';
+import CreateForm from './forms/CategoriaFraccionTiempoForm';
+import Tabla from './CategoriaFraccionTiempoTabla';
 import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 
 

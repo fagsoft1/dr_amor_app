@@ -8,8 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import {
     BODEGAS as permisos_view
 } from "../../../../../00_utilities/permisos/types";
-import TablaInventarioActual from '../components/bodegas_inventario_movimiento_actual_tabla';
-import TablaInventarioProducto from '../components/bodegas_inventario_movimiento_producto_tabla';
+import TablaInventarioActual from '../components/BodegaInventarioMovimientoActualTabla';
+import TablaInventarioProducto from '../components/BodegaInventarioMovimientoProductoTabla';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
@@ -88,7 +88,7 @@ class Detail extends Component {
             </Typography>
         }
         return (
-            <ValidarPermisos can_see={permisos.view} nombre='detalles de bodega'>
+            <ValidarPermisos can_see={permisos.detail} nombre='detalles de bodega'>
                 <Typography variant="h5" gutterBottom color="primary">
                     Detalle {object.nombre}
                 </Typography>
@@ -104,14 +104,8 @@ class Detail extends Component {
                 {
                     this.state.slideIndex === 0 &&
                     <TablaInventarioActual
-                        data={
-                            _.map(
-                                _.pickBy(movimientos_inventarios_detalles_list, e => {
-                                    return (e.es_ultimo_saldo && e.bodega === object.id)
-                                }),
-                                e => e
-                            )
-                        }
+                        bodega={object}
+                        list={movimientos_inventarios_detalles_list}
                         verMovimientoProducto={this.verMovimientoProducto}
                     />
                 }
@@ -157,7 +151,7 @@ class Detail extends Component {
                             </div>
                         </div>
                         <TablaInventarioProducto
-                            data={_.map(_.orderBy(movimientos_inventarios_detalles_list, ['modified'], ['desc']), e => e)}
+                            list={movimientos_inventarios_detalles_list}
                         />
                     </Fragment>
                 }
