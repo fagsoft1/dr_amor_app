@@ -229,7 +229,7 @@ class TercerosBinding(WebsocketBinding):
 class AcompananteSerializer(serializers.ModelSerializer):
     categoria_modelo_nombre = serializers.CharField(source='categoria_modelo.nombre', read_only=True)
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)
-    fecha_nacimiento = serializers.DateTimeField(format="%Y-%m-%d", input_formats=['%Y-%m-%d', 'iso-8601'])
+    fecha_nacimiento = serializers.DateField(format="%Y-%m-%d", input_formats=['%Y-%m-%dT%H:%M:%S.%fZ', 'iso-8601'])
     saldo_final = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     to_string = serializers.SerializerMethodField()
     identificacion = serializers.SerializerMethodField()
