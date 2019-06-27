@@ -140,7 +140,7 @@ class MovimientoInventarioSerializer(serializers.ModelSerializer):
     creado_por = serializers.HiddenField(default=serializers.CurrentUserDefault())
     proveedor_nombre = serializers.CharField(source='proveedor.nombre', read_only=True)
     bodega_nombre = serializers.CharField(source='bodega.nombre', read_only=True)
-    fecha = serializers.DateTimeField(format="%Y-%m-%d", input_formats=['%Y-%m-%d', 'iso-8601'])
+    fecha = serializers.DateField(format="%Y-%m-%d", input_formats=['%Y-%m-%dT%H:%M:%S.%fZ', 'iso-8601'])
     entra_costo = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     entra_cantidad = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     sale_cantidad = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)

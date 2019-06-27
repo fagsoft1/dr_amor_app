@@ -339,7 +339,7 @@ class AcompananteDesencriptadoSerializer(AcompananteSerializer):
 
 class ColaboradorSerializer(serializers.ModelSerializer):
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)
-    fecha_nacimiento = serializers.DateTimeField(format="%Y-%m-%d", input_formats=['%Y-%m-%d', 'iso-8601'])
+    fecha_nacimiento = serializers.DateField(format="%Y-%m-%d", input_formats=['%Y-%m-%dT%H:%M:%S.%fZ', 'iso-8601'])
     to_string = serializers.SerializerMethodField()
     imagen_perfil_url = serializers.SerializerMethodField()
 
