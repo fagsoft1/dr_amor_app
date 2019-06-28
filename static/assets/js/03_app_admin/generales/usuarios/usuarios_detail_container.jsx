@@ -4,7 +4,7 @@ import * as actions from "../../../01_actions/01_index";
 import CargarDatos from "../../../00_utilities/components/system/CargarDatos";
 import ValidarPermisos from "../../../00_utilities/permisos/validar_permisos";
 import {permisosAdapter} from "../../../00_utilities/common";
-import {ListaBusqueda} from '../../../00_utilities/utiles';
+import ListaBusqueda from '../../../00_utilities/utiles';
 import Checkbox from '@material-ui/core/Checkbox/index';
 import FormControlLabel from '@material-ui/core/FormControlLabel/index';
 import {

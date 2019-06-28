@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {ListaBusqueda} from '../../../../00_utilities/utiles';
+import ListaBusqueda from '../../../../00_utilities/utiles';
 import MyDialogButtonDelete from '../../../../00_utilities/components/ui/dialog/DeleteDialog';
 import IconButtonTableSee from '../../../../00_utilities/components/ui/icon/TableIconButtonDetail';
 import IconButtonTableEdit from '../../../../00_utilities/components/ui/icon/TableIconButtonEdit';

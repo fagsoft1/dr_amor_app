@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {ListaBusqueda} from '../../../../00_utilities/utiles';
+import ListaBusqueda from '../../../../00_utilities/utiles';
 import Checkbox from '@material-ui/core/Checkbox';
 
 class ItemTabla extends Component {

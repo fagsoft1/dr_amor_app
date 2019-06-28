@@ -12,7 +12,7 @@ import crudHOC from '../../../../00_utilities/components/HOCCrud';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
-import {ListaBusqueda} from '../../../../00_utilities/utiles';
+import ListaBusqueda from '../../../../00_utilities/utiles';
 
 const CRUD = crudHOC(CreateForm, Tabla);
 
