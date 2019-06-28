@@ -1,10 +1,10 @@
 import React, {memo} from 'react';
 import {reduxForm} from 'redux-form';
 import {MyFormTagModal} from '../../../../../00_utilities/components/ui/forms/MyFormTagModal';
-import validate from '../../../terceros/componentes/forms/validate';
+import validate from '../../../terceros/forms/validate';
 import asyncValidate from './asyncValidate';
-import CedulaForm from '../../../terceros/componentes/forms/DatosCedulaForm';
-import LectorCedula from '../../../terceros/componentes/forms/LectorCedulaForm';
+import CedulaForm from '../../../terceros/forms/DatosCedulaForm';
+import LectorCedula from '../../../terceros/forms/LectorCedulaForm';
 
 const modelStyle = {
     width: '100%',

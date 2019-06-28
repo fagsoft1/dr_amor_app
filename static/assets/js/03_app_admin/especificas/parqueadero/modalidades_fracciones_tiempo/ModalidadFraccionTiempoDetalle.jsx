@@ -10,7 +10,7 @@ import {
     MODALIDADES_FRACCIONES_TIEMPOS_DETALLES as permisos_view_2
 } from "../../../../00_utilities/permisos/types";
 
-import ModalidadTiempoDetalle from './detalles/ModalidadFraccionTiempoDetalleList';
+import ModalidadTiempoDetalle from './detalles/ModalidadFraccionTiempoDetalleCRUD';
 import Button from "@material-ui/core/Button/index";
 
 const Detail = (props) => {

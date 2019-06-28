@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {memo} from 'react';
 import {Route, Switch} from 'react-router-dom';
 import Loading from '../00_utilities/components/system/LoadingOverlay';
 import DrawerMenu from '../00_utilities/components/ui/drawer/DrawerMenu';
@@ -7,7 +7,7 @@ import PuntoVenta from "./tienda/containers/PuntoVentaTienda";
 import Menu from "./00_menu/index";
 import DashboarInventarios from "./inventarios/containers/InventarioTiendaDashboard";
 
-const AdminApp = () => {
+const AdminApp = memo(() => {
     return (
         <Loading>
             <DrawerMenu lista_menu={<Menu/>} titulo='Punto de venta Tienda'>
@@ -20,6 +20,6 @@ const AdminApp = () => {
             </DrawerMenu>
         </Loading>
     )
-};
+});
 
 export default AdminApp;

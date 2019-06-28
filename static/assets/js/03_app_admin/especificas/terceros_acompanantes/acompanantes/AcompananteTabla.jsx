@@ -1,8 +1,6 @@
 import React, {memo} from "react";
 import MyDialogButtonDelete from '../../../../00_utilities/components/ui/dialog/DeleteDialog';
-import IconButtonTableSee from '../../../../00_utilities/components/ui/icon/TableIconButtonDetail';
 import IconButtonTableEdit from '../../../../00_utilities/components/ui/icon/TableIconButtonEdit';
-import {Link} from 'react-router-dom'
 
 import ReactTable from "react-table";
 
@@ -125,16 +123,6 @@ const Tabla = memo((props) => {
                                     }}/>
 
                         },
-                        {
-                            Header: "Ver",
-                            show: permisos_object.detail,
-                            maxWidth: 60,
-                            Cell: row =>
-                                <Link to={`/app/admin/algos/detail/${row.original.id}`}>
-                                    <IconButtonTableSee/>
-                                </Link>
-
-                        }
                     ]
                 }
             ]}

@@ -3,7 +3,7 @@ import DrawerListItem from '../../00_utilities/components/ui/drawer/DrawerMenuLi
 import ListCollapse from '../../00_utilities/components/ui/drawer/DrawerMenuListCollapse';
 
 
-const MenuPermisos = (props) => (
+const MenuPermisos = () => (
     <ListCollapse icono='lock' texto='Permisos'>
         <DrawerListItem
             size='1x'

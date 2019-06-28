@@ -2,7 +2,7 @@ import React from 'react';
 import {reduxForm} from 'redux-form';
 import {MyTextFieldSimple} from '../../../../../00_utilities/components/ui/forms/fields';
 import {MyFormTagModal} from '../../../../../00_utilities/components/ui/forms/MyFormTagModal';
-import validate from '../../../terceros/componentes/forms/validate';
+import validate from '../../../terceros/forms/validate';
 
 let Form = (props) => {
     const {

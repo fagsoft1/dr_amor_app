@@ -122,6 +122,11 @@ function crudHOC(CreateForm, Tabla) {
             this.setState({item_seleccionado})
         }
 
+        componentDidMount() {
+            const {plural_name, singular_name} = this.props;
+            document.title = plural_name ? plural_name : (singular_name ? singular_name : 'Dr. Amor');
+        }
+
         render() {
             const {
                 list,

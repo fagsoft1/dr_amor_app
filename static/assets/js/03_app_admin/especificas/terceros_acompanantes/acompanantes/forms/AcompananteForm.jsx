@@ -5,7 +5,7 @@ import {MyFormTagModal} from '../../../../../00_utilities/components/ui/forms/My
 import validate from './validate';
 import asyncValidate from './asyncValidate';
 import CedulaForm from './datos_cedula_acompanante_form';
-import LectorCedula from '../../../terceros/componentes/forms/LectorCedulaForm';
+import LectorCedula from '../../../terceros/forms/LectorCedulaForm';
 import {useSelector, useDispatch} from 'react-redux';
 import * as actions from '../../../../../01_actions/01_index';
 

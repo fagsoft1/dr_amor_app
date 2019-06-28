@@ -12,9 +12,9 @@ import {
     MODALIDADES_FRACCIONES_TIEMPOS as bloque_2_permisos,
 } from "../../../00_utilities/permisos/types";
 
-import BloqueTiposVehiculos from './tipo_vehiculo/TipoVehiculoList';
+import BloqueTiposVehiculos from './tipo_vehiculo/TipoVehiculoCRUD';
 import BloqueModalidadFraccionTiempo
-    from './modalidades_fracciones_tiempo/ModalidadFraccionTiempoList';
+    from './modalidades_fracciones_tiempo/ModalidadFraccionTiempoCRUD';
 
 const ListadoElementos = memo((props) => {
     const [slideIndex, setSlideIndex] = useState(0);

@@ -14,10 +14,10 @@ import {
     UNIDADES_PRODUCTOS as permisos_unidades_productos_base
 } from "../../../00_utilities/permisos/types";
 
-import BloqueProductos from './productos/ProductoList';
-import BloqueCategorias from './categorias/CategoriaProductoList';
-import BloqueCategoriasDos from './categorias_dos/CategoriaDosProducto';
-import BloqueUnidadesProductos from './unidades/UnidadesProductoList';
+import BloqueProductos from './productos/ProductoCRUD';
+import BloqueCategorias from './categorias/CategoriaProductoCRUD';
+import BloqueCategoriasDos from './categorias_dos/CategoriaDosProductoCRUD';
+import BloqueUnidadesProductos from './unidades/UnidadesProductoCRUD';
 
 const ListadoElementos = memo(() => {
     const [slideIndex, setSlideIndex] = useState(0);

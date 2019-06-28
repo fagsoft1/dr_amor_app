@@ -3,7 +3,7 @@ import DrawerListItem from '../../00_utilities/components/ui/drawer/DrawerMenuLi
 import ListCollapse from '../../00_utilities/components/ui/drawer/DrawerMenuListCollapse';
 
 
-const MenuInventarios = (props) => (
+const MenuInventarios = () => (
     <ListCollapse icono='warehouse' texto='Inventarios'>
         <DrawerListItem
             size='1x'

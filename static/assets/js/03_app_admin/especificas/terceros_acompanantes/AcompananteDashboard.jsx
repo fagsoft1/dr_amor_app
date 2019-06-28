@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
+import React, {useEffect, useState, memo} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../01_actions/01_index";
 import CargarDatos from "../../../00_utilities/components/system/CargarDatos";
 import ValidarPermisos from "../../../00_utilities/permisos/validar_permisos";
@@ -13,120 +13,106 @@ import {
     FRACCIONES_TIEMPOS_ACOMPANANTES as bloque_3_permisos
 } from "../../../00_utilities/permisos/types";
 
-import BloqueCategorias from './categorias/CategoriaAcompananteList';
-import BloqueAcompanantes from './acompanantes/AcompananteList';
-import BloqueFraccionesTiempo from './fracciones_tiempos/FraccionTiempoList';
+import BloqueCategorias from './categorias/CategoriaAcompananteCRUD';
+import BloqueAcompanantes from './acompanantes/AcompananteCRUD';
+import BloqueFraccionesTiempo from './fracciones_tiempos/FraccionTiempoCRUD';
 
-class ListadoElementos extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            slideIndex: 0,
-        };
-        this.plural_name = 'Panel Acompanantes';
-        this.singular_name = 'Panel Acompanante';
-        this.cargarDatos = this.cargarDatos.bind(this);
-    }
+const ListadoElementos = memo((props) => {
+    const [slideIndex, setSlideIndex] = useState(0);
+    const mis_permisos = useSelector(state => state.mis_permisos);
+    const dispatch = useDispatch();
+    const permisos_acompanantes = permisosAdapter(mis_permisos, bloque_1_permisos);
+    const permisos_categorias = permisosAdapter(mis_permisos, bloque_2_permisos);
+    const permisos_fracciones_tiempo = permisosAdapter(mis_permisos, bloque_3_permisos);
 
-    handleChange = (event, value) => {
-        if (value !== this.state.slideIndex) {
-            this.cargarElementos(value);
-        }
-        this.setState({
-            slideIndex: value,
-        });
+    const acompanantes = useSelector(state => state.acompanantes);
+    const categorias_acompanantes = useSelector(state => state.categorias_acompanantes);
+    const fracciones_tiempos_acompanantes = useSelector(state => state.fracciones_tiempos_acompanantes);
+
+    useEffect(() => {
+            dispatch(actions.fetchMisPermisosxListado([
+                bloque_1_permisos,
+                bloque_2_permisos,
+                bloque_3_permisos
+            ], {callback: () => cargarDatos()}));
+            return () => {
+                dispatch(actions.clearAcompanantes());
+                dispatch(actions.clearFraccionesTiemposAcompanantes());
+                dispatch(actions.clearCategoriasAcompanantes());
+            };
+        }, []
+    );
+
+    const cargarDatos = () => {
+        cargarElementos();
     };
 
-    cargarElementos(value = null) {
-
-        let index = value !== null ? value : this.state.slideIndex;
-
+    const cargarElementos = (value = null) => {
+        let index = value !== null ? value : slideIndex;
         if (index === 0) {
-            this.props.fetchAcompanantes();
+            dispatch(actions.fetchAcompanantes())
         } else if (index === 1) {
-            this.props.fetchCategoriasAcompanantes();
+            dispatch(actions.fetchCategoriasAcompanantes())
         } else if (index === 2) {
-            this.props.fetchFraccionesTiemposAcompanantes();
+            dispatch(actions.fetchFraccionesTiemposAcompanantes())
         }
-    }
+    };
+    const handleChange = (event, value) => {
+        if (value !== slideIndex) {
+            cargarElementos(value);
+        }
+        setSlideIndex(value);
+    };
 
-    componentDidMount() {
-        this.props.fetchMisPermisosxListado([bloque_1_permisos, bloque_2_permisos, bloque_3_permisos], {callback: () => this.cargarDatos()});
-    }
+    const can_see =
+        permisos_categorias.list ||
+        permisos_acompanantes.list ||
+        permisos_fracciones_tiempo.list;
+    const plural_name = 'Panel Acompanantes';
+    const singular_name = 'Panel Acompanante';
 
+    return (
+        <ValidarPermisos can_see={can_see} nombre={plural_name}>
+            <Typography variant="h5" gutterBottom color="primary">
+                {singular_name}
+            </Typography>
+            <Tabs indicatorColor="primary"
+                  textColor="primary"
+                  onChange={handleChange}
+                  value={slideIndex}
+            >
+                <Tab label="Acompanantes"/>
+                <Tab label="Categorias"/>
+                <Tab label="Fracciones Tiempo"/>
+            </Tabs>
 
-    componentWillUnmount() {
-        this.props.clearAcompanantes();
-        this.props.clearCategoriasAcompanantes();
-    }
-
-    cargarDatos() {
-        this.cargarElementos();
-    }
-
-    render() {
-        const {bloque_1_list, bloque_2_list, bloque_3_list, mis_permisos} = this.props;
-        const permisos_object_1 = permisosAdapter(mis_permisos, bloque_1_permisos);
-        const permisos_object_2 = permisosAdapter(mis_permisos, bloque_2_permisos);
-        const permisos_object_3 = permisosAdapter(mis_permisos, bloque_3_permisos);
-
-        const can_see =
-            permisos_object_1.list ||
-            permisos_object_2.list;
-        return (
-            <ValidarPermisos can_see={can_see} nombre={this.plural_name}>
-                <Typography variant="h5" gutterBottom color="primary">
-                    {this.singular_name}
-                </Typography>
-                <Tabs indicatorColor="primary"
-                      textColor="primary"
-                      onChange={this.handleChange}
-                      value={this.state.slideIndex}
-                >
-                    <Tab label="Acompanantes"/>
-                    <Tab label="Categorias"/>
-                    <Tab label="Fracciones Tiempo"/>
-                </Tabs>
-
-                {
-                    this.state.slideIndex === 0 &&
-                    <BloqueAcompanantes
-                        {...this.props}
-                        object_list={bloque_1_list}
-                        permisos_object={permisos_object_1}
-                    />
-                }
-                {
-                    this.state.slideIndex === 1 &&
-                    <BloqueCategorias
-                        {...this.props}
-                        object_list={bloque_2_list}
-                        permisos_object={permisos_object_2}
-                    />
-                }
-                {
-                    this.state.slideIndex === 2 &&
-                    <BloqueFraccionesTiempo
-                        {...this.props}
-                        object_list={bloque_3_list}
-                        permisos_object={permisos_object_3}
-                    />
-                }
-                <CargarDatos
-                    cargarDatos={this.cargarDatos}
+            {
+                slideIndex === 0 &&
+                <BloqueAcompanantes
+                    object_list={acompanantes}
+                    permisos_object={permisos_acompanantes}
                 />
-            </ValidarPermisos>
-        )
-    }
-}
+            }
+            {
+                slideIndex === 1 &&
+                <BloqueCategorias
+                    object_list={categorias_acompanantes}
+                    permisos_object={permisos_categorias}
+                />
+            }
+            {
+                slideIndex === 2 &&
+                <BloqueFraccionesTiempo
+                    object_list={fracciones_tiempos_acompanantes}
+                    permisos_object={permisos_fracciones_tiempo}
+                />
+            }
+            <CargarDatos
+                cargarDatos={cargarDatos}
+            />
+        </ValidarPermisos>
+    )
 
-function mapPropsToState(state, ownProps) {
-    return {
-        bloque_1_list: state.acompanantes,
-        bloque_2_list: state.categorias_acompanantes,
-        bloque_3_list: state.fracciones_tiempos_acompanantes,
-        mis_permisos: state.mis_permisos
-    }
-}
+});
 
-export default connect(mapPropsToState, actions)(ListadoElementos)
+export default ListadoElementos;

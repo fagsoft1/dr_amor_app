@@ -12,15 +12,15 @@ import {
     TIPOS_HABITACIONES as bloque_2_permisos,
 } from "../../../00_utilities/permisos/types";
 
-import BloqueHabitaciones from './habitaciones/HabitacionList';
-import BloqueHabitacionesTipos from './habitaciones_tipos/HabitacionTipoList';
+import BloqueHabitaciones from './habitaciones/HabitacionCRUD';
+import BloqueHabitacionesTipos from './habitaciones_tipos/HabitacionTipoCRUD';
 
 const ListadoElementos = memo((props) => {
+    const dispatch = useDispatch();
     const [slideIndex, setSlideIndex] = useState(0);
+    const mis_permisos = useSelector(state => state.mis_permisos);
     const habitaciones = useSelector(state => state.habitaciones);
     const habitaciones_tipos = useSelector(state => state.habitaciones_tipos);
-    const mis_permisos = useSelector(state => state.mis_permisos);
-    const dispatch = useDispatch();
     const permisos_object_1 = permisosAdapter(mis_permisos, bloque_1_permisos);
     const permisos_object_2 = permisosAdapter(mis_permisos, bloque_2_permisos);
     useEffect(() => {
