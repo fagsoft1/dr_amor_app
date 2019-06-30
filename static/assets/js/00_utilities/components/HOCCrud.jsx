@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {notificarAction} from '../../01_actions/01_index';
 import ExcelDownload from "../../00_utilities/components/system/ExcelDownload";
+import CargarDatos from "./system/CargarDatos";
 
 const style = {
     seleccionar_todo: {
@@ -134,7 +135,8 @@ function crudHOC(CreateForm, Tabla) {
                 con_titulo = true,
                 permisos_object,
                 auth = null,
-                singular_name
+                singular_name,
+                cargarDatos = null
             } = this.props;
             const {
                 item_seleccionado,
@@ -214,6 +216,12 @@ function crudHOC(CreateForm, Tabla) {
                         onSelectItemEdit={this.onSelectItemEdit}
                         onSelectDataToExcel={this.onSelectDataToExcel}
                     />
+                    {
+                        cargarDatos &&
+                        <CargarDatos
+                            cargarDatos={cargarDatos}
+                        />
+                    }
                 </Fragment>
             )
         }

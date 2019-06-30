@@ -59,7 +59,7 @@ let Form = memo(props => {
                 name='cuenta_padre'
                 textField='nombre'
                 valuesField='id'
-                data={_.map(cuentas_contables, h => {
+                data={_.map(_.pickBy(cuentas_contables, c => c.tipo === 'T'), h => {
                     return ({
                         id: h.id,
                         nombre: h.to_string

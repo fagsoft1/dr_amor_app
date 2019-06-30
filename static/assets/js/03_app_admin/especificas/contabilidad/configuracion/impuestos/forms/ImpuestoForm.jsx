@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {formValueSelector, reduxForm} from 'redux-form';
 import {
     MyTextFieldSimple,
@@ -11,7 +11,7 @@ import InputAdornment from "@material-ui/core/InputAdornment/index";
 
 const selector = formValueSelector('impuestosForm');
 
-let Form = (props) => {
+let Form = memo((props) => {
     const {
         pristine,
         submitting,
@@ -111,7 +111,7 @@ let Form = (props) => {
             </div>
         </MyFormTagModal>
     )
-};
+});
 
 
 Form = reduxForm({

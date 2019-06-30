@@ -4,28 +4,27 @@ import Tabla from './BodegaTabla';
 import crudHOC from '../../../../00_utilities/components/HOCCrud';
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
 import * as actions from "../../../../01_actions/01_index";
-import {EMPRESAS as permisos_view} from "../../../../00_utilities/permisos/types";
+import {BODEGAS} from "../../../../00_utilities/permisos/types";
 import {useSelector} from "react-redux/es/hooks/useSelector";
-import {permisosAdapter} from "../../../../00_utilities/common";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
+import useTengoPermisos from "../../../../00_utilities/hooks/useTengoPermisos";
 
 
 const CRUD = crudHOC(CreateForm, Tabla);
 
 const List = memo(() => {
     const dispatch = useDispatch();
+    const permisos_object = useTengoPermisos(BODEGAS);
     const cargarDatos = () => {
         dispatch(actions.fetchBodegas());
     };
     useEffect(() => {
-        dispatch(actions.fetchMisPermisosxListado([permisos_view], {callback: cargarDatos}));
+        cargarDatos();
         return () => {
             dispatch(actions.clearBodegas());
         };
     }, []);
-    const mis_permisos = useSelector(state => state.mis_permisos);
     const object_list = useSelector(state => state.bodegas);
-    const permisos_object = permisosAdapter(mis_permisos, permisos_view);
     const method_pool = {
         fetchObjectMethod: (id, options) => dispatch(actions.fetchBodega(id, options)),
         deleteObjectMethod: (id, options) => dispatch(actions.deleteBodega(id, options)),
