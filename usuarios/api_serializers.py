@@ -1,13 +1,15 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
+
+from dr_amor_app.general_mixins.custom_serializer_mixins import CustomSerializerMixin
 from puntos_venta.api_serializers import PuntoVentaSerializer
+from permisos.api_serializers import GroupSerializer, PermissionSerializer
 
 
-class UsuarioSerializer(serializers.ModelSerializer):
+class UsuarioSerializer(CustomSerializerMixin, serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
     imagen_perfil_url = serializers.SerializerMethodField()
-    punto_venta_actual = PuntoVentaSerializer(read_only=True)
     qr_acceso = serializers.CharField(source='tercero.qr_acceso', read_only=True)
 
     def get_imagen_perfil_url(self, obj):  # pragma: no cover
@@ -38,7 +40,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'tercero',
             'to_string',
             'qr_acceso',
-            'groups'
+            'groups',
+            'user_permissions',
         ]
         extra_kwargs = {
             'tercero': {'read_only': True},
@@ -52,6 +55,20 @@ class UsuarioSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+class UsuarioConDetalleSerializer(UsuarioSerializer):
+    punto_venta_actual = PuntoVentaSerializer(
+        read_only=True,
+        context={
+            'quitar_campos': [
+                'conceptos_operaciones_caja_cierre',
+                'bodega',
+                'bodega_nombre',
+                'usuario_actual_nombre'
+            ]
+        }
+    )
 
 
 class LoginUserSerializer(serializers.Serializer):

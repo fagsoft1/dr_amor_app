@@ -1,23 +1,20 @@
-import React, {Fragment, memo, useEffect} from 'react';
+import React, {memo, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../01_actions/01_index";
-import CargarDatos from "../../../00_utilities/components/system/CargarDatos";
-import {
-    USUARIOS as permisos_view_groups
-} from "../../../00_utilities/permisos/types";
-import {permisosAdapter} from "../../../00_utilities/common";
+import {USUARIOS} from "../../../00_utilities/permisos/types";
 import CreateForm from './forms/UsuarioForm';
 import Tabla from './UsuarioTabla';
 import crudHOC from '../../../00_utilities/components/HOCCrud';
+import useTengoPermisos from "../../../00_utilities/hooks/useTengoPermisos";
 
 const CRUD = crudHOC(CreateForm, Tabla);
 
 const List = memo(props => {
     const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
-    const mis_permisos = useSelector(state => state.mis_permisos);
     const object_list = useSelector(state => state.usuarios);
-    const permisos_object = permisosAdapter(mis_permisos, permisos_view_groups);
+
+    const permisos_object = useTengoPermisos(USUARIOS);
 
 
     const method_pool = {
@@ -32,26 +29,22 @@ const List = memo(props => {
     };
 
     useEffect(() => {
-        dispatch(actions.fetchMisPermisosxListado([permisos_view_groups], {callback: () => cargarDatos()}))
+        cargarDatos();
         return () => {
             dispatch(actions.clearUsuarios());
         };
     }, []);
 
     return (
-        <Fragment>
-            <CRUD
-                auth={auth}
-                method_pool={method_pool}
-                list={object_list}
-                permisos_object={permisos_object}
-                plural_name='Usuarios'
-                singular_name='Usuario'
-            />
-            <CargarDatos
-                cargarDatos={cargarDatos}
-            />
-        </Fragment>
+        <CRUD
+            auth={auth}
+            method_pool={method_pool}
+            list={object_list}
+            permisos_object={permisos_object}
+            plural_name='Usuarios'
+            singular_name='Usuario'
+            cargarDatos={cargarDatos}
+        />
     )
 });
 

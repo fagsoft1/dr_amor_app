@@ -15,6 +15,7 @@ class AditionalDefaultPermission(models.Model):
             ('list_user', 'Can list user'),
             ('list_permission', 'Can list permission'),
             ('list_group', 'Can list group'),
+            ('change_user_permission', 'Can change user permission'),
             ('make_user_superuser', 'Can make user superuser'),
             ('make_user_staff', 'Can make user staff'),
             ('make_user_active', 'Can make user active'),

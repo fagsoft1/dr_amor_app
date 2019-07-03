@@ -1,10 +1,11 @@
 from django.contrib.auth.models import Permission, Group
 from rest_framework import serializers
 
+from dr_amor_app.general_mixins.custom_serializer_mixins import CustomSerializerMixin
 from .models import PermissionPlus
 
 
-class PermissionSerializer(serializers.ModelSerializer):
+class PermissionSerializer(CustomSerializerMixin, serializers.ModelSerializer):
     nombre = serializers.CharField(source='plus.nombre', allow_null=True, allow_blank=True)
     activo = serializers.BooleanField(source='plus.activo')
     to_string = serializers.SerializerMethodField()

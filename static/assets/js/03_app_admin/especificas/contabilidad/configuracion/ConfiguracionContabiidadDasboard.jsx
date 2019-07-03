@@ -11,7 +11,6 @@ const ListadoElementos = memo(() => {
     const [slideIndex, setSlideIndex] = useState(0);
     const singular_name = 'Configuraciones';
     return (
-
         <Fragment>
             <Typography variant="h5" gutterBottom color="primary">
                 {singular_name}

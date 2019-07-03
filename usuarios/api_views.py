@@ -8,7 +8,7 @@ from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
 from usuarios.services import (
     user_cambiar_contrasena,
 )
-from .api_serializers import UsuarioSerializer, LoginUserSerializer
+from .api_serializers import UsuarioSerializer, LoginUserSerializer, UsuarioConDetalleSerializer
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
@@ -16,10 +16,12 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = User.objects.select_related(
         'tercero',
         'punto_venta_actual'
-    ).prefetch_related(
-        'groups',
     ).all()
     serializer_class = UsuarioSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = UsuarioConDetalleSerializer
+        return super().retrieve(request, *args, **kwargs)
 
     @action(detail=True, methods=['post'])
     def adicionar_permiso(self, request, pk=None):
@@ -94,5 +96,5 @@ class LoginViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated, ])
     def cargar_usuario(self, request) -> Response:
-        serializer = UsuarioSerializer(self.request.user, context={'request': request})
+        serializer = UsuarioConDetalleSerializer(self.request.user, context={'request': request})
         return Response(serializer.data)

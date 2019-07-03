@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
+from dr_amor_app.general_mixins.custom_serializer_mixins import CustomSerializerMixin
 from .models import PuntoVenta, PuntoVentaTurno
 
 
-class PuntoVentaSerializer(serializers.ModelSerializer):
+class PuntoVentaSerializer(CustomSerializerMixin, serializers.ModelSerializer):
     usuario_actual_nombre = serializers.CharField(source='usuario_actual.username', read_only=True)
     bodega_nombre = serializers.CharField(source='bodega.nombre', read_only=True)
     tipo_nombre = serializers.SerializerMethodField()

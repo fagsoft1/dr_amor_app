@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import {reduxForm, reset} from 'redux-form';
-import {MyTextFieldSimple} from '../../../../../00_utilities/components/ui/forms/fields';
-import {MyFormTagModal} from '../../../../../00_utilities/components/ui/forms/MyFormTagModal';
+import {MyTextFieldSimple} from '../../../../00_utilities/components/ui/forms/fields';
+import {MyFormTagModal} from '../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './grupo_permiso_validate';
 import asyncValidate from './grupo_permiso_asyncValidate';
 
