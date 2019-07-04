@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {memo} from 'react';
 import DrawerListItem from '../../00_utilities/components/ui/drawer/DrawerMenuListItem';
 import ListCollapse from '../../00_utilities/components/ui/drawer/DrawerMenuListCollapse';
 
 
-const MenuPermisos = () => (
+const MenuPermisos = memo(props => (
     <ListCollapse icono='coins' texto='Contabilidad'>
         <DrawerListItem
             size='1x'
@@ -24,7 +24,7 @@ const MenuPermisos = () => (
             type='nested'
         />
     </ListCollapse>
-);
+));
 
 
 export default MenuPermisos;

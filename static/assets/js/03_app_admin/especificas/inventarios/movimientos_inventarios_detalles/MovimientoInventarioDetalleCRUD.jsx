@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
-import CreateForm from './forms/MovimientoInventarioDetalleForm';
-import Tabla from './MovimientoInventarioDetalleTabla';
+import CreateForm from './forms/MovimientoInventarioDetalleCRUDForm';
+import Tabla from './MovimientoInventarioDetalleCRUDTabla';
 import crudHOC from '../../../../00_utilities/components/HOCCrud';
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
 import * as actions from "../../../../01_actions/01_index";

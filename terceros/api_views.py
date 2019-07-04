@@ -243,6 +243,7 @@ class ColaboradorViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def upload_archivo(self, request, pk=None):  # pragma: no cover
+        print('si llamo a upload_archivo')
         colaborador = self.get_object()
         archivo = self.request.FILES['archivo']
         colaborador.imagen_perfil = archivo

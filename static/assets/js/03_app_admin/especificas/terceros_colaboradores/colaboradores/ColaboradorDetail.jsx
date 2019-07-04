@@ -2,13 +2,13 @@ import React, {Fragment, memo, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
-import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
+import ValidarPermisos from "../../../../permisos/validar_permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 import AddPuntoVenta from './ColaboradorDetailAddPuntoVenta';
 import IconButtonTableDelete from '../../../../00_utilities/components/ui/icon/TableIconButtonDelete';
 import {
     COLABORADORES as permisos_view
-} from "../../../../00_utilities/permisos/types";
+} from "../../../../permisos";
 import Typography from '@material-ui/core/Typography/index';
 
 const TablaPDV = (props) => {

@@ -10,7 +10,7 @@ const Habitaciones = lazy(() => import('./especificas/habitaciones/HabitacionDas
 const ProductosDashboard = lazy(() => import('./especificas/productos/ProductoDashboard'));
 const PermisosList = lazy(() => import('./generales/permisos/PermisoActivoTabla'));
 const GruposPermisosList = lazy(() => import("./generales/permisos/GrupoPermisoCRUD"));
-const UsuariosList = lazy(() => import("./generales/usuarios/UsuarioList"));
+const UsuariosList = lazy(() => import("./generales/usuarios/UsuarioCRUD"));
 const UsuariosDetail = lazy(() => import("./generales/usuarios/UsuarioDetail"));
 const AcompanantesDashboard = lazy(() => import("./especificas/terceros_acompanantes/AcompananteDashboard"));
 const ColaboradorList = lazy(() => import("./especificas/terceros_colaboradores/colaboradores/ColaboradorCRUD"));
@@ -20,8 +20,8 @@ const BodegasList = lazy(() => import("./especificas/inventarios/bodegas/BodegaC
 const BodegasDetail = lazy(() => import("./especificas/inventarios/bodegas/BodegaDetail"));
 const MovimientosInventariosList = lazy(() => import("./especificas/inventarios/movimientos_inventarios/MovimientoInventarioCRUD"));
 const MovimientosInventariosDetail = lazy(() => import("./especificas/inventarios/movimientos_inventarios/MovimientoInventarioDetail"));
-const TrasladosInventariosList = lazy(() => import("./especificas/inventarios/traslados/traslados_list_container"));
-const TrasladoInventarioDetail = lazy(() => import("./especificas/inventarios/traslados/traslados_detail"));
+const TrasladosInventariosList = lazy(() => import("./especificas/inventarios/traslados/TrasladoCRUD"));
+const TrasladoInventarioDetail = lazy(() => import("./especificas/inventarios/traslados/TrasladoDetalle"));
 const CategoriaAcompananteDetail = lazy(() => import("./especificas/terceros_acompanantes/categorias/CategoriaAcompananteDetail.jsx"));
 const PuntosVentasList = lazy(() => import("./especificas/puntos_ventas/puntos_ventas/PuntoVentaCRUD"));
 const PuntoVentaDetail = lazy(() => import("./especificas/puntos_ventas/puntos_ventas/PuntoVentaDetalle"));

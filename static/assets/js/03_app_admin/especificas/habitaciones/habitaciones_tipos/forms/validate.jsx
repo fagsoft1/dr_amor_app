@@ -1,5 +1,3 @@
-import {REGEX_SOLO_NUMEROS_DINERO} from "../../../../../00_utilities/common";
-
 const validate = values => {
     const errors = {};
 
@@ -25,10 +23,6 @@ const validate = values => {
             errors[k] = `No debe tener más de ${v} caracteres!`
         }
     });
-
-    if (values.valor && !REGEX_SOLO_NUMEROS_DINERO.test(values.valor)) {
-        errors.valor = 'Debe ser un valor en dinero';
-    }
     return errors;
 };
 

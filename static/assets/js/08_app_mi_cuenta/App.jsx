@@ -3,7 +3,7 @@ import {Route, Switch} from 'react-router-dom';
 import Loading from '../00_utilities/components/system/LoadingOverlay';
 import DrawerMenu from '../00_utilities/components/ui/drawer/DrawerMenu';
 import Menu from './00_menu/index';
-import Seguridad from "../authentication/mi_cuenta/seguridad/components/seguridad";
+import Seguridad from "../authentication/mi_cuenta/seguridad/components/SeguridadDashboard";
 import App from "./index";
 import Balance from "./financiero/balance/containers/balance";
 

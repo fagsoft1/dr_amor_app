@@ -1,12 +1,12 @@
 import React, {memo, useEffect} from 'react';
-import CreateForm from './forms/ProductoForm';
-import Tabla from './ProductoTabla';
+import CreateForm from './forms/ProductoCRUDForm';
+import Tabla from './ProductoCRUDTabla';
 import crudHOC from '../../../../00_utilities/components/HOCCrud';
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
 import * as actions from "../../../../01_actions/01_index";
 import {useSelector} from "react-redux/es/hooks/useSelector";
 import useTengoPermisos from "../../../../00_utilities/hooks/useTengoPermisos";
-import {PRODUCTOS} from "../../../../00_utilities/permisos/types";
+import {PRODUCTOS} from "../../../../permisos";
 
 
 const CRUD = crudHOC(CreateForm, Tabla);

@@ -1,7 +1,7 @@
 import React, {memo, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
-import {BILLETES_MONEDAS} from "../../../../00_utilities/permisos/types";
+import {BILLETES_MONEDAS} from "../../../../permisos";
 
 import CreateForm from './forms/BilleteMonedaForm';
 import Tabla from './BilleteMonedaTabla';

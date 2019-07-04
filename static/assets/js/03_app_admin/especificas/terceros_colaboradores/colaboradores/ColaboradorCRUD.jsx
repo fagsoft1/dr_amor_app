@@ -1,12 +1,11 @@
-import React, {Fragment, memo, useEffect} from 'react';
+import React, {memo, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
-import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
-import {COLABORADORES as permisos_view} from "../../../../00_utilities/permisos/types";
+import {COLABORADORES as permisos_view} from "../../../../permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 
-import CreateForm from './forms/ColaboradorForm';
-import Tabla from './ColaboradorTabla';
+import CreateForm from './forms/ColaboradorCRUDForm';
+import Tabla from './ColaboradorCRUDTabla';
 import crudHOC from '../../../../00_utilities/components/HOCCrud';
 
 
@@ -38,19 +37,15 @@ const List = memo(props => {
         updateObjectMethod: (id, item, options) => dispatch(actions.updateColaborador(id, item, options)),
     };
     return (
-        <Fragment>
-            <CRUD
-                method_pool={method_pool}
-                list={object_list}
-                permisos_object={permisos_object}
-                plural_name='Colaboradores'
-                singular_name='Colaborador'
-                uploadFotoPerfil={uploadFotoPerfil}
-            />
-            <CargarDatos
-                cargarDatos={cargarDatos}
-            />
-        </Fragment>
+        <CRUD
+            method_pool={method_pool}
+            list={object_list}
+            permisos_object={permisos_object}
+            plural_name='Colaboradores'
+            singular_name='Colaborador'
+            uploadFotoPerfil={uploadFotoPerfil}
+            cargarDatos={cargarDatos}
+        />
     )
 });
 

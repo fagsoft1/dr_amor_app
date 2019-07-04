@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import ListaBusqueda from '../../../00_utilities/utiles';
-import GrupoPermisoTablaItem from './GrupoPermisoTablaItem';
+import GrupoPermisoTablaItem from './GrupoPermisoCRUDTablaItem';
 
 const buscarBusqueda = (lista, busqueda) => {
     return _.pickBy(lista, (permiso) => {

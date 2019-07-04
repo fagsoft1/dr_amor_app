@@ -2,13 +2,13 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
-import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
+import ValidarPermisos from "../../../../permisos/validar_permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 import Typography from '@material-ui/core/Typography/index';
 import {
     MODALIDADES_FRACCIONES_TIEMPOS as permisos_view,
     MODALIDADES_FRACCIONES_TIEMPOS_DETALLES as permisos_view_2
-} from "../../../../00_utilities/permisos/types";
+} from "../../../../permisos";
 
 import ModalidadTiempoDetalle from './detalles/ModalidadFraccionTiempoDetalleCRUD';
 import Button from "@material-ui/core/Button/index";

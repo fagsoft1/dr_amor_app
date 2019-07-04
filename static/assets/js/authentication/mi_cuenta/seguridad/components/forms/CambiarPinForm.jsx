@@ -3,6 +3,7 @@ import {reduxForm} from 'redux-form';
 import validate from "./validate_cambiar_pin_form";
 import {MyTextFieldSimple} from '../../../../../00_utilities/components/ui/forms/fields';
 import Button from '@material-ui/core/Button';
+import Typography from "@material-ui/core/Typography";
 
 let Form = memo((props) => {
     const {
@@ -11,6 +12,7 @@ let Form = memo((props) => {
         submitting,
         reset,
         handleSubmit,
+        error
     } = props;
     const cambiarPin = (values) => {
         onSubmit(values, reset);
@@ -35,7 +37,11 @@ let Form = memo((props) => {
                 name='confirmar_pin'
                 type='password'
             />
-
+            <div className='mt-3'>
+                <Typography variant="caption" gutterBottom color="error">
+                    {error && <strong>{error}</strong>}
+                </Typography>
+            </div>
             <div className="col-12">
                 <Button
                     color="primary"

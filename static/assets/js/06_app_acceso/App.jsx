@@ -3,7 +3,7 @@ import {Route, Switch} from 'react-router-dom';
 import Loading from '../00_utilities/components/system/LoadingOverlay';
 import DrawerMenu from '../00_utilities/components/ui/drawer/DrawerMenu';
 
-import AccesoList from "./acceso/containers/AccesoDashboard";
+import AccesoList from "./acceso/AccesoDashboard";
 
 const AdminApp = (props) => {
     return (

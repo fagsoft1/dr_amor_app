@@ -242,15 +242,15 @@ export function fetchObjectWithParameterPDF(url, options) {
 
 
 export function uploadArchivo(url, id, method, values, options) {
-    console.log(`%cAPI UPLOAD Archivo ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
+    console.log(`%cAPI UPLOAD ARCHIVO ${method.toUpperCase()} CON PARMAETROS - %c${url.toUpperCase()} - %cID ${id}`, 'color:red', 'color:blue', 'color:green');
     const mensaje_cargando = `Ejecutando ${method.toUpperCase()} en ${url.toUpperCase()}`;
     axios_instance.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios_instance.defaults.xsrfCookieName = "csrftoken";
     const headers = {};
     if (localStorage.token) {
         headers["Authorization"] = `Token ${localStorage.token}`;
+        headers["Content-Type"] = 'application/x-www-form-urlencoded;charset=UTF-8';
     }
-    headers["Content-Type"] = 'application/x-www-form-urlencoded;charset=UTF-8';
     axios_instance.defaults.headers = headers;
     const FULL_URL = `${url}/${id}/${method}/`;
     const request = axios_instance.post(FULL_URL, values, {responseType: 'arraybuffer'});

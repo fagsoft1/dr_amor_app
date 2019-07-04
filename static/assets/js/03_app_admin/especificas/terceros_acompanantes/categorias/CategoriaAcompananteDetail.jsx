@@ -2,10 +2,10 @@ import React, {memo, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
-import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
+import ValidarPermisos from "../../../../permisos/validar_permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 import Typography from '@material-ui/core/Typography/index';
-import {CATEGORIAS_ACOMPANANTES as permisos_view} from "../../../../00_utilities/permisos/types";
+import {CATEGORIAS_ACOMPANANTES as permisos_view} from "../../../../permisos";
 import ListCrud from '../categoria_fraccion_tiempo/CategoriaFraccionTiempoCRUD';
 import {Link} from 'react-router-dom'
 

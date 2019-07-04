@@ -5,7 +5,7 @@ import CargarDatos from "../../../00_utilities/components/system/CargarDatos";
 import ListaBusqueda from '../../../00_utilities/utiles';
 import Checkbox from '@material-ui/core/Checkbox/index';
 import FormControlLabel from '@material-ui/core/FormControlLabel/index';
-import {USUARIOS} from "../../../00_utilities/permisos/types";
+import {USUARIOS} from "../../../permisos";
 import Typography from '@material-ui/core/Typography/index';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome/index';
 import Badge from '@material-ui/core/Badge/index';

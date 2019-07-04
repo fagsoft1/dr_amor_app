@@ -1,9 +1,9 @@
 import React, {memo, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../01_actions/01_index";
-import {USUARIOS} from "../../../00_utilities/permisos/types";
-import CreateForm from './forms/UsuarioForm';
-import Tabla from './UsuarioTabla';
+import {USUARIOS} from "../../../permisos";
+import CreateForm from './forms/UsuarioCRUDForm';
+import Tabla from './UsuarioCRUDTabla';
 import crudHOC from '../../../00_utilities/components/HOCCrud';
 import useTengoPermisos from "../../../00_utilities/hooks/useTengoPermisos";
 

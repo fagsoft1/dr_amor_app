@@ -91,6 +91,7 @@ export const updateColaborador = (id, values, options_action = {}) => {
 };
 
 export const uploadColaboradorFoto = (id, values, options_action = {}) => {
+    console.log('llegooo a upload')
     console.log(id)
     console.log(values)
     console.log(options_action)

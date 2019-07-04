@@ -1,7 +1,7 @@
 import React, {memo, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
-import {CONCEPTOS_OPERACIONES_CAJA} from "../../../../00_utilities/permisos/types";
+import {CONCEPTOS_OPERACIONES_CAJA} from "../../../../permisos";
 import CreateForm from './forms/ConceptoOperacionCajaForm';
 import Tabla from './ConceptoOperacionCajaTabla';
 import crudHOC from '../../../../00_utilities/components/HOCCrud';

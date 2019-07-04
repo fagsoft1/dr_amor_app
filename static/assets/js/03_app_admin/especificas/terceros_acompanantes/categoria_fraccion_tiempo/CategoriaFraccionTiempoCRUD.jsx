@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
-import CreateForm from './forms/CategoriaFraccionTiempoForm';
-import Tabla from './CategoriaFraccionTiempoTabla';
+import CreateForm from './forms/CategoriaFraccionTiempoCRUDForm';
+import Tabla from './CategoriaFraccionTiempoCRUDTabla';
 import crudHOC from '../../../../00_utilities/components/HOCCrud';
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
 import * as actions from "../../../../01_actions/01_index";

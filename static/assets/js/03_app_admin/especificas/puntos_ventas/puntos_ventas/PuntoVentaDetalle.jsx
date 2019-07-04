@@ -1,10 +1,10 @@
 import React, {memo, Fragment, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
-import {PUNTOS_VENTAS as permisos_view} from "../../../../00_utilities/permisos/types";
+import {PUNTOS_VENTAS as permisos_view} from "../../../../permisos";
 import Typography from "@material-ui/core/Typography/index";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
-import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
+import ValidarPermisos from "../../../../permisos/validar_permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 import Checkbox from '@material-ui/core/Checkbox/index';
 import Paper from '@material-ui/core/Paper/index';

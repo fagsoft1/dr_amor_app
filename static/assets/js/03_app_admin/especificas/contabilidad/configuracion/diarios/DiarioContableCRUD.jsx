@@ -5,7 +5,7 @@ import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 import * as actions from "../../../../../01_actions/01_index";
 import {useSelector, useDispatch} from "react-redux";
 import useTengoPermisos from "../../../../../00_utilities/hooks/useTengoPermisos";
-import {DIARIOS_CONTABLES} from "../../../../../00_utilities/permisos/types";
+import {DIARIOS_CONTABLES} from "../../../../../permisos";
 
 
 const CRUD = crudHOC(CreateForm, Tabla);

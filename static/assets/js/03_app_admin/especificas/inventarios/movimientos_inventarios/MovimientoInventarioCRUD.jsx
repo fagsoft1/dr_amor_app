@@ -4,12 +4,12 @@ import * as actions from "../../../../01_actions/01_index";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
 import {
     MOVIMIENTOS_INVENTARIOS as permisos_view
-} from "../../../../00_utilities/permisos/types";
+} from "../../../../permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 import crudHOC from '../../../../00_utilities/components/HOCCrud';
 
-import CreateForm from './forms/MovimientoInventarioForm';
-import Tabla from './MovimientoInventarioTabla';
+import CreateForm from './forms/MovimientoInventarioCRUDForm';
+import Tabla from './MovimientoInventarioCRUDTabla';
 
 const CRUD = crudHOC(CreateForm, Tabla);
 

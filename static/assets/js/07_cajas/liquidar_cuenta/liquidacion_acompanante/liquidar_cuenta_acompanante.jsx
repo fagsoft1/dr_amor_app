@@ -5,7 +5,7 @@ import ModalLiquidacion from '../../liquidar_cuenta/liquidacion_acompanante/liqu
 import Button from "@material-ui/core/Button/index";
 import {connect} from "react-redux";
 import * as actions from "../../../01_actions/01_index";
-import {TERCEROS_CUENTAS as permisos_view} from "../../../00_utilities/permisos/types";
+import {TERCEROS_CUENTAS as permisos_view} from "../../../permisos";
 
 const styles = {
     table: {

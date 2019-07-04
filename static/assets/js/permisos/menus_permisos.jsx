@@ -1,0 +1,18 @@
+export const MENU_ADMIN_PERMISSIONS = {
+    admin_empresas: 'menu_admin_empresas',
+    admin_habitaciones: 'menu_admin_habitaciones',
+    admin_productos: 'menu_admin_productos',
+    admin_puntos_ventas: 'menu_admin_puntos_ventas',
+    admin_parqueadero: 'menu_admin_parqueadero',
+    admin_permisos: 'menu_admin_permisos',
+    admin_permisos_grupos: 'menu_admin_permisos_grupos',
+    admin_terceros_usuarios: 'menu_admin_terceros_usuarios',
+    admin_terceros_acompanantes: 'menu_admin_terceros_acompanantes',
+    admin_terceros_colaboradores: 'menu_admin_terceros_colaboradores',
+    admin_terceros_proveedores: 'menu_admin_terceros_proveedores',
+    admin_bodegas: 'menu_admin_bodegas',
+    admin_bodegas_kardex: 'menu_admin_bodegas_kardex',
+    admin_bodegas_kardex_traslados: 'menu_admin_bodegas_kardex_traslados',
+    admin_cajas_billetes_monedas: 'menu_admin_cajas_billetes_monedas',
+    admin_cajas_conceptos_operaciones_cajas: 'menu_admin_cajas_conceptos_operaciones_cajas',
+};

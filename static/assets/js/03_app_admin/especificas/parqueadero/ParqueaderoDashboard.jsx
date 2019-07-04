@@ -2,7 +2,7 @@ import React, {memo, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../01_actions/01_index";
 import CargarDatos from "../../../00_utilities/components/system/CargarDatos";
-import ValidarPermisos from "../../../00_utilities/permisos/validar_permisos";
+import ValidarPermisos from "../../../permisos/validar_permisos";
 import {permisosAdapter} from "../../../00_utilities/common";
 import Tabs from '@material-ui/core/Tabs/index';
 import Tab from '@material-ui/core/Tab/index';
@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography/index';
 import {
     TIPOS_VEHICULOS as bloque_1_permisos,
     MODALIDADES_FRACCIONES_TIEMPOS as bloque_2_permisos,
-} from "../../../00_utilities/permisos/types";
+} from "../../../permisos";
 
 import BloqueTiposVehiculos from './tipo_vehiculo/TipoVehiculoCRUD';
 import BloqueModalidadFraccionTiempo

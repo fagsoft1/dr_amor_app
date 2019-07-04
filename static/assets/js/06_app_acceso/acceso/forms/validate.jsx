@@ -1,4 +1,4 @@
-import {REGEX_CORREO_ELECTRONICO} from "../../../../00_utilities/common";
+import {REGEX_CORREO_ELECTRONICO} from "../../../00_utilities/common";
 
 const validate = values => {
     const errors = {};

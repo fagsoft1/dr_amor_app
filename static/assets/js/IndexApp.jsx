@@ -3,14 +3,14 @@ import {useSelector, useDispatch} from "react-redux";
 import * as actions from "./01_actions/01_index";
 import Loading from "./00_utilities/components/system/LoadingOverlay";
 import {Link} from 'react-router-dom'
-import {TIPOS_REGISTRO_INGRESO as permisos_view} from './00_utilities/permisos/types';
+import {TIPOS_REGISTRO_INGRESO as permisos_view} from './permisos';
 import {permisosAdapter} from "./00_utilities/common";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {withStyles} from "@material-ui/core/styles/index";
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
-import QrIdentificacion from './00_utilities/components/system/modal_qr_acceso';
+import QrIdentificacion from './00_utilities/components/system/ModalQrAcceso';
 import AbrirPuntoVentaDialog from './07_cajas/apertura_de_caja/PuntoVentaAbrirForm';
 import CerrarPuntoVentaDialog from './07_cajas/cierre_de_caja/punto_venta_cerrar';
 import Button from "@material-ui/core/Button";

@@ -1,10 +1,10 @@
 import React, {Fragment, memo, useEffect} from 'react';
-import CreateForm from './forms/BodegaForm';
-import Tabla from './BodegaTabla';
+import CreateForm from './forms/BodegaCRUDForm';
+import Tabla from './BodegaCRUDTabla';
 import crudHOC from '../../../../00_utilities/components/HOCCrud';
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
 import * as actions from "../../../../01_actions/01_index";
-import {BODEGAS} from "../../../../00_utilities/permisos/types";
+import {BODEGAS} from "../../../../permisos";
 import {useSelector} from "react-redux/es/hooks/useSelector";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
 import useTengoPermisos from "../../../../00_utilities/hooks/useTengoPermisos";

@@ -19,7 +19,7 @@ const styles = theme => ({
     }
 });
 
-const DrawerListItem = (props) => {
+const DrawerListItem = memo(props => {
     const {link, texto, icono, classes, type = 'main', size = null} = props;
     console.log('3. renderizó list item menu')
     return (
@@ -37,6 +37,6 @@ const DrawerListItem = (props) => {
             </ListItem>
         </Link>
     )
-};
+});
 
-export default withStyles(styles, {withTheme: true})(memo(DrawerListItem));
+export default withStyles(styles, {withTheme: true})(DrawerListItem);

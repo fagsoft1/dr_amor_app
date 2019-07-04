@@ -1,6 +1,7 @@
 import {formatMoney} from 'accounting';
 import moment from 'moment-timezone';
 import momentLocaliser from "react-widgets-moment";
+import React from "react";
 
 moment.tz.setDefault("America/Bogota");
 moment.locale('es');

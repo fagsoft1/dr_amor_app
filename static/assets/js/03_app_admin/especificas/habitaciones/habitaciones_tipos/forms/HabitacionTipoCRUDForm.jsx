@@ -45,6 +45,7 @@ const styles = {
     },
 };
 
+
 const ImpuestoTable = (props) => {
     const {impuestos, onDelete} = props;
     return (
@@ -111,7 +112,6 @@ let Form = (props) => {
     const dispatch = useDispatch();
     const impuestos = useSelector(state => state.contabilidad_impuestos);
     const valores = useSelector(state => selector(state, 'porcentaje_impuesto', 'valor', 'comision'));
-    console.log(valores)
     const [impuesto_seleccionado_id, setImpuestoSeleccionado] = useState(null);
     const adicionarImpuesto = () => {
         return dispatch(actions.adicionarQuitarImpuestoTipoHabitacion(initialValues.id, impuesto_seleccionado_id));
@@ -130,6 +130,7 @@ let Form = (props) => {
             fullScreen={true}
             onCancel={onCancel}
             onSubmit={handleSubmit(v => {
+                console.log(v)
                 dispatch(actions.fetchImpuestos());
                 return onSubmit(v, null, null, false);
             })}
@@ -151,16 +152,22 @@ let Form = (props) => {
                 className="col-12 col-md-3 ml-3"
                 nombre='Valor'
                 name='valor'
+                inputProps={{
+                    style: {textAlign: "right"}
+                }}
                 InputProps={{
-                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    startAdornment: <InputAdornment position="start">$</InputAdornment>
                 }}
             />
             <MyTextFieldSimple
                 className="col-12 col-md-3 ml-3"
                 nombre='Valor Add. Servicio'
                 name='valor_adicional_servicio'
+                inputProps={{
+                    style: {textAlign: "right"}
+                }}
                 InputProps={{
-                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    startAdornment: <InputAdornment position="start">$</InputAdornment>
                 }}
             />
             {

@@ -1,9 +1,9 @@
 import React, {Component, Fragment} from 'react';
-import {TERCEROS_CUENTAS as permisos_view} from "../../00_utilities/permisos/types";
+import {TERCEROS_CUENTAS as permisos_view} from "../../permisos";
 import {connect} from "react-redux";
 import * as actions from "../../01_actions/01_index";
 import {permisosAdapter} from "../../00_utilities/common";
-import ValidarPermisos from "../../00_utilities/permisos/validar_permisos";
+import ValidarPermisos from "../../permisos/validar_permisos";
 import Button from "@material-ui/core/Button/index";
 import Typography from "@material-ui/core/Typography";
 

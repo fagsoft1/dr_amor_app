@@ -143,7 +143,6 @@ function crudHOC(CreateForm, Tabla) {
                 modal_open,
                 data_to_excel,
             } = this.state;
-            console.log('--------renderizó crud----------')
 
             const onSeleccionarTodo = () => {
                 if (_.size(data_to_excel) === _.size(list)) {

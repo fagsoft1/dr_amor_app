@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, memo} from 'react';
 import {reduxForm} from 'redux-form';
-import {MyCombobox} from '../../../../00_utilities/components/ui/forms/fields';
-import {MyFormTagModal} from '../../../../00_utilities/components/ui/forms/MyFormTagModal';
-import NumericPad from '../../../../00_utilities/NumericPad';
+import {MyCombobox} from '../../../00_utilities/components/ui/forms/fields';
+import {MyFormTagModal} from '../../../00_utilities/components/ui/forms/MyFormTagModal';
+import NumericPad from '../../../00_utilities/NumericPad';
 import validate from './validate';
 
-let Form = (props) => {
+let Form = memo(props => {
     const [pin, setPin] = useState('');
     const {
         pristine,
@@ -48,7 +48,7 @@ let Form = (props) => {
             <NumericPad pin={pin} setPin={setPin}/>
         </MyFormTagModal>
     )
-};
+});
 
 Form = reduxForm({
     form: "registarAccesoForm",

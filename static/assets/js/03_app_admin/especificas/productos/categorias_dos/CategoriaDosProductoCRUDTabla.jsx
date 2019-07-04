@@ -17,7 +17,6 @@ const Tabla = memo((props) => {
         onSelectItemEdit,
         permisos_object
     } = props;
-
     return (
         <ReactTable
             data={data}

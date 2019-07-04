@@ -3,7 +3,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import ListaBusqueda from '../../../00_utilities/utiles';
 import * as actions from "../../../01_actions/01_index";
 import useTengoPermisos from "../../../00_utilities/hooks/useTengoPermisos";
-import {PERMISSION} from "../../../00_utilities/permisos/types";
+import {PERMISSION} from "../../../permisos";
 import CargarDatos from "../../../00_utilities/components/system/CargarDatos";
 import Typography from "@material-ui/core/Typography/index";
 import PermisoActivoTablaItem from './PermisoActivoTablaItem';
@@ -72,7 +72,8 @@ const Tabla = memo(props => {
                                     _.map(permisos_lista, item => {
                                         return <PermisoActivoTablaItem
                                             key={item.id}
-                                            item={item} updatePermiso={updatePermiso}
+                                            item={item}
+                                            updatePermiso={updatePermiso}
                                             can_change={permisos_permissions.change_plus}
                                         />
                                     })

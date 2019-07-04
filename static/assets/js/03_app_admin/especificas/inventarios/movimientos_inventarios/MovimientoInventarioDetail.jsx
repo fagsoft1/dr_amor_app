@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions/01_index";
 import {withStyles} from '@material-ui/core/styles/index';
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
-import ValidarPermisos from "../../../../00_utilities/permisos/validar_permisos";
+import ValidarPermisos from "../../../../permisos/validar_permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 import DeleteDialog from "../../../../00_utilities/components/ui/dialog/DeleteDialog";
 import GridList from '@material-ui/core/GridList/index';
@@ -16,7 +16,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome/index';
 import {
     MOVIMIENTOS_INVENTARIOS as permisos_view,
     MOVIMIENTOS_INVENTARIOS_DETALLES as permisos_detalle_view
-} from "../../../../00_utilities/permisos/types";
+} from "../../../../permisos";
 
 import ListCrud from '../movimientos_inventarios_detalles/MovimientoInventarioDetalleCRUD';
 

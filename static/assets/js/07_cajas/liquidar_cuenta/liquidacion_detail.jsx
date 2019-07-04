@@ -1,9 +1,9 @@
 import React, {Component, Fragment} from 'react';
-import {LIQUIDACIONES_CUENTAS as permisos_view} from "../../00_utilities/permisos/types";
+import {LIQUIDACIONES_CUENTAS as permisos_view} from "../../permisos";
 import {connect} from "react-redux";
 import * as actions from "../../01_actions/01_index";
 import {fechaHoraFormatoUno, permisosAdapter, pesosColombianos} from "../../00_utilities/common";
-import ValidarPermisos from "../../00_utilities/permisos/validar_permisos";
+import ValidarPermisos from "../../permisos/validar_permisos";
 import DetalleCuenta from '../cuentas/cuenta_conceptos';
 import Typography from "@material-ui/core/Typography";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
