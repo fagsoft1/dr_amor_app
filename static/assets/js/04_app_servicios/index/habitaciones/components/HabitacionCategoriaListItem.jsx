@@ -1,29 +1,35 @@
-import React, {Component} from 'react';
-import Cronometer from '../../dashboard/components/Cronometer';
+import React, {memo, useState} from 'react';
+import Timer from '../../../../00_utilities/components/system/Timer';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
-export default class HabitacionCategoriaListItem extends Component {
+const HabitacionCategoriaListItem = memo(props => {
+    const [mostra_cambios_estados, setCambiosEstados] = useState(false);
+    const {
+        habitacion,
+        cambiarEstado,
+        habitacion:
+            {
+                numero,
+                estado,
+                id,
+                tiempo_final_servicio,
+                fecha_ultimo_estado
+            },
+        onClickHabitacion
+    } = props;
 
-    constructor(props) {
-        super(props);
-        this.state = {mostra_cambios_estados: false};
-        this.onClickMostrarCambiarEstados = this.onClickMostrarCambiarEstados.bind(this);
-    }
+    const hora_final = estado === 1 ? tiempo_final_servicio : fecha_ultimo_estado;
 
-    onClickMostrarCambiarEstados() {
-        this.setState(function (prevState, props) {
-            return {mostra_cambios_estados: !prevState.mostra_cambios_estados}
-        });
-    }
+    const onClickMostrarCambiarEstados = () => {
+        setCambiosEstados(!mostra_cambios_estados);
+    };
 
-    onClickCambiarEstado(estado) {
-        const {habitacion, cambiarEstado} = this.props;
+    const onClickCambiarEstado = (estado) => {
         cambiarEstado(estado, habitacion.id);
-        this.setState({mostra_cambios_estados: false})
-    }
+        setCambiosEstados(false);
+    };
 
-    renderBotonEstado(estado) {
-        const {habitacion} = this.props;
+    const renderBotonEstado = (estado) => {
         if (habitacion.estado === estado) {
             return null
         }
@@ -33,58 +39,42 @@ export default class HabitacionCategoriaListItem extends Component {
                     className={`est-${estado} habitacion icon puntero`}
                     icon={['far', 'circle']}
                     size='2x'
-                    onClick={() => this.onClickCambiarEstado(estado)}
+                    onClick={() => onClickCambiarEstado(estado)}
                 />
             </div>
         )
-    }
+    };
 
-    renderBotoneriaEstados() {
+    const renderBotoneriaEstados = () => {
         return (
             <div className='row'>
-                {this.renderBotonEstado(0)}
-                {this.renderBotonEstado(2)}
-                {this.renderBotonEstado(3)}
+                {renderBotonEstado(0)}
+                {renderBotonEstado(2)}
+                {renderBotonEstado(3)}
             </div>
         )
-    }
-
-
-    render() {
-        const {
-            habitacion:
+    };
+    return (
+        <div className="col-4 col-md-4 col-lg-3 habitacion-tipo-list-item">
+            <div onClick={() => {
+                onClickHabitacion(id, onClickMostrarCambiarEstados);
+            }}
+                 className={`habitacion-tipo-list-item habitacion est-${estado} puntero`}
+            >
+                <FontAwesomeIcon icon={['far', 'bed']}/>
+                <span className="habitacion numero"> {numero}</span>
                 {
-                    numero,
-                    estado,
-                    id,
-                    tiempo_final_servicio,
-                    fecha_ultimo_estado
-                },
-            onClickHabitacion
-        } = this.props;
-        const {mostra_cambios_estados} = this.state;
-
-        const hora_final = estado === 1 ? tiempo_final_servicio : fecha_ultimo_estado;
-
-        return (
-            <div className="col-4 col-md-4 col-lg-3 habitacion-tipo-list-item">
-                <div onClick={() => {
-                    onClickHabitacion(id, this.onClickMostrarCambiarEstados);
-                }}
-                     className={`habitacion-tipo-list-item habitacion est-${estado} puntero`}
-                >
-                    <FontAwesomeIcon icon={['far', 'bed']}/>
-                    <span className="habitacion numero"> {numero}</span>
-                    {
-                        (estado === 1 || estado === 2 || estado === 3) &&
-                        <Cronometer hora_final={hora_final}/>
-                    }
-                </div>
-                {
-                    mostra_cambios_estados &&
-                    this.renderBotoneriaEstados()
+                    (estado === 1 || estado === 2 || estado === 3) &&
+                    <Timer hora_final={hora_final}/>
                 }
             </div>
-        )
-    }
-}
+            {
+                mostra_cambios_estados &&
+                renderBotoneriaEstados()
+            }
+        </div>
+    )
+
+});
+
+export default HabitacionCategoriaListItem;

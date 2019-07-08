@@ -5,7 +5,7 @@ import {MyTextFieldSimple, MyDropdownList} from '../../../../../00_utilities/com
 import {MyFormTagModal} from '../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
 import InputAdornment from '@material-ui/core/InputAdornment/index';
-import * as actions from '../../../../../01_actions/01_index';
+import * as actions from '../../../../../01_actions';
 
 let Form = memo(props => {
     const dispatch = useDispatch();

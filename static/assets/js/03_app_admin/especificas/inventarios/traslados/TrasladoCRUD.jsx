@@ -1,6 +1,6 @@
 import React, {memo, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import * as actions from "../../../../01_actions/01_index";
+import * as actions from "../../../../01_actions";
 import {TRASLADOS_INVENTARIOS} from "../../../../permisos";
 import CreateForm from './forms/TrasladoCRUDForm';
 import Tabla from './TrasladoCRUDTabla';

@@ -1,6 +1,6 @@
 import React, {Fragment, Component} from 'react';
 import {connect} from "react-redux";
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 import TrasladosPendientesTabla from '../components/TrasladoInventarioPendiente';
 
 class DashboarInventarios extends Component {

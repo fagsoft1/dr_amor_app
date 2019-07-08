@@ -80,6 +80,7 @@ class ServicioSerializer(serializers.ModelSerializer):
             'acompanante',
             'acompanante_nombre',
             'valor_servicio',
+            'valor_servicio_adicional',
             'valor_habitacion',
             'impuestos',
             'valor_total',

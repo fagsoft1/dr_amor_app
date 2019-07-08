@@ -3,7 +3,7 @@ import {useSelector, useDispatch} from "react-redux";
 import {reduxForm} from 'redux-form';
 
 import {Redirect} from "react-router-dom";
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 import {MyTextFieldSimple} from '../../../00_utilities/components/ui/forms/fields';
 import validate from '../components/forms/validate';
 import asyncValidate from "../components/forms/asyncValidate";

@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import {connect} from "react-redux";
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 import Fab from '@material-ui/core/Fab';
 import {withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';

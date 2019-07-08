@@ -2,7 +2,7 @@ import React, {useEffect, memo} from 'react';
 import CreateForm from './forms/ProveedorCRUDForm';
 import Tabla from './ProveedorCRUDTabla';
 import crudHOC from '../../../../00_utilities/components/HOCCrud';
-import * as actions from "../../../../01_actions/01_index";
+import * as actions from "../../../../01_actions";
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
 import {PROVEEDORES} from "../../../../permisos";
 import {useSelector} from "react-redux/es/hooks/useSelector";

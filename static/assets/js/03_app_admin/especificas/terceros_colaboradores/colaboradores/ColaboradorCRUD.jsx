@@ -1,6 +1,6 @@
 import React, {memo, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import * as actions from "../../../../01_actions/01_index";
+import * as actions from "../../../../01_actions";
 import {COLABORADORES as permisos_view} from "../../../../permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 

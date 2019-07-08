@@ -7,7 +7,7 @@ import CategoriaModelo from './CategoriaModeloGrupo';
 import Typography from '@material-ui/core/Typography/index';
 import Button from '@material-ui/core/Button/index';
 import CargarDatos from "../../00_utilities/components/system/CargarDatos";
-import * as actions from "../../01_actions/01_index";
+import * as actions from "../../01_actions";
 import useTengoPermisos from "../../00_utilities/hooks/useTengoPermisos";
 import {TIPOS_REGISTRO_INGRESO} from "../../permisos";
 

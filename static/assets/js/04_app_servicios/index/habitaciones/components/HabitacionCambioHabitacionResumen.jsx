@@ -1,9 +1,9 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, memo} from 'react';
 import {pesosColombianos} from "../../../../00_utilities/common";
 import FormaPago from '../../../../07_cajas/formas_de_pago/components/forms/forma_pago';
 import Button from '@material-ui/core/Button';
 
-const ResumenCambioHabitacion = (props) => {
+const ResumenCambioHabitacion = memo(props => {
     const {
         habitacion_nueva,
         habitacion,
@@ -12,7 +12,6 @@ const ResumenCambioHabitacion = (props) => {
         diferencia_precios,
         servicios
     } = props;
-
     const valor_habitacion_nueva = habitacion_nueva.valor;
     const valor_habitacion = habitacion.valor;
     return (
@@ -65,6 +64,6 @@ const ResumenCambioHabitacion = (props) => {
             }
         </Fragment>
     )
-};
+});
 
 export default ResumenCambioHabitacion;

@@ -56,6 +56,7 @@ class Habitacion(models.Model):
     fecha_ultimo_estado = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        verbose_name_plural = 'Habitaciones'
         permissions = [
             ['list_habitacion', 'Puede listar habitaciones'],
         ]

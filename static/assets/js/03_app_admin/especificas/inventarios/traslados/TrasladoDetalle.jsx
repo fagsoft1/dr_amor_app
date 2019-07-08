@@ -1,6 +1,6 @@
 import React, {Fragment, memo, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import * as actions from "../../../../01_actions/01_index";
+import * as actions from "../../../../01_actions";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
 import Typography from '@material-ui/core/Typography/index';
 import Button from '@material-ui/core/Button/index';

@@ -9,7 +9,7 @@ const areEqual = (prevProps, nextProps) => {
     return prevProps.list === nextProps.list;
 };
 const Tabla = memo((props) => {
-    let data = props.data
+    let data = _.map(props.list);
     const {
         updateItem,
         singular_name,

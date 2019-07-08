@@ -8,7 +8,7 @@ import {withStyles} from "@material-ui/core/styles/index";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Tooltip from '@material-ui/core/Tooltip';
 import {useDispatch} from 'react-redux';
-import * as actions from '../../../../01_actions/01_index';
+import * as actions from '../../../../01_actions';
 
 const styles = theme => ({
     main: {

@@ -6,7 +6,7 @@ import validate from './validate';
 import InputAdornment from '@material-ui/core/InputAdornment/index';
 import {pesosColombianos} from "../../../../../00_utilities/common";
 import Typography from '@material-ui/core/Typography/index';
-import * as actions from '../../../../../01_actions/01_index';
+import * as actions from '../../../../../01_actions';
 import {useSelector, useDispatch} from 'react-redux';
 
 const selector = formValueSelector('productosForm');

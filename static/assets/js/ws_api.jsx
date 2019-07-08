@@ -1,5 +1,5 @@
 import {WebSocketBridge} from 'django-channels';
-import * as actions from './01_actions/01_index';
+import * as actions from './01_actions';
 
 import baseDemultiplexer from './demultiplexer_base';
 

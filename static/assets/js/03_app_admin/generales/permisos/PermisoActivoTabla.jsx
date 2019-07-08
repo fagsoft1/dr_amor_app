@@ -1,7 +1,7 @@
 import React, {Fragment, memo, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import ListaBusqueda from '../../../00_utilities/utiles';
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 import useTengoPermisos from "../../../00_utilities/hooks/useTengoPermisos";
 import {PERMISSION} from "../../../permisos";
 import CargarDatos from "../../../00_utilities/components/system/CargarDatos";

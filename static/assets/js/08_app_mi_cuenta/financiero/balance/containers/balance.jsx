@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import * as actions from "../../../../01_actions/01_index";
+import * as actions from "../../../../01_actions";
 import {connect} from "react-redux";
 import ServiciosTabla from '../../ingresos/servicios/components/servicios_ingreso_tabla';
 import PrestamosTabla from '../../egresos/prestamos/components/operacion_caja_egreso_tabla';

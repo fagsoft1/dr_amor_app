@@ -7,7 +7,7 @@ import SalidaParqueaderoDialog from '../../salida/components/SalidaParqueaderoMo
 import CajaParqueaderoDialog from '../../caja/components/CajaModal';
 import VehiculoParqueaderoListado from '../components/VehiculoParqueaderoList';
 import {connect} from "react-redux";
-import * as actions from "../../../../01_actions/01_index";
+import * as actions from "../../../../01_actions";
 import Typography from "@material-ui/core/Typography";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 

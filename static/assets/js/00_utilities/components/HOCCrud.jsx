@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import PropTypes from "prop-types";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import {notificarAction} from '../../01_actions/01_index';
+import {notificarAction} from '../../01_actions';
 import ExcelDownload from "../../00_utilities/components/system/ExcelDownload";
 import CargarDatos from "./system/CargarDatos";
 

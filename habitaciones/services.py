@@ -103,12 +103,14 @@ def habitacion_cambiar_servicios_de_habitacion(
     habitacion_anterior = Habitacion.objects.get(pk=habitacion_anterior_id)
 
     habitacion_anterior_valor = habitacion_anterior.tipo.valor
+
     habitacion_nueva_valor = habitacion_nueva.tipo.valor
+
     diferencia = habitacion_nueva_valor - habitacion_anterior_valor
     servicios = Servicio.objects.filter(id__in=servicios_array_id)
     turno_punto_venta = User.objects.get(pk=usuario_id).tercero.turno_punto_venta_abierto
 
-    if diferencia == 0:
+    if habitacion_nueva.tipo.id == habitacion_anterior.tipo.id:
         for servicio in servicios.all():
             bitacora_registrar_cambiar_habitacion_servicio(
                 servicio_id=servicio.id,
@@ -117,9 +119,7 @@ def habitacion_cambiar_servicios_de_habitacion(
                 punto_venta_turno_id=turno_punto_venta.id
             )
 
-            servicio.valor_habitacion = habitacion_nueva.tipo.valor_antes_impuestos
             servicio.empresa = habitacion_nueva.empresa
-
             servicio.habitacion = habitacion_nueva
             servicio.save()
     else:
@@ -138,6 +138,7 @@ def habitacion_cambiar_servicios_de_habitacion(
             servicio.empresa = habitacion_nueva.empresa
 
             servicio.impuestos = impuestos
+            servicio.valor_servicio_adicional = habitacion_nueva.tipo.valor_adicional_servicio
             servicio.habitacion = habitacion_nueva
             servicio.save()
             array_servicios_id.append(servicio.id)

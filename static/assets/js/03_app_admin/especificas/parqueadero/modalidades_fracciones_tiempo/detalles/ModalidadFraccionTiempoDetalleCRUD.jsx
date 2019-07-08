@@ -3,7 +3,7 @@ import CreateForm from './forms/ModalidadFraccionTiempoDetalleForm';
 import Tabla from './ModalidadFraccionTiempoDetalleTabla';
 import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
-import * as actions from "../../../../../01_actions/01_index";
+import * as actions from "../../../../../01_actions";
 
 
 const CRUD = crudHOC(CreateForm, Tabla);

@@ -11,21 +11,28 @@ import ReactSafeHtml from 'react-safe-html';
 const LoadingOverlay = memo((props) => {
     const esta_cargando = useSelector(state => state.esta_cargando);
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+    if (!isAuthenticated) {
+        return <Redirect to="/"/>
+    }
     const {cargando, mensaje, error, titulo} = esta_cargando;
     const {classes} = props;
     let isActive = cargando ? 'block' : 'none';
     const style = {
-        display: isActive
+        loadingOverloadDos: {
+            display: isActive
+        },
+        loadingOverloadTres: {
+            maxWidth: '500px',
+            wordBreak: 'break-all'
+        }
     };
-    if (!isAuthenticated) {
-        return <Redirect to="/"/>
-    }
     return (
         <ErrorBoundary>
             <div className={classes.loadingOverloadUno}>
-                <div className={classes.loadingOverloadDos} style={style}>
-                    <div className={error ? classes.loadingOverloadTresError : classes.loadingOverloadTres}
-                         style={{maxWidth: '500px', wordBreak: 'break-all'}}>
+                <div className={classes.loadingOverloadDos} style={style.loadingOverloadDos}>
+                    <div
+                        className={error ? classes.loadingOverloadTresError : classes.loadingOverloadTres}
+                        style={style.loadingOverloadTres}>
                         {
                             error ?
                                 <FontAwesomeIcon icon={['far', 'exclamation-circle']} size='2x'/> :

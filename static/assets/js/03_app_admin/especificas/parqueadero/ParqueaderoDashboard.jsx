@@ -1,6 +1,6 @@
 import React, {memo, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 import CargarDatos from "../../../00_utilities/components/system/CargarDatos";
 import ValidarPermisos from "../../../permisos/validar_permisos";
 import {permisosAdapter} from "../../../00_utilities/common";

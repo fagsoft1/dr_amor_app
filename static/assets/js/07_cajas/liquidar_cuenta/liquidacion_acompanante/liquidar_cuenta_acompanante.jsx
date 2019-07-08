@@ -4,7 +4,7 @@ import DetalleCuenta from '../../cuentas/cuenta_conceptos';
 import ModalLiquidacion from '../../liquidar_cuenta/liquidacion_acompanante/liquidacion_acompanante_modal_liquidar';
 import Button from "@material-ui/core/Button/index";
 import {connect} from "react-redux";
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 import {TERCEROS_CUENTAS as permisos_view} from "../../../permisos";
 
 const styles = {

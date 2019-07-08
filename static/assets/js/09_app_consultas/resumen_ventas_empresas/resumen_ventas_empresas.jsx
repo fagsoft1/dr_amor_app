@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import * as actions from "../../01_actions/01_index";
+import * as actions from "../../01_actions";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import TablaServiciosResumen from "./servicios/components/tabla_resumen_servicios";
 

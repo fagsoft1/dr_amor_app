@@ -1,6 +1,6 @@
 import React, {memo, Fragment, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import * as actions from "../../../../01_actions/01_index";
+import * as actions from "../../../../01_actions";
 import {PUNTOS_VENTAS as permisos_view} from "../../../../permisos";
 import Typography from "@material-ui/core/Typography/index";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";

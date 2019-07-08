@@ -9,18 +9,6 @@
   background-color: #fff !important;
   color: #000 !important;
 }
-.boton-flotante {
-  position: fixed;
-  right: 30px;
-  bottom: 40px;
-  cursor: pointer;
-}
-.boton-flotante :hover {
-  color: #f00;
-}
-.boton-flotante :active {
-  color: #008000;
-}
 form .btn {
   font-size: 0.8rem;
   margin: 0.4rem;
@@ -101,13 +89,13 @@ form .btn {
   background-color: #f00;
 }
 .habitacion .servicio.clock-0 {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 .habitacion .servicio.clock-0 .fa {
   display: none;
 }
 .habitacion .servicio.clock-1 {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 .habitacion .servicio.clock-1 .fa {
   display: none;

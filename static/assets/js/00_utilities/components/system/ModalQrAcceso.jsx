@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import {useDispatch, useSelector} from "react-redux";
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 
 const QrIdentificacion = memo(props => {
     const [open_modal, setOpenModal] = useState(false);

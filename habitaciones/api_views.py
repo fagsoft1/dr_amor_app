@@ -2,7 +2,7 @@ import json
 
 from django.db.models import Max, Subquery, OuterRef, ExpressionWrapper, DateTimeField
 from rest_framework import viewsets, permissions
-from rest_framework.decorators  import action
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .api_serializers import HabitacionSerializer, TipoHabitacionSerializer, TipoHabitacionConDetalleSerializer
@@ -25,6 +25,29 @@ class TipoHabitacionViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         self.serializer_class = TipoHabitacionConDetalleSerializer
+        # from django.db.utils import DEFAULT_DB_ALIAS
+        # from django.contrib.admin.utils import NestedObjects
+        # instancia = self.get_object()
+        #
+        # collector = NestedObjects(using=DEFAULT_DB_ALIAS)
+        # collector.collect([instancia])
+        #
+        # protected = collector.protected
+        #
+        # modelos_protegidos = {'protegidos': {}, 'eliminar': {}}
+        # for x in protected:
+        #     if not modelos_protegidos['protegidos'].get(x._meta.verbose_name_plural, None):
+        #         modelos_protegidos['protegidos'][x._meta.verbose_name_plural] = 1
+        #     else:
+        #         modelos_protegidos['protegidos'][x._meta.verbose_name_plural] += 1
+        #
+        # for model, objs in collector.model_objs.items():
+        #     if not modelos_protegidos['eliminar'].get(model._meta.verbose_name_plural, None):
+        #         modelos_protegidos['eliminar'][model._meta.verbose_name_plural] = len(objs)
+        #     else:
+        #         modelos_protegidos['eliminar'][model._meta.verbose_name_plural] += len(objs)
+        #
+        # print(modelos_protegidos)
         return super().retrieve(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):

@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {LIQUIDACIONES_CUENTAS as permisos_view} from "../../permisos";
 import {connect} from "react-redux";
-import * as actions from "../../01_actions/01_index";
+import * as actions from "../../01_actions";
 import {fechaHoraFormatoUno, permisosAdapter, pesosColombianos} from "../../00_utilities/common";
 import ValidarPermisos from "../../permisos/validar_permisos";
 import DetalleCuenta from '../cuentas/cuenta_conceptos';

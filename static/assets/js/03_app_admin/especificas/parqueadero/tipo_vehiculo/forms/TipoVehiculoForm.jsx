@@ -9,7 +9,7 @@ import {MyFormTagModal} from '../../../../../00_utilities/components/ui/forms/My
 import validate from './validate';
 import InputAdornment from "@material-ui/core/InputAdornment/index";
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
-import * as actions from "../../../../../01_actions/01_index";
+import * as actions from "../../../../../01_actions";
 import {useSelector} from "react-redux/es/hooks/useSelector";
 
 

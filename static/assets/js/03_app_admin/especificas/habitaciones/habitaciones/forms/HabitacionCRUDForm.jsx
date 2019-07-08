@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux'
-import * as actions from '../../../../../01_actions/01_index';
+import * as actions from '../../../../../01_actions';
 import {reduxForm} from 'redux-form';
 import {
     MyTextFieldSimple,

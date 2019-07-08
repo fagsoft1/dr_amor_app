@@ -7,7 +7,7 @@ import asyncValidate from './asyncValidate';
 import CedulaForm from './datos_cedula_acompanante_form';
 import LectorCedula from '../../../terceros/forms/LectorCedulaForm';
 import {useSelector, useDispatch} from 'react-redux';
-import * as actions from '../../../../../01_actions/01_index';
+import * as actions from '../../../../../01_actions';
 
 const modelStyle = {
     width: '100%',

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 import {connect} from "react-redux";
 import {Link} from 'react-router-dom'
 

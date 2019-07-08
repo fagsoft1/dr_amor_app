@@ -14,7 +14,7 @@ import Dialog from '@material-ui/core/Dialog/index';
 import DialogContent from '@material-ui/core/DialogContent/index';
 import DialogTitle from '@material-ui/core/DialogTitle/index';
 import DialogAction from '@material-ui/core/DialogActions/index';
-import * as actions from "../../01_actions/01_index";
+import * as actions from "../../01_actions";
 import Typography from "@material-ui/core/Typography/index";
 import {pesosColombianos} from "../../00_utilities/common";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome/index";

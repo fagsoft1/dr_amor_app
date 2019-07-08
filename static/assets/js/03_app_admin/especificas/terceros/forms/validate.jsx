@@ -1,4 +1,3 @@
-import {REGEX_CORREO_ELECTRONICO} from "../../../../00_utilities/common";
 import momentLocaliser from 'react-widgets-moment';
 import moment from 'moment-timezone';
 

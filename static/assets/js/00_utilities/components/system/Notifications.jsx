@@ -13,7 +13,7 @@ const styles = {
         }
     }
 };
-const Notification = () => {
+const Notification = memo(() => {
     const notifications = useSelector(state => state.notifications);
     return (
         <Notifications
@@ -21,6 +21,6 @@ const Notification = () => {
             style={styles}
         />
     );
-};
+});
 
-export default memo(Notification);
+export default Notification;

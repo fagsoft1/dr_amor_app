@@ -1,7 +1,7 @@
 import axios from "axios/index";
 import React from 'react';
 import {SubmissionError} from "redux-form";
-import * as actions from "../01_actions/01_index";
+import * as actions from "./index";
 
 const axios_instance = axios.create({
     baseURL: '/api/',

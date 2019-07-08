@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState, useContext} from 'react';
 import {formValueSelector, reduxForm} from 'redux-form';
 import {MyTextFieldSimple} from '../../../../../00_utilities/components/ui/forms/fields';
 import {pesosColombianos} from '../../../../../00_utilities/common';
@@ -10,53 +10,22 @@ import InputAdornment from '@material-ui/core/InputAdornment/index';
 import Combobox from 'react-widgets/lib/Combobox';
 import Button from "@material-ui/core/Button/index";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome/index";
-import * as actions from '../../../../../01_actions/01_index';
+import * as actions from '../../../../../01_actions';
 
-const styles = {
-    table: {
-        fontSize: '0.8rem',
-        td: {
-            padding: '0',
-            margin: '0',
-            paddingLeft: '3px',
-            paddingRight: '3px',
-            border: '1px solid black'
-        },
-        td_right: {
-            padding: '0',
-            margin: '0',
-            paddingRight: '3px',
-            paddingLeft: '3px',
-            textAlign: 'right',
-            border: '1px solid black'
-        },
-        td_total: {
-            padding: '0',
-            margin: '0',
-            paddingRight: '3px',
-            paddingLeft: '3px',
-            textAlign: 'right',
-            borderBottom: 'double 3px'
-        },
-        tr: {
-            padding: '0',
-            margin: '0',
-        }
-    },
-};
-
+import StylesContext from '../../../../../00_utilities/contexts/StylesContext';
 
 const ImpuestoTable = (props) => {
     const {impuestos, onDelete} = props;
+    const {table} = useContext(StylesContext);
     return (
-        <table className='table table-striped' style={styles.table}>
+        <table className='table table-striped' style={table}>
             <thead>
-            <tr style={styles.table.tr}>
-                <th style={styles.table.td}>Impuesto</th>
-                <th style={styles.table.td}>Tipo Calculo</th>
-                <th style={styles.table.td}>Cuantía Venta</th>
-                <th style={styles.table.td}>Cuantía Compra</th>
-                <th style={styles.table.td}></th>
+            <tr style={table.tr}>
+                <th style={table.td}>Impuesto</th>
+                <th style={table.td}>Tipo Calculo</th>
+                <th style={table.td}>Cuantía Venta</th>
+                <th style={table.td}>Cuantía Compra</th>
+                <th style={table.td}></th>
             </tr>
             </thead>
             <tbody>
@@ -68,12 +37,12 @@ const ImpuestoTable = (props) => {
                         tasa_importe_venta = tipo_impuesto === '%' ? `${tasa_importe_venta}%` : `$${tasa_importe_venta}`;
                         tasa_importe_compra = tipo_impuesto === '%' ? `${tasa_importe_compra}%` : `$${tasa_importe_compra}`;
                         return (
-                            <tr style={styles.table.tr} key={e.id}>
-                                <td style={styles.table.td}>{e.nombre}</td>
-                                <td style={styles.table.td}>{e.tipo_calculo_impuesto_display}</td>
-                                <td style={styles.table.td}>{tasa_importe_venta}</td>
-                                <td style={styles.table.td}>{tasa_importe_compra}</td>
-                                <td style={styles.table.td}>
+                            <tr style={table.tr} key={e.id}>
+                                <td style={table.td}>{e.nombre}</td>
+                                <td style={table.td}>{e.tipo_calculo_impuesto_display}</td>
+                                <td style={table.td}>{tasa_importe_venta}</td>
+                                <td style={table.td}>{tasa_importe_compra}</td>
+                                <td style={table.td}>
                                     <FontAwesomeIcon
                                         className='puntero'
                                         onClick={() => onDelete(e.id)}
@@ -87,8 +56,7 @@ const ImpuestoTable = (props) => {
             }
             </tbody>
             <tfoot>
-            <tr style={styles.table.tr}>
-
+            <tr style={table.tr}>
             </tr>
             </tfoot>
         </table>

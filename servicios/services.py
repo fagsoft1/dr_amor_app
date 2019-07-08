@@ -142,6 +142,8 @@ def servicio_terminar(
 ) -> Servicio:
     from habitaciones.services import habitacion_cambiar_estado
     servicio = Servicio.objects.get(pk=servicio_id)
+    tiempo_actual = timezone.now()
+    termino_por_tiempo = tiempo_actual > servicio.hora_final
 
     turno_punto_venta = User.objects.get(pk=usuario_pdv_id).tercero.turno_punto_venta_abierto
     punto_venta = turno_punto_venta.punto_venta
@@ -150,7 +152,7 @@ def servicio_terminar(
             {'_error': 'No se pueden terminar servicios desde un punto de venta cerrado'}
         )
 
-    if hasattr(servicio, 'servicio_siguiente') and servicio.servicio_siguiente.estado == 1:
+    if hasattr(servicio, 'servicio_siguiente') and servicio.servicio_siguiente.estado == 1 and not termino_por_tiempo:
         raise serializers.ValidationError(
             {'_error': 'No se pueden terminar el servicio sin terminar los siguiente primero'})
 
@@ -280,11 +282,13 @@ def servicio_crear_nuevo(
     estado = 0
     tiempo_minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
     categoria = tercero.categoria_modelo.nombre
-    valor_servicio = categoria_fraccion_tiempo.valor + habitacion.tipo.valor_adicional_servicio
+    valor_servicio = categoria_fraccion_tiempo.valor
+    valor_adicional_servicio = habitacion.tipo.valor_adicional_servicio
     valor_habitacion = habitacion.tipo.valor_antes_impuestos
     cuenta = tercero.cuenta_abierta
     impuestos = habitacion.tipo.impuesto
     servicio_nuevo = Servicio.objects.create(
+        valor_servicio_adicional=valor_adicional_servicio,
         empresa=habitacion.empresa,
         habitacion=habitacion,
         cuenta=cuenta,
@@ -406,7 +410,8 @@ def servicio_cambiar_tiempo(
         servicio_recursivo_asignacion_horas(None, servicio.id)
 
     valor_servicio_actual = servicio.valor_servicio
-    valor_servicio_nuevo = categoria_fraccion_tiempo.valor + servicio.habitacion.tipo.valor_adicional_servicio
+    valor_servicio_nuevo = categoria_fraccion_tiempo.valor
+    valor_adicional_servicio_nuevo = servicio.habitacion.tipo.valor_adicional_servicio
     diferencia = valor_servicio_nuevo - valor_servicio_actual
 
     if diferencia > 0:
@@ -430,6 +435,7 @@ def servicio_cambiar_tiempo(
             valor_efectivo=abs(valor_efectivo)
         )
     servicio.valor_servicio = valor_servicio_nuevo
+    servicio.valor_servicio_adicional = valor_adicional_servicio_nuevo
     servicio.save()
 
     return servicio

@@ -7,10 +7,12 @@ import ReduxPromise from 'redux-promise';
 import thunk from 'redux-thunk';
 import reducers from './02_reducers/index';
 import {useSelector, useDispatch} from "react-redux";
-import * as actions from "./01_actions/01_index";
+import * as actions from "./01_actions";
 import NotFound from "./00_utilities/components/system/no_found_page";
 import Notification from './00_utilities/components/system/Notifications';
 import RouteLocationManager from './00_utilities/components/system/RouteLocationManager';
+
+import StylesContextProvider from './00_utilities/contexts/StylesContextProvider';
 
 import "react-table/react-table.css";
 import 'react-widgets/dist/css/react-widgets.css';
@@ -179,7 +181,9 @@ export default class App extends Component {
         return (
             <Provider store={store}>
                 <MuiThemeProvider theme={theme}>
-                    <ContainerRoot/>
+                    <StylesContextProvider>
+                        <ContainerRoot/>
+                    </StylesContextProvider>
                 </MuiThemeProvider>
             </Provider>
         )

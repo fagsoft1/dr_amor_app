@@ -5,7 +5,7 @@ import DialogContent from "@material-ui/core/DialogContent/index";
 import DialogActions from "@material-ui/core/DialogActions/index";
 import Button from "@material-ui/core/Button/index";
 import {connect} from "react-redux";
-import * as actions from "../../01_actions/01_index";
+import * as actions from "../../01_actions";
 import Combobox from "react-widgets/lib/Combobox";
 
 

@@ -1,6 +1,6 @@
 import React, {Fragment, memo, useEffect} from 'react';
 import {useSelector, useDispatch} from "react-redux";
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 import CargarDatos from "../../../00_utilities/components/system/CargarDatos";
 import ListaBusqueda from '../../../00_utilities/utiles';
 import Checkbox from '@material-ui/core/Checkbox/index';

@@ -1,6 +1,6 @@
 import React, {memo, Fragment, useState, useEffect} from 'react';
 import {useSelector, useDispatch} from "react-redux";
-import * as actions from "./01_actions/01_index";
+import * as actions from "./01_actions";
 import Loading from "./00_utilities/components/system/LoadingOverlay";
 import {Link} from 'react-router-dom'
 import {TIPOS_REGISTRO_INGRESO as permisos_view} from './permisos';

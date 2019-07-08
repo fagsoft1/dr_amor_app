@@ -1,6 +1,6 @@
 import React, {Fragment, memo, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import * as actions from "../../../01_actions/01_index";
+import * as actions from "../../../01_actions";
 import {GROUPS} from "../../../permisos";
 import CreateForm from './forms/GrupoPermisoCRUDForm';
 import Tabla from './GrupoPermisoCRUDTabla';

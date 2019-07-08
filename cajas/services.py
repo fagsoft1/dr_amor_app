@@ -239,7 +239,8 @@ def transaccion_caja_registrar_cambio_tiempo_servicio_menor_tiempo(
     servicio = Servicio.objects.get(pk=servicio_id)
     categoria_fraccion_tiempo = CategoriaFraccionTiempo.objects.get(id=categoria_fraccion_tiempo_nueva_id)
     minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
-    valor_nuevo = categoria_fraccion_tiempo.valor + servicio.habitacion.tipo.valor_adicional_servicio
+    valor_nuevo = categoria_fraccion_tiempo.valor
+
     diferencia = valor_nuevo - servicio.valor_servicio
 
     turno_punto_venta = User.objects.get(pk=usuario_pdv_id).tercero.turno_punto_venta_abierto
@@ -255,7 +256,7 @@ def transaccion_caja_registrar_cambio_tiempo_servicio_menor_tiempo(
         raise serializers.ValidationError(
             {
                 '_error': 'El valor ingresado de forma de pago es diferente a la devolución por el servicio. El Valor de la devolucion es %s, pero el pago en Efectivo= %s no coincide' % (
-                    -diferencia, valor_efectivo)}
+                    abs(diferencia), abs(valor_efectivo))}
         )
     servicio.valor_servicio += diferencia
     servicio.save()
@@ -286,7 +287,7 @@ def transaccion_caja_registrar_cambio_tiempo_servicio_mayor_tiempo(
     servicio = Servicio.objects.get(pk=servicio_id)
     categoria_fraccion_tiempo = CategoriaFraccionTiempo.objects.get(id=categoria_fraccion_tiempo_nueva_id)
     minutos = categoria_fraccion_tiempo.fraccion_tiempo.minutos
-    valor_nuevo = categoria_fraccion_tiempo.valor + servicio.habitacion.tipo.valor_adicional_servicio
+    valor_nuevo = categoria_fraccion_tiempo.valor
     diferencia = valor_nuevo - servicio.valor_servicio
 
     turno_punto_venta = User.objects.get(pk=usuario_pdv_id).tercero.turno_punto_venta_abierto
@@ -352,7 +353,7 @@ def transaccion_caja_registrar_pago_nuevos_servicios_habitacion(
     servicios = Servicio.objects.filter(id__in=array_servicios_id)
     transaccion.servicios.set(servicios)
     valor_total = transaccion.servicios.aggregate(
-        valor=Coalesce(Sum(F('valor_habitacion') + F('valor_servicio') + F('impuestos')), 0)
+        valor=Coalesce(Sum(F('valor_habitacion') + F('valor_servicio') + F('impuestos') + F('valor_servicio_adicional')), 0)
     )['valor']
 
     if int(valor_tarjeta + valor_efectivo) != int(valor_total):
@@ -431,9 +432,14 @@ def transaccion_caja_registrar_cambio_habitacion_mayor_valor(
     habitacion_nueva = Habitacion.objects.get(pk=habitacion_nueva_id)
 
     habitacion_anterior_valor = habitacion_anterior.tipo.valor
-    habitacion_nueva_valor = habitacion_nueva.tipo.valor
+    habitacion_anterior_valor_adicional = habitacion_anterior.tipo.valor_adicional_servicio
 
-    diferencia = habitacion_nueva_valor - habitacion_anterior_valor
+    habitacion_nueva_valor = habitacion_nueva.tipo.valor
+    habitacion_nueva_valor_adicional = habitacion_nueva.tipo.valor_adicional_servicio
+
+    diferencia = (habitacion_nueva_valor + habitacion_nueva_valor_adicional) - (
+            habitacion_anterior_valor + habitacion_anterior_valor_adicional)
+
     total_diferencia = diferencia * len(array_servicios_id)
 
     if total_diferencia != valor_efectivo + valor_tarjeta:
@@ -486,9 +492,13 @@ def transaccion_caja_registrar_cambio_habitacion_menor_valor(
     habitacion_nueva = Habitacion.objects.get(pk=habitacion_nueva_id)
 
     habitacion_anterior_valor = habitacion_anterior.tipo.valor
-    habitacion_nueva_valor = habitacion_nueva.tipo.valor
+    habitacion_anterior_valor_adicional = habitacion_anterior.tipo.valor_adicional_servicio
 
-    diferencia = habitacion_nueva_valor - habitacion_anterior_valor
+    habitacion_nueva_valor = habitacion_nueva.tipo.valor
+    habitacion_nueva_valor_adicional = habitacion_nueva.tipo.valor_adicional_servicio
+
+    diferencia = (habitacion_nueva_valor + habitacion_nueva_valor_adicional) - (
+            habitacion_anterior_valor + habitacion_anterior_valor_adicional)
     total_diferencia = diferencia * len(array_servicios_id)
 
     if valor_efectivo != -total_diferencia:

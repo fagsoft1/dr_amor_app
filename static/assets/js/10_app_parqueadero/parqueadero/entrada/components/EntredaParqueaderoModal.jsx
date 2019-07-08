@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import {reduxForm, formValueSelector} from "redux-form";
 import validate from "./validate";
 import {useDispatch, useSelector} from "react-redux";
-import * as actions from '../../../../01_actions/01_index';
+import * as actions from '../../../../01_actions';
 import {MyCombobox, MyTextFieldSimple} from "../../../../00_utilities/components/ui/forms/fields";
 
 const selector = formValueSelector('entradaParqueaderoForm');

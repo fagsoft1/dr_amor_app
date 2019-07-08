@@ -45,6 +45,9 @@ class HabitacionSerializer(serializers.ModelSerializer):
     empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)
     tiempo_final_servicio = serializers.DateTimeField(read_only=True)
     to_string = serializers.SerializerMethodField()
+    impuesto = serializers.DecimalField(source='tipo.impuesto', max_digits=10, decimal_places=0, read_only=True)
+    valor_antes_impuestos = serializers.DecimalField(source='tipo.valor_antes_impuestos', max_digits=10,
+                                                     decimal_places=0, read_only=True)
 
     def get_to_string(self, instance):  # pragma: no cover
         return ('%s %s') % (instance.tipo.nombre, instance.numero)
@@ -61,11 +64,13 @@ class HabitacionSerializer(serializers.ModelSerializer):
             'empresa',
             'empresa_nombre',
             'numero',
+            'impuesto',
             'to_string',
             'tiempo_final_servicio',
             'fecha_ultimo_estado',
             'valor_adicional_servicio',
             'estado',
+            'valor_antes_impuestos',
             'valor',
         ]
         extra_kwargs = {

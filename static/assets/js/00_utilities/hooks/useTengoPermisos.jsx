@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useDispatch} from "react-redux";
-import * as actions from "../../01_actions/01_index";
+import * as actions from "../../01_actions";
 
 const tengoPermiso = (mis_permisos, permisos) => {
     const mis_permisos_array = _.map(mis_permisos);
