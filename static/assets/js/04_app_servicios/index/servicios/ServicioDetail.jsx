@@ -15,13 +15,14 @@ import * as actions from '../../../01_actions';
 const ServicioDetail = memo(props => {
     const dispatch = useDispatch();
     const {
-        servicio,
         cerraModal,
-        modal_open
+        modal_open,
+        servicio_id
     } = props;
     const auth = useSelector(state => state.auth);
     const {user: {punto_venta_actual}} = auth;
     const servicios = useSelector(state => state.servicios);
+    const servicio = servicios[servicio_id];
     const habitaciones = useSelector(state => state.habitaciones);
     const categorias_fracciones_tiempo_list = useSelector(state => state.categorias_fracciones_tiempos_acompanantes);
     const [mostrar_avanzado, setMostrarAvanzado] = useState(false);
@@ -43,7 +44,13 @@ const ServicioDetail = memo(props => {
                 servicio.id,
                 values.observacion_anulacion,
                 punto_venta_actual.id,
-                {callback: cerraModal}
+                {
+                    callback: () => {
+                        cerraModal();
+                        dispatch(actions.fetchServicios_en_proceso());
+                        dispatch(actions.fetchHabitaciones());
+                    }
+                }
             )
         );
     };
@@ -53,7 +60,13 @@ const ServicioDetail = memo(props => {
             actions.cambiarTiempoServicio(
                 servicio.id,
                 {...values, punto_venta_id: punto_venta_actual.id},
-                {callback: cerraModal}
+                {
+                    callback: () => {
+                        cerraModal();
+                        dispatch(actions.fetchServicios_en_proceso());
+                        dispatch(actions.fetchHabitaciones());
+                    }
+                }
             )
         );
     };
@@ -66,7 +79,13 @@ const ServicioDetail = memo(props => {
                 {...pago, punto_venta_id: punto_venta_actual.id},
                 nueva_habitacion_id,
                 servicios_array_id,
-                {callback: cerraModal}
+                {
+                    callback: () => {
+                        cerraModal();
+                        dispatch(actions.fetchServicios_en_proceso());
+                        dispatch(actions.fetchHabitaciones());
+                    }
+                }
             )
         );
     };

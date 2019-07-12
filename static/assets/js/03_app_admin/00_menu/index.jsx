@@ -1,5 +1,6 @@
 import React, {Fragment, memo} from 'react';
 import DrawerListItem from '../../00_utilities/components/ui/drawer/DrawerMenuListItem';
+import useWhyDidYouUpdate from '../../00_utilities/hooks/useWhyDidYouUpdate';
 
 import MenuTerceros from './terceros';
 import MenuPermisos from './permisos';
@@ -9,7 +10,7 @@ import MenuContabilidad from "./contabilidad";
 import useTengoPermisos from "../../00_utilities/hooks/useTengoPermisos";
 import {MENU_ADMIN_PERMISSIONS} from "../../permisos";
 
-const Menu = memo(() => {
+const Menu = memo(props => {
     const permisos_menu = useTengoPermisos(MENU_ADMIN_PERMISSIONS);
     const {
         admin_empresas,
@@ -18,7 +19,9 @@ const Menu = memo(() => {
         admin_puntos_ventas,
         admin_parqueadero
     } = permisos_menu;
-    console.log('RENDERIZÓ MENU');
+    console.log('RENDERIZÓ MENU')
+    useWhyDidYouUpdate('MenU', permisos_menu);
+    console.log('RENDERIZÓ MENU')
     return (
         <Fragment>
             {

@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, memo} from 'react';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -16,7 +16,7 @@ const styles = theme => ({
     },
 });
 
-const CategoriaDosMenu = (props) => {
+const CategoriaDosMenu = memo(props => {
     const {categoria_dos, onBack, classes, onClick, categoria_dos_seleccionada, mostrar, adicionarItemAPedidoActual} = props;
     if (mostrar) {
         return (
@@ -52,6 +52,6 @@ const CategoriaDosMenu = (props) => {
 
     }
     return <Fragment></Fragment>
-};
+});
 
 export default withStyles(styles)(CategoriaDosMenu);

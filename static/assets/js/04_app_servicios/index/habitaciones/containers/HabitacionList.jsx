@@ -1,15 +1,39 @@
-import React, {memo} from 'react';
-import {useDispatch} from 'react-redux';
+import React, {memo, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import HabitacionCategoriaList from '../components/HabitacionCategoriaList';
 import * as actions from '../../../../01_actions';
+import useInterval from "../../../../00_utilities/hooks/useInterval";
 
 const HabitacionList = memo(props => {
     const dispatch = useDispatch();
-    const {habitaciones, onClickHabitacion, time_now} = props;
+    useEffect(() => {
+        dispatch(
+            actions.fetchHabitaciones(
+                {
+                    limpiar_coleccion: false,
+                    show_cargando: false
+                }
+            )
+        );
+        return () => dispatch(actions.clearHabitaciones());
+    }, []);
+    const {onClickHabitacion, cargarHabitaciones} = props;
 
-    const onClickCambiarEstado = (estado, habitacion_id) => {
-        dispatch(actions.cambiarEstadoHabitacion(habitacion_id, estado));
-    };
+    useInterval(() => {
+        if (cargarHabitaciones) {
+            dispatch(
+                actions.fetchHabitaciones(
+                    {
+                        limpiar_coleccion: false,
+                        show_cargando: false
+                    }
+                )
+            )
+        }
+    }, 5000);
+
+    const habitaciones = useSelector(state => state.habitaciones);
+
 
     const ARRAY_HABITACIONES = _.map(habitaciones, habitacion => {
             return habitacion
@@ -30,7 +54,6 @@ const HabitacionList = memo(props => {
                     return (
                         <HabitacionCategoriaList
                             onClickHabitacion={onClickHabitacion}
-                            cambiarEstado={onClickCambiarEstado}
                             key={tipo}
                             cantidad={habitaciones.length}
                             tipo={tipo}

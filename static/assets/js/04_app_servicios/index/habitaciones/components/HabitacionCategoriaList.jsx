@@ -3,7 +3,7 @@ import HabitacionCategoriaListItem from './HabitacionCategoriaListItem';
 import Typography from '@material-ui/core/Typography';
 
 const HabitacionCategoriaList = memo(props => {
-    const {habitaciones, tipo, cambiarEstado, onClickHabitacion, time_now} = props;
+    const {habitaciones, tipo, onClickHabitacion} = props;
     const habitaciones_ordenadas = _.orderBy(habitaciones, ['numero'], ['asc']);
     return (
         <div className="col-12 col-sm-6 habitacion-tipo-list">
@@ -16,8 +16,11 @@ const HabitacionCategoriaList = memo(props => {
                         <HabitacionCategoriaListItem
                             onClickHabitacion={onClickHabitacion}
                             key={habitacion.id}
-                            habitacion={habitacion}
-                            cambiarEstado={cambiarEstado}
+                            numero={habitacion.numero}
+                            estado={habitacion.estado}
+                            id={habitacion.id}
+                            tiempo_final_servicio={habitacion.tiempo_final_servicio}
+                            fecha_ultimo_estado={habitacion.fecha_ultimo_estado}
                         />
                     )
                 })}

@@ -16,14 +16,14 @@ let EntradaDialog = memo((props) => {
     const {
         is_open,
         handleSubmit,
-        onCerrar = null,
-        tipos_vehiculos,
-        modalidades_fracciones_tiempo
+        onCerrar = null
     } = props;
     const valores = useSelector(state => selector(state, 'tipo_vehiculo', 'modalidad_fraccion_tiempo'));
     const onSubmit = (v) => {
         dispatch(actions.createRegistroEntradaParqueo(v, {callback: () => onCerrar()}));
     };
+    const tipos_vehiculos = useSelector(state => state.parqueadero_tipos_vehiculos);
+    const modalidades_fracciones_tiempo = useSelector(state => state.parqueadero_modalidades_fracciones_tiempo);
 
     const onSelectTipoVehiculo = (v) => {
         const {id} = v;
@@ -38,7 +38,7 @@ let EntradaDialog = memo((props) => {
             dispatch(actions.clearTiposVehiculos());
             dispatch(actions.clearModalidadesFraccionesTiempos());
         }
-    });
+    }, []);
 
     return (
         <Dialog

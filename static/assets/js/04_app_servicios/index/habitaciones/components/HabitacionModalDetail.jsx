@@ -80,6 +80,8 @@ const HabitacionModalDetail = memo(props => {
             {
                 callback:
                     () => {
+                        dispatch(actions.fetchHabitaciones());
+                        dispatch(actions.fetchServicios_en_proceso());
                         cerraModal();
                     }
             }

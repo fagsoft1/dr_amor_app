@@ -36,10 +36,21 @@ const TerminarSiNo = memo(props => {
     )
 });
 
+const servicioAreEqual = (pProps, nProps) => {
+    return _.isEqual(pProps.servicio, nProps.servicio);
+};
+
 
 const ServicioListItem = memo(props => {
-    const {servicio, terminarServicio, cargarServicio, abrirModalServicio, time_now} = props;
+    const {
+        servicio,
+        terminarServicio,
+        cargarServicio,
+        abrirModalServicio
+    } = props;
     const [mostrar_terminar, setMostrarTerminar] = useState(false);
+
+
     const onTerminarServicioClick = () => {
         cargarServicio(servicio.id);
         setMostrarTerminar(true)
@@ -90,7 +101,7 @@ const ServicioListItem = memo(props => {
                                         className="puntero p-1"
                                         icon={['far', 'cogs']}
                                         size='lg'
-                                        onClick={() => abrirModalServicio(servicio)}
+                                        onClick={() => abrirModalServicio(servicio.id)}
                                     />
                                 }
                                 {
@@ -116,6 +127,6 @@ const ServicioListItem = memo(props => {
             </div>
         </div>
     )
-});
+}, servicioAreEqual);
 
 export default ServicioListItem;

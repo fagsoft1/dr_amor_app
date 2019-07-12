@@ -3,14 +3,25 @@ import MyDialogButtonDelete from '../../../../00_utilities/components/ui/dialog/
 import IconButtonTableEdit from '../../../../00_utilities/components/ui/icon/TableIconButtonEdit';
 
 
-import ReactTable from "react-table";
+import Table from "react-table";
+import selectTableHOC from "react-table/lib/hoc/selectTable";
+
+const SelectTable = selectTableHOC(Table);
 
 const areEqual = (prevProps, nextProps) => {
-    return prevProps.list === nextProps.list;
+    return prevProps.list === nextProps.list && prevProps.selection === nextProps.selection;
 };
 const Tabla = memo((props) => {
     const data = _.map(props.list);
     const {
+        selection,
+        getTrGroupProps,
+        isSelected,
+        toggleAll,
+        checkboxTable,
+        selectAll,
+        toggleSelection,
+        rowFn,
         updateItem,
         singular_name,
         onDelete,
@@ -18,7 +29,22 @@ const Tabla = memo((props) => {
         permisos_object
     } = props;
     return (
-        <ReactTable
+        <SelectTable
+            ref={r => checkboxTable.current = r}
+            getTrGroupProps={getTrGroupProps}
+            selection={selection}
+            selectType="checkbox"
+            isSelected={isSelected}
+            selectAll={selectAll}
+            toggleSelection={toggleSelection}
+            toggleAll={toggleAll}
+            keyField="id"
+            previousText='Anterior'
+            nextText='Siguiente'
+            pageText='Página'
+            ofText='de'
+            rowsText='filas'
+            getTrProps={rowFn}
             data={data}
             noDataText={`No hay elementos para mostrar tipo ${singular_name}`}
             columns={[

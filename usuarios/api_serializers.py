@@ -4,7 +4,6 @@ from rest_framework import serializers
 
 from dr_amor_app.general_mixins.custom_serializer_mixins import CustomSerializerMixin
 from puntos_venta.api_serializers import PuntoVentaSerializer
-from permisos.api_serializers import GroupSerializer, PermissionSerializer
 
 
 class UsuarioSerializer(CustomSerializerMixin, serializers.ModelSerializer):
@@ -63,7 +62,6 @@ class UsuarioConDetalleSerializer(UsuarioSerializer):
         context={
             'quitar_campos': [
                 'conceptos_operaciones_caja_cierre',
-                'bodega',
                 'bodega_nombre',
                 'usuario_actual_nombre'
             ]

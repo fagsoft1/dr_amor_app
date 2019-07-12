@@ -1,15 +1,42 @@
-import React, {useState, memo} from 'react';
+import React, {useState, memo, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import * as actions from '../../../01_actions';
 
 import ServicioListItem from './ServicioListItem';
+import useInterval from "../../../00_utilities/hooks/useInterval";
 
 const ServicioList = memo(props => {
     const dispatch = useDispatch();
     const servicios = useSelector(state => state.servicios);
     const auth = useSelector(state => state.auth);
-    const {abrirModalServicio, time_now} = props;
+    const {abrirModalServicio, cargarServiciosEnProceso} = props;
     const [busqueda, setBusqueda] = useState('');
+
+    useEffect(() => {
+        dispatch(
+            actions.fetchServicios_en_proceso(
+                {
+                    limpiar_coleccion: false,
+                    show_cargando: false
+                }
+            )
+        );
+        return () => dispatch(actions.clearServicios());
+    }, []);
+
+
+    useInterval(() => {
+        if (cargarServiciosEnProceso) {
+            dispatch(
+                actions.fetchServicios_en_proceso(
+                    {
+                        limpiar_coleccion: false,
+                        show_cargando: false
+                    }
+                )
+            )
+        }
+    }, 5000);
 
     const terminarServicio = (servicio_id) => {
         const {user: {punto_venta_actual}} = auth;

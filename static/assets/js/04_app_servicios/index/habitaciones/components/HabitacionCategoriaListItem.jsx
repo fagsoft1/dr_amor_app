@@ -1,20 +1,18 @@
 import React, {memo, useState} from 'react';
+import {useDispatch} from 'react-redux';
 import Timer from '../../../../00_utilities/components/system/Timer';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import * as actions from "../../../../01_actions";
 
 const HabitacionCategoriaListItem = memo(props => {
     const [mostra_cambios_estados, setCambiosEstados] = useState(false);
+    const dispatch = useDispatch();
     const {
-        habitacion,
-        cambiarEstado,
-        habitacion:
-            {
-                numero,
-                estado,
-                id,
-                tiempo_final_servicio,
-                fecha_ultimo_estado
-            },
+        numero,
+        estado,
+        id,
+        tiempo_final_servicio,
+        fecha_ultimo_estado,
         onClickHabitacion
     } = props;
 
@@ -24,22 +22,28 @@ const HabitacionCategoriaListItem = memo(props => {
         setCambiosEstados(!mostra_cambios_estados);
     };
 
+
     const onClickCambiarEstado = (estado) => {
-        cambiarEstado(estado, habitacion.id);
+        dispatch(actions.cambiarEstadoHabitacion(
+            id,
+            estado,
+            {callback: () => dispatch(actions.fetchHabitacion(id))}
+            )
+        );
         setCambiosEstados(false);
     };
 
-    const renderBotonEstado = (estado) => {
-        if (habitacion.estado === estado) {
+    const renderBotonEstado = (nuevo_estado) => {
+        if (estado === nuevo_estado) {
             return null
         }
         return (
             <div className="m-1 col-3">
                 <FontAwesomeIcon
-                    className={`est-${estado} habitacion icon puntero`}
+                    className={`est-${nuevo_estado} habitacion icon puntero`}
                     icon={['far', 'circle']}
                     size='2x'
-                    onClick={() => onClickCambiarEstado(estado)}
+                    onClick={() => onClickCambiarEstado(nuevo_estado)}
                 />
             </div>
         )

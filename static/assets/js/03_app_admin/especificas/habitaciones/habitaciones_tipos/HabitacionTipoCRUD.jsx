@@ -36,7 +36,7 @@ const List = memo((props) => {
             method_pool={method_pool}
             list={list}
             permisos_object={permisos}
-            plural_name='Habitaciones Tipos'
+            plural_name=''
             singular_name='Habitacion Tipo'
         />
     )

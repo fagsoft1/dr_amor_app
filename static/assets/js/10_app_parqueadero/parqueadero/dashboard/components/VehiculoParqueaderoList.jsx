@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {memo} from 'react';
 import {withStyles} from "@material-ui/core/styles/index";
 import classNames from "classnames";
 
@@ -28,7 +28,7 @@ const styles = theme => (
         },
     });
 
-const VehiculoParqueaderoListado = (props) => {
+const VehiculoParqueaderoListado = memo(props => {
     const {
         listado_vehiculos,
         classes,
@@ -54,6 +54,6 @@ const VehiculoParqueaderoListado = (props) => {
             )}
         </div>
     )
-};
+});
 
 export default withStyles(styles, {withTheme: true})(VehiculoParqueaderoListado);

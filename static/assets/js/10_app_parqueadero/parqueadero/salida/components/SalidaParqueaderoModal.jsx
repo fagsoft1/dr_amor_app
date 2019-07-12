@@ -13,6 +13,9 @@ const SalidaDialog = memo(props => {
         vehiculo,
         onRegistrarSalida
     } = props;
+    if (!vehiculo) {
+        return <div>Cargando..</div>
+    }
     return (
         <Dialog
             fullScreen={false}

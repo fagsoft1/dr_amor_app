@@ -1,5 +1,5 @@
-import React, {Component, Fragment} from 'react'
-import {connect} from 'react-redux';
+import React, {Fragment, useState, useRef} from 'react'
+import {useDispatch} from 'react-redux';
 import PropTypes from "prop-types";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -7,43 +7,87 @@ import {notificarAction} from '../../01_actions';
 import ExcelDownload from "../../00_utilities/components/system/ExcelDownload";
 import CargarDatos from "./system/CargarDatos";
 
-const style = {
-    seleccionar_todo: {
-        position: 'absolute',
-        bottom: 0,
-        right: 50,
-        zIndex: 10000
-    }
-};
-
 function crudHOC(CreateForm, Tabla) {
-    class CRUD extends Component {
-        constructor(props) {
-            super(props);
-            this.state = ({
-                item_seleccionado: null,
-                modal_open: false,
-                data_to_excel: {},
-            });
-            this.onSubmit = this.onSubmit.bind(this);
-            this.onDelete = this.onDelete.bind(this);
-            this.onSelectItemEdit = this.onSelectItemEdit.bind(this);
-            this.onSelectDataToExcel = this.onSelectDataToExcel.bind(this);
-            this.setSelectItem = this.setSelectItem.bind(this);
-        }
+    const CRUD = props => {
+        const dispatch = useDispatch();
+        const {
+            method_pool,
+            posDeleteMethod,
+            singular_name,
+            posCreateMethod = null,
+            posUpdateMethod = null,
+            posSummitMethod = null,
+            list,
+            plural_name,
+            permisos_object,
+            con_titulo = true,
+            cargarDatos = null
+        } = props;
+        const checkboxTable = useRef(null);
+        const [item_seleccionado, setItemSeleccionado] = useState(null);
+        const [modal_open, setModalOpen] = useState(false);
+        const [selected_rows, setSelectedRows] = useState([]);
+        const [are_select_all_rows, setSelectAllRows] = useState(false);
 
-        onSelectDataToExcel(item) {
-            let {data_to_excel} = this.state;
-            if (data_to_excel[item.id]) {
-                data_to_excel = _.omit(data_to_excel, item.id);
+
+        const isRowTableSelected = key => selected_rows.includes(key);
+
+        const toggleRowSelection = (key, shift, row) => {
+            let new_selection = [...selected_rows];
+            const keyIndex = new_selection.indexOf(key);
+
+            if (keyIndex >= 0) {
+                new_selection = [
+                    ...new_selection.slice(0, keyIndex),
+                    ...new_selection.slice(keyIndex + 1)
+                ];
             } else {
-                data_to_excel = {...data_to_excel, [item.id]: item}
+                new_selection = [...new_selection, key];
             }
-            this.setState({data_to_excel})
-        }
+            setSelectedRows(new_selection);
+            const wrappedInstance = checkboxTable.current.getWrappedInstance();
+            const currentRecords = wrappedInstance.getResolvedState().sortedData;
+            const selecciono_todos = _.size(currentRecords) === new_selection.length;
+            setSelectAllRows(selecciono_todos);
+        };
 
-        onDelete(item) {
-            const {method_pool, notificarAction, singular_name, posDeleteMethod = null} = this.props;
+        const toggleAllRows = () => {
+            let new_selection = [];
+            if (!are_select_all_rows) {
+                const wrappedInstance = checkboxTable.current.getWrappedInstance();
+                const currentRecords = wrappedInstance.getResolvedState().sortedData;
+                new_selection = currentRecords.map(item => item._original.id);
+            }
+            setSelectAllRows(!are_select_all_rows);
+            setSelectedRows(new_selection);
+        };
+
+        const rowFn = (state, rowInfo, column, instance) => {
+            return {
+                onClick: (e, handleOriginal) => {
+                    if (handleOriginal) {
+                        handleOriginal();
+                    }
+                },
+                style: {
+                    background:
+                        rowInfo &&
+                        selected_rows.includes(rowInfo.original.id) &&
+                        "lightblue"
+                }
+            };
+        };
+
+        const getTrGroupProps = (state, rowInfo) => {
+            if (rowInfo !== undefined) {
+                return {
+                    key: rowInfo ? rowInfo.original.id : null
+                }
+            }
+        };
+
+
+        const onDelete = (item) => {
             if (method_pool.deleteObjectMethod === null) {
                 console.log('No se ha asignado ningún método para DELETE')
             } else {
@@ -52,34 +96,51 @@ function crudHOC(CreateForm, Tabla) {
                     const options = {
                         title: 'Eliminación Exitosa'
                     };
-                    notificarAction(`Se ha eliminado con éxito ${singular_name.toLowerCase()} ${to_string}`, options);
-                    this.setState({modal_open: false, item_seleccionado: null});
+                    dispatch(notificarAction(`Se ha eliminado con éxito ${singular_name.toLowerCase()} ${to_string}`, options));
+                    setModalOpen(false);
+                    setItemSeleccionado(null);
+
                     if (posDeleteMethod) {
                         posDeleteMethod(item);
                     }
                 };
                 return method_pool.deleteObjectMethod(item.id, {callback});
             }
-        }
+        };
+        const setSelectItem = item_seleccionado => setItemSeleccionado(item_seleccionado);
 
-        onSubmit(item, uno = null, dos = null, cerrar_modal = true, callback_error = null) {
+        const onSelectForDelete = () => {
+            if (method_pool.selectForDeleteObjectMethod) {
+                console.log('lo hizo')
+            }
+        };
+
+
+        const onSelectItemEdit = (item) => {
+            const callback = (response) => {
+                setModalOpen(true);
+                setItemSeleccionado(response);
+            };
+            if (method_pool.fetchObjectMethod === null) {
+                console.log('No se ha asignado ningún método para FETCH OBJECT')
+            } else {
+                return method_pool.fetchObjectMethod(item.id, {callback});
+            }
+        };
+
+
+        const onSubmit = (item, uno = null, dos = null, cerrar_modal = true) => {
             const es_form_data = item instanceof FormData;
             const form_data_id = es_form_data ? item.get('id') : null;
-            const {
-                method_pool,
-                notificarAction,
-                singular_name,
-                posCreateMethod = null,
-                posUpdateMethod = null,
-                posSummitMethod = null
-            } = this.props;
             const callback = (response) => {
                 const {to_string} = response;
                 const options = {
                     title: item.id ? 'Actualizacion Exitosa' : 'Creación Exitosa'
                 };
-                notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${singular_name.toLowerCase()} ${to_string}`, options);
-                this.setState({modal_open: !cerrar_modal, item_seleccionado: cerrar_modal ? null : response});
+                dispatch(notificarAction(`Se ha ${item.id ? 'actualizado' : 'creado'} con éxito ${singular_name.toLowerCase()} ${to_string}`, options));
+
+                setModalOpen(!cerrar_modal);
+                setItemSeleccionado(cerrar_modal ? null : response);
 
                 if (item.id && posUpdateMethod) {
                     posUpdateMethod(response);
@@ -104,129 +165,85 @@ function crudHOC(CreateForm, Tabla) {
                 if (method_pool.createObjectMethod === null) {
                     console.log('No se ha asignado ningún método para CREATE')
                 } else {
-                    return method_pool.createObjectMethod(item, {callback, callback_error});
+
+                    return method_pool.createObjectMethod(item, {callback});
                 }
             }
+        };
+        if (!permisos_object.list) {
+            return <Fragment>{`No tiene suficientes permisos para ver ${plural_name}.`}</Fragment>
         }
 
-        onSelectItemEdit(item) {
-            const {method_pool} = this.props;
-            const callback = (res) => this.setState({modal_open: true, item_seleccionado: res});
-            if (method_pool.fetchObjectMethod === null) {
-                console.log('No se ha asignado ningún método para FETCH OBJECT')
-            } else {
-                return method_pool.fetchObjectMethod(item.id, {callback});
-            }
-        }
-
-        setSelectItem(item_seleccionado) {
-            this.setState({item_seleccionado})
-        }
-
-        componentDidMount() {
-            const {plural_name, singular_name} = this.props;
-            document.title = plural_name ? plural_name : (singular_name ? singular_name : 'Dr. Amor');
-        }
-
-        render() {
-            const {
-                list,
-                plural_name,
-                con_titulo = true,
-                permisos_object,
-                auth = null,
-                singular_name,
-                cargarDatos = null
-            } = this.props;
-            const {
-                item_seleccionado,
-                modal_open,
-                data_to_excel,
-            } = this.state;
-
-            const onSeleccionarTodo = () => {
-                if (_.size(data_to_excel) === _.size(list)) {
-                    this.setState({data_to_excel: {}})
-                } else {
-                    this.setState({data_to_excel: list})
+        return (
+            <Fragment>
+                {
+                    con_titulo &&
+                    <Typography variant="h5" gutterBottom color="primary">
+                        {plural_name}
+                    </Typography>
                 }
-
-            };
-
-            if (!permisos_object.list) {
-                return <Fragment>{`No tiene suficientes permisos para ver ${plural_name}.`}</Fragment>
-            }
-
-            return (
-                <Fragment>
-                    {
-                        con_titulo &&
-                        <Typography variant="h5" gutterBottom color="primary">
-                            {plural_name}
-                        </Typography>
-                    }
-                    {
-                        permisos_object.add &&
-                        <Button
-                            color='primary'
-                            className='ml-3'
-                            onClick={() => {
-                                this.setState({item_seleccionado: null, modal_open: true});
-                            }}
-                        >
-                            Nuevo
-                        </Button>
-
-                    }
-                    {
-                        _.size(data_to_excel) > 0 &&
-                        <ExcelDownload
-                            data={_.map(data_to_excel)}
-                            name={plural_name ? plural_name : 'documento'}
-                            file_name={plural_name ? plural_name : 'documento'}
-                        />
-                    }
-                    {
-                        modal_open &&
-                        <CreateForm
-                            {...this.props}
-                            initialValues={item_seleccionado ? list[item_seleccionado.id] : null}
-                            modal_open={modal_open}
-                            onCancel={() => this.setState({modal_open: false, item_seleccionado: null})}
-                            onSubmit={this.onSubmit}
-                            setSelectItem={this.setSelectItem}
-                        />
-                    }
-                    <span
-                        style={style.seleccionar_todo}
-                        className='puntero'
-                        onClick={onSeleccionarTodo}
+                {
+                    permisos_object.add &&
+                    <Button
+                        color='primary'
+                        className='ml-3'
+                        onClick={() => {
+                            setModalOpen(true);
+                            setItemSeleccionado(null);
+                        }}
                     >
-                            {_.size(data_to_excel) === _.size(list) ? 'Quitar Selección' : 'Seleccionar Todo'}
-                        </span>
-                    <Tabla
-                        {...this.props}
-                        auth={auth}
-                        permisos_object={permisos_object}
-                        list={list}
-                        singular_name={singular_name}
-                        updateItem={this.onSubmit}
-                        onDelete={this.onDelete}
-                        onSelectItemEdit={this.onSelectItemEdit}
-                        onSelectDataToExcel={this.onSelectDataToExcel}
+                        Nuevo
+                    </Button>
+                }
+                {
+                    selected_rows.length > 0 &&
+                    <ExcelDownload
+                        data={_.map(_.pickBy(list, l => selected_rows.includes(l.id)))}
+                        name={plural_name ? plural_name : 'documento'}
+                        file_name={plural_name ? plural_name : 'documento'}
                     />
-                    {
-                        cargarDatos &&
-                        <CargarDatos
-                            cargarDatos={cargarDatos}
-                        />
-                    }
-                </Fragment>
-            )
-        }
-    }
+                }
+                {
+                    modal_open &&
+                    <CreateForm
+                        {...props}
+                        initialValues={item_seleccionado ? list[item_seleccionado.id] : null}
+                        modal_open={modal_open}
+                        onCancel={() => {
+                            setItemSeleccionado(null);
+                            setModalOpen(false);
+                        }}
+                        onSubmit={onSubmit}
+                        setSelectItem={setSelectItem}
+                    />
+                }
+                <div>
+                    <Tabla
+                        {...props}
+                        getTrGroupProps={getTrGroupProps}
+                        rowFn={rowFn}
+                        isSelected={isRowTableSelected}
+                        toggleSelection={toggleRowSelection}
+                        toggleAll={toggleAllRows}
+                        selection={selected_rows}
+                        selectAll={are_select_all_rows}
+                        checkboxTable={checkboxTable}
+                        updateItem={onSubmit}
+                        onDelete={onDelete}
+                        onSelectForDelete={onSelectForDelete}
+                        onSelectItemEdit={onSelectItemEdit}
+                    />
+                </div>
+                {
+                    cargarDatos && <CargarDatos
+                        cargarDatos={cargarDatos}
+                    />
+                }
+            </Fragment>
+        )
+    };
 
-    return connect(null, {notificarAction})(CRUD);
+    return CRUD;
 }
 
 
