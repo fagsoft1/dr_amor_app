@@ -19,6 +19,8 @@ from contabilidad_diario.api_urls import router as contabilidad_diarios_router
 from contabilidad_bancos.api_urls import router as contabilidad_bancos_router
 from contabilidad_impuestos.api_urls import router as contabilidad_impuestos_router
 from contabilidad_movimientos.api_urls import router as contabilidad_movimientos_router
+from contabilidad_metodos_pago.api_urls import router as metodos_pagos_router
+from contabilidad_comprobantes.api_urls import router as comprobantes_contables_router
 
 router = DefaultRouter()
 router.extend(permisos_router)
@@ -41,3 +43,5 @@ router.extend(contabilidad_bancos_router)
 router.extend(contabilidad_diarios_router)
 router.extend(contabilidad_movimientos_router)
 router.extend(contabilidad_impuestos_router)
+router.extend(metodos_pagos_router)
+router.extend(comprobantes_contables_router)

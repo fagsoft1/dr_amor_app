@@ -1,14 +1,17 @@
-import React from 'react';
-import {reduxForm} from 'redux-form';
+import React, {useEffect, memo} from 'react';
+import {formValueSelector, reduxForm} from 'redux-form';
 import {
     MyTextFieldSimple,
     MyCombobox
 } from '../../../../../../00_utilities/components/ui/forms/fields';
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
+import {useSelector, useDispatch} from "react-redux";
+import * as actions from '../../../../../../01_actions';
 
-
-let Form = (props) => {
+const selector = formValueSelector('diarioContableForm');
+let Form = memo(props => {
+    const dispatch = useDispatch();
     const {
         pristine,
         submitting,
@@ -21,6 +24,13 @@ let Form = (props) => {
         singular_name,
         error,
     } = props;
+    useEffect(() => {
+        dispatch(actions.fetchCuentasContablesDetalles());
+        return () => dispatch(actions.clearCuentasContables());
+    }, []);
+    const valores = useSelector(state => selector(state, 'tipo', ''));
+    const {tipo} = valores;
+    const cuentas_contables = useSelector(state => state.contabilidad_cuentas_contables);
     return (
         <MyFormTagModal
             fullScreen={false}
@@ -61,12 +71,42 @@ let Form = (props) => {
                 ]}
                 filter='contains'
             />
+
+            <MyCombobox
+                className="col-12"
+                nombre='Cuenta Débito Defecto'
+                name='cuenta_debito_defecto'
+                textField='nombre'
+                valuesField='id'
+                data={_.map(cuentas_contables, h => {
+                    return ({
+                        id: h.id,
+                        nombre: h.to_string
+                    })
+                })}
+                filter='contains'
+            />
+
+            <MyCombobox
+                className="col-12"
+                nombre='Cuenta Crédito Defecto'
+                name='cuenta_credito_defecto'
+                textField='nombre'
+                valuesField='id'
+                data={_.map(cuentas_contables, h => {
+                    return ({
+                        id: h.id,
+                        nombre: h.to_string
+                    })
+                })}
+                filter='contains'
+            />
             <div className="col-12" style={{height: '300px'}}>
 
             </div>
         </MyFormTagModal>
     )
-};
+});
 
 Form = reduxForm({
     form: "diarioContableForm",

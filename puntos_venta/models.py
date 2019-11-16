@@ -4,6 +4,7 @@ from model_utils.models import TimeStampedModel
 
 from inventarios.models import Bodega
 from puntos_venta.managers import PuntoVentaTurnoManager
+from contabilidad_cuentas.models import CuentaContable
 
 
 class PuntoVenta(models.Model):
@@ -13,6 +14,11 @@ class PuntoVenta(models.Model):
         (3, 'Parqueadero'),
     ]
     bodega = models.OneToOneField(Bodega, related_name='punto_venta', on_delete=models.PROTECT, null=True)
+    cuenta_contable_caja = models.ForeignKey(
+        CuentaContable,
+        related_name='cuenta_contable_caja_puntos_ventas',
+        on_delete=models.PROTECT, null=True
+    )
     nombre = models.CharField(max_length=120)
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
     usuarios = models.ManyToManyField(User, related_name='mis_puntos_venta')

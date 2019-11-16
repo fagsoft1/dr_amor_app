@@ -1,7 +1,8 @@
-import React, {Fragment, memo} from 'react';
+import React, {Fragment} from 'react';
 import {upper, lower} from "../../../common";
 import {Field} from 'redux-form';
 import PropTypes from "prop-types";
+import clsx from 'clsx';
 
 import TextField from '@material-ui/core/TextField';
 import Radio from '@material-ui/core/Radio';
@@ -11,6 +12,8 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from 'react-select';
+import Grid from '@material-ui/core/Grid';
+import {makeStyles} from '@material-ui/core/styles';
 
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import Combobox from 'react-widgets/lib/Combobox';
@@ -21,6 +24,18 @@ import moment from 'moment-timezone';
 
 moment.tz.setDefault("America/Bogota");
 momentLocaliser(moment);
+
+const useStyles = makeStyles(theme => ({
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    textField: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1)
+    },
+}));
+
 
 const renderInputFileField = (field) => {
     return (
@@ -49,20 +64,20 @@ export const MyFileFieldInput = (props) => {
 
 
 const renderTextField = ({input, label, meta: {touched, error, warning}, ...custom}) => {
+    const classes = useStyles();
     let new_custom = custom;
     if (touched && error) {
         new_custom = {...custom, helperText: error}
     }
+    new_custom = {...new_custom, className: clsx(classes.textField, new_custom.className)};
     return (
-        <Fragment>
-            <TextField
-                label={label}
-                margin="normal"
-                error={error && touched}
-                {...input}
-                {...new_custom}
-            />
-        </Fragment>
+        <TextField
+            label={label}
+            margin="normal"
+            error={error && touched}
+            {...input}
+            {...new_custom}
+        />
     )
 };
 export const MyTextFieldSimple = (props) => {
@@ -149,26 +164,36 @@ const renderCombobox = ({input, data, valueField, textField, placeholder, onSele
 
 
 export const MyCombobox = (props) => {
-    const {busy = false, textField = 'name', valuesField = 'id', autoFocus = false, onSelect, className, nombre = ''} = props;
+    const {busy = false, textField = 'name', valuesField = 'id', autoFocus = false, onSelect, className, nombre = '', label = null, label_space_xs = 0} = props;
     return (
-        <div className={`${className} mt-4`}>
-            <Field
-                {...props}
-                component={renderCombobox}
-                valueField={valuesField}
-                textField={textField}
-                autoFocus={autoFocus}
-                onChange={v => v[valuesField]}
-                onSelect={onSelect}
-                busy={busy}
-                placeholder={nombre}
-            />
+        <div className={`${className} ${label ? 'mt-2' : 'mt-4'}`}>
+            <Grid component="label" container alignItems="center" spacing={2}>
+                {label && <Grid item xs={label_space_xs}>
+                    {label}
+                </Grid>}
+                <Grid item xs={label ? 12 - label_space_xs : 12}>
+                    <Field
+                        {...props}
+                        component={renderCombobox}
+                        valueField={valuesField}
+                        textField={textField}
+                        autoFocus={autoFocus}
+                        onChange={v => v[valuesField]}
+                        onSelect={onSelect}
+                        busy={busy}
+                        placeholder={nombre}
+                    />
+                </Grid>
+            </Grid>
         </div>
     )
 };
 
 
 MyCombobox.propTypes = {
+    label_space_xs: PropTypes.number,
+    label: PropTypes.string,
+    className: PropTypes.string,
     busy: PropTypes.bool,
     autoFocus: PropTypes.bool,
     onSelect: PropTypes.func,

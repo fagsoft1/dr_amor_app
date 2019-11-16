@@ -29,6 +29,7 @@ const List = memo((props) => {
         deleteObjectMethod: (id, options) => dispatch(actions.deleteHabitacion(id, options)),
         createObjectMethod: (item, options) => dispatch(actions.createHabitacion(item, options)),
         updateObjectMethod: (id, item, options) => dispatch(actions.updateHabitacion(id, item, options)),
+        historicoObjectMethod: (id, item, options) => dispatch(actions.fetchHistoricosRevisionsHabitaciones(id, item, options))
     };
     return (
         <CRUD

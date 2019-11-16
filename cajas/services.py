@@ -556,17 +556,17 @@ def operacion_caja_crear(
         raise serializers.ValidationError(
             {'_error': 'Quien crea de la operación debe tener un turno de punto de venta abierto'})
 
-    if not tercero_id and concepto_operacion_caja.grupo in ['C', 'A', 'P']:
+    if tercero_id is not None and concepto_operacion_caja.grupo in ['C', 'A', 'P']:
         raise serializers.ValidationError(
             {'_error': 'Para el concepto seleccionado se requiere un tercero'}
         )
 
-    if tercero_id and concepto_operacion_caja.grupo in ['O', 'T']:
+    if tercero_id is not None and concepto_operacion_caja.grupo in ['O', 'T']:
         raise serializers.ValidationError(
             {'_error': 'Para los conceptos Otro y Taxi no se utiliza tercero'}
         )
 
-    if tercero_id:
+    if tercero_id is not None:
         tercero = Tercero.objects.get(pk=tercero_id)
         if concepto_operacion_caja.grupo == 'C' and not tercero.es_colaborador:
             raise serializers.ValidationError(

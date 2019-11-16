@@ -5,6 +5,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from habitaciones.HistoricoMixin import HistoricoViewSetMixin
 from .api_serializers import HabitacionSerializer, TipoHabitacionSerializer, TipoHabitacionConDetalleSerializer
 from .models import Habitacion, TipoHabitacion
 from servicios.models import Servicio
@@ -68,7 +69,7 @@ class TipoHabitacionViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class HabitacionViewSet(viewsets.ModelViewSet):
+class HabitacionViewSet(HistoricoViewSetMixin, viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissionsFull]
     queryset = Habitacion.objects.select_related(
         'empresa',

@@ -1,3 +1,4 @@
+import reversion
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -39,6 +40,7 @@ class TipoHabitacion(models.Model):
         ]
 
 
+@reversion.register(fields=['tipo', 'numero', 'empresa'])
 class Habitacion(models.Model):
     ESTADO_CHOICES = (
         (0, 'Disponible'),

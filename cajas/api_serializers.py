@@ -55,7 +55,7 @@ class OperacionCajaSerializer(serializers.ModelSerializer):
             concepto_id=concepto.id,
             usuario_pdv_id=usuario_pv.id,
             valor=valor,
-            tercero_id=tercero.id if tercero else None,
+            tercero_id=tercero.id if tercero is not None else None,
             observacion=observacion
         )
         return operacion_caja

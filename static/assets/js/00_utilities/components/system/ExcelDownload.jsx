@@ -7,10 +7,11 @@ const ExcelDownload = (props) => {
     if (data.length === 0) {
         return <Fragment></Fragment>
     }
+    let data_descarga = _.map(data, e => _.pickBy(e, s => !Array.isArray(s) && typeof s !== 'object'));
     const ExcelFile = ReactExport.ExcelFile;
     const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
     const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-    const data_uno = data[0];
+    const data_uno = data_descarga[0];
     let cabecera = [];
     _.mapKeys(data_uno, (value, key) => {
         cabecera = [...cabecera, key]
@@ -27,7 +28,7 @@ const ExcelDownload = (props) => {
             }
             filename={file_name}
         >
-            <ExcelSheet data={data} name={name}>
+            <ExcelSheet data={data_descarga} name={name}>
                 {
                     cabecera.map(c => <ExcelColumn key={c} label={c} value={c}/>)
                 }

@@ -20,15 +20,6 @@ def get_secret(setting, variable, secrets=secrets):
 if str_to_bool(get_secret("EMAIL_SERVER", "EMAIL_IS_LOCAL")):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-THIRD_PART_APPS = [
-    'silk',
-]
-
-INSTALLED_APPS = INSTALLED_APPS + THIRD_PART_APPS
-MIDDLEWARE += [
-    'silk.middleware.SilkyMiddleware',
-]
-
 STATICFILES_DIRS = [
     os.path.normpath(os.path.join(SITE_ROOT, "static"))
 ]

@@ -13,12 +13,13 @@ urlpatterns = [
     path('api/auth/logout', LogoutView.as_view()),
     path('api/', include(router.urls)),
     url(r'^app/*', IndexView.as_view()),
+    url(r'^silk/', include('silk.urls', namespace='silk')),
     path('', include('index.urls')),
 ]
 
 if settings.DEBUG:
-    urlpatterns = [
-                      url(r'^silk/', include('silk.urls', namespace='silk')),
-                  ] + urlpatterns
+    # urlpatterns = [
+    #                   url(r'^silk/', include('silk.urls', namespace='silk')),
+    #               ] + urlpatterns
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

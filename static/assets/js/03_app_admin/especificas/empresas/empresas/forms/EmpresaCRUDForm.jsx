@@ -17,6 +17,7 @@ let Form = (props) => {
         singular_name,
         error,
     } = props;
+
     return (
         <MyFormTagModal
             fullScreen={false}

@@ -1,10 +1,12 @@
-import React, {Fragment, useState, useRef} from 'react'
+import React, {useState, useRef} from 'react'
+import ValidarPermisos from "../../permisos/validar_permisos";
 import {useDispatch} from 'react-redux';
 import PropTypes from "prop-types";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {notificarAction} from '../../01_actions';
 import ExcelDownload from "../../00_utilities/components/system/ExcelDownload";
+import HistoricoDialog from "../../00_utilities/components/ui/dialog/HistoricoDialog";
 import CargarDatos from "./system/CargarDatos";
 
 function crudHOC(CreateForm, Tabla) {
@@ -12,6 +14,7 @@ function crudHOC(CreateForm, Tabla) {
         const dispatch = useDispatch();
         const {
             method_pool,
+            method_pool: {restoreObjectMethod = null},
             posDeleteMethod,
             singular_name,
             posCreateMethod = null,
@@ -26,9 +29,9 @@ function crudHOC(CreateForm, Tabla) {
         const checkboxTable = useRef(null);
         const [item_seleccionado, setItemSeleccionado] = useState(null);
         const [modal_open, setModalOpen] = useState(false);
+        const [modal_open_historico, setModalOpenHistorico] = useState(false);
         const [selected_rows, setSelectedRows] = useState([]);
         const [are_select_all_rows, setSelectAllRows] = useState(false);
-
 
         const isRowTableSelected = key => selected_rows.includes(key);
 
@@ -115,11 +118,27 @@ function crudHOC(CreateForm, Tabla) {
             }
         };
 
+        const onHistoricoItem = (item) => {
+            const callback = (response) => {
+                setItemSeleccionado(item);
+                setModalOpenHistorico(true);
+            };
+            return method_pool.historicoObjectMethod(item.id, {callback})
+        };
+
+        const onRestoreItem = (id_object, id_to_restore) => {
+            const callback = (response) => {
+                setItemSeleccionado(null);
+                setModalOpenHistorico(false);
+            };
+            return method_pool.restoreObjectMethod(id_object, id_to_restore, {callback})
+        };
+
 
         const onSelectItemEdit = (item) => {
             const callback = (response) => {
-                setModalOpen(true);
                 setItemSeleccionado(response);
+                setModalOpen(true);
             };
             if (method_pool.fetchObjectMethod === null) {
                 console.log('No se ha asignado ningún método para FETCH OBJECT')
@@ -165,59 +184,57 @@ function crudHOC(CreateForm, Tabla) {
                 if (method_pool.createObjectMethod === null) {
                     console.log('No se ha asignado ningún método para CREATE')
                 } else {
-
                     return method_pool.createObjectMethod(item, {callback});
                 }
             }
         };
-        if (!permisos_object.list) {
-            return <Fragment>{`No tiene suficientes permisos para ver ${plural_name}.`}</Fragment>
-        }
-
         return (
-            <Fragment>
-                {
-                    con_titulo &&
-                    <Typography variant="h5" gutterBottom color="primary">
-                        {plural_name}
-                    </Typography>
-                }
-                {
-                    permisos_object.add &&
-                    <Button
-                        color='primary'
-                        className='ml-3'
-                        onClick={() => {
-                            setModalOpen(true);
-                            setItemSeleccionado(null);
-                        }}
-                    >
-                        Nuevo
-                    </Button>
-                }
-                {
-                    selected_rows.length > 0 &&
-                    <ExcelDownload
-                        data={_.map(_.pickBy(list, l => selected_rows.includes(l.id)))}
-                        name={plural_name ? plural_name : 'documento'}
-                        file_name={plural_name ? plural_name : 'documento'}
-                    />
-                }
-                {
-                    modal_open &&
-                    <CreateForm
-                        {...props}
-                        initialValues={item_seleccionado ? list[item_seleccionado.id] : null}
-                        modal_open={modal_open}
-                        onCancel={() => {
-                            setItemSeleccionado(null);
-                            setModalOpen(false);
-                        }}
-                        onSubmit={onSubmit}
-                        setSelectItem={setSelectItem}
-                    />
-                }
-                <div>
+            <ValidarPermisos can_see={permisos_object.list} nombre={plural_name}>
+                {con_titulo && <Typography variant="h5" gutterBottom color="primary">
+                    {plural_name}
+                </Typography>}
+
+                {permisos_object.add && <Button
+                    color='primary'
+                    className='ml-3'
+                    onClick={() => {
+                        setModalOpen(true);
+                        setItemSeleccionado(null);
+                    }}
+                >
+                    Nuevo
+                </Button>}
+
+                {selected_rows.length > 0 && <ExcelDownload
+                    data={_.map(_.pickBy(list, l => selected_rows.includes(l.id)))}
+                    name={plural_name ? plural_name : 'documento'}
+                    file_name={plural_name ? plural_name : 'documento'}
+                />}
+
+                {modal_open && <CreateForm
+                    {...props}
+                    initialValues={item_seleccionado ? list[item_seleccionado.id] : null}
+                    modal_open={modal_open}
+                    onCancel={() => {
+                        setItemSeleccionado(null);
+                        setModalOpen(false);
+                    }}
+                    onSubmit={onSubmit}
+                    setSelectItem={setSelectItem}
+                />}
+
+                {modal_open_historico && <HistoricoDialog
+                    onRestoreItem={restoreObjectMethod ? onRestoreItem : null}
+                    element_type='Empresa'
+                    is_open={modal_open_historico}
+                    onCancel={() => {
+                        setItemSeleccionado(null);
+                        setModalOpenHistorico(false);
+                    }}
+                    item_seleccionado={item_seleccionado}
+                />}
+
+                {Tabla && <div>
                     <Tabla
                         {...props}
                         getTrGroupProps={getTrGroupProps}
@@ -232,14 +249,11 @@ function crudHOC(CreateForm, Tabla) {
                         onDelete={onDelete}
                         onSelectForDelete={onSelectForDelete}
                         onSelectItemEdit={onSelectItemEdit}
+                        onHistoricoItem={onHistoricoItem}
                     />
-                </div>
-                {
-                    cargarDatos && <CargarDatos
-                        cargarDatos={cargarDatos}
-                    />
-                }
-            </Fragment>
+                </div>}
+                {cargarDatos && <CargarDatos cargarDatos={cargarDatos}/>}
+            </ValidarPermisos>
         )
     };
 

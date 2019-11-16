@@ -12,7 +12,7 @@ class DiarioContable(models.Model):
         ('General', 'General'),
     )
     nombre = models.CharField(max_length=300)
-    codigo = models.CharField(max_length=4)
+    codigo = models.CharField(max_length=10)
     tipo = models.CharField(choices=TIPO_CHOICES, default='General', max_length=120)
     cuenta_debito_defecto = models.ForeignKey(
         CuentaContable,

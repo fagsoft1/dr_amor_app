@@ -244,7 +244,7 @@ class HabitacionServicesTests(BaseTestsApi):
         from ..services import habitacion_iniciar_servicios
         with self.assertRaisesMessage(
                 ValidationError,
-                "'_error': 'El valor ingresado de forma de pago es diferente al valor total de los servicios. El Valor de los servicios es"
+                'El valor ingresado de forma de pago es diferente al valor total de los servicios. El Valor de los servicios es'
         ):
             habitacion_iniciar_servicios(
                 habitacion_id=self.habitacion.id,
@@ -262,7 +262,7 @@ class HabitacionServicesTests(BaseTestsApi):
         self.punto_venta.save()
         with self.assertRaisesMessage(
                 ValidationError,
-                "{'_error': 'No se puede inciar servicios de habitación desde un punto de venta cerrado'}"
+                'No se puede inciar servicios de habitación desde un punto de venta cerrado'
         ):
             habitacion_iniciar_servicios(
                 habitacion_id=self.habitacion.id,
@@ -280,7 +280,7 @@ class HabitacionServicesTests(BaseTestsApi):
         self.habitacion.save()
         with self.assertRaisesMessage(
                 ValidationError,
-                "{'_error': 'No se puede cambiar de un estado de mantenimiento a uno ocupado'}"
+                "No se puede cambiar de un estado de mantenimiento a uno ocupado"
         ):
             habitacion_iniciar_servicios(
                 habitacion_id=self.habitacion.id,

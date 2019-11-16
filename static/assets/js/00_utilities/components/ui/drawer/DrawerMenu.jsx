@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions";
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
+
 const drawerWidth = 240;
 const styles = theme => ({
     root: {
@@ -62,9 +63,9 @@ const styles = theme => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         overflowX: 'hidden',
-        width: theme.spacing.unit * 6 + 1,
+        width: theme.spacing(6 + 1),
         [theme.breakpoints.up('sm')]: {
-            width: theme.spacing.unit * 7 + 1,
+            width: theme.spacing(7 + 1),
         },
     },
     toolbar: {
@@ -76,10 +77,10 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 3,
+        padding: theme.spacing(3),
     },
     nested: {
-        paddingLeft: theme.spacing.unit * 4,
+        paddingLeft: theme.spacing(),
     },
     iconColor: {
         color: theme.palette.primary.dark

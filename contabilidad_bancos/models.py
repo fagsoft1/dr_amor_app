@@ -2,7 +2,6 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 
 
-# Create your models here.
 class Banco(TimeStampedModel):
     nombre = models.CharField(max_length=200, unique=True)
 
@@ -13,7 +12,7 @@ class Banco(TimeStampedModel):
 
 
 class CuentaBancariaBanco(TimeStampedModel):
-    banco = models.ForeignKey(Banco, on_delete=models.PROTECT)
+    banco = models.ForeignKey(Banco, on_delete=models.PROTECT, null=True)
     nro_cuenta = models.CharField(max_length=200)
     titular_cuenta = models.CharField(max_length=200)
 

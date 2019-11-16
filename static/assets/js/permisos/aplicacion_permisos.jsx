@@ -1,3 +1,27 @@
+export const TIPOS_COMPROBANTES_CONTABLES_EMPRESAS = {
+    add: 'add_tipocomprobantecontableempresa',
+    delete: 'delete_tipocomprobantecontableempresa',
+    change: 'change_tipocomprobantecontableempresa',
+    list: 'list_tipocomprobantecontableempresa',
+    detail: 'view_tipocomprobantecontableempresa',
+};
+
+export const TIPOS_COMPROBANTES_CONTABLES = {
+    add: 'add_tipocomprobantecontable',
+    delete: 'delete_tipocomprobantecontable',
+    change: 'change_tipocomprobantecontable',
+    list: 'list_tipocomprobantecontable',
+    detail: 'view_tipocomprobantecontable',
+};
+
+export const METODOS_PAGOS = {
+    add: 'add_metodopago',
+    delete: 'delete_metodopago',
+    change: 'change_metodopago',
+    list: 'list_metodopago',
+    detail: 'view_metodopago',
+};
+
 export const APUNTES_CONTABLES = {
     add: 'add_apuntecontable',
     delete: 'delete_apuntecontable',

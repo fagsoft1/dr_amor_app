@@ -1,6 +1,7 @@
 import React, {memo} from "react";
 import MyDialogButtonDelete from '../../../../00_utilities/components/ui/dialog/DeleteDialog';
 import IconButtonTableEdit from '../../../../00_utilities/components/ui/icon/TableIconButtonEdit';
+import IconButtonTableHistory from '../../../../00_utilities/components/ui/icon/TableIconButtonHistory';
 
 
 import Table from "react-table";
@@ -23,6 +24,7 @@ const Tabla = memo((props) => {
         toggleSelection,
         rowFn,
         updateItem,
+        onHistoricoItem,
         singular_name,
         onDelete,
         onSelectItemEdit,
@@ -96,6 +98,16 @@ const Tabla = memo((props) => {
                                 <IconButtonTableEdit
                                     onClick={() => {
                                         onSelectItemEdit(row.original);
+                                    }}/>
+
+                        },
+                        {
+                            Header: "Historico",
+                            maxWidth: 60,
+                            Cell: row =>
+                                <IconButtonTableHistory
+                                    onClick={() => {
+                                        onHistoricoItem(row.original);
                                     }}/>
 
                         },

@@ -5,7 +5,6 @@ import ErrorBoundary from './ErrorBoundary';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {withStyles} from "@material-ui/core/styles/index";
 import Typography from '@material-ui/core/Typography';
-import ReactSafeHtml from 'react-safe-html';
 
 
 const LoadingOverlay = memo((props) => {
@@ -14,7 +13,7 @@ const LoadingOverlay = memo((props) => {
     if (!isAuthenticated) {
         return <Redirect to="/"/>
     }
-    const {cargando, mensaje, error, titulo} = esta_cargando;
+    const {cargando, mensajes, error, titulo} = esta_cargando;
     const {classes} = props;
     let isActive = cargando ? 'block' : 'none';
     const style = {
@@ -42,7 +41,11 @@ const LoadingOverlay = memo((props) => {
                             {titulo}
                         </Typography>
                         <Typography variant="overline" color="inherit" gutterBottom>
-                            <ReactSafeHtml html={mensaje}/>
+                            {mensajes.length > 0 && <div className='row'>
+                                {mensajes.map(m => <div key={m} className="col-12">
+                                    {m}
+                                </div>)}
+                            </div>}
                         </Typography>
                     </div>
                 </div>

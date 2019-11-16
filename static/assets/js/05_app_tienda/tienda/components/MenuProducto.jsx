@@ -10,8 +10,8 @@ const styles = theme => ({
         ...theme.mixins.gutters(),
         minHeight: '6rem',
         width: '100%',
-        paddingTop: theme.spacing.unit * 2,
-        paddingBottom: theme.spacing.unit * 2,
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
     },
     badge: {
         right: '20px',

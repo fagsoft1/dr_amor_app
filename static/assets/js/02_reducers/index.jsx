@@ -53,13 +53,21 @@ import modalidadesFraccionesTiempoDetallesReducer
     from './especificas/parqueadero/modalidadesFraccionesTiempoDetallesReducer';
 
 
+import metodosPagosReducer from './especificas/contabilidad/configuracion/metodosPagosReducer';
 import cuentasContablesReducer from './especificas/contabilidad/configuracion/cuentasContablesReducer';
 import diariosContablesReducer from './especificas/contabilidad/configuracion/diariosContablesReducer';
 import cuentasBancariasContablesReducer from './especificas/contabilidad/configuracion/cuentasBancariasReducer';
 import impuestosContablesReducer from './especificas/contabilidad/configuracion/impuestosReducer';
 import bancosReducer from './especificas/contabilidad/configuracion/bancosReducer';
+import tiposComprobantesContablesReducer from './especificas/contabilidad/configuracion/tiposComprobantesReducer';
+import tiposComprobantesContablesEmpresasReducer
+    from './especificas/contabilidad/configuracion/tiposComprobantesEmpresasReducer';
+
+
 import asientosContablesReducer from './especificas/contabilidad/contabilidad/asientosContablesReducer';
 import apuntesContablesReducer from './especificas/contabilidad/contabilidad/apuntesContablesReducer';
+
+import historicoReducer from './generales/historico/historicoReducer';
 
 import {reducer as notificationsReducers} from 'react-notification-system-redux';
 
@@ -122,8 +130,15 @@ const rootReducer = combineReducers({
     contabilidad_cuentas_bancarias: cuentasBancariasContablesReducer,
     contabilidad_impuestos: impuestosContablesReducer,
     contabilidad_bancos: bancosReducer,
+    contabilidad_tipos_comprobantes: tiposComprobantesContablesReducer,
+    contabilidad_tipos_comprobantes_empresas: tiposComprobantesContablesEmpresasReducer,
+
+
     contabilidad_asientos_contables: asientosContablesReducer,
     contabilidad_apuntes_contables: apuntesContablesReducer,
+    contabilidad_metodos_pagos: metodosPagosReducer,
+
+    historicos: historicoReducer,
 });
 
 export default rootReducer;

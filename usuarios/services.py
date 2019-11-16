@@ -20,6 +20,7 @@ def usuario_existe_username(
         return True
     return False
 
+
 def user_cambiar_contrasena(
         usuario_id: int,
         password_old: str,

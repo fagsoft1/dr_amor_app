@@ -304,7 +304,7 @@ class BaseTest(TestCase):
                 'cantidad': cantidad
             })
 
-        if mesero:
+        if mesero is not None:
             venta = venta_producto_efectuar_venta(
                 usuario_pdv_id=self.colaborador_cajero.usuario.id,
                 punto_venta_id=punto_venta.id,
@@ -314,7 +314,7 @@ class BaseTest(TestCase):
                 cliente_qr_codigo=tercero_generarQR(mesero.id).qr_acceso
             )
         else:
-            if cliente:
+            if cliente is not None:
                 venta = venta_producto_efectuar_venta(
                     usuario_pdv_id=self.colaborador_cajero.usuario.id,
                     punto_venta_id=punto_venta.id,
@@ -346,7 +346,7 @@ class BaseTest(TestCase):
         from cajas.services import operacion_caja_crear
         if not colaborador_cajero:
             colaborador_cajero = self.colaborador_cajero
-        if tercero and tercero.es_colaborador:
+        if tercero is not None and tercero.es_colaborador:
             concepto_ingreso = ConceptoOperacionCajaFactory(
                 tipo='I',
                 grupo='C',
@@ -357,7 +357,7 @@ class BaseTest(TestCase):
                 grupo='C',
                 tipo_cuenta='CXC'
             )
-        elif tercero and tercero.es_acompanante:
+        elif tercero is not None and tercero.es_acompanante:
             concepto_ingreso = ConceptoOperacionCajaFactory(
                 tipo='I',
                 grupo='A',
@@ -368,7 +368,7 @@ class BaseTest(TestCase):
                 grupo='A',
                 tipo_cuenta='CXC'
             )
-        elif tercero and tercero.es_proveedor:
+        elif tercero is not None and tercero.es_proveedor:
             concepto_ingreso = ConceptoOperacionCajaFactory(
                 tipo='I',
                 grupo='P',
@@ -404,7 +404,7 @@ class BaseTest(TestCase):
                 concepto_id=concepto_egreso.id,
                 usuario_pdv_id=colaborador_cajero.usuario.id,
                 valor=valor_egreso,
-                tercero_id=tercero.id if tercero else None,
+                tercero_id=tercero.id if tercero is not None else None,
                 observacion='probando'
             )
 
@@ -412,7 +412,7 @@ class BaseTest(TestCase):
                 concepto_id=concepto_ingreso.id,
                 usuario_pdv_id=colaborador_cajero.usuario.id,
                 valor=valor_ingreso,
-                tercero_id=tercero.id if tercero else None,
+                tercero_id=tercero.id if tercero is not None else None,
                 observacion='probando'
             )
         return valor_ingresos, valor_egresos
@@ -478,7 +478,7 @@ class BaseTest(TestCase):
         from servicios.services import servicio_crear_nuevo, servicio_iniciar
         from habitaciones.services import habitacion_terminar_servicios
 
-        if acompanante_tres or acompanante_dos and nro_servicios <= 3:
+        if acompanante_tres is not None or acompanante_dos is not None and nro_servicios <= 3:
             nro_servicios = 3
 
         tipo_habitacion = habitacion.tipo
@@ -564,7 +564,7 @@ class BaseTest(TestCase):
 
             if not terminados and not iniciados:
                 valores_totales_servicios['acompanante_1']['servicios'].append(servicio)
-        if acompanante_dos:
+        if acompanante_dos is not None:
             for i in range(nro_servicios - 1):
                 if i == 0:
                     categoria = array_categorias_fracciones_tiempo[0]
@@ -600,7 +600,7 @@ class BaseTest(TestCase):
 
                 if not terminados and not iniciados:
                     valores_totales_servicios['acompanante_2']['servicios'].append(servicio)
-        if acompanante_tres:
+        if acompanante_tres is not None:
             for i in range(nro_servicios - 2):
                 if i == 0:
                     categoria = array_categorias_fracciones_tiempo[0]

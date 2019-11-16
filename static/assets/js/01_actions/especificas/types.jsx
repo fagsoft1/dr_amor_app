@@ -1,3 +1,31 @@
+export const TIPO_COMPROBANTE_CONTABLE_EMPRESA_TYPES = {
+    create: 'create_tipo_comprobante_contable_empresa',
+    delete: 'delete_tipo_comprobante_contable_empresa',
+    fetch_all: 'fetch_tipos_comprobantes_contables_empresas',
+    fetch: 'fetch_tipo_comprobante_contable_empresa',
+    clear: 'clear_tipos_comprobantes_contables_empresas',
+    update: 'update_tipo_comprobante_contable_empresa',
+};
+
+export const TIPO_COMPROBANTE_CONTABLE_TYPES = {
+    create: 'create_tipo_comprobante_contable',
+    delete: 'delete_tipo_comprobante_contable',
+    fetch_all: 'fetch_tipos_comprobantes_contables',
+    fetch: 'fetch_tipo_comprobante_contable',
+    clear: 'clear_tipos_comprobantes_contables',
+    update: 'update_tipo_comprobante_contable',
+};
+
+export const METODO_PAGO_TYPES = {
+    create: 'create_metodo_pago',
+    delete: 'delete_metodo_pago',
+    fetch_all: 'fetch_metodos_pagos',
+    fetch: 'fetch_metodo_pago',
+    clear: 'clear_metodos_pagos',
+    update: 'update_metodo_pago',
+};
+
+
 export const APUNTE_CONTABLE_TYPES = {
     create: 'create_apunte_contable',
     delete: 'delete_apunte_contable',

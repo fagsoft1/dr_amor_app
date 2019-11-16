@@ -1,3 +1,9 @@
+export const HISTORICO_REVISION_TYPES = {
+    fetch_all: 'fetch_historicos_revisions',
+    fetch: 'fetch_historico_revision',
+    clear: 'clear_historicos_revisions'
+};
+
 export const LOADING = {
     loading: 'is_loading',
     stop: 'in_not_loading',

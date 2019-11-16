@@ -43,3 +43,14 @@ class MenuAdminPermission(models.Model):
             ('menu_admin_cajas_billetes_monedas', 'Menu Admin Cajas Billetes Monedas'),
             ('menu_admin_cajas_conceptos_operaciones_cajas', 'Menu Admin Cajas Conceptos Operaciones'),
         )
+
+
+class ModuloPermission(models.Model):
+    class Meta:
+        managed = False
+        permissions = (
+            ('modulo_admin', 'Modulo Administracion'),
+            ('modulo_mi_cuenta', 'Modulo Mi Cuenta'),
+            ('modulo_acceso', 'Modulo Acceso'),
+            ('modulo_consultas', 'Modulo Consultas'),
+        )

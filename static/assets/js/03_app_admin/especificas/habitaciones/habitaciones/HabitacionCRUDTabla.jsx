@@ -4,6 +4,7 @@ import IconButtonTableEdit from '../../../../00_utilities/components/ui/icon/Tab
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome/index';
 
 import ReactTable from "react-table";
+import IconButtonTableHistory from "../../../../00_utilities/components/ui/icon/TableIconButtonHistory";
 
 const areEqual = (prevProps, nextProps) => {
     return prevProps.list === nextProps.list;
@@ -16,7 +17,8 @@ const Tabla = memo((props) => {
         singular_name,
         onDelete,
         onSelectItemEdit,
-        permisos_object
+        permisos_object,
+        onHistoricoItem
     } = props;
     return (
         <ReactTable
@@ -91,6 +93,16 @@ const Tabla = memo((props) => {
                                 <IconButtonTableEdit
                                     onClick={() => {
                                         onSelectItemEdit(row.original);
+                                    }}/>
+
+                        },
+                        {
+                            Header: "Historico",
+                            maxWidth: 60,
+                            Cell: row =>
+                                <IconButtonTableHistory
+                                    onClick={() => {
+                                        onHistoricoItem(row.original);
                                     }}/>
 
                         },

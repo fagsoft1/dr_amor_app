@@ -27,6 +27,8 @@ const List = memo(() => {
         deleteObjectMethod: (id, options) => dispatch(actions.deleteEmpresa(id, options)),
         createObjectMethod: (item, options) => dispatch(actions.createEmpresa(item, options)),
         updateObjectMethod: (id, item, options) => dispatch(actions.updateEmpresa(id, item, options)),
+        historicoObjectMethod: (id, item, options) => dispatch(actions.fetchHistoricosRevisionsEmpresas(id, item, options)),
+        restoreObjectMethod: (id_object, id_to_restore, options) => dispatch(actions.restoreEmpresa(id_object, id_to_restore, options)),
     };
     return (
         <CRUD

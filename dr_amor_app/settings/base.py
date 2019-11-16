@@ -73,6 +73,8 @@ MY_APPS = [
     'contabilidad_diario.apps.ContabilidadDiarioConfig',
     'contabilidad_impuestos.apps.ContabilidadImpuestosConfig',
     'contabilidad_movimientos.apps.ContabilidadMovimientosConfig',
+    'contabilidad_metodos_pago.apps.ContabilidadMetodosPagoConfig',
+    'contabilidad_comprobantes.apps.ContabilidadComprobantesConfig',
 ]
 
 THIRD_PART_APPS = [
@@ -84,6 +86,8 @@ THIRD_PART_APPS = [
     'webpack_loader',
     'imagekit',
     'mathfilters',
+    'reversion',
+    'silk',
 ]
 
 REST_FRAMEWORK = {
@@ -108,6 +112,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 ROOT_URLCONF = 'dr_amor_app.urls'

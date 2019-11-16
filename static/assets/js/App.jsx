@@ -1,4 +1,4 @@
-import React, {Fragment, Component, memo, useEffect, Suspense, lazy} from 'react';
+import React, {Fragment, memo, useEffect, Suspense, lazy} from 'react';
 import {hot} from 'react-hot-loader'
 import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
 import {Provider} from 'react-redux';
@@ -24,7 +24,7 @@ import {library} from '@fortawesome/fontawesome-svg-core'
 
 library.add(far);
 
-import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
+import {createMuiTheme, makeStyles, MuiThemeProvider} from '@material-ui/core/styles';
 
 import indigo from '@material-ui/core/colors/indigo';
 import red from '@material-ui/core/colors/red';
@@ -86,26 +86,33 @@ const AppCaja = lazy(() => import('./07_cajas/App'));
 const AppAcceso = lazy(() => import('./06_app_acceso/App'));
 const AppConsultas = lazy(() => import('./09_app_consultas/App'));
 const MiCuenta = lazy(() => import('./08_app_mi_cuenta/App'));
-import Login from './authentication/login/containers/LoginForm';
+import Login from './authentication/login/Login';
+
+const useStyles = makeStyles(theme => ({
+        info_usuario: {
+            fontSize: '0.8rem',
+            position: 'fixed',
+            right: 10,
+            bottom: 10,
+            borderRadius: '5px',
+            border: `solid ${theme.palette.primary.main} 2px`,
+            color: `${theme.palette.primary.main}`,
+            padding: '2px',
+            backgroundColor: 'white'
+        }
+    })
+);
 
 
 const InfoUsuario = memo(() => {
     const auth = useSelector(state => state.auth);
-    console.log('Renderizó InfoUsuario')
-    if (!auth) {
+    const classes = useStyles();
+    const {user} = auth;
+    if (!user) {
         return <Fragment></Fragment>
     }
-    const {user} = auth;
     return (
-        <div style={{
-            position: 'fixed',
-            right: 10,
-            bottom: 10,
-            borderRadius: '10px',
-            border: 'solid black 2px',
-            padding: '2px',
-            backgroundColor: 'white'
-        }}>
+        <div className={classes.info_usuario}>
             {
                 user &&
                 user.punto_venta_actual &&
@@ -119,8 +126,7 @@ const InfoUsuario = memo(() => {
             {
                 user &&
                 <Fragment>
-                    <strong>Usuario: </strong>
-                    <small>{user.username}</small>
+                    <strong>Usuario: </strong>{user.username}
                 </Fragment>
             }
         </div>
@@ -143,7 +149,6 @@ const PrivateRoute = ({component: ChildComponent, ...rest}) => {
 let ContainerRoot = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        console.log('useEffect de container rootss');
         dispatch(actions.loadUser());
     });
     return (
@@ -175,17 +180,16 @@ let ContainerRoot = () => {
 
 ContainerRoot = hot(module)(ContainerRoot);
 
+const App = () => {
+    return (
+        <Provider store={store}>
+            <MuiThemeProvider theme={theme}>
+                <StylesContextProvider>
+                    <ContainerRoot/>
+                </StylesContextProvider>
+            </MuiThemeProvider>
+        </Provider>
+    )
+};
 
-export default class App extends Component {
-    render() {
-        return (
-            <Provider store={store}>
-                <MuiThemeProvider theme={theme}>
-                    <StylesContextProvider>
-                        <ContainerRoot/>
-                    </StylesContextProvider>
-                </MuiThemeProvider>
-            </Provider>
-        )
-    }
-}
+export default App;

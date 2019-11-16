@@ -11,8 +11,8 @@ const styles = theme => ({
         ...theme.mixins.gutters(),
         width: '100%',
         minHeight: '5rem',
-        paddingTop: theme.spacing.unit * 2,
-        paddingBottom: theme.spacing.unit * 2,
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
     },
 });
 

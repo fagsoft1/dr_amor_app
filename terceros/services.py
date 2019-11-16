@@ -117,7 +117,7 @@ def acompanante_crear(validated_data) -> Tercero:
     first_name = '%s %s'.strip() % (nombre, nombre_segundo)
     last_name = '%s %s'.strip() % (apellido, apellido_segundo)
 
-    if apellido_segundo:
+    if apellido_segundo is not None:
         username = ('ac-%s%s%s' % (nombre[0:3], apellido[0:3], apellido_segundo[0:3])).lower()
     else:
         username = ('ac-%s%s' % (nombre[0:3], apellido[0:3])).lower()
@@ -203,7 +203,7 @@ def colaborador_crear(
     first_name = '%s %s'.strip() % (nombre, nombre_segundo)
     last_name = '%s %s'.strip() % (apellido, apellido_segundo)
 
-    if apellido_segundo:
+    if apellido_segundo is not None:
         username = ('co-%s%s%s' % (nombre[0:3], apellido[0:3], apellido_segundo[0:3])).lower()
     else:
         username = ('co-%s%s' % (nombre[0:3], apellido[0:3])).lower()

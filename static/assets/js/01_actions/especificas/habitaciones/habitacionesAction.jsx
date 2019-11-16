@@ -12,6 +12,7 @@ import {
 } from '../../00_general_fuctions'
 
 const current_url_api = 'habitaciones';
+export {current_url_api};
 
 export function refreshUpdateHabitacion(payload) {
     return baseWS(TYPES.update, payload)

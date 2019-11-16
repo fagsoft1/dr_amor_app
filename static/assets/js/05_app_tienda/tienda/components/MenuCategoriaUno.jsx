@@ -12,8 +12,8 @@ const styles = theme => ({
         minHeight: '5rem',
         width: '100%',
         margin: 0,
-        paddingTop: theme.spacing.unit * 2,
-        paddingBottom: theme.spacing.unit * 2,
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
     }
 });
 
