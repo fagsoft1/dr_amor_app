@@ -23,20 +23,24 @@ class TipoComprobanteContable(models.Model):
 
 
 class TipoComprobanteContableEmpresa(models.Model):
-    tipo_comprobante = models.ForeignKey(TipoComprobanteContable, on_delete=models.PROTECT)
-    empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT)
+    tipo_comprobante = models.ForeignKey(
+        TipoComprobanteContable,
+        on_delete=models.PROTECT,
+        related_name='tipos_comprobantes_empresas'
+    )
+    empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT, related_name='tipos_comprobantes_empresas')
     consecutivo_actual = models.BigIntegerField(default=0)
-    numero_autorizacion = models.CharField(max_length=100)
+    numero_autorizacion = models.CharField(max_length=100, null=True)
     fecha_autorizacion = models.DateField(null=True)
     rango_inferior_numeracion = models.BigIntegerField(default=0)
     rango_superior_numeracion = models.BigIntegerField(default=0)
     tiene_vigencia = models.BooleanField(default=False)
     fecha_inicial_vigencia = models.DateField(null=True)
     fecha_final_vigencia = models.DateField(null=True)
-    pais_emision = models.CharField(max_length=100, null=True)
-    ciudad_emision = models.CharField(max_length=100, null=True)
-    direccion_emision = models.CharField(max_length=100, null=True)
-    telefono_emision = models.CharField(max_length=100, null=True)
+    pais_emision = models.CharField(max_length=100, null=True, blank=True)
+    ciudad_emision = models.CharField(max_length=100, null=True, blank=True)
+    direccion_emision = models.CharField(max_length=100, null=True, blank=True)
+    telefono_emision = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
         permissions = [

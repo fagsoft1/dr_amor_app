@@ -15,18 +15,38 @@ class TipoComprobanteContableSerializer(serializers.ModelSerializer):
             'url',
             'id',
             'codigo_comprobante',
-            'comprobantes_empresas',
-            'to_string',
+            'tipos_comprobantes_empresas',
             'descripcion',
             'titulo_comprobante',
+            'to_string',
         ]
+        read_only_fields = ['tipos_comprobantes_empresas']
 
 
 class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
+    empresa_nombre = serializers.CharField(
+        source='empresa.nombre',
+        read_only=True
+    )
+    fecha_autorizacion = serializers.DateField(
+        format="%Y-%m-%d",
+        input_formats=['%Y-%m-%dT%H:%M:%S.%fZ', 'iso-8601'],
+        required=False
+    )
+    fecha_inicial_vigencia = serializers.DateField(
+        format="%Y-%m-%d",
+        input_formats=['%Y-%m-%dT%H:%M:%S.%fZ', 'iso-8601'],
+        required=False
+    )
+    fecha_final_vigencia = serializers.DateField(
+        format="%Y-%m-%d",
+        input_formats=['%Y-%m-%dT%H:%M:%S.%fZ', 'iso-8601'],
+        required=False
+    )
     to_string = serializers.SerializerMethodField()
 
     def get_to_string(self, instance):  # pragma: no cover
-        return '%s - %s' % (instance.tipo_comprobante.descricion, instance.empresa.nombre)
+        return '%s - %s' % (instance.tipo_comprobante.descripcion, instance.empresa.nombre)
 
     def create(self, validated_data):
         tipo_comprobante = validated_data.get('tipo_comprobante', None)
@@ -36,7 +56,7 @@ class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
         rango_superior_numeracion = validated_data.get('rango_superior_numeracion', None)
         numero_autorizacion = validated_data.get('numero_autorizacion', None)
         fecha_autorizacion = validated_data.get('fecha_autorizacion', None)
-        tiene_vigencia = validated_data.get('tiene_vigencia', None)
+        tiene_vigencia = validated_data.get('tiene_vigencia', False)
         fecha_inicial_vigencia = validated_data.get('fecha_inicial_vigencia', None)
         fecha_final_vigencia = validated_data.get('fecha_final_vigencia', None)
         pais_emision = validated_data.get('pais_emision', None)
@@ -70,7 +90,7 @@ class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
         rango_superior_numeracion = validated_data.get('rango_superior_numeracion', None)
         numero_autorizacion = validated_data.get('numero_autorizacion', None)
         fecha_autorizacion = validated_data.get('fecha_autorizacion', None)
-        tiene_vigencia = validated_data.get('tiene_vigencia', None)
+        tiene_vigencia = validated_data.get('tiene_vigencia', False)
         fecha_inicial_vigencia = validated_data.get('fecha_inicial_vigencia', None)
         fecha_final_vigencia = validated_data.get('fecha_final_vigencia', None)
         pais_emision = validated_data.get('pais_emision', None)
@@ -102,14 +122,13 @@ class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
         fields = [
             'url',
             'id',
-            'empresa',
+            'empresa_nombre',
             'tipo_comprobante',
             'consecutivo_actual',
             'numero_autorizacion',
             'fecha_autorizacion',
             'rango_inferior_numeracion',
             'rango_superior_numeracion',
-            'tiene_vigencia',
             'fecha_inicial_vigencia',
             'fecha_final_vigencia',
             'pais_emision',
@@ -117,4 +136,10 @@ class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
             'direccion_emision',
             'telefono_emision',
             'to_string',
+            'empresa',
+            'tiene_vigencia',
         ]
+
+
+class TipoComprobanteContableDetalleSerializer(TipoComprobanteContableSerializer):
+    tipos_comprobantes_empresas = TipoComprobanteContableEmpresaSerializer(many=True, read_only=True)

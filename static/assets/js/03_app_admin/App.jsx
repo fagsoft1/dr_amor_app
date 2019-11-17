@@ -5,6 +5,7 @@ import DrawerMenu from '../00_utilities/components/ui/drawer/DrawerMenu';
 
 import Menu from './00_menu/index';
 import App1 from "./index";
+
 const Empresas = lazy(() => import('./especificas/empresas/empresas/EmpresaCRUD'));
 const Habitaciones = lazy(() => import('./especificas/habitaciones/HabitacionDashboard'));
 const ProductosDashboard = lazy(() => import('./especificas/productos/ProductoDashboard'));
@@ -31,6 +32,7 @@ const ParqueaderoDashboard = lazy(() => import('./especificas/parqueadero/Parque
 const ParqueaderoModalidadFraccionTiempoDetail = lazy(() => import('./especificas/parqueadero/modalidades_fracciones_tiempo/ModalidadFraccionTiempoDetalle'));
 const ContabilidadDashboard = lazy(() => import('./especificas/contabilidad/contabilidad/contabilidad_dashboard/containers/contabilidad_dashboard'));
 const ConfiguracionContabilidadDashboard = lazy(() => import('./especificas/contabilidad/configuracion/ConfiguracionContabiidadDasboard'));
+const TipoComprobanteContableDetail = lazy(() => import('./especificas/contabilidad/configuracion/documentos_contables/TipoComprobanteContableDetail'));
 
 const AdminApp = memo(() => {
     return (
@@ -78,6 +80,8 @@ const AdminApp = memo(() => {
                                component={ConceptosOperacionesCajaList}/>
                         <Route exact path='/app/admin/contabilidad/configuracion/dashboard'
                                component={ConfiguracionContabilidadDashboard}/>
+                        <Route exact path='/app/admin/contabilidad/configuracion/tipos_comprobantes_contables/:id'
+                               component={TipoComprobanteContableDetail}/>
                         <Route exact path='/app/admin/contabilidad/contabilidad/dashboard'
                                component={ContabilidadDashboard}/>
                     </Switch>

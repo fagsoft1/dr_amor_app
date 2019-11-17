@@ -205,18 +205,18 @@ MyCombobox.propTypes = {
     data: PropTypes.any,
 };
 
-const renderCheckbox = ({input, label}) => (
-    <FormControlLabel
+const renderCheckbox = ({input, label}) => {
+    return <FormControlLabel
         control={
             <Checkbox
-                checked={input.value}
+                checked={input.value === '' ? false : input.value}
                 color='primary'
                 onChange={(event, value) => input.onChange(value)}
             />
         }
         label={label}
     />
-);
+};
 
 export const MyCheckboxSimple = (props) => {
     const {onClick} = props;

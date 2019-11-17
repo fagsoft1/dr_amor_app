@@ -23,6 +23,9 @@ def tipo_comprobante_contable_empresa_crear_actualizar(
         direccion_emision: str = None,
         telefono_emision: str = None,
 ) -> TipoComprobanteContableEmpresa:
+    if rango_inferior_numeracion < 0 or rango_superior_numeracion < 0:
+        raise ValidationError({'_error': 'Los rangos de numeración deben de ser positivos'})
+
     if rango_inferior_numeracion > rango_superior_numeracion:
         raise ValidationError({'_error': 'El rango inferior de numeración no puede ser mayor al superior'})
 
@@ -31,12 +34,12 @@ def tipo_comprobante_contable_empresa_crear_actualizar(
             '_error': 'El consecutivo de numeración actual debe de estar entre los rangos superiores (%s) e inferiores (%s)' % (
                 rango_superior_numeracion, rango_inferior_numeracion)})
 
-    if tiene_vigencia and fecha_inicial_vigencia is None or fecha_final_vigencia is None:
+    if tiene_vigencia and (fecha_inicial_vigencia is None or fecha_final_vigencia is None):
         raise ValidationError({'_error': 'Si tiene vigencia debe definir una fecha inicial y final para la misma'})
 
     empresa = Empresa.objects.get(pk=empresa_id)
     tipo_comprobante = TipoComprobanteContable.objects.get(pk=tipo_comprobante_id)
-    qs_tiene_comprobante = empresa.tipos_comprobantes.filter(tipo_comprobante_id=tipo_comprobante_id)
+    qs_tiene_comprobante = empresa.tipos_comprobantes.filter(pk=tipo_comprobante_id)
 
     cambio_tipo_comprobante = False
     if tipo_comprobante_empresa_id is not None:
@@ -55,6 +58,7 @@ def tipo_comprobante_contable_empresa_crear_actualizar(
     tipo_comprobante_contable_empresa.consecutivo_actual = consecutivo_actual
     tipo_comprobante_contable_empresa.numero_autorizacion = numero_autorizacion
     tipo_comprobante_contable_empresa.fecha_autorizacion = fecha_autorizacion
+    tipo_comprobante_contable_empresa.empresa = empresa
 
     tipo_comprobante_contable_empresa.rango_inferior_numeracion = rango_inferior_numeracion
     tipo_comprobante_contable_empresa.rango_superior_numeracion = rango_superior_numeracion
