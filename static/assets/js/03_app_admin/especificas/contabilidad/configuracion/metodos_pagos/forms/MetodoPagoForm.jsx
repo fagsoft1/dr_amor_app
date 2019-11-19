@@ -7,6 +7,7 @@ import {
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import {useSelector, useDispatch} from "react-redux";
 import * as actions from '../../../../../../01_actions';
+import validate from './validate';
 
 const selector = formValueSelector('metodoPagoForm');
 let Form = memo(props => {
@@ -26,13 +27,17 @@ let Form = memo(props => {
     useEffect(() => {
         dispatch(actions.fetchCuentasContablesDetalles());
         dispatch(actions.fetchDiariosContables());
+        dispatch(actions.fetchCuentasBancariasBancos());
         return () => {
             dispatch(actions.clearCuentasContables());
             dispatch(actions.clearDiariosContables());
+            dispatch(actions.clearCuentasBancariasBancos());
         };
     }, []);
     const valores = useSelector(state => selector(state, 'tipo', ''));
     const {tipo} = valores;
+    const es_bancario = tipo === 2;
+    const cuentas_bancarias = useSelector(state => state.contabilidad_cuentas_bancarias);
     const cuentas_contables = useSelector(state => state.contabilidad_cuentas_contables);
     const diarios_contables = useSelector(state => state.contabilidad_diarios_contables);
     return (
@@ -55,7 +60,7 @@ let Form = memo(props => {
                 case='U'
             />
             <MyCombobox
-                label_space_xs={5}
+                label_space_xs={4}
                 className="col-12"
                 label='Tipo de Método de pago'
                 nombre='Seleccionart tipo de método'
@@ -72,7 +77,7 @@ let Form = memo(props => {
             />
 
             <MyCombobox
-                label_space_xs={5}
+                label_space_xs={4}
                 label='Diario Contable'
                 className="col-12"
                 nombre='Seleccionar Diario...'
@@ -87,9 +92,25 @@ let Form = memo(props => {
                 })}
                 filter='contains'
             />
+            {es_bancario && <MyCombobox
+                label_space_xs={4}
+                label='Cuenta Bancaria'
+                className="col-12"
+                nombre='Seleccionar Cuenta Bancaria...'
+                name='cuenta_bancaria'
+                textField='nombre'
+                valuesField='id'
+                data={_.map(cuentas_bancarias, h => {
+                    return ({
+                        id: h.id,
+                        nombre: h.to_string
+                    })
+                })}
+                filter='contains'
+            />}
 
             <MyCombobox
-                label_space_xs={5}
+                label_space_xs={4}
                 label='Cuenta para método de pago'
                 className="col-12"
                 nombre='Seleccionar Cuenta...'
@@ -106,7 +127,7 @@ let Form = memo(props => {
             />
 
             <MyCombobox
-                label_space_xs={5}
+                label_space_xs={4}
                 label='Cuenta para método de pago devolución'
                 className="col-12"
                 nombre='Seleccionar Cuenta...'
@@ -130,6 +151,7 @@ let Form = memo(props => {
 
 Form = reduxForm({
     form: "metodoPagoForm",
+    validate,
     enableReinitialize: true
 })(Form);
 

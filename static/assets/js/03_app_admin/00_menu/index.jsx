@@ -74,6 +74,12 @@ const Menu = memo(props => {
             <MenuInventarios permisos_menu={permisos_menu}/>
             <MenuCaja permisos_menu={permisos_menu}/>
             <MenuContabilidad permisos_menu={permisos_menu}/>
+            <DrawerListItem
+                size='lg'
+                link='/app/admin/configuracion_aplicacion/dashboard'
+                texto='Configuracion App'
+                icono='cogs'
+            />
         </Fragment>
     )
 });

@@ -1,10 +1,7 @@
 import React, {memo} from 'react';
+import Logo from '../00_utilities/components/ui/Logo';
 
 const App = memo(() => {
-    return (
-        <div className='text-center'>
-            <img className='img-fluid' src={`${img_static_url}/logo.png`} alt="logo"/>
-        </div>
-    )
+    return <Logo/>
 });
 export default App;

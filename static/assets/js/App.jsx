@@ -150,7 +150,8 @@ let ContainerRoot = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(actions.loadUser());
-    });
+        dispatch(actions.fetchConfiguracionAplicacion())
+    },[]);
     return (
         <BrowserRouter>
             <Fragment>

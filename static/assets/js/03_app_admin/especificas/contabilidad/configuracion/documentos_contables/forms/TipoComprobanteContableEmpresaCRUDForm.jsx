@@ -9,6 +9,9 @@ import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms
 import {useDispatch} from "react-redux";
 import * as actions from '../../../../../../01_actions';
 
+
+import validate from './validate_comprobante_contable_empresas';
+
 const selector = formValueSelector('tipoComprobanteContableEmpresaForm');
 let Form = memo(props => {
     const dispatch = useDispatch();
@@ -139,6 +142,7 @@ let Form = memo(props => {
 
 Form = reduxForm({
     form: "tipoComprobanteContableEmpresaForm",
+    validate,
     enableReinitialize: true
 })(Form);
 

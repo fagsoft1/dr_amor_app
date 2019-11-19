@@ -1,4 +1,5 @@
 from .api_routers import DefaultRouter
+from configuracion_aplicacion.api_urls import router as configuracion_aplicacion_router
 from permisos.api_urls import router as permisos_router
 from usuarios.api_urls import router as usuarios_router
 from terceros.api_urls import router as terceros_router
@@ -23,6 +24,7 @@ from contabilidad_metodos_pago.api_urls import router as metodos_pagos_router
 from contabilidad_comprobantes.api_urls import router as comprobantes_contables_router
 
 router = DefaultRouter()
+router.extend(configuracion_aplicacion_router)
 router.extend(permisos_router)
 router.extend(usuarios_router)
 router.extend(terceros_router)

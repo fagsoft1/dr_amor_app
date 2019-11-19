@@ -35,31 +35,55 @@ const Tabla = memo((props) => {
                         {
                             Header: "Tipo",
                             accessor: "get_tipo_display",
-                            maxWidth: 100,
+                            maxWidth: 80,
                             filterable: true
+                        },
+                        {
+                            Header: "Cuenta Bancaria",
+                            accessor: "cuenta_bancaria_descripcion",
+                            maxWidth: 200,
+                            filterable: true,
+                            Cell: row => {
+                                return (
+                                    <div style={{
+                                        fontSize: '0.6rem',
+                                        whiteSpace: 'normal'
+                                    }}>{row.value}</div>
+                                )
+                            }
                         },
                         {
                             Header: "Cuenta Método Pago",
                             accessor: "cuenta_metodo_pago_codigo",
-                            maxWidth: 150
+                            maxWidth: 200,
+                            Cell: row => {
+                                return (
+                                    <div style={{
+                                        fontSize: '0.6rem',
+                                        whiteSpace: 'normal'
+                                    }}>{row.value} - {row.original.cuenta_metodo_pago_descripcion}</div>
+                                )
+                            }
                         },
                         {
                             Header: "Cuenta Método Pago Devo",
                             accessor: "cuenta_metodo_pago_devolucion_codigo",
-                            maxWidth: 150
-                        },
-                        {
-                            Header: "Tipo",
-                            accessor: "get_tipo_display",
-                            maxWidth: 150,
-                            filterable: true
+                            maxWidth: 200,
+                            Cell: row => {
+                                return (
+                                    <div style={{
+                                        fontSize: '0.6rem',
+                                        whiteSpace: 'normal'
+                                    }}>{row.value} - {row.original.cuenta_metodo_pago_devolucion_descripcion}</div>
+                                )
+                            }
                         },
                         {
                             Header: "Diario Contable",
                             accessor: "diario_contable_nombre",
-                            maxWidth: 250,
+                            maxWidth: 180,
                             filterable: true
-                        }
+                        },
                     ]
                 },
                 {

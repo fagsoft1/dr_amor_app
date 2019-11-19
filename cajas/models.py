@@ -8,6 +8,8 @@ from puntos_venta.models import PuntoVenta
 from productos.models import Producto
 from liquidaciones.models import LiquidacionCuenta
 from terceros.models import Cuenta, Tercero
+from contabilidad_cuentas.models import CuentaContable
+from contabilidad_diario.models import DiarioContable
 
 
 class BilleteMoneda(models.Model):
@@ -112,6 +114,24 @@ class ConceptoOperacionCaja(models.Model):
         ('P', 'Proveedores'),
         ('T', 'Taxis'),
         ('O', 'Otros'),
+    )
+    cuenta_contable_debito = models.ForeignKey(
+        CuentaContable,
+        on_delete=models.PROTECT,
+        related_name='conceptos_operaciones_caja_debitos',
+        null=True
+    )
+    cuenta_contable_credito = models.ForeignKey(
+        CuentaContable,
+        on_delete=models.PROTECT,
+        related_name='conceptos_operaciones_caja_creditos',
+        null=True
+    )
+    diario_contable = models.ForeignKey(
+        DiarioContable,
+        on_delete=models.PROTECT,
+        related_name='conceptos_operaciones_caja',
+        null=True
     )
     tipo = models.CharField(choices=TIPO_CHOICES, max_length=3)
     tipo_cuenta = models.CharField(choices=TIPO_CUENTA_CHOICES, max_length=3, default='NA')

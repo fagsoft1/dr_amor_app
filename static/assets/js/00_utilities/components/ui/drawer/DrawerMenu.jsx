@@ -100,6 +100,8 @@ const DrawerMenu = memo((props) => {
     const menu_abierto = submenu_abiertos > 0 || open_menu;
     const logo_icon_style = {position: 'relative', right: 10};
     const boton_salir_style = {position: 'absolute', right: 80};
+    const configuracion_aplicacion = useSelector(state => state.configuracion_aplicacion);
+    const {datos_generales} = configuracion_aplicacion;
 
     console.log('1. renderizó menu')
     const {
@@ -197,7 +199,7 @@ const DrawerMenu = memo((props) => {
                     {lista_menu}
                     <Link to='/app/'>
                         <ListItem>
-                            <img src={`${img_static_url}/logo.png`} width="40"
+                            <img src={datos_generales.icon_small}
                                  className="d-inline-block align-top mr-2"
                                  alt=""
                                  style={logo_icon_style}

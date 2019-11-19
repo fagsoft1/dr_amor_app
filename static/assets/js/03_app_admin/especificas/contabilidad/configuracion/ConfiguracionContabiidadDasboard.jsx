@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography/index';
 
 import CuentasContables from './cuentas_contables/CuentaContableCRUD';
 import DiariosContables from './diarios/DiarioContableCRUD';
+import Bancos from './bancos/BancoContabilidadCRUD';
 import TiposComprobantesContables from './documentos_contables/TipoComprobanteContableCRUD';
 import MetodosPagos from './metodos_pagos/MetodoPagoCrud';
 import Impuestos from './impuestos/ImpuestoCRUD';
@@ -32,7 +33,7 @@ const ConfiguracionContabilidadDashboard = memo(() => {
             </Tabs>
             {slideIndex === 0 && <DiariosContables/>}
             {slideIndex === 1 && <Impuestos/>}
-            {slideIndex === 2 && <div>Aqui Bancos</div>}
+            {slideIndex === 2 && <Bancos/>}
             {slideIndex === 3 && <CuentasContables/>}
             {slideIndex === 4 && <TiposComprobantesContables/>}
             {slideIndex === 5 && <MetodosPagos/>}

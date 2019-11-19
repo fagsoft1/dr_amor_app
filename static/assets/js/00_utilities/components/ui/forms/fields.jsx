@@ -37,12 +37,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
+
 const renderInputFileField = (field) => {
     return (
         <Fragment>
             <input
                 {...field.input}
                 type="file"
+                accept={field.accept}
                 value={null}
             />
             {field.meta.touched && field.meta.error &&
@@ -106,39 +108,52 @@ MyTextFieldSimple.propTypes = {
     nombre: PropTypes.string
 };
 
-const renderDropdownList = ({input, data, valueField, textField, placeholder, onSelect, meta: {touched, error, warning}}) => {
+const renderDropdownList = ({input, data, valueField, textField, placeholder, onSelect}) => {
     return (
-        <Fragment>
-            <DropdownList
-                {...input}
-                data={data}
-                placeholder={placeholder}
-                valueField={valueField}
-                textField={textField}
-                onChange={(e) => input.onChange(e[valueField])}
-                onSelect={onSelect}
-            />
-            {touched && ((error && <span className='form-field-error'>{error}</span>) || (warning &&
-                <span>{warning}</span>))}
-        </Fragment>
+        <DropdownList {...input}
+                      data={data}
+                      placeholder={placeholder}
+                      valueField={valueField}
+                      textField={textField}
+                      onChange={input.onChange}
+                      onSelect={onSelect}
+        />
     )
 };
 
 
 export const MyDropdownList = (props) => {
-    const {busy = false, textField = 'name', valuesField = 'id', className = '', nombre = ''} = props;
+    const {busy = false, textField = 'name', valuesField = 'id', className, nombre = '', label = null, label_space_xs = 0} = props;
     return (
-        <div className={`${className} mt-4`}>
-            <Field
-                {...props}
-                component={renderDropdownList}
-                valueField={valuesField}
-                textField={textField}
-                busy={busy}
-                placeholder={nombre}
-            />
+        <div className={`${className} ${label ? 'mt-2' : 'mt-4'}`}>
+            <Grid component="label" container alignItems="center" spacing={2}>
+                {label_space_xs > 0 && label && <Grid item xs={label_space_xs}>
+                    {label}
+                </Grid>}
+                <Grid item xs={label ? 12 - label_space_xs : 12}>
+                    <Field
+                        {...props}
+                        component={renderDropdownList}
+                        valueField={valuesField}
+                        textField={textField}
+                        busy={busy}
+                        placeholder={nombre}
+                        dropUp
+                    />
+                </Grid>
+            </Grid>
         </div>
     )
+};
+
+MyDropdownList.propTypes = {
+    label_space_xs: PropTypes.number,
+    label: PropTypes.string,
+    busy: PropTypes.bool,
+    textField: PropTypes.string,
+    name: PropTypes.string,
+    valuesField: PropTypes.string,
+    placeholder: PropTypes.string
 };
 
 const renderCombobox = ({input, data, valueField, textField, placeholder, onSelect = null, meta: {touched, error, warning}, filter}) => {

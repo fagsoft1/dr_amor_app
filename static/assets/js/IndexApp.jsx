@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom'
 import {MODULO_PERMISSIONS, TIPOS_REGISTRO_INGRESO as permisos_view} from './permisos';
 import {permisosAdapter} from "./00_utilities/common";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {makeStyles, withStyles} from "@material-ui/core/styles/index";
+import {makeStyles} from "@material-ui/core/styles/index";
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
@@ -16,6 +16,7 @@ import CerrarPuntoVentaDialog from './07_cajas/cierre_de_caja/punto_venta_cerrar
 import Button from "@material-ui/core/Button";
 import PrinJs from 'print-js';
 import useTengoPermisos from "./00_utilities/hooks/useTengoPermisos";
+import Logo from './00_utilities/components/ui/Logo';
 
 const useStyles = makeStyles(theme => ({
     boton: {
@@ -100,6 +101,9 @@ const IndexApp = memo((props) => {
     const puntos_ventas = useSelector(state => state.puntos_ventas);
     const arqueos_cajas = useSelector(state => state.arqueos_cajas);
     const permisos_modulo_acceso = permisosAdapter(mis_permisos, permisos_view);
+    const configuracion_aplicacion = useSelector(state => state.configuracion_aplicacion);
+    const {datos_generales} = configuracion_aplicacion;
+
     useEffect(() => {
         const cargarPuntosVenta = () => dispatch(actions.fetchPuntosVentas_por_usuario_username(username));
         dispatch(actions.fetchMisPermisosxListado([permisos_view], {callback: cargarPuntosVenta}));
@@ -161,7 +165,7 @@ const IndexApp = memo((props) => {
                 </div>}
                 <div className="row">
                     <div className="col-12 p-5">
-                        <img width='400px' className='img-fluid' src={`${img_static_url}/logo.png`} alt=""/>
+                        <Logo/>
                     </div>
                     {modulo_admin && <Boton
                         nombre='Admin'

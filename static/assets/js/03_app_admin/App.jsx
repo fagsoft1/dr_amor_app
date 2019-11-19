@@ -33,6 +33,8 @@ const ParqueaderoModalidadFraccionTiempoDetail = lazy(() => import('./especifica
 const ContabilidadDashboard = lazy(() => import('./especificas/contabilidad/contabilidad/contabilidad_dashboard/containers/contabilidad_dashboard'));
 const ConfiguracionContabilidadDashboard = lazy(() => import('./especificas/contabilidad/configuracion/ConfiguracionContabiidadDasboard'));
 const TipoComprobanteContableDetail = lazy(() => import('./especificas/contabilidad/configuracion/documentos_contables/TipoComprobanteContableDetail'));
+const BancosContableDetail = lazy(() => import('./especificas/contabilidad/configuracion/bancos/BancoContabilidadDetail'));
+const ConfiguracionAplicacionDashboard = lazy(() => import('./generales/configuracion_aplicacion/ConfiguracionAplicacionDashboard'));
 
 const AdminApp = memo(() => {
     return (
@@ -82,8 +84,12 @@ const AdminApp = memo(() => {
                                component={ConfiguracionContabilidadDashboard}/>
                         <Route exact path='/app/admin/contabilidad/configuracion/tipos_comprobantes_contables/:id'
                                component={TipoComprobanteContableDetail}/>
+                        <Route exact path='/app/admin/contabilidad/configuracion/bancos/:id'
+                               component={BancosContableDetail}/>
                         <Route exact path='/app/admin/contabilidad/contabilidad/dashboard'
                                component={ContabilidadDashboard}/>
+                        <Route exact path='/app/admin/configuracion_aplicacion/dashboard'
+                               component={ConfiguracionAplicacionDashboard}/>
                     </Switch>
                 </Suspense>
             </DrawerMenu>

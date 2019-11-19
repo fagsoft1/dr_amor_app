@@ -5,10 +5,17 @@ from contabilidad_movimientos.managers import AsientoContableManager
 from empresas.models import Empresa
 from terceros.models import Tercero
 from contabilidad_diario.models import DiarioContable
+from contabilidad_comprobantes.models import TipoComprobanteContableEmpresa
 
 
 # Create your models here.
 class AsientoContable(TimeStampedModel):
+    tipo_comprobante_bancario_empresa = models.ForeignKey(
+        TipoComprobanteContableEmpresa,
+        on_delete=models.PROTECT,
+        related_name='apuntes_contables'
+    )
+    nro_comprobante = models.BigIntegerField(null=True)
     diario_contable = models.ForeignKey(DiarioContable, on_delete=models.PROTECT, related_name='asientos_contables')
     empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT, related_name='asientos_contables', null=True)
     tercero = models.ForeignKey(Tercero, on_delete=models.PROTECT, related_name='asientos_contables', null=True)
@@ -25,11 +32,23 @@ class AsientoContable(TimeStampedModel):
 
 
 class ApunteContable(TimeStampedModel):
-    asiento_contable = models.ForeignKey(AsientoContable, on_delete=models.PROTECT, related_name='apuntes_contables')
+    asiento_contable = models.ForeignKey(
+        AsientoContable,
+        on_delete=models.PROTECT,
+        related_name='apuntes_contables'
+    )
     cuenta_contable = models.ForeignKey(CuentaContable, on_delete=models.PROTECT, related_name='apuntes_contables')
-    apunte_contable_cierre = models.ForeignKey('self', on_delete=models.PROTECT, null=True,
-                                               related_name='asientos_contables_cerrados')
-    tercero = models.ForeignKey(Tercero, on_delete=models.PROTECT, related_name='apuntes_contables', null=True)
+    apunte_contable_cierre = models.ForeignKey(
+        'self',
+        on_delete=models.PROTECT, null=True,
+        related_name='asientos_contables_cerrados'
+    )
+    tercero = models.ForeignKey(
+        Tercero,
+        on_delete=models.PROTECT,
+        related_name='apuntes_contables',
+        null=True
+    )
     debito = models.DecimalField(default=0, max_digits=12, decimal_places=2)
     credito = models.DecimalField(default=0, max_digits=12, decimal_places=2)
 

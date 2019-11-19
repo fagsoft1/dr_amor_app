@@ -4,6 +4,15 @@ from .models import MetodoPago
 
 
 class MetodoPagoSerializer(serializers.ModelSerializer):
+    cuenta_bancaria_descripcion = serializers.SerializerMethodField()
+    cuenta_metodo_pago_descripcion = serializers.CharField(
+        source='cuenta_metodo_pago.descripcion',
+        read_only=True
+    )
+    cuenta_metodo_pago_devolucion_descripcion = serializers.CharField(
+        source='cuenta_metodo_pago_devolucion.descripcion',
+        read_only=True
+    )
     cuenta_metodo_pago_codigo = serializers.CharField(
         source='cuenta_metodo_pago.codigo',
         read_only=True
@@ -17,6 +26,12 @@ class MetodoPagoSerializer(serializers.ModelSerializer):
 
     def get_to_string(self, obj):
         return obj.nombre
+
+    def get_cuenta_bancaria_descripcion(self, obj):
+        if obj.cuenta_bancaria:
+            return '%s - %s (%s)' % (
+                obj.cuenta_bancaria.banco.nombre, obj.cuenta_bancaria.nro_cuenta, obj.cuenta_bancaria.titular_cuenta)
+        return ''
 
     def create(self, validated_data):
         from .services import metodo_pago_crear_actualizar
@@ -65,11 +80,14 @@ class MetodoPagoSerializer(serializers.ModelSerializer):
             'diario_contable_nombre',
             'cuenta_metodo_pago_devolucion_codigo',
             'cuenta_metodo_pago_codigo',
+            'cuenta_bancaria_descripcion',
             'activo',
             'nombre',
             'to_string',
             'tipo',
             'cuenta_bancaria',
+            'cuenta_metodo_pago_descripcion',
+            'cuenta_metodo_pago_devolucion_descripcion',
             'cuenta_metodo_pago',
             'cuenta_metodo_pago_devolucion',
         ]

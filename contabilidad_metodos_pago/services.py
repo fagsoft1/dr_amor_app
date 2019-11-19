@@ -17,6 +17,12 @@ def metodo_pago_crear_actualizar(
     else:
         metodo_pago = MetodoPago()
     metodo_pago.tipo = tipo
+    if tipo == 2 and cuenta_bancaria_id is None:
+        raise ValidationError(
+            {
+                '_error': 'Un Método de pago tipo Bancario requiere tener una cuenta bancaria asociada'})
+    if tipo != 2 and cuenta_bancaria_id is not None:
+        cuenta_bancaria_id = None
     if tipo in [3, 4]:
         qs = MetodoPago.objects.filter(tipo=tipo)
         if metodo_pago_id is not None:

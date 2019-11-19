@@ -63,6 +63,7 @@ const TipoComprobanteContableDetail = memo(props => {
                 <div className="col-12">
                     <CRUD
                         posSummitMethod={() => cargarDatos()}
+                        posDeleteMethod={() => cargarDatos()}
                         method_pool={method_pool}
                         list={list}
                         permisos_object={permisos}

@@ -1,3 +1,10 @@
+export const CONFIGURACION_APLICACION_TYPES = {
+    fetch_configuracion_aplicacion: 'fetch_configuracion_aplicacion',
+    fetch_datos_generales: 'fetch_dato_general_aplicacion',
+    update_datos_generales: 'update_dato_general_aplicacion',
+    clear: 'clear_configuracion_aplicacion'
+};
+
 export const HISTORICO_REVISION_TYPES = {
     fetch_all: 'fetch_historicos_revisions',
     fetch: 'fetch_historico_revision',

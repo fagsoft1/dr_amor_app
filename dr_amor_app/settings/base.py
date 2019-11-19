@@ -75,6 +75,7 @@ MY_APPS = [
     'contabilidad_movimientos.apps.ContabilidadMovimientosConfig',
     'contabilidad_metodos_pago.apps.ContabilidadMetodosPagoConfig',
     'contabilidad_comprobantes.apps.ContabilidadComprobantesConfig',
+    'configuracion_aplicacion.apps.ConfiguracionAplicacionConfig',
 ]
 
 THIRD_PART_APPS = [

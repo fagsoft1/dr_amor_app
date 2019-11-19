@@ -15,11 +15,11 @@ function crudHOC(CreateForm, Tabla) {
         const {
             method_pool,
             method_pool: {restoreObjectMethod = null},
-            posDeleteMethod,
-            singular_name,
+            posDeleteMethod = null,
             posCreateMethod = null,
             posUpdateMethod = null,
             posSummitMethod = null,
+            singular_name,
             list,
             plural_name,
             permisos_object,
@@ -262,6 +262,10 @@ function crudHOC(CreateForm, Tabla) {
 
 
 crudHOC.propTypes = {
+    posCreateMethod: PropTypes.func,
+    posUpdateMethod: PropTypes.func,
+    posSummitMethod: PropTypes.func,
+    posDeleteMethod: PropTypes.func,
     plural_name: PropTypes.string,
     singular_name: PropTypes.string,
     method_pool: PropTypes.any,
