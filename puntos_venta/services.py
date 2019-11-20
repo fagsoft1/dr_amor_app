@@ -5,8 +5,35 @@ from django.db.models import Sum, F
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from puntos_venta.models import PuntoVenta, PuntoVentaTurno
+from contabilidad_cuentas.models import CuentaContable
+
+
+def punto_venta_crear_actualizar(
+        tipo: int,
+        nombre: str,
+        bodega_id: int = None,
+        cuenta_contable_caja_id: int = None,
+        punto_venta_id: int = None,
+) -> PuntoVenta:
+    if punto_venta_id is not None:
+        punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
+    else:
+        punto_venta = PuntoVenta()
+    punto_venta.bodega_id = bodega_id
+    cuenta_contable_caja = CuentaContable.objects.get(pk=cuenta_contable_caja_id)
+    if cuenta_contable_caja.tipo != 'D':
+        raise ValidationError(
+            {'_error': 'La cuenta contable de la caja debería ser de tipo detalle y no lo es y no lo es'})
+    if cuenta_contable_caja.naturaleza != 'D':
+        raise ValidationError({'_error': 'La cuenta contable de la caja debería ser de naturaleza débito y no lo es'})
+    punto_venta.cuenta_contable_caja_id = cuenta_contable_caja_id
+    punto_venta.nombre = nombre
+    punto_venta.tipo = tipo
+    punto_venta.save()
+    return punto_venta
 
 
 def punto_venta_relacionar_concepto_operacion_caja_cierre(

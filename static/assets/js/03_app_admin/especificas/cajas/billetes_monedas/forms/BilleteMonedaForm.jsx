@@ -43,7 +43,9 @@ let Form = memo(props => {
                     {id: 1, name: 'BILLETES'},
                     {id: 2, name: 'MONEDAS'},
                 ]}
-                nombre='Tipo'
+                label='Tipo'
+                label_space_xs={4}
+                placeholder='Seleccionar Tipo...'
                 className='col-12'
             />
             <MyTextFieldSimple

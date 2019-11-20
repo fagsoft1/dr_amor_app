@@ -29,8 +29,8 @@ const Tabla = memo(props => {
                         {
                             Header: "Descripción",
                             accessor: "descripcion",
-                            minWidth: 300,
-                            maxWidth: 500,
+                            minWidth: 250,
+                            maxWidth: 250,
                             filterable: true,
                             filterMethod: (filter, row) => {
                                 return row[filter.id].includes(filter.value.toUpperCase())
@@ -39,13 +39,20 @@ const Tabla = memo(props => {
                         {
                             Header: "Tipo",
                             accessor: "tipo",
-                            maxWidth: 100,
-                            Cell: row => row.value === 'E' ? 'Egreso' : 'Ingreso'
+                            maxWidth: 60,
+                            Cell: row => row.value === 'CREDITO' ? 'Egreso' : 'Ingreso'
                         },
                         {
-                            Header: "Tipo Cuenta",
-                            accessor: "tipo_cuenta",
-                            maxWidth: 100
+                            Header: "Diario",
+                            accessor: "diario_contable_nombre",
+                            minWidth: 250,
+                            maxWidth: 250,
+                        },
+                        {
+                            Header: "Tipo Comprobante",
+                            accessor: "tipo_comprobante_contable_empresa_descripcion",
+                            minWidth: 250,
+                            maxWidth: 250,
                         },
                         {
                             Header: "Indep. en Rep.",
@@ -67,7 +74,8 @@ const Tabla = memo(props => {
                         {
                             Header: "Grupo",
                             accessor: "grupo",
-                            maxWidth: 100,
+                            maxWidth: 80,
+                            minWidth: 80,
                             Cell: row => {
                                 switch (row.value) {
                                     case 'A':

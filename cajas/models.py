@@ -10,6 +10,7 @@ from liquidaciones.models import LiquidacionCuenta
 from terceros.models import Cuenta, Tercero
 from contabilidad_cuentas.models import CuentaContable
 from contabilidad_diario.models import DiarioContable
+from contabilidad_comprobantes.models import TipoComprobanteContableEmpresa
 
 
 class BilleteMoneda(models.Model):
@@ -100,13 +101,8 @@ class EfectivoEntregaDenominacion(models.Model):
 
 class ConceptoOperacionCaja(models.Model):
     TIPO_CHOICES = (
-        ('I', 'Ingreso'),
-        ('E', 'Egreso'),
-    )
-    TIPO_CUENTA_CHOICES = (
-        ('CXC', 'Cuenta x Cobrar'),
-        ('CXP', 'Cuenta x Pagar'),
-        ('NA', 'No Aplica'),
+        ('DEBITO', 'Ingreso'),
+        ('CREDITO', 'Egreso'),
     )
     GRUPO_CHOICES = (
         ('A', 'Acompañantes'),
@@ -115,35 +111,48 @@ class ConceptoOperacionCaja(models.Model):
         ('T', 'Taxis'),
         ('O', 'Otros'),
     )
-    cuenta_contable_debito = models.ForeignKey(
-        CuentaContable,
-        on_delete=models.PROTECT,
-        related_name='conceptos_operaciones_caja_debitos',
-        null=True
-    )
-    cuenta_contable_credito = models.ForeignKey(
-        CuentaContable,
-        on_delete=models.PROTECT,
-        related_name='conceptos_operaciones_caja_creditos',
-        null=True
-    )
     diario_contable = models.ForeignKey(
         DiarioContable,
         on_delete=models.PROTECT,
         related_name='conceptos_operaciones_caja',
         null=True
     )
-    tipo = models.CharField(choices=TIPO_CHOICES, max_length=3)
-    tipo_cuenta = models.CharField(choices=TIPO_CUENTA_CHOICES, max_length=3, default='NA')
+    puntos_de_venta = models.ManyToManyField(
+        PuntoVenta,
+        through='ConceptoOperacionCajaPuntoVenta',
+        through_fields=('concepto_operacion_caja', 'punto_venta'),
+        related_name='conceptos_operaciones_caja_punto_venta'
+    )
+    tipo = models.CharField(choices=TIPO_CHOICES, max_length=10)
     reporte_independiente = models.BooleanField(default=False)
     grupo = models.CharField(choices=GRUPO_CHOICES, max_length=3)
     descripcion = models.CharField(max_length=300)
-    puntos_de_venta = models.ManyToManyField(PuntoVenta, related_name='conceptos_operaciones_caja_cierre')
+    tipo_comprobante_contable_empresa = models.ForeignKey(
+        TipoComprobanteContableEmpresa,
+        on_delete=models.PROTECT
+    )
+
+    # puntos_de_venta = models.ManyToManyField(PuntoVenta, related_name='conceptos_operaciones_caja_cierre')
 
     class Meta:
         permissions = [
             ['list_conceptooperacioncaja', 'Puede listar Conceptos Operaciones Caja'],
         ]
+
+
+class ConceptoOperacionCajaPuntoVenta(models.Model):
+    punto_venta = models.ForeignKey(
+        PuntoVenta,
+        on_delete=models.PROTECT
+    )
+    concepto_operacion_caja = models.ForeignKey(
+        ConceptoOperacionCaja,
+        on_delete=models.PROTECT
+    )
+    cuenta_contable_contrapartida = models.ForeignKey(
+        CuentaContable,
+        on_delete=models.PROTECT
+    )
 
 
 class TransaccionCaja(TimeStampedModel):

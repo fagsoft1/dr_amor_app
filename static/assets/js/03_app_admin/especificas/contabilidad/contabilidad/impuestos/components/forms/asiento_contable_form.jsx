@@ -266,7 +266,8 @@ class Form extends Component {
                         <div className="col-12">
                             <MyCombobox
                                 className="col-12 col-md-6"
-                                nombre='Tercero'
+                                label='Tercero'
+                                label_space_xs={4}
                                 name='tercero'
                                 valuesField='id'
                                 textField='full_name_proxy'

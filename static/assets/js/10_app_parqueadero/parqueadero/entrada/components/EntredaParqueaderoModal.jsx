@@ -52,7 +52,9 @@ let EntradaDialog = memo((props) => {
                 <DialogContent style={{height: '300px', width: '400px'}}>
                     <MyCombobox
                         className="col-12"
-                        nombre='Tipo Vehículo'
+                        label='Tipo Vehículo'
+                        label_space_xs={4}
+                        placeholder='Seleccionar tipo de vehiculo...'
                         name='tipo_vehiculo'
                         textField='nombre'
                         valuesField='id'
@@ -67,7 +69,9 @@ let EntradaDialog = memo((props) => {
                     />
                     <MyCombobox
                         className="col-12"
-                        nombre='Modalidad Tiempo'
+                        label='Modalidad Tiempo'
+                        label_space_xs={4}
+                        placeholder='Seleccionar Modalidad Tiempo...'
                         name='modalidad_fraccion_tiempo'
                         textField='nombre'
                         valuesField='id'

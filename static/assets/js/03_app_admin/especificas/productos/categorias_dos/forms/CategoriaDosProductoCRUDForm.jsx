@@ -52,10 +52,11 @@ let Form = memo((props) => {
 
             <MyCombobox
                 className="col-12 col-md-8"
-                nombre='Categoría'
+                label_space_xs={4}
+                label='Categoría'
                 name='categoria'
                 textField='nombre'
-                placeholder='Seleccionar Categoría'
+                placeholder='Seleccionar Categoría...'
                 valuesField='id'
                 data={_.map(categorias, h => {
                     return ({

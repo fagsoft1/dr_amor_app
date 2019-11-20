@@ -22,8 +22,13 @@ class PuntoVenta(models.Model):
     nombre = models.CharField(max_length=120)
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
     usuarios = models.ManyToManyField(User, related_name='mis_puntos_venta')
-    usuario_actual = models.OneToOneField(User, null=True, blank=True, related_name='punto_venta_actual',
-                                          on_delete=models.PROTECT)
+    usuario_actual = models.OneToOneField(
+        User,
+        null=True,
+        blank=True,
+        related_name='punto_venta_actual',
+        on_delete=models.PROTECT
+    )
     abierto = models.BooleanField(default=0)
 
     @property

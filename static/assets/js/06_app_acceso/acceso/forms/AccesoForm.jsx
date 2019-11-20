@@ -39,6 +39,9 @@ let Form = memo(props => {
         >
             <MyCombobox
                 data={list}
+                label_space_xs={4}
+                label='Tercero'
+                placeholder='Seleccionar Tercero...'
                 name='id_tercero'
                 className="col-12 col-md-4"
                 textField='nombre'

@@ -58,10 +58,12 @@ let Form = memo(props => {
             />
             <MyCombobox
                 className="col-12 col-md-4"
-                nombre='Tipo de Diario'
+                label='Tipo de Diario'
+                label_space_xs={4}
                 name='tipo'
                 textField='nombre'
                 valuesField='id'
+                placeholder='Seleccionar tipo de diario...'
                 data={[
                     {id: 'General', nombre: 'General'},
                     {id: 'Venta', nombre: 'Venta'},
@@ -74,7 +76,9 @@ let Form = memo(props => {
 
             <MyCombobox
                 className="col-12"
-                nombre='Cuenta Débito Defecto'
+                label='Cuenta Débito Defecto'
+                label_space_xs={4}
+                placeholder='Seleccionar Cuenta Débito por defecto...'
                 name='cuenta_debito_defecto'
                 textField='nombre'
                 valuesField='id'
@@ -89,7 +93,9 @@ let Form = memo(props => {
 
             <MyCombobox
                 className="col-12"
-                nombre='Cuenta Crédito Defecto'
+                label='Cuenta Crédito Defecto'
+                label_space_xs={4}
+                placeholder='Seleccionar Cuenta Crédito por defecto...'
                 name='cuenta_credito_defecto'
                 textField='nombre'
                 valuesField='id'

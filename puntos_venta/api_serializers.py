@@ -9,6 +9,36 @@ class PuntoVentaSerializer(CustomSerializerMixin, serializers.ModelSerializer):
     bodega_nombre = serializers.CharField(source='bodega.nombre', read_only=True)
     tipo_nombre = serializers.SerializerMethodField()
     to_string = serializers.SerializerMethodField()
+    cuenta_contable_caja_nombre = serializers.CharField(source='cuenta_contable_caja.descripcion', read_only=True)
+
+    def create(self, validated_data):
+        from .services import punto_venta_crear_actualizar
+        bodega = validated_data.get('bodega', None)
+        nombre = validated_data.get('nombre', None)
+        tipo = validated_data.get('tipo', None)
+        cuenta_contable_caja = validated_data.get('cuenta_contable_caja', None)
+        instancia = punto_venta_crear_actualizar(
+            bodega_id=bodega.id if bodega else None,
+            cuenta_contable_caja_id=cuenta_contable_caja.id if cuenta_contable_caja else None,
+            nombre=nombre,
+            tipo=tipo
+        )
+        return instancia
+
+    def update(self, instance, validated_data):
+        from .services import punto_venta_crear_actualizar
+        bodega = validated_data.get('bodega', None)
+        nombre = validated_data.get('nombre', None)
+        tipo = validated_data.get('tipo', None)
+        cuenta_contable_caja = validated_data.get('cuenta_contable_caja', None)
+        instancia = punto_venta_crear_actualizar(
+            bodega_id=bodega.id if bodega else None,
+            cuenta_contable_caja_id=cuenta_contable_caja.id if cuenta_contable_caja else None,
+            nombre=nombre,
+            tipo=tipo,
+            punto_venta_id=instance.id
+        )
+        return instancia
 
     def get_to_string(self, instance):  # pragma: no cover
         return instance.nombre
@@ -22,14 +52,14 @@ class PuntoVentaSerializer(CustomSerializerMixin, serializers.ModelSerializer):
             'to_string',
             'bodega',
             'bodega_nombre',
+            'cuenta_contable_caja',
+            'cuenta_contable_caja_nombre',
             'tipo',
             'tipo_nombre',
             'abierto',
             'usuario_actual',
             'usuario_actual_nombre',
-            'conceptos_operaciones_caja_cierre',
         ]
-        extra_kwargs = {'conceptos_operaciones_caja_cierre': {'read_only': True}}
 
     def get_tipo_nombre(self, obj):  # pragma: no cover
         return obj.get_tipo_display()

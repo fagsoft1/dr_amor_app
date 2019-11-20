@@ -3,7 +3,7 @@ from empresas.models import Empresa
 
 
 class TipoComprobanteContable(models.Model):
-    codigo_comprobante = models.CharField(max_length=4)
+    codigo_comprobante = models.CharField(max_length=4, unique=True)
     descripcion = models.CharField(max_length=200)
     titulo_comprobante = models.CharField(max_length=200)
     texto_uno = models.TextField(null=True)
@@ -28,7 +28,13 @@ class TipoComprobanteContableEmpresa(models.Model):
         on_delete=models.PROTECT,
         related_name='tipos_comprobantes_empresas'
     )
-    empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT, related_name='tipos_comprobantes_empresas')
+    activo = models.BooleanField(default=True)
+    empresa = models.ForeignKey(
+        Empresa,
+        on_delete=models.PROTECT,
+        related_name='tipos_comprobantes_empresas',
+        null=True
+    )
     consecutivo_actual = models.BigIntegerField(default=0)
     numero_autorizacion = models.CharField(max_length=100, null=True)
     fecha_autorizacion = models.DateField(null=True)

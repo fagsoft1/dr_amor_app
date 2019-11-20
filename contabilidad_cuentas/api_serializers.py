@@ -22,7 +22,7 @@ class CuentaContableSerializer(serializers.ModelSerializer):
         return cuenta_contable_crear_actualizar(
             descripcion=descripcion,
             codigo=codigo,
-            cuenta_padre_id=cuenta_padre.id,
+            cuenta_padre_id=cuenta_padre.id if cuenta_padre else None,
             naturaleza=naturaleza
         )
 
@@ -32,7 +32,6 @@ class CuentaContableSerializer(serializers.ModelSerializer):
         naturaleza = validated_data.get('naturaleza')
         cuenta_padre = validated_data.get('cuenta_padre', None)
         tipo = validated_data.get('tipo')
-        print(tipo)
         from .services import cuenta_contable_crear_actualizar
         return cuenta_contable_crear_actualizar(
             descripcion=descripcion,

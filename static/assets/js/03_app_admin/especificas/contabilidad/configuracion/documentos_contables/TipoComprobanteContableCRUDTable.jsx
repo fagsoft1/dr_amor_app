@@ -5,6 +5,7 @@ import IconButtonTableSee from "../../../../../00_utilities/components/ui/icon/T
 
 import ReactTable from "react-table";
 import {Link} from "react-router-dom";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
 const areEqual = (prevProps, nextProps) => {
@@ -43,7 +44,7 @@ const Tabla = memo((props) => {
                             Header: "Título",
                             accessor: "titulo_comprobante",
                             maxWidth: 250
-                        },
+                        }
                     ]
                 },
                 {

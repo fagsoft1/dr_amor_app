@@ -48,7 +48,9 @@ let Form = memo((props) => {
             />
             <MyCombobox
                 className="col-12"
-                nombre='Forma Calculo Impuesto'
+                placeholder='Seleccionar Forma Calculo Impuesto...'
+                label='Forma Calculo Impuesto'
+                label_space_xs={4}
                 name='tipo_calculo_impuesto'
                 textField='nombre'
                 valuesField='id'
@@ -61,7 +63,9 @@ let Form = memo((props) => {
             />
             <MyCombobox
                 className="col-12"
-                nombre='Cuenta'
+                label='Cuenta'
+                label_space_xs={4}
+                placeholder='Seleccionar cuenta...'
                 name='cuenta_impuesto'
                 textField='nombre'
                 valuesField='id'
@@ -73,10 +77,11 @@ let Form = memo((props) => {
                 })}
                 filter='contains'
             />
-
             <MyCombobox
                 className="col-12"
-                nombre='Cuenta Notas Credito'
+                label='Cuenta Notas Credito'
+                label_space_xs={4}
+                placeholder='Seleccionar Cuenta para Notas Crédito'
                 name='cuenta_impuesto_notas_credito'
                 textField='nombre'
                 valuesField='id'

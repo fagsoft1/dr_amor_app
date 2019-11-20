@@ -89,10 +89,11 @@ let Form = memo((props) => {
             />
             <MyCombobox
                 className="col-12 col-md-6"
-                nombre='Empresa'
+                label='Empresa'
+                label_space_xs={4}
                 name='empresa'
                 textField='nombre'
-                placeholder='Seleccionar Empresa'
+                placeholder='Seleccionar Empresa...'
                 valuesField='id'
                 data={_.map(empresas, h => {
                     return ({
@@ -104,10 +105,11 @@ let Form = memo((props) => {
             />
             <MyCombobox
                 className="col-12 col-md-6"
-                nombre='Unidad'
+                label='Unidad'
+                label_space_xs={4}
                 name='unidad_producto'
                 textField='nombre'
-                placeholder='Seleccionar Unidad'
+                placeholder='Seleccionar Unidad...'
                 valuesField='id'
                 data={_.map(unidades, h => {
                     return ({
@@ -119,10 +121,11 @@ let Form = memo((props) => {
             />
             <MyCombobox
                 className="col-12 col-md-12"
-                nombre='Categoria'
+                label_space_xs={4}
+                label='Categoria'
                 name='categoria_dos'
                 textField='nombre'
-                placeholder='Seleccionar Categoria'
+                placeholder='Seleccionar Categoria...'
                 valuesField='id'
                 data={_.map(categorias_dos, h => {
                     return ({

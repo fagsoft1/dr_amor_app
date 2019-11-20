@@ -32,6 +32,7 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissionsFull]
     queryset = PuntoVenta.objects.select_related(
         'bodega',
+        'cuenta_contable_caja',
         'usuario_actual'
     ).all()
     serializer_class = PuntoVentaSerializer

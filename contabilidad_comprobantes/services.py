@@ -6,9 +6,32 @@ from .models import TipoComprobanteContableEmpresa, TipoComprobanteContable
 from empresas.models import Empresa
 
 
+def tipo_comprobante_contable_crear_actualizar(
+        codigo_comprobante: str,
+        descripcion: str,
+        titulo_comprobante: str,
+        tipo_comprobante_contable_id: int = None,
+        texto_uno: str = None,
+        texto_dos: str = None,
+        texto_tres: str = None,
+) -> TipoComprobanteContable:
+    if tipo_comprobante_contable_id is None:
+        tipo_comprobante_contable = TipoComprobanteContable()
+    else:
+        tipo_comprobante_contable = TipoComprobanteContable.objects.get(pk=tipo_comprobante_contable_id)
+    tipo_comprobante_contable.codigo_comprobante = codigo_comprobante
+    tipo_comprobante_contable.descripcion = descripcion
+    tipo_comprobante_contable.titulo_comprobante = titulo_comprobante
+    tipo_comprobante_contable.texto_uno = texto_uno
+    tipo_comprobante_contable.texto_dos = texto_dos
+    tipo_comprobante_contable.texto_tres = texto_tres
+    tipo_comprobante_contable.save()
+    return tipo_comprobante_contable
+
+
+# TODO: validar si ya hay transacciones para no dejar modificar, lo único modificable sería el estado a no activo
 def tipo_comprobante_contable_empresa_crear_actualizar(
         tipo_comprobante_id: int,
-        empresa_id: int,
         rango_inferior_numeracion: int,
         rango_superior_numeracion: int,
         consecutivo_actual: int,
@@ -22,6 +45,8 @@ def tipo_comprobante_contable_empresa_crear_actualizar(
         ciudad_emision: str = None,
         direccion_emision: str = None,
         telefono_emision: str = None,
+        activo: str = False,
+        empresa_id: int = None,
 ) -> TipoComprobanteContableEmpresa:
     if rango_inferior_numeracion < 0 or rango_superior_numeracion < 0:
         raise ValidationError({'_error': 'Los rangos de numeración deben de ser positivos'})
@@ -37,21 +62,35 @@ def tipo_comprobante_contable_empresa_crear_actualizar(
     if tiene_vigencia and (fecha_inicial_vigencia is None or fecha_final_vigencia is None):
         raise ValidationError({'_error': 'Si tiene vigencia debe definir una fecha inicial y final para la misma'})
 
-    empresa = Empresa.objects.get(pk=empresa_id)
     tipo_comprobante = TipoComprobanteContable.objects.get(pk=tipo_comprobante_id)
-    qs_tiene_comprobante = empresa.tipos_comprobantes.filter(pk=tipo_comprobante_id)
 
-    cambio_tipo_comprobante = False
+    empresa = Empresa.objects.get(pk=empresa_id) if empresa_id else None
+
+    if empresa:
+        tiene_comprobantes = TipoComprobanteContableEmpresa.objects.filter(
+            tipo_comprobante=tipo_comprobante,
+            empresa=empresa,
+            activo=True
+        )
+    else:
+        tiene_comprobantes = TipoComprobanteContableEmpresa.objects.filter(
+            tipo_comprobante=tipo_comprobante,
+            empresa__isnull=True,
+            activo=True
+        )
+    if tipo_comprobante_empresa_id is not None:
+        tiene_comprobantes = tiene_comprobantes.exclude(id=tipo_comprobante_empresa_id)
+
+    if activo and tiene_comprobantes.exists():
+        raise ValidationError({
+            '_error': 'Ya existe un consecutivo para este tipo de comprobante activo. Inactive el que ya no funcionara y realize el proceso de nuevo'})
+
     if tipo_comprobante_empresa_id is not None:
         tipo_comprobante_contable_empresa = TipoComprobanteContableEmpresa.objects.get(pk=tipo_comprobante_empresa_id)
-        cambio_tipo_comprobante = tipo_comprobante_id != tipo_comprobante_contable_empresa.tipo_comprobante_id
     else:
         tipo_comprobante_contable_empresa = TipoComprobanteContableEmpresa()
 
-    if tipo_comprobante_empresa_id is None or cambio_tipo_comprobante:
-        if qs_tiene_comprobante.exists():
-            raise ValidationError({
-                '_error': 'La empresa ya tiene relacionado este tipo de documento (%s), no es posible relacionarse dos veces' % tipo_comprobante.descripcion})
+    tipo_comprobante_contable_empresa.activo = activo
 
     tipo_comprobante_contable_empresa.tipo_comprobante_id = tipo_comprobante_id
 

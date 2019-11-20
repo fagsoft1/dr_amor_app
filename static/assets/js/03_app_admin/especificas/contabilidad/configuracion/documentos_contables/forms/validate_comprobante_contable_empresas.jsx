@@ -2,7 +2,6 @@ const validate = values => {
     const errors = {};
 
     const requiredFields = [
-        'empresa',
         'consecutivo_actual',
         'rango_inferior_numeracion',
         'rango_superior_numeracion',

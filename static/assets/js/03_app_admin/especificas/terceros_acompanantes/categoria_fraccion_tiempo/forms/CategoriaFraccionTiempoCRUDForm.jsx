@@ -50,7 +50,9 @@ let Form = memo(props => {
                     <span><strong>Fracción Tiempo: </strong>{initialValues.fraccion_tiempo_nombre}</span> :
                     <MyDropdownList
                         data={_.map(_.omit(fracciones_tiempo, fracciones_existentes), f => f)}
-                        nombre='Fracción Tiempo'
+                        label='Fracción Tiempo'
+                        label_space_xs={4}
+                        placeholder='Seleccionar Fracción de Tiempo...'
                         valuesField='id'
                         autoFocus={true}
                         textField='nombre'

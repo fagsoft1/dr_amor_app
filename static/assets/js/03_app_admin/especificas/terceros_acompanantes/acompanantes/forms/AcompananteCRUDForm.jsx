@@ -74,7 +74,8 @@ let Form = (props) => {
                 <MyCombobox
                     className="col-12 col-md-6"
                     name="categoria_modelo"
-                    nombre='Categoria'
+                    label='Categoria'
+                    label_space_xs={4}
                     data={_.map(categorias_acompanantes, e => {
                         return {
                             id: e.id,
@@ -83,7 +84,7 @@ let Form = (props) => {
                     })}
                     textField='nombre'
                     valuesField='id'
-                    placeholder='Categoría Modelo...'
+                    placeholder='Seleccionar Categoría Modelo...'
                     filter='contains'
                 />
             </LectorCedula>

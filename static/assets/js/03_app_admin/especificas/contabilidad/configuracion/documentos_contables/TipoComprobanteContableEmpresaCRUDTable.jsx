@@ -4,6 +4,7 @@ import IconButtonTableEdit from '../../../../../00_utilities/components/ui/icon/
 
 import ReactTable from "react-table";
 import {fechaFormatoUno} from "../../../../../00_utilities/common";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
 const areEqual = (prevProps, nextProps) => {
@@ -29,7 +30,8 @@ const Tabla = memo((props) => {
                         {
                             Header: "Empresa",
                             accessor: "empresa_nombre",
-                            maxWidth: 200,
+                            maxWidth: 150,
+                            minWidth: 150,
                             filterable: true
                         },
                         {
@@ -98,6 +100,17 @@ const Tabla = memo((props) => {
                             Header: "Teléfono",
                             accessor: "telefono_emision",
                             maxWidth: 120
+                        },
+                        {
+                            Header: "Activo",
+                            accessor: "activo",
+                            maxWidth: 100,
+                            Cell: row => <div className='text-center'>
+                                {row.value && <FontAwesomeIcon
+                                    icon={['far', 'check-circle']}
+                                    size='lg'
+                                />}
+                            </div>
                         },
                     ]
                 },

@@ -37,7 +37,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-
 const renderInputFileField = (field) => {
     return (
         <Fragment>
@@ -115,7 +114,7 @@ const renderDropdownList = ({input, data, valueField, textField, placeholder, on
                       placeholder={placeholder}
                       valueField={valueField}
                       textField={textField}
-                      onChange={input.onChange}
+                      onChange={(e) => input.onChange(e[valueField])}
                       onSelect={onSelect}
         />
     )
@@ -123,7 +122,7 @@ const renderDropdownList = ({input, data, valueField, textField, placeholder, on
 
 
 export const MyDropdownList = (props) => {
-    const {busy = false, textField = 'name', valuesField = 'id', className, nombre = '', label = null, label_space_xs = 0} = props;
+    const {busy = false, textField = 'name', valuesField = 'id', className, placeholder = '', label = null, label_space_xs = 0} = props;
     return (
         <div className={`${className} ${label ? 'mt-2' : 'mt-4'}`}>
             <Grid component="label" container alignItems="center" spacing={2}>
@@ -137,7 +136,7 @@ export const MyDropdownList = (props) => {
                         valueField={valuesField}
                         textField={textField}
                         busy={busy}
-                        placeholder={nombre}
+                        placeholder={placeholder}
                         dropUp
                     />
                 </Grid>
@@ -179,7 +178,7 @@ const renderCombobox = ({input, data, valueField, textField, placeholder, onSele
 
 
 export const MyCombobox = (props) => {
-    const {busy = false, textField = 'name', valuesField = 'id', autoFocus = false, onSelect, className, nombre = '', label = null, label_space_xs = 0} = props;
+    const {busy = false, textField = 'name', valuesField = 'id', autoFocus = false, onSelect, className, placeholder = '', label = null, label_space_xs = 0} = props;
     return (
         <div className={`${className} ${label ? 'mt-2' : 'mt-4'}`}>
             <Grid component="label" container alignItems="center" spacing={2}>
@@ -196,7 +195,7 @@ export const MyCombobox = (props) => {
                         onChange={v => v[valuesField]}
                         onSelect={onSelect}
                         busy={busy}
-                        placeholder={nombre}
+                        placeholder={placeholder}
                     />
                 </Grid>
             </Grid>

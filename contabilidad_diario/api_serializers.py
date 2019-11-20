@@ -8,8 +8,8 @@ from .models import (
 class DiarioContableSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
     tipo_nombre = serializers.SerializerMethodField()
-    cuenta_debito_defecto_nombre = serializers.CharField(source='cuenta_debito_defecto.nombre', read_only=True)
-    cuenta_credito_defecto_nombre = serializers.CharField(source='cuenta_credito_defecto.nombre', read_only=True)
+    cuenta_debito_defecto_nombre = serializers.CharField(source='cuenta_debito_defecto.descripcion', read_only=True)
+    cuenta_credito_defecto_nombre = serializers.CharField(source='cuenta_credito_defecto.descripcion', read_only=True)
     banco_nombre = serializers.CharField(source='banco.nombre', read_only=True)
     cuenta_bancaria_nombre = serializers.CharField(source='cuenta_bancaria.nombre', read_only=True)
 

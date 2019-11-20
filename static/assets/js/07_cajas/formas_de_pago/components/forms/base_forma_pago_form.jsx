@@ -66,7 +66,9 @@ let BaseFormaPagoForm = memo(props => {
                                                     {id: 'MASTERCARD', name: 'MASTERCARD'},
                                                     {id: 'AMERICAN EXPRESS', name: 'AMERICAN EXPRESS'},
                                                 ]}
-                                                nombre='Franquicia'
+                                                label='Franquicia'
+                                                label_space_xs={4}
+                                                placeholder='Seleccionar Franquicia...'
                                                 className='col-md-3 col-lg-2'
                                             />
                                             <MyTextFieldSimple

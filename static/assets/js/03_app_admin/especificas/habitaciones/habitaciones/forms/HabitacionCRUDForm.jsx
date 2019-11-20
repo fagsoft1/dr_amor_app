@@ -54,7 +54,8 @@ let Form = (props) => {
             />
             <MyCombobox
                 className="col-12 col-md-5"
-                nombre='Tipo Habitación'
+                label='Tipo Habitación'
+                label_space_xs={4}
                 name='tipo'
                 textField='nombre'
                 placeholder='Seleccionar Tipo Habitación'
@@ -69,10 +70,11 @@ let Form = (props) => {
             />
             <MyCombobox
                 className="col-12 col-md-5"
-                nombre='Empresa'
+                label='Empresa'
+                label_space_xs={4}
                 name='empresa'
                 textField='nombre'
-                placeholder='Seleccionar Empresa'
+                placeholder='Seleccionar Empresa...'
                 valuesField='id'
                 data={_.map(empresas, h => {
                     return ({

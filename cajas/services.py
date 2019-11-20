@@ -11,6 +11,29 @@ from weasyprint import HTML, CSS
 from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja, ArqueoCaja
 
 
+def concepto_operacion_caja_crear_actualizar(
+        diario_contable_id: int,
+        grupo: str,
+        tipo: str,
+        descripcion: str,
+        tipo_comprobante_contable_empresa_id: int,
+        reporte_independiente: bool = False,
+        concepto_operacion_caja_id: int = None
+) -> ConceptoOperacionCaja:
+    if concepto_operacion_caja_id is not None:
+        concepto = ConceptoOperacionCaja.objects.get(pk=concepto_operacion_caja_id)
+    else:
+        concepto = ConceptoOperacionCaja()
+    concepto.diario_contable_id = diario_contable_id
+    concepto.tipo = tipo
+    concepto.tipo_comprobante_contable_empresa_id = tipo_comprobante_contable_empresa_id
+    concepto.reporte_independiente = reporte_independiente
+    concepto.descripcion = descripcion
+    concepto.grupo = grupo
+    concepto.save()
+    return concepto
+
+
 # region Transacciones Caja
 def transaccion_caja_registrar_ingreso_base_inicial_apertura_caja(
         punto_venta_turno_id: int,
@@ -353,7 +376,8 @@ def transaccion_caja_registrar_pago_nuevos_servicios_habitacion(
     servicios = Servicio.objects.filter(id__in=array_servicios_id)
     transaccion.servicios.set(servicios)
     valor_total = transaccion.servicios.aggregate(
-        valor=Coalesce(Sum(F('valor_habitacion') + F('valor_servicio') + F('impuestos') + F('valor_servicio_adicional')), 0)
+        valor=Coalesce(
+            Sum(F('valor_habitacion') + F('valor_servicio') + F('impuestos') + F('valor_servicio_adicional')), 0)
     )['valor']
 
     if int(valor_tarjeta + valor_efectivo) != int(valor_total):

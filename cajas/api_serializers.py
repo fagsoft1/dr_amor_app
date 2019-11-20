@@ -65,6 +65,51 @@ class ConceptoOperacionCajaSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
     tipo_display = serializers.SerializerMethodField()
     grupo_display = serializers.SerializerMethodField()
+    diario_contable_nombre = serializers.CharField(
+        source='diario_contable.nombre',
+        read_only=True
+    )
+    tipo_comprobante_contable_empresa_descripcion = serializers.CharField(
+        source='tipo_comprobante_contable_empresa.tipo_comprobante.descripcion',
+        read_only=True
+    )
+
+    def create(self, validated_data):
+        diario_contable = validated_data.get('diario_contable', None)
+        grupo = validated_data.get('grupo', None)
+        tipo = validated_data.get('tipo', None)
+        descripcion = validated_data.get('descripcion', None)
+        tipo_comprobante_contable_empresa = validated_data.get('tipo_comprobante_contable_empresa', None)
+        reporte_independiente = validated_data.get('reporte_independiente', False)
+        from .services import concepto_operacion_caja_crear_actualizar
+        concepto = concepto_operacion_caja_crear_actualizar(
+            diario_contable_id=diario_contable.id if diario_contable else None,
+            grupo=grupo,
+            tipo=tipo,
+            descripcion=descripcion,
+            reporte_independiente=reporte_independiente,
+            tipo_comprobante_contable_empresa_id=tipo_comprobante_contable_empresa.id if tipo_comprobante_contable_empresa else None
+        )
+        return concepto
+
+    def update(self, instance, validated_data):
+        diario_contable = validated_data.get('diario_contable', None)
+        grupo = validated_data.get('grupo', None)
+        tipo = validated_data.get('tipo', None)
+        descripcion = validated_data.get('descripcion', None)
+        tipo_comprobante_contable_empresa = validated_data.get('tipo_comprobante_contable_empresa', None)
+        reporte_independiente = validated_data.get('reporte_independiente', False)
+        from .services import concepto_operacion_caja_crear_actualizar
+        concepto = concepto_operacion_caja_crear_actualizar(
+            concepto_operacion_caja_id=instance.id,
+            diario_contable_id=diario_contable.id if diario_contable else None,
+            grupo=grupo,
+            tipo=tipo,
+            descripcion=descripcion,
+            reporte_independiente=reporte_independiente,
+            tipo_comprobante_contable_empresa_id=tipo_comprobante_contable_empresa.id if tipo_comprobante_contable_empresa else None
+        )
+        return concepto
 
     def get_to_string(self, instance):  # pragma: no cover
         return '%s de %s' % (instance.get_tipo_display(), instance.descripcion)
@@ -80,14 +125,19 @@ class ConceptoOperacionCajaSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'tipo',
-            'tipo_display',
-            'tipo_cuenta',
             'reporte_independiente',
+            'diario_contable',
+            'diario_contable_nombre',
+            'tipo_comprobante_contable_empresa',
+            'tipo_comprobante_contable_empresa_descripcion',
             'grupo',
-            'grupo_display',
             'descripcion',
+            'puntos_de_venta',
+            'tipo_display',
+            'grupo_display',
             'to_string',
         )
+        read_only_fields = ['puntos_de_venta', ]
 
 
 class BilleteMonedaSerializer(serializers.ModelSerializer):

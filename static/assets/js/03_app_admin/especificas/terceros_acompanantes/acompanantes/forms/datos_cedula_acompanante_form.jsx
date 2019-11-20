@@ -51,7 +51,7 @@ const DatosCedulaForm = memo(props => {
                     <MyCombobox
                         className="col-12 col-md-6 col-xl-3"
                         name="tipo_documento"
-                        nombre='Tipo de documento'
+                        placeholder='Seleccionar Tipo de documento...'
                         data={[
                             {id: "CC", nombre: "Cédula Ciudadania"},
                             {id: "CE", nombre: "Cédula Extrangería"},
@@ -60,7 +60,8 @@ const DatosCedulaForm = memo(props => {
                         ]}
                         textField='nombre'
                         valuesField='id'
-                        placeholder='Tipo Documento...'
+                        label='Tipo Documento'
+                        label_space_xs={4}
                         filter='contains'
 
                     />
@@ -73,7 +74,8 @@ const DatosCedulaForm = memo(props => {
                     <MyCombobox
                         className="col-12 col-md-6 col-xl-3"
                         name="grupo_sanguineo"
-                        nombre='Grupo Sanguineo'
+                        label='Grupo Sanguineo'
+                        label_space_xs={4}
                         data={[
                             {id: "NI", nombre: "Indefinido"},
                             {id: "APOSITIVO", nombre: "A Positivo"},
@@ -83,7 +85,7 @@ const DatosCedulaForm = memo(props => {
                         ]}
                         textField='nombre'
                         valuesField='id'
-                        placeholder='Grupo Sanguineo...'
+                        placeholder='Seleccionar Grupo Sanguineo...'
                         filter='contains'
                     />
                 </Fragment>

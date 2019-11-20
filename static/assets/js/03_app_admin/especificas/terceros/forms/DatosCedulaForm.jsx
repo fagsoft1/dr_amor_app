@@ -45,9 +45,11 @@ const DatosCedulaForm = () => {
                 case='U'
             />
             <MyCombobox
+                label_space_xs={4}
+                label='Tipo de documento'
                 className="col-12 col-md-6 col-xl-3"
                 name="tipo_documento"
-                nombre='Tipo de documento'
+                placeholder='Seleccionar Tipo de documento...'
                 data={[
                     {id: "CC", nombre: "Cédula Ciudadania"},
                     {id: "CE", nombre: "Cédula Extrangería"},
@@ -56,9 +58,7 @@ const DatosCedulaForm = () => {
                 ]}
                 textField='nombre'
                 valuesField='id'
-                placeholder='Tipo Documento...'
                 filter='contains'
-
             />
             <MyTextFieldSimple
                 className='col-12 col-md-6 col-xl-3'
@@ -68,8 +68,9 @@ const DatosCedulaForm = () => {
 
             <MyCombobox
                 className="col-12 col-md-6 col-xl-3"
+                label_space_xs={4}
+                label='Grupo Sanguineo'
                 name="grupo_sanguineo"
-                nombre='Grupo Sanguineo'
                 data={[
                     {id: "NI", nombre: "Indefinido"},
                     {id: "APOSITIVO", nombre: "A Positivo"},

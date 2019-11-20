@@ -47,6 +47,11 @@ const Tabla = memo((props) => {
                             accessor: "tipo_nombre",
                             maxWidth: 150
                         },
+                        {
+                            Header: "Cuenta Contable Caja",
+                            accessor: "cuenta_contable_caja_nombre",
+                            maxWidth: 300
+                        },
                     ]
                 },
                 {

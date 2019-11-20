@@ -10,12 +10,15 @@ import {useSelector} from "react-redux/es/hooks/useSelector";
 let Form = (props) => {
     const dispatch = useDispatch();
     useEffect(() => {
+        dispatch(actions.fetchCuentasContablesDetalles());
         dispatch(actions.fetchTiposHabitaciones({callback: () => dispatch(actions.fetchBodegas())}));
         return () => {
+            dispatch(actions.clearCuentasContables());
             dispatch(actions.clearBodegas());
         }
     }, []);
     const bodegas = useSelector(state => state.bodegas);
+    const cuentas_contables = useSelector(state => state.contabilidad_cuentas_contables);
     const {
         pristine,
         submitting,
@@ -42,14 +45,16 @@ let Form = (props) => {
             error={error}
         >
             <MyTextFieldSimple
-                className="col-12 col-md-6"
+                className="col-12"
                 nombre='Nombre'
                 name='nombre'
                 case='U'/>
 
             <MyCombobox
-                className="col-12 col-md-6"
-                nombre='Bodega'
+                className="col-12"
+                label_space_xs={4}
+                label='Bodega'
+                placeholder='Seleccionar Bodega...'
                 name='bodega'
                 textField='nombre'
                 valuesField='id'
@@ -61,16 +66,34 @@ let Form = (props) => {
                 })}
                 filter='contains'
             />
+            <MyCombobox
+                className="col-12"
+                label_space_xs={4}
+                label='Cuenta Contable Caja'
+                placeholder='Seleccionar Cuenta...'
+                name='cuenta_contable_caja'
+                textField='nombre'
+                valuesField='id'
+                data={_.map(cuentas_contables, h => {
+                    return ({
+                        id: h.id,
+                        nombre: h.to_string
+                    })
+                })}
+                filter='contains'
+            />
 
             <MyDropdownList
-                className="col-12 col-md-6"
+                label_space_xs={4}
+                label='Tipo Punto Venta'
+                className="col-12"
                 data={[
                     {id: 1, nombre: 'Servicios'},
                     {id: 2, nombre: 'Tienda'},
                     {id: 3, nombre: 'Parqueadero'},
                 ]}
                 textField='nombre'
-                nombre='Tipo Punto Venta'
+                placeholder='Seleccionar Punto Venta...'
                 name='tipo'
                 valuesField='id'
             />

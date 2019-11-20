@@ -4,12 +4,10 @@ import {
     MyTextFieldSimple
 } from '../../../../../../00_utilities/components/ui/forms/fields';
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
-import {useDispatch} from "react-redux";
 
 import validate from './validate_comprobante_contable';
 
 let Form = memo(props => {
-    const dispatch = useDispatch();
     const {
         pristine,
         submitting,

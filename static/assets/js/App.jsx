@@ -29,6 +29,7 @@ import {createMuiTheme, makeStyles, MuiThemeProvider} from '@material-ui/core/st
 import indigo from '@material-ui/core/colors/indigo';
 import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
+import orange from '@material-ui/core/colors/orange';
 
 
 const theme = createMuiTheme({
@@ -49,7 +50,7 @@ const theme = createMuiTheme({
         fontSize: 12,
     },
     palette: {
-        primary: green,
+        primary: orange,
         secondary: indigo,
         error: red,
         contrastThreshold: 3,

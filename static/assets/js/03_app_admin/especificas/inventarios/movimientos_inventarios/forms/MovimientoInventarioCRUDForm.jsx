@@ -65,10 +65,11 @@ let Form = memo(props => {
         >
             <MyDropdownList
                 className="col-12 col-md-6"
-                nombre='Motivo'
+                label='Motivo'
+                label_space_xs={4}
                 name='motivo'
                 textField='motivo'
-                placeholder='Seleccionar Motivo'
+                placeholder='Seleccionar Motivo...'
                 valuesField='detalle'
                 onSelect={(e) => {
                     let solo_principales = false;
@@ -98,10 +99,11 @@ let Form = memo(props => {
             />
             <MyCombobox
                 className="col-12 col-md-6"
-                nombre='Bodega'
+                label='Bodega'
+                label_space_xs={4}
                 name='bodega'
                 textField='nombre'
-                placeholder='Seleccionar Bodega'
+                placeholder='Seleccionar Bodega...'
                 valuesField='id'
                 data={_.map(_.orderBy(bodegas, ['nombre']), h => {
                     return ({
@@ -115,10 +117,11 @@ let Form = memo(props => {
                 mostrar_proveedor &&
                 <MyCombobox
                     className="col-12 col-md-6"
-                    nombre='Proveedor'
+                    label='Proveedor'
+                    label_space_xs={4}
                     name='proveedor'
                     textField='nombre'
-                    placeholder='Seleccionar Proveedor'
+                    placeholder='Seleccionar Proveedor...'
                     valuesField='id'
                     data={_.map(proveedores, h => {
                         return ({

@@ -3,7 +3,9 @@ import {formValueSelector, reduxForm} from 'redux-form';
 import {useSelector} from 'react-redux';
 import {
     MyTextFieldSimple,
-    MyDateTimePickerField, MyCombobox, MyCheckboxSimple
+    MyDateTimePickerField,
+    MyCombobox,
+    MyCheckboxSimple
 } from '../../../../../../00_utilities/components/ui/forms/fields';
 import {MyFormTagModal} from '../../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import {useDispatch} from "react-redux";
@@ -52,7 +54,7 @@ let Form = memo(props => {
                 className="col-12"
                 name='empresa'
                 textField='nombre'
-                nombre='Seleccionar empresa...'
+                placeholder='Seleccionar empresa...'
                 valuesField='id'
                 data={_.map(empresas, h => {
                     return ({
@@ -136,6 +138,11 @@ let Form = memo(props => {
                     />
                 </div>
             </div>
+            <MyCheckboxSimple
+                className="col-12"
+                nombre='Activo'
+                name='activo'
+            />
         </MyFormTagModal>
     )
 });

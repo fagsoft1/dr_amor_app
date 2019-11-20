@@ -45,7 +45,8 @@ let Form = memo((props) => {
         >
             <MyCombobox
                 className="col-12 col-md-6"
-                nombre='Bodega Origen'
+                label='Bodega Origen'
+                label_space_xs={4}
                 name='bodega_origen'
                 valuesField='id'
                 textField='nombre'
@@ -55,7 +56,8 @@ let Form = memo((props) => {
             />
             <MyCombobox
                 className="col-12 col-md-6"
-                nombre='Bodega Destino'
+                label='Bodega Destino'
+                label_space_xs={4}
                 name='bodega_destino'
                 valuesField='id'
                 textField='nombre'

@@ -6,6 +6,43 @@ from .models import TipoComprobanteContable, TipoComprobanteContableEmpresa
 class TipoComprobanteContableSerializer(serializers.ModelSerializer):
     to_string = serializers.SerializerMethodField()
 
+    def create(self, validated_data):
+        from .services import tipo_comprobante_contable_crear_actualizar
+        codigo_comprobante = validated_data.get('codigo_comprobante', None)
+        descripcion = validated_data.get('descripcion', None)
+        titulo_comprobante = validated_data.get('titulo_comprobante', None)
+        texto_uno = validated_data.get('texto_uno', None)
+        texto_dos = validated_data.get('texto_dos', None)
+        texto_tres = validated_data.get('texto_tres', None)
+        tipo_comprobante_contable = tipo_comprobante_contable_crear_actualizar(
+            codigo_comprobante=codigo_comprobante,
+            descripcion=descripcion,
+            titulo_comprobante=titulo_comprobante,
+            texto_uno=texto_uno,
+            texto_dos=texto_dos,
+            texto_tres=texto_tres
+        )
+        return tipo_comprobante_contable
+
+    def update(self, instance, validated_data):
+        from .services import tipo_comprobante_contable_crear_actualizar
+        codigo_comprobante = validated_data.get('codigo_comprobante', None)
+        descripcion = validated_data.get('descripcion', None)
+        titulo_comprobante = validated_data.get('titulo_comprobante', None)
+        texto_uno = validated_data.get('texto_uno', None)
+        texto_dos = validated_data.get('texto_dos', None)
+        texto_tres = validated_data.get('texto_tres', None)
+        tipo_comprobante_contable = tipo_comprobante_contable_crear_actualizar(
+            codigo_comprobante=codigo_comprobante,
+            descripcion=descripcion,
+            titulo_comprobante=titulo_comprobante,
+            texto_uno=texto_uno,
+            texto_dos=texto_dos,
+            texto_tres=texto_tres,
+            tipo_comprobante_contable_id=instance.id
+        )
+        return tipo_comprobante_contable
+
     def get_to_string(self, instance):  # pragma: no cover
         return instance.descripcion
 
@@ -31,24 +68,28 @@ class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
     fecha_autorizacion = serializers.DateField(
         format="%Y-%m-%d",
         input_formats=['%Y-%m-%dT%H:%M:%S.%fZ', 'iso-8601'],
-        required=False
+        required=False,
+        allow_null=True
     )
     fecha_inicial_vigencia = serializers.DateField(
         format="%Y-%m-%d",
         input_formats=['%Y-%m-%dT%H:%M:%S.%fZ', 'iso-8601'],
-        required=False
+        required=False,
+        allow_null=True
     )
     fecha_final_vigencia = serializers.DateField(
         format="%Y-%m-%d",
         input_formats=['%Y-%m-%dT%H:%M:%S.%fZ', 'iso-8601'],
-        required=False
+        required=False,
+        allow_null=True
     )
     to_string = serializers.SerializerMethodField()
 
     def get_to_string(self, instance):  # pragma: no cover
-        return '%s - %s' % (instance.tipo_comprobante.descripcion, instance.empresa.nombre)
+        return '%s - %s' % (instance.tipo_comprobante.descripcion, instance.empresa.nombre if instance.empresa else '')
 
     def create(self, validated_data):
+        activo = validated_data.get('activo', False)
         tipo_comprobante = validated_data.get('tipo_comprobante', None)
         empresa = validated_data.get('empresa', None)
         consecutivo_actual = validated_data.get('consecutivo_actual', None)
@@ -65,6 +106,7 @@ class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
         telefono_emision = validated_data.get('telefono_emision', None)
         from .services import tipo_comprobante_contable_empresa_crear_actualizar
         tipo_comprobante_empresa = tipo_comprobante_contable_empresa_crear_actualizar(
+            activo=activo,
             tipo_comprobante_id=tipo_comprobante.id if tipo_comprobante is not None else None,
             empresa_id=empresa.id if empresa is not None else None,
             consecutivo_actual=consecutivo_actual,
@@ -85,6 +127,7 @@ class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         tipo_comprobante = validated_data.get('tipo_comprobante', None)
         empresa = validated_data.get('empresa', None)
+        activo = validated_data.get('activo', False)
         consecutivo_actual = validated_data.get('consecutivo_actual', None)
         rango_inferior_numeracion = validated_data.get('rango_inferior_numeracion', None)
         rango_superior_numeracion = validated_data.get('rango_superior_numeracion', None)
@@ -113,7 +156,8 @@ class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
             pais_emision=pais_emision,
             ciudad_emision=ciudad_emision,
             direccion_emision=direccion_emision,
-            telefono_emision=telefono_emision
+            telefono_emision=telefono_emision,
+            activo=activo
         )
         return tipo_comprobante_empresa
 
@@ -134,6 +178,7 @@ class TipoComprobanteContableEmpresaSerializer(serializers.ModelSerializer):
             'pais_emision',
             'ciudad_emision',
             'direccion_emision',
+            'activo',
             'telefono_emision',
             'to_string',
             'empresa',

@@ -1,15 +1,14 @@
-import React, {memo} from 'react';
-import {reduxForm, formValueSelector} from 'redux-form';
+import React, {memo, useEffect} from 'react';
+import {reduxForm} from 'redux-form';
+import {useDispatch, useSelector} from 'react-redux';
 import {
     MyTextFieldSimple,
     MyCombobox,
     MyCheckboxSimple
 } from '../../../../../00_utilities/components/ui/forms/fields';
-import {useSelector} from "react-redux";
 import {MyFormTagModal} from '../../../../../00_utilities/components/ui/forms/MyFormTagModal';
 import validate from './validate';
-
-const selector = formValueSelector('conceptoOperacionCajaForm');
+import * as actions from "../../../../../01_actions";
 
 let Form = memo(props => {
     const {
@@ -24,18 +23,17 @@ let Form = memo(props => {
         singular_name,
         error
     } = props;
-    const form_values = useSelector(state => selector(state, 'grupo', 'tipo'));
-    let opciones_tipos_cuentas = [
-        {id: "NA", nombre: "No Aplica"},
-    ];
-    const mostrar_tipos_cuentas = form_values && form_values.grupo && ['A', 'C'].includes(form_values.grupo);
-    if (mostrar_tipos_cuentas) {
-        opciones_tipos_cuentas = [
-            ...opciones_tipos_cuentas,
-            {id: "CXC", nombre: "Cuenta x Cobrar"},
-            {id: "CXP", nombre: "Cuenta x Pagar"},
-        ];
-    }
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(actions.fetchDiariosContables());
+        dispatch(actions.fetchTiposComprobantesContablesEmpresas());
+        return () => {
+            dispatch(actions.clearDiariosContables());
+            dispatch(actions.clearTiposComprobantesContablesEmpresas());
+        };
+    }, []);
+    const diarios_contables = useSelector(state => state.contabilidad_diarios_contables);
+    const tipo_comprobante_contable_empresa = useSelector(state => state.contabilidad_tipos_comprobantes_empresas);
     return (
         <MyFormTagModal
             onCancel={onCancel}
@@ -56,21 +54,24 @@ let Form = memo(props => {
                 case='U'/>
             <MyCombobox
                 className="col-12"
+                label_space_xs={4}
+                label='Tipo de Cuenta'
                 name="tipo"
-                nombre='Tipo'
+                placeholder='Seleccionar Tipo Operacion...'
                 data={[
-                    {id: "I", nombre: "Ingreso"},
-                    {id: "E", nombre: "Egreso"},
+                    {id: "DEBITO", nombre: "Ingreso"},
+                    {id: "CREDITO", nombre: "Egreso"},
                 ]}
                 textField='nombre'
                 valuesField='id'
-                placeholder='Tipo Operación...'
                 filter='contains'
             />
             <MyCombobox
                 className="col-12"
                 name="grupo"
-                nombre='Grupo'
+                label_space_xs={4}
+                label='Grupo de Cuenta'
+                placeholder='Seleccionar Grupo...'
                 data={[
                     {id: "A", nombre: "Acompañantes"},
                     {id: "C", nombre: "Colaboradores"},
@@ -80,20 +81,40 @@ let Form = memo(props => {
                 ]}
                 textField='nombre'
                 valuesField='id'
-                placeholder='Tipo Operación...'
                 filter='contains'
 
             />
             <MyCombobox
+                label_space_xs={4}
+                label='Diario Contable'
                 className="col-12"
-                name="tipo_cuenta"
-                nombre='Tipo Cuenta'
-                data={opciones_tipos_cuentas}
+                placeholder='Seleccionar Diario...'
+                name='diario_contable'
                 textField='nombre'
                 valuesField='id'
-                placeholder='Tipo de Cuenta...'
+                data={_.map(diarios_contables, h => {
+                    return ({
+                        id: h.id,
+                        nombre: h.to_string
+                    })
+                })}
                 filter='contains'
-
+            />
+            <MyCombobox
+                label_space_xs={4}
+                label='Tipo Comprobante Contable'
+                className="col-12"
+                placeholder='Seleccionar Tipo Comprobante...'
+                name='tipo_comprobante_contable_empresa'
+                textField='nombre'
+                valuesField='id'
+                data={_.map(tipo_comprobante_contable_empresa, h => {
+                    return ({
+                        id: h.id,
+                        nombre: h.to_string
+                    })
+                })}
+                filter='contains'
             />
             <MyCheckboxSimple
                 className='col-12'

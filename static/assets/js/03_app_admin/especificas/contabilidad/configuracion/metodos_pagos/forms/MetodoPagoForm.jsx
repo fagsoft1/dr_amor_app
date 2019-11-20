@@ -60,10 +60,10 @@ let Form = memo(props => {
                 case='U'
             />
             <MyCombobox
-                label_space_xs={4}
                 className="col-12"
                 label='Tipo de Método de pago'
-                nombre='Seleccionart tipo de método'
+                label_space_xs={4}
+                placeholder='Seleccionart tipo de método...'
                 name='tipo'
                 textField='nombre'
                 valuesField='id'
@@ -80,7 +80,7 @@ let Form = memo(props => {
                 label_space_xs={4}
                 label='Diario Contable'
                 className="col-12"
-                nombre='Seleccionar Diario...'
+                placeholder='Seleccionar Diario...'
                 name='diario_contable'
                 textField='nombre'
                 valuesField='id'
@@ -96,7 +96,7 @@ let Form = memo(props => {
                 label_space_xs={4}
                 label='Cuenta Bancaria'
                 className="col-12"
-                nombre='Seleccionar Cuenta Bancaria...'
+                placeholder='Seleccionar Cuenta Bancaria...'
                 name='cuenta_bancaria'
                 textField='nombre'
                 valuesField='id'
@@ -113,7 +113,7 @@ let Form = memo(props => {
                 label_space_xs={4}
                 label='Cuenta para método de pago'
                 className="col-12"
-                nombre='Seleccionar Cuenta...'
+                placeholder='Seleccionar Cuenta...'
                 name='cuenta_metodo_pago'
                 textField='nombre'
                 valuesField='id'
@@ -130,7 +130,7 @@ let Form = memo(props => {
                 label_space_xs={4}
                 label='Cuenta para método de pago devolución'
                 className="col-12"
-                nombre='Seleccionar Cuenta...'
+                placeholder='Seleccionar Cuenta...'
                 name='cuenta_metodo_pago_devolucion'
                 textField='nombre'
                 valuesField='id'
