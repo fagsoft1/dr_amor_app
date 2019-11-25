@@ -41,7 +41,7 @@ let Form = memo((props) => {
         >
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Nombre del Grupo'
+                label='Nombre del Grupo'
                 name='name'
                 case='U'/>
         </MyFormTagModal>

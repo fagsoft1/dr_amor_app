@@ -50,13 +50,13 @@ let Form = memo((props) => {
         >
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Nombre'
+                label='Nombre'
                 name='nombre'
                 case='U'
             />
             <MyTextFieldSimple
                 className="col-12 col-md-7"
-                nombre='Valor Impuesto Único'
+                label='Valor Impuesto Único'
                 name='valor_impuesto_unico'
                 InputProps={{
                     startAdornment: <InputAdornment position="start">$</InputAdornment>,
@@ -64,7 +64,7 @@ let Form = memo((props) => {
             />
             <MyTextFieldSimple
                 className="col-12 col-md-3 pl-4"
-                nombre='% Iva'
+                label='% Iva'
                 name='porcentaje_iva'
                 InputProps={{
                     startAdornment: <InputAdornment position="end">%</InputAdornment>,
@@ -87,7 +87,7 @@ let Form = memo((props) => {
                 filter='contains'
             />
             <MyCheckboxSimple
-                nombre='Tiene Placa'
+                label='Tiene Placa'
                 name='tiene_placa'
                 className="col-12"
             />

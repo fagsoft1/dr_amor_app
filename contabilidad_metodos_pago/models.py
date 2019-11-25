@@ -2,6 +2,7 @@ from django.db import models
 from contabilidad_bancos.models import CuentaBancariaBanco
 from contabilidad_cuentas.models import CuentaContable
 from contabilidad_movimientos.models import DiarioContable
+from puntos_venta.models import PuntoVenta
 
 
 class MetodoPago(models.Model):
@@ -28,7 +29,20 @@ class MetodoPago(models.Model):
         related_name='metodos_pagos_devolucion'
     )
 
+    puntos_de_venta = models.ManyToManyField(
+        PuntoVenta,
+        through='MetodoPagoPuntoVenta',
+        through_fields=('metodo_pago', 'punto_venta'),
+        related_name='metodos_pago'
+    )
+
     class Meta:
         permissions = [
             ['list_metodopago', 'Puede listar Métodos de Pagos'],
         ]
+
+
+class MetodoPagoPuntoVenta(models.Model):
+    punto_venta = models.ForeignKey(PuntoVenta, related_name='metodos_pagos_punto_venta', on_delete=models.PROTECT)
+    metodo_pago = models.ForeignKey(MetodoPago, related_name='metodos_pagos_punto_venta', on_delete=models.PROTECT)
+    activo = models.BooleanField(default=True)

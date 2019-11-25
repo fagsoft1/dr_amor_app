@@ -38,22 +38,22 @@ let Form = memo((props) => {
         >
             <MyTextFieldSimple
                 className="col-12 col-md-4"
-                nombre='Nombre de Usuario'
+                label='Nombre de Usuario'
                 name='username'
                 case='L'/>
             <MyTextFieldSimple
                 className="col-12 col-md-8"
-                nombre='Correo Electrónico'
+                label='Correo Electrónico'
                 name='email'
                 case='U'/>
             <MyTextFieldSimple
                 className="col-12 col-md-6"
-                nombre='Nombres'
+                label='Nombres'
                 name='first_name'
                 case='U'/>
             <MyTextFieldSimple
                 className="col-12 col-md-6"
-                nombre='Apellidos'
+                label='Apellidos'
                 name='last_name'
                 case='U'/>
             {!initialValues &&
@@ -61,13 +61,13 @@ let Form = memo((props) => {
                 <MyTextFieldSimple
                     type='password'
                     className="col-12 col-md-6"
-                    nombre='Contraseña'
+                    label='Contraseña'
                     name='password'
                 />
                 <MyTextFieldSimple
                     type='password'
                     className="col-12 col-md-6"
-                    nombre='Comprobación de contraseña'
+                    label='Comprobación de contraseña'
                     name='password2'
                 />
             </Fragment>

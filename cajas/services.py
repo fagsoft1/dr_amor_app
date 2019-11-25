@@ -6,9 +6,11 @@ from django.db.models import Sum, F
 from django.db.models.functions import Coalesce
 from django.template.loader import get_template, render_to_string
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from weasyprint import HTML, CSS
 
 from cajas.models import TransaccionCaja, OperacionCaja, ConceptoOperacionCaja, ArqueoCaja
+from contabilidad_cuentas.models import CuentaContable
 
 
 def concepto_operacion_caja_crear_actualizar(
@@ -17,15 +19,31 @@ def concepto_operacion_caja_crear_actualizar(
         tipo: str,
         descripcion: str,
         tipo_comprobante_contable_empresa_id: int,
+        cuenta_contable_contrapartida_id: int,
         reporte_independiente: bool = False,
-        concepto_operacion_caja_id: int = None
+        concepto_operacion_caja_id: int = None,
+        tercero_cuenta_contrapartida_id: int = None,
 ) -> ConceptoOperacionCaja:
+    if grupo in ['O', 'T'] and tercero_cuenta_contrapartida_id is None:
+        raise ValidationError(
+            {'_error': 'Los conceptos para otros o taxis deben tener un tercero para la cuenta contrapartida'})
+    cuenta_contable = CuentaContable.objects.get(pk=cuenta_contable_contrapartida_id)
+    naturaleza_cuenta = cuenta_contable.naturaleza
+    if tipo == 'DEBITO' and naturaleza_cuenta == 'D':
+        raise ValidationError(
+            {'_error': 'Para un concepto de ingreso la cuenta de contrapartida no puede ser de naturaleza Débito'})
+    if tipo == 'CREDITO' and naturaleza_cuenta == 'C':
+        raise ValidationError(
+            {'_error': 'Para un concepto de egreso la cuenta de contrapartida no puede ser de naturaleza Crédito'})
+
     if concepto_operacion_caja_id is not None:
         concepto = ConceptoOperacionCaja.objects.get(pk=concepto_operacion_caja_id)
     else:
         concepto = ConceptoOperacionCaja()
+    concepto.tercero_cuenta_contrapartida_id = tercero_cuenta_contrapartida_id
     concepto.diario_contable_id = diario_contable_id
     concepto.tipo = tipo
+    concepto.cuenta_contable_contrapartida = cuenta_contable
     concepto.tipo_comprobante_contable_empresa_id = tipo_comprobante_contable_empresa_id
     concepto.reporte_independiente = reporte_independiente
     concepto.descripcion = descripcion

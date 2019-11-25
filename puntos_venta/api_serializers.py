@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from dr_amor_app.general_mixins.custom_serializer_mixins import CustomSerializerMixin
 from .models import PuntoVenta, PuntoVentaTurno
+from cajas.api_serializers import ConceptoOperacionCajaPuntoVentaSerializer
+from contabilidad_metodos_pago.api_serializers import MetodoPagoSerializerPuntoVentaSerializer
 
 
 class PuntoVentaSerializer(CustomSerializerMixin, serializers.ModelSerializer):
@@ -59,10 +61,18 @@ class PuntoVentaSerializer(CustomSerializerMixin, serializers.ModelSerializer):
             'abierto',
             'usuario_actual',
             'usuario_actual_nombre',
+            'conceptos_operaciones_caja_punto_venta',
+            'metodos_pagos_punto_venta',
         ]
+        read_only_fields = ['conceptos_operaciones_caja_punto_venta', 'metodos_pagos_punto_venta']
 
     def get_tipo_nombre(self, obj):  # pragma: no cover
         return obj.get_tipo_display()
+
+
+class PuntoVentaSerializerDetalle(PuntoVentaSerializer):
+    conceptos_operaciones_caja_punto_venta = ConceptoOperacionCajaPuntoVentaSerializer(many=True, read_only=True)
+    metodos_pagos_punto_venta = MetodoPagoSerializerPuntoVentaSerializer(many=True, read_only=True)
 
 
 class PuntoVentaTurnoSerializer(serializers.ModelSerializer):

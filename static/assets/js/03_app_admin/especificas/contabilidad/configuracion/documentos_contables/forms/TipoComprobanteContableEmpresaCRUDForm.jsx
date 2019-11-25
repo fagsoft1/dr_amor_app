@@ -66,11 +66,11 @@ let Form = memo(props => {
             />
             <MyTextFieldSimple
                 className="col-12 col-md-6"
-                nombre='Número Autorización'
+                label='Número Autorización'
                 name='numero_autorizacion'
             />
             <MyDateTimePickerField
-                nombre='Fecha Autorización'
+                label='Fecha Autorización'
                 className='col-12 col-md-6'
                 name='fecha_autorizacion'
             />
@@ -78,19 +78,19 @@ let Form = memo(props => {
                 <div className="row">
                     <MyTextFieldSimple
                         className="col-12 col-md-4"
-                        nombre='Consecutivo Actual'
+                        label='Consecutivo Actual'
                         name='consecutivo_actual'
                         type='number'
                     />
                     <MyTextFieldSimple
                         className="col-12 col-md-4"
-                        nombre='Rango Inferior Numeración'
+                        label='Rango Inferior Numeración'
                         name='rango_inferior_numeracion'
                         type='number'
                     />
                     <MyTextFieldSimple
                         className="col-12 col-md-4"
-                        nombre='Rango Superior Numeración'
+                        label='Rango Superior Numeración'
                         name='rango_superior_numeracion'
                         type='number'
                     />
@@ -98,16 +98,16 @@ let Form = memo(props => {
             </div>
             <div className="col-12">
                 <div className="row">
-                    <MyCheckboxSimple nombre='Con Vigencia' name='tiene_vigencia'/>
+                    <MyCheckboxSimple label='Con Vigencia' name='tiene_vigencia'/>
                     {tiene_vigencia &&
                     <Fragment>
                         <MyDateTimePickerField
-                            nombre='Fecha Inicial Vigencia'
+                            label='Fecha Inicial Vigencia'
                             className='col-12 col-md-4'
                             name='fecha_inicial_vigencia'
                         />
                         <MyDateTimePickerField
-                            nombre='Fecha Final Vigencia'
+                            label='Fecha Final Vigencia'
                             className='col-12 col-md-4'
                             name='fecha_final_vigencia'
                         />
@@ -118,29 +118,29 @@ let Form = memo(props => {
                 <div className="row">
                     <MyTextFieldSimple
                         className="col-12 col-md-6"
-                        nombre='País Emisión'
+                        label='País Emisión'
                         name='pais_emision'
                     />
                     <MyTextFieldSimple
                         className="col-12 col-md-6"
-                        nombre='Ciudad Emisión'
+                        label='Ciudad Emisión'
                         name='ciudad_emision'
                     />
                     <MyTextFieldSimple
                         className="col-12 col-md-6"
-                        nombre='Dirección Emisión'
+                        label='Dirección Emisión'
                         name='direccion_emision'
                     />
                     <MyTextFieldSimple
                         className="col-12 col-md-6"
-                        nombre='Teléfono Emisión'
+                        label='Teléfono Emisión'
                         name='telefono_emision'
                     />
                 </div>
             </div>
             <MyCheckboxSimple
                 className="col-12"
-                nombre='Activo'
+                label='Activo'
                 name='activo'
             />
         </MyFormTagModal>

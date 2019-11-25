@@ -49,8 +49,20 @@ const Tabla = memo(props => {
                             maxWidth: 250,
                         },
                         {
+                            Header: "Cuentra Contra Partida",
+                            accessor: "cuenta_contable_contrapartida_descripcion",
+                            minWidth: 250,
+                            maxWidth: 250,
+                        },
+                        {
                             Header: "Tipo Comprobante",
                             accessor: "tipo_comprobante_contable_empresa_descripcion",
+                            minWidth: 250,
+                            maxWidth: 250,
+                        },
+                        {
+                            Header: "Tercero",
+                            accessor: "tercero_cuenta_contrapartida_nombre",
                             minWidth: 250,
                             maxWidth: 250,
                         },

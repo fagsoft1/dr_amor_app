@@ -112,13 +112,13 @@ let Form = (props) => {
         >
             <MyTextFieldSimple
                 className="col-12 col-md-5"
-                nombre='Nombre'
+                label='Nombre'
                 name='nombre'
                 case='U'
             />
             <MyTextFieldSimple
                 className="col-12 col-md-3 ml-3"
-                nombre='Valor'
+                label='Valor'
                 name='valor'
                 inputProps={{
                     style: {textAlign: "right"}
@@ -129,7 +129,7 @@ let Form = (props) => {
             />
             <MyTextFieldSimple
                 className="col-12 col-md-3 ml-3"
-                nombre='Valor Add. Servicio'
+                label='Valor Add. Servicio'
                 name='valor_adicional_servicio'
                 inputProps={{
                     style: {textAlign: "right"}

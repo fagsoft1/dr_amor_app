@@ -117,11 +117,16 @@ class ConceptoOperacionCaja(models.Model):
         related_name='conceptos_operaciones_caja',
         null=True
     )
-    puntos_de_venta = models.ManyToManyField(
-        PuntoVenta,
-        through='ConceptoOperacionCajaPuntoVenta',
-        through_fields=('concepto_operacion_caja', 'punto_venta'),
-        related_name='conceptos_operaciones_caja_punto_venta'
+    cuenta_contable_contrapartida = models.ForeignKey(
+        CuentaContable,
+        on_delete=models.PROTECT,
+        null=True
+    )
+    tercero_cuenta_contrapartida = models.ForeignKey(
+        Tercero,
+        on_delete=models.PROTECT,
+        related_name='conceptos_operaciones_caja',
+        null=True
     )
     tipo = models.CharField(choices=TIPO_CHOICES, max_length=10)
     reporte_independiente = models.BooleanField(default=False)
@@ -132,7 +137,12 @@ class ConceptoOperacionCaja(models.Model):
         on_delete=models.PROTECT
     )
 
-    # puntos_de_venta = models.ManyToManyField(PuntoVenta, related_name='conceptos_operaciones_caja_cierre')
+    puntos_de_venta = models.ManyToManyField(
+        PuntoVenta,
+        through='ConceptoOperacionCajaPuntoVenta',
+        through_fields=('concepto_operacion_caja', 'punto_venta'),
+        related_name='conceptos_operaciones_caja'
+    )
 
     class Meta:
         permissions = [
@@ -141,18 +151,13 @@ class ConceptoOperacionCaja(models.Model):
 
 
 class ConceptoOperacionCajaPuntoVenta(models.Model):
+    concepto_operacion_caja = models.ForeignKey(ConceptoOperacionCaja, on_delete=models.PROTECT)
     punto_venta = models.ForeignKey(
         PuntoVenta,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        related_name='conceptos_operaciones_caja_punto_venta'
     )
-    concepto_operacion_caja = models.ForeignKey(
-        ConceptoOperacionCaja,
-        on_delete=models.PROTECT
-    )
-    cuenta_contable_contrapartida = models.ForeignKey(
-        CuentaContable,
-        on_delete=models.PROTECT
-    )
+    para_cierre_caja = models.BooleanField(default=False)
 
 
 class TransaccionCaja(TimeStampedModel):

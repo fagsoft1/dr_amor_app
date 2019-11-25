@@ -42,7 +42,7 @@ let Form = memo((props) => {
         >
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Nombre'
+                label='Nombre'
                 name='nombre'
                 case='U'
             />
@@ -95,7 +95,7 @@ let Form = memo((props) => {
             />
             <MyTextFieldSimple
                 className="col-12 col-md-4"
-                nombre='Impuesto Venta'
+                label='Impuesto Venta'
                 name='tasa_importe_venta'
                 InputProps={{
                     startAdornment: <InputAdornment
@@ -104,7 +104,7 @@ let Form = memo((props) => {
             />
             <MyTextFieldSimple
                 className="col-12 col-md-4 ml-2"
-                nombre='Impuesto Compra'
+                label='Impuesto Compra'
                 name='tasa_importe_compra'
                 InputProps={{
                     startAdornment: <InputAdornment

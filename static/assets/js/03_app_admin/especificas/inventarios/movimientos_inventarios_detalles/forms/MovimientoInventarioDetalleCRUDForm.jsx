@@ -59,12 +59,12 @@ let Form = memo(props => {
                 (movimiento.tipo === 'E') &&
                 <Fragment>
                     <MyTextFieldSimple
-                        nombre='Cantidad de Ingreso'
+                        label='Cantidad de Ingreso'
                         className='col-5 col-md-2'
                         name='entra_cantidad'
                     />
                     < MyTextFieldSimple
-                        nombre='Costo'
+                        label='Costo'
                         className='col-7 col-md-10'
                         name='entra_costo'
                     />
@@ -74,7 +74,7 @@ let Form = memo(props => {
                 (movimiento.tipo === 'S') &&
                 <Fragment>
                     <MyTextFieldSimple
-                        nombre='Cantidad de Salida'
+                        label='Cantidad de Salida'
                         className='col-12'
                         name='sale_cantidad'
                     />

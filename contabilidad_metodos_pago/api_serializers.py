@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import MetodoPago
+from .models import MetodoPago, MetodoPagoPuntoVenta
 
 
 class MetodoPagoSerializer(serializers.ModelSerializer):
@@ -92,3 +92,21 @@ class MetodoPagoSerializer(serializers.ModelSerializer):
             'cuenta_metodo_pago_devolucion',
         ]
         read_only_fields = ['get_tipo_display']
+
+
+class MetodoPagoSerializerPuntoVentaSerializer(serializers.ModelSerializer):
+    metodo_pago_descripcion = serializers.SerializerMethodField()
+
+    def get_metodo_pago_descripcion(self, obj):
+        return '%s - %s' % (obj.metodo_pago.get_tipo_display(), obj.metodo_pago.nombre)
+
+    class Meta:
+        model = MetodoPagoPuntoVenta
+        fields = (
+            'id',
+            'metodo_pago',
+            'punto_venta',
+            'metodo_pago_descripcion',
+            'activo',
+        )
+        read_only_field = fields

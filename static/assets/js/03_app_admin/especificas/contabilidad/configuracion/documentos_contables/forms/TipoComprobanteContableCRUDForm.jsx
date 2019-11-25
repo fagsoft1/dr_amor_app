@@ -35,19 +35,19 @@ let Form = memo(props => {
         >
             <MyTextFieldSimple
                 className="col-12 col-md-4"
-                nombre='Código Comprobante'
+                label='Código Comprobante'
                 name='codigo_comprobante'
                 case='U'
             />
             <MyTextFieldSimple
                 className="col-12 col-md-8"
-                nombre='Descripción'
+                label='Descripción'
                 name='descripcion'
                 case='U'
             />
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Título'
+                label='Título'
                 name='titulo_comprobante'
                 case='U'
             />

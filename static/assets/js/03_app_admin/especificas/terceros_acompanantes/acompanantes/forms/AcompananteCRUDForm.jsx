@@ -67,7 +67,7 @@ let Form = (props) => {
                 <CedulaForm permisos={permisos_object}/>
                 <MyTextFieldSimple
                     className='col-12 col-md-6'
-                    nombre='Alias'
+                    label='Alias'
                     name='alias_modelo'
                     case='U'
                 />

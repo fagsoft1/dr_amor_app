@@ -85,7 +85,7 @@ let EntradaDialog = memo((props) => {
                     />
                     <MyTextFieldSimple
                         className="col-12"
-                        nombre='Placa'
+                        label='Placa'
                         name='placa'
                         case='U'
                     />

@@ -46,7 +46,7 @@ let Form = memo((props) => {
             {datos_generales &&
             datos_generales.logo &&
             <div className="row">
-                <div className="col-4 text-center">
+                <div className="col-12 col-sm-12 col-lg-4 text-center">
                     <div>
                         <img src={datos_generales.logo_medium}></img>
                     </div>
@@ -54,7 +54,7 @@ let Form = memo((props) => {
                         300x300
                     </div>
                 </div>
-                <div className="col-3 text-center">
+                <div className="col-12 col-sm-6 col-lg-3 text-center">
                     <div>
                         <img src={datos_generales.logo_small}></img>
                     </div>
@@ -62,7 +62,7 @@ let Form = memo((props) => {
                         256x256
                     </div>
                 </div>
-                <div className="col-2 text-center">
+                <div className="col-12 col-sm-4 col-lg-2 text-center">
                     <div>
                         <img src={datos_generales.icon_medium}></img>
                     </div>
@@ -70,7 +70,7 @@ let Form = memo((props) => {
                         48x48
                     </div>
                 </div>
-                <div className="col-1 text-center">
+                <div className="col-12 col-sm-2 col-lg-1 text-center">
                     <div>
                         <img src={datos_generales.icon_small}></img>
                     </div>

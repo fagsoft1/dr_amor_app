@@ -33,12 +33,12 @@ let Form = memo((props) => {
         >
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Nombre'
+                label='Nombre'
                 name='nombre'
                 case='U'/>
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Orden'
+                label='Orden'
                 name='orden'
             />
         </MyFormTagModal>

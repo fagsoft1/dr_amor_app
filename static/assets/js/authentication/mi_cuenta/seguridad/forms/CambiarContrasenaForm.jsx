@@ -50,19 +50,19 @@ let Form = memo(props => {
                         </Typography>
                         <MyTextFieldSimple
                             className='col-12'
-                            nombre='Contraseña Actual'
+                            label='Contraseña Actual'
                             name='password_old'
                             type='password'
                         />
                         <MyTextFieldSimple
                             className='col-12'
-                            nombre='Contraseña Nueva'
+                            label='Contraseña Nueva'
                             name='password'
                             type='password'
                         />
                         <MyTextFieldSimple
                             className='col-12'
-                            nombre='Confirmar Contraseña Nueva'
+                            label='Confirmar Contraseña Nueva'
                             name='password_2'
                             type='password'
                         />

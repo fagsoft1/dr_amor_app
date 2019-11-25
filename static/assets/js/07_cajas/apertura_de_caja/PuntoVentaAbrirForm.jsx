@@ -49,7 +49,7 @@ let Form = memo(props => {
             />
             <MyTextFieldSimple
                 className="col-12 col-md-4"
-                nombre='Valor Base'
+                label='Valor Base'
                 name='base_inicial_efectivo'
                 type='number'
                 InputProps={{

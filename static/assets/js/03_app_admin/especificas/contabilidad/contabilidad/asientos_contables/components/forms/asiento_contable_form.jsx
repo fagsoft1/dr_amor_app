@@ -278,7 +278,7 @@ class Form extends Component {
                         </div>
                         <MyTextFieldSimple
                             className="col-12"
-                            nombre='Concepto'
+                            label='Concepto'
                             name='concepto'
                             case='U'
                             value={concepto}

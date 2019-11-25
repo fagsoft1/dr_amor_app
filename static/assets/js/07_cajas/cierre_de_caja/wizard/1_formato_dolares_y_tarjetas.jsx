@@ -31,7 +31,7 @@ class DolaresTarjetasForm extends Component {
                                 Pagos con Dolares
                             </Typography>
                             <MyTextFieldSimple
-                                nombre='Dolares'
+                                label='Dolares'
                                 name='dolares_cantidad'
                                 type='number'
                                 InputProps={{
@@ -40,7 +40,7 @@ class DolaresTarjetasForm extends Component {
                                 onChange={handleChange('dolares_cantidad')}
                             />
                             <MyTextFieldSimple
-                                nombre='Tasa'
+                                label='Tasa'
                                 name='dolares_tasa'
                                 type='number'
                                 InputProps={{
@@ -57,7 +57,7 @@ class DolaresTarjetasForm extends Component {
                                 Pagos con Tarjetas
                             </Typography>
                             <MyTextFieldSimple
-                                nombre='Valor Tarjeta'
+                                label='Valor Tarjeta'
                                 name='valor_en_tarjetas'
                                 type='number'
                                 onChange={handleChange('valor_en_tarjetas')}
@@ -67,7 +67,7 @@ class DolaresTarjetasForm extends Component {
                             />
                             <MyTextFieldSimple
                                 onChange={handleChange('numero_vauchers')}
-                                nombre='Nro. Vauchers'
+                                label='Nro. Vauchers'
                                 name='numero_vauchers'
                                 type='number'
                             />

@@ -152,7 +152,7 @@ class RegistroOperacionForm extends Component {
                             <MyTextFieldSimple
                                 type='number'
                                 name='valor'
-                                nombre='Valor'
+                                label='Valor'
                                 className='col-12 col-md-4'
                             />
                             {
@@ -165,7 +165,7 @@ class RegistroOperacionForm extends Component {
                     </div>
                     <MyTextFieldSimple
                         name='observacion'
-                        nombre='Observación'
+                        label='Observación'
                         className='col-12'
                         multiline={true}
                         rows={2}

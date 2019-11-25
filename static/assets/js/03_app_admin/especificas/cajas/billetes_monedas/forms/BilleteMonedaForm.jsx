@@ -50,13 +50,13 @@ let Form = memo(props => {
             />
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Valor'
+                label='Valor'
                 name='valor'
                 type='number'
             />
             <MyCheckboxSimple
                 className="col-12"
-                nombre='Activo'
+                label='Activo'
                 name='activo'
             />
         </MyFormTagModal>

@@ -34,13 +34,13 @@ let Form = memo(props => {
         >
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Nro. Cuenta'
+                label='Nro. Cuenta'
                 name='nro_cuenta'
                 case='U'
             />
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Titular'
+                label='Titular'
                 name='titular_cuenta'
                 case='U'
             />

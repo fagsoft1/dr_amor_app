@@ -37,7 +37,7 @@ class Form extends Component {
                         <ResumenLiquidacion cuenta={cuenta} styles={styles}/>
                         <MyTextFieldSimple
                             className="col-6"
-                            nombre={`Valor a ${tipo_cuenta === 'A' ? 'pagar' : 'cobrar'}`}
+                            label={`Valor a ${tipo_cuenta === 'A' ? 'pagar' : 'cobrar'}`}
                             name='valor'
                             type='number'
                             InputProps={{

@@ -48,7 +48,7 @@ let Form = memo((props) => {
         >
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Nombre'
+                label='Nombre'
                 name='nombre'
                 case='U'
             />
@@ -94,13 +94,13 @@ let Form = memo((props) => {
                 </div>
             </div>
             <div className="col-12">
-                <MyCheckboxSimple nombre='Lunes' name='lunes'/>
-                <MyCheckboxSimple nombre='Martes' name='martes'/>
-                <MyCheckboxSimple nombre='Miércoles' name='miercoles'/>
-                <MyCheckboxSimple nombre='Jueves' name='jueves'/>
-                <MyCheckboxSimple nombre='Viernes' name='viernes'/>
-                <MyCheckboxSimple nombre='Sábado' name='sabado'/>
-                <MyCheckboxSimple nombre='Domingo' name='domingo'/>
+                <MyCheckboxSimple label='Lunes' name='lunes'/>
+                <MyCheckboxSimple label='Martes' name='martes'/>
+                <MyCheckboxSimple label='Miércoles' name='miercoles'/>
+                <MyCheckboxSimple label='Jueves' name='jueves'/>
+                <MyCheckboxSimple label='Viernes' name='viernes'/>
+                <MyCheckboxSimple label='Sábado' name='sabado'/>
+                <MyCheckboxSimple label='Domingo' name='domingo'/>
             </div>
         </MyFormTagModal>
     )

@@ -36,36 +36,120 @@ def punto_venta_crear_actualizar(
     return punto_venta
 
 
-def punto_venta_relacionar_concepto_operacion_caja_cierre(
+def punto_venta_set_operacion_caja_en_cierre(
         punto_venta_id: int,
-        concepto_operacion_caja_id: int
-):
+        concepto_operacion_caja_id: int,
+        en_cierre: bool
+) -> PuntoVenta:
     from cajas.models import ConceptoOperacionCaja
     punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
+    concepto_operacion_caja = ConceptoOperacionCaja(pk=concepto_operacion_caja_id)
+    conceptos_operaciones_caja = punto_venta.conceptos_operaciones_caja_punto_venta.filter(
+        concepto_operacion_caja_id=concepto_operacion_caja_id)
+    if not conceptos_operaciones_caja.exists():
+        raise ValidationError({
+            '_error': 'Este puento de venta no tiene relacionado el concepto de cierre de caja %s' % concepto_operacion_caja.descripcion})
+    concepto = conceptos_operaciones_caja.first()
+    concepto.para_cierre_caja = en_cierre
+    concepto.save()
+    return PuntoVenta.objects.get(pk=punto_venta_id)
+
+
+def punto_venta_set_metodo_pago_activo(
+        punto_venta_id: int,
+        metodo_pago_id: int,
+        activo: bool
+) -> PuntoVenta:
+    from contabilidad_metodos_pago.models import MetodoPago
+    punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
+    metodo_pago = MetodoPago(pk=metodo_pago_id)
+    metodos_pago_punto_venta = punto_venta.metodos_pagos_punto_venta.filter(
+        metodo_pago_id=metodo_pago_id)
+    if not metodos_pago_punto_venta.exists():
+        raise ValidationError({
+            '_error': 'Este puento de venta no tiene relacionado el método de pago %s %s' % (
+                metodo_pago.tipo, metodo_pago.nombre)})
+    concepto = metodos_pago_punto_venta.first()
+    concepto.activo = activo
+    concepto.save()
+    return PuntoVenta.objects.get(pk=punto_venta_id)
+
+
+def punto_venta_relacionar_concepto_operacion_caja(
+        punto_venta_id: int,
+        concepto_operacion_caja_id: int
+) -> PuntoVenta:
+    from cajas.models import ConceptoOperacionCaja
+    from cajas.models import ConceptoOperacionCajaPuntoVenta
+    punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
+    existe_concepto = punto_venta.conceptos_operaciones_caja.filter(pk=concepto_operacion_caja_id).exists()
     concepto_operacion_caja = ConceptoOperacionCaja.objects.get(pk=concepto_operacion_caja_id)
-    existe_concepto = punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto_operacion_caja_id).exists()
     if not existe_concepto:
-        punto_venta.conceptos_operaciones_caja_cierre.add(concepto_operacion_caja)
+        ConceptoOperacionCajaPuntoVenta.objects.create(
+            punto_venta_id=punto_venta_id,
+            concepto_operacion_caja_id=concepto_operacion_caja_id,
+            para_cierre_caja=False
+        )
     else:
         raise serializers.ValidationError(
             {'_error': 'Este punto de venta ya tiene asociado el concepto %s' % concepto_operacion_caja.descripcion})
-    return concepto_operacion_caja
+    return PuntoVenta.objects.get(pk=punto_venta_id)
 
 
-def punto_venta_quitar_concepto_operacion_caja_cierre(
+def punto_venta_quitar_concepto_operacion_caja(
         punto_venta_id: int,
         concepto_operacion_caja_id: int
-):
+) -> PuntoVenta:
     from cajas.models import ConceptoOperacionCaja
     punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
     concepto_operacion_caja = ConceptoOperacionCaja.objects.get(pk=concepto_operacion_caja_id)
-    existe_concepto = punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto_operacion_caja_id).exists()
-    if existe_concepto:
-        punto_venta.conceptos_operaciones_caja_cierre.remove(concepto_operacion_caja)
+    conceptos_punto_venta = punto_venta.conceptos_operaciones_caja_punto_venta.filter(
+        concepto_operacion_caja_id=concepto_operacion_caja_id)
+    if conceptos_punto_venta.exists():
+        conceptos_punto_venta.delete()
     else:
         raise serializers.ValidationError(
             {'_error': 'Este punto de venta no tiene asociado el concepto %s' % concepto_operacion_caja.descripcion})
-    return concepto_operacion_caja
+    return PuntoVenta.objects.get(pk=punto_venta_id)
+
+
+def punto_venta_relacionar_metodo_pago(
+        punto_venta_id: int,
+        metodo_pago_id: int
+) -> PuntoVenta:
+    from contabilidad_metodos_pago.models import MetodoPagoPuntoVenta, MetodoPago
+    punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
+    existe_concepto = punto_venta.metodos_pago.filter(pk=metodo_pago_id)
+    metodo_pago = MetodoPago.objects.get(pk=metodo_pago_id)
+    if not existe_concepto:
+        MetodoPagoPuntoVenta.objects.create(
+            punto_venta_id=punto_venta_id,
+            metodo_pago_id=metodo_pago_id,
+            activo=True
+        )
+    else:
+        raise serializers.ValidationError(
+            {'_error': 'Este punto de venta ya tiene asociado el método de pago %s %s' % (
+                metodo_pago.tipo, metodo_pago.nombre)})
+    return PuntoVenta.objects.get(pk=punto_venta_id)
+
+
+def punto_venta_quitar_metodo_pago(
+        punto_venta_id: int,
+        metodo_pago_id: int
+) -> PuntoVenta:
+    from contabilidad_metodos_pago.models import MetodoPago
+    punto_venta = PuntoVenta.objects.get(pk=punto_venta_id)
+    metodo_pago = MetodoPago.objects.get(pk=metodo_pago_id)
+    metodos_pago_punto_venta = punto_venta.metodos_pagos_punto_venta.filter(
+        metodo_pago_id=metodo_pago_id)
+    if metodos_pago_punto_venta.exists():
+        metodos_pago_punto_venta.delete()
+    else:
+        raise serializers.ValidationError(
+            {'_error': 'Este punto de venta no tiene asociado el método de pago %s %s' % (
+                metodo_pago.tipo, metodo_pago.nombre)})
+    return PuntoVenta.objects.get(pk=punto_venta_id)
 
 
 def punto_venta_abrir(

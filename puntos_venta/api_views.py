@@ -8,7 +8,8 @@ from rest_framework.response import Response
 from dr_amor_app.custom_permissions import DjangoModelPermissionsFull
 from .api_serializers import (
     PuntoVentaSerializer,
-    PuntoVentaTurnoSerializer
+    PuntoVentaTurnoSerializer,
+    PuntoVentaSerializerDetalle
 )
 from .models import (
     PuntoVenta,
@@ -36,6 +37,10 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         'usuario_actual'
     ).all()
     serializer_class = PuntoVentaSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = PuntoVentaSerializerDetalle
+        return super().retrieve(request, *args, **kwargs)
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def abrir_punto_venta(self, request, pk=None):
@@ -77,24 +82,82 @@ class PuntoVentaViewSet(viewsets.ModelViewSet):
         return Response({'result': mensaje})
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    def relacionar_concepto_caja_cierre(self, request, pk=None):
+    def relacionar_concepto_caja(self, request, pk=None):
+        self.serializer_class = PuntoVentaSerializerDetalle
         from .services import (
-            punto_venta_relacionar_concepto_operacion_caja_cierre,
-            punto_venta_quitar_concepto_operacion_caja_cierre
+            punto_venta_relacionar_concepto_operacion_caja,
+            punto_venta_quitar_concepto_operacion_caja
         )
-        punto_venta = self.get_object()
         concepto_id = self.request.POST.get('concepto_id')
-        existe_concepto = punto_venta.conceptos_operaciones_caja_cierre.filter(pk=concepto_id).exists()
-        if existe_concepto:
-            punto_venta_quitar_concepto_operacion_caja_cierre(
-                punto_venta_id=punto_venta.id,
+        tipo_accion = self.request.POST.get('tipo_accion')
+        if tipo_accion == 'add':
+            punto_venta = punto_venta_relacionar_concepto_operacion_caja(
+                punto_venta_id=pk,
+                concepto_operacion_caja_id=concepto_id
+            )
+        elif tipo_accion == 'rem':
+            punto_venta = punto_venta_quitar_concepto_operacion_caja(
+                punto_venta_id=pk,
                 concepto_operacion_caja_id=concepto_id
             )
         else:
-            punto_venta_relacionar_concepto_operacion_caja_cierre(
-                punto_venta_id=punto_venta.id,
-                concepto_operacion_caja_id=concepto_id
+            punto_venta = self.get_object()
+        serializer = self.get_serializer(punto_venta)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def relacionar_metodo_pago(self, request, pk=None):
+        self.serializer_class = PuntoVentaSerializerDetalle
+        from .services import (
+            punto_venta_quitar_metodo_pago,
+            punto_venta_relacionar_metodo_pago
+        )
+        metodo_pago_id = self.request.POST.get('metodo_pago_id')
+        tipo_accion = self.request.POST.get('tipo_accion')
+        if tipo_accion == 'add':
+            punto_venta = punto_venta_relacionar_metodo_pago(
+                punto_venta_id=pk,
+                metodo_pago_id=metodo_pago_id
             )
+        elif tipo_accion == 'rem':
+            punto_venta = punto_venta_quitar_metodo_pago(
+                punto_venta_id=pk,
+                metodo_pago_id=metodo_pago_id
+            )
+        else:
+            punto_venta = self.get_object()
+        serializer = self.get_serializer(punto_venta)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def set_cierre_concepto_operacion_caja(self, request, pk=None):
+        self.serializer_class = PuntoVentaSerializerDetalle
+        from .services import (
+            punto_venta_set_operacion_caja_en_cierre
+        )
+        concepto_operacion_caja = self.request.POST.get('concepto_id')
+        en_cierre = self.request.POST.get('en_cierre') == 'true'
+        punto_venta = punto_venta_set_operacion_caja_en_cierre(
+            punto_venta_id=pk,
+            concepto_operacion_caja_id=concepto_operacion_caja,
+            en_cierre=en_cierre
+        )
+        serializer = self.get_serializer(punto_venta)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def set_activo_metodo_pago(self, request, pk=None):
+        self.serializer_class = PuntoVentaSerializerDetalle
+        from .services import (
+            punto_venta_set_metodo_pago_activo
+        )
+        metodo_pago_id = self.request.POST.get('metodo_pago_id')
+        activo = self.request.POST.get('activo') == 'true'
+        punto_venta = punto_venta_set_metodo_pago_activo(
+            punto_venta_id=pk,
+            metodo_pago_id=metodo_pago_id,
+            activo=activo
+        )
         serializer = self.get_serializer(punto_venta)
         return Response(serializer.data)
 

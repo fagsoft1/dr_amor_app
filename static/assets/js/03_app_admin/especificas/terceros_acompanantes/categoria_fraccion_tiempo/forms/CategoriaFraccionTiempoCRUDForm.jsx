@@ -62,7 +62,7 @@ let Form = memo(props => {
             }
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Valor'
+                label='Valor'
                 name='valor'
                 InputProps={{
                     startAdornment: <InputAdornment position="start">$</InputAdornment>,

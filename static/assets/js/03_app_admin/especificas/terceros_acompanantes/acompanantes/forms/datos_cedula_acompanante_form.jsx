@@ -23,28 +23,28 @@ const DatosCedulaForm = memo(props => {
                 <Fragment>
                     <MyTextFieldSimple
                         className='col-12 col-md-6 col-xl-3'
-                        nombre='Nombre'
+                        label='Nombre'
                         name='nombre_1'
                         case='U'
                     />
 
                     <MyTextFieldSimple
                         className='col-12 col-md-6 col-xl-3'
-                        nombre='Segundo Nombre'
+                        label='Segundo Nombre'
                         name='nombre_segundo_1'
                         case='U'
                     />
 
                     <MyTextFieldSimple
                         className='col-12 col-md-6 col-xl-3'
-                        nombre='Apellido'
+                        label='Apellido'
                         name='apellido_1'
                         case='U'
                     />
 
                     <MyTextFieldSimple
                         className='col-12 col-md-6 col-xl-3'
-                        nombre='Segundo Apellido'
+                        label='Segundo Apellido'
                         name='apellido_segundo_1'
                         case='U'
                     />
@@ -68,7 +68,7 @@ const DatosCedulaForm = memo(props => {
 
                     <MyTextFieldSimple
                         className='col-12 col-md-6 col-xl-3'
-                        nombre='Nro. Identificación'
+                        label='Nro. Identificación'
                         name='nro_identificacion_1'
                     />
                     <MyCombobox
@@ -97,7 +97,7 @@ const DatosCedulaForm = memo(props => {
                         <Fragment>
                             <MyDateTimePickerField
                                 className="col-12 col-md-6"
-                                nombre='Fecha de Nacimiento'
+                                label='Fecha de Nacimiento'
                                 name='fecha_nacimiento'
                                 show_edad={true}
                             />
@@ -105,7 +105,7 @@ const DatosCedulaForm = memo(props => {
                     }
                     <MyRadioButtonGroup
                         className="col-12 col-md-6"
-                        nombre='Genero'
+                        label='Genero'
                         name='genero'
                         required={true}
                         options={[

@@ -21,15 +21,81 @@ export const abrirPuntoVenta = (id, base_inicial_efectivo, options_action = {}) 
 };
 
 
-export const relacionarConceptoCajaCierre = (id, concepto_id, options_action = {}) => {
+export const relacionarConceptoCajaPuntoVenta = (id, concepto_id, options_action = {}) => {
     return (dispatch) => {
         let params = new URLSearchParams();
         params.append('concepto_id', concepto_id);
+        params.append('tipo_accion', 'add');
         const dispatches = (response) => {
             dispatch({type: TYPES.fetch, payload: response})
         };
         const options = {...options_action, dispatches, dispatch_method: dispatch};
-        return callApiMethodPostParameters(current_url_api, id, 'relacionar_concepto_caja_cierre', params, options)
+        return callApiMethodPostParameters(current_url_api, id, 'relacionar_concepto_caja', params, options)
+    }
+};
+
+export const setCierreConceptoCajaPuntoVenta = (id, concepto_id, en_cierre, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('concepto_id', concepto_id);
+        params.append('en_cierre', en_cierre);
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch, payload: response})
+        };
+        const options = {...options_action, dispatches, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'set_cierre_concepto_operacion_caja', params, options)
+    }
+};
+
+export const setActivoMetodoPagoPuntoVenta = (id, metodo_pago_id, activo, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('metodo_pago_id', metodo_pago_id);
+        params.append('activo', activo);
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch, payload: response})
+        };
+        const options = {...options_action, dispatches, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'set_activo_metodo_pago', params, options)
+    }
+};
+
+export const quitarConceptoCajaPuntoVenta = (id, concepto_id, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('concepto_id', concepto_id);
+        params.append('tipo_accion', 'rem');
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch, payload: response})
+        };
+        const options = {...options_action, dispatches, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'relacionar_concepto_caja', params, options)
+    }
+};
+
+export const relacionarMetodoPagoPuntoVenta = (id, metodo_pago_id, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('metodo_pago_id', metodo_pago_id);
+        params.append('tipo_accion', 'add');
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch, payload: response})
+        };
+        const options = {...options_action, dispatches, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'relacionar_metodo_pago', params, options)
+    }
+};
+
+export const quitarMetodoPagoPuntoVenta = (id, metodo_pago_id, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('metodo_pago_id', metodo_pago_id);
+        params.append('tipo_accion', 'rem');
+        const dispatches = (response) => {
+            dispatch({type: TYPES.fetch, payload: response})
+        };
+        const options = {...options_action, dispatches, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'relacionar_metodo_pago', params, options)
     }
 };
 

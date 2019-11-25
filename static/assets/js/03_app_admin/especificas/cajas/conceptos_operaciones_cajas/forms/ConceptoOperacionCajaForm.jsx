@@ -1,5 +1,5 @@
 import React, {memo, useEffect} from 'react';
-import {reduxForm} from 'redux-form';
+import {formValueSelector, reduxForm} from 'redux-form';
 import {useDispatch, useSelector} from 'react-redux';
 import {
     MyTextFieldSimple,
@@ -10,6 +10,7 @@ import {MyFormTagModal} from '../../../../../00_utilities/components/ui/forms/My
 import validate from './validate';
 import * as actions from "../../../../../01_actions";
 
+const selector = formValueSelector('conceptoOperacionCajaForm');
 let Form = memo(props => {
     const {
         pristine,
@@ -23,17 +24,26 @@ let Form = memo(props => {
         singular_name,
         error
     } = props;
+    const valores = useSelector(state => selector(state, 'grupo', ''));
+    const {grupo} = valores;
+    const mostrar_tercero = ['O', 'T'].includes(grupo);
     const dispatch = useDispatch();
     useEffect(() => {
+        dispatch(actions.fetchTerceros());
         dispatch(actions.fetchDiariosContables());
+        dispatch(actions.fetchCuentasContablesDetalles());
         dispatch(actions.fetchTiposComprobantesContablesEmpresas());
         return () => {
+            dispatch(actions.clearTerceros());
             dispatch(actions.clearDiariosContables());
+            dispatch(actions.clearCuentasContables());
             dispatch(actions.clearTiposComprobantesContablesEmpresas());
         };
     }, []);
     const diarios_contables = useSelector(state => state.contabilidad_diarios_contables);
     const tipo_comprobante_contable_empresa = useSelector(state => state.contabilidad_tipos_comprobantes_empresas);
+    const cuentas_contables = useSelector(state => state.contabilidad_cuentas_contables);
+    const terceros = useSelector(state => state.terceros);
     return (
         <MyFormTagModal
             onCancel={onCancel}
@@ -49,7 +59,7 @@ let Form = memo(props => {
         >
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Descripción'
+                label='Descripción'
                 name='descripcion'
                 case='U'/>
             <MyCombobox
@@ -83,6 +93,39 @@ let Form = memo(props => {
                 valuesField='id'
                 filter='contains'
 
+            />
+            {mostrar_tercero && <MyCombobox
+                className="col-12"
+                name="tercero_cuenta_contrapartida"
+                label_space_xs={4}
+                label='Tercero contrapartida'
+                placeholder='Seleccionar Tercero...'
+                data={_.map(terceros, h => {
+                    return ({
+                        id: h.id,
+                        nombre: h.full_name_proxy
+                    })
+                })}
+                textField='nombre'
+                valuesField='id'
+                filter='contains'
+
+            />}
+            <MyCombobox
+                className="col-12"
+                label_space_xs={4}
+                label='Cuenta Contable Contrapartida a Caja'
+                placeholder='Seleccionar Cuenta...'
+                name='cuenta_contable_contrapartida'
+                textField='nombre'
+                valuesField='id'
+                data={_.map(cuentas_contables, h => {
+                    return ({
+                        id: h.id,
+                        nombre: h.to_string
+                    })
+                })}
+                filter='contains'
             />
             <MyCombobox
                 label_space_xs={4}
@@ -119,7 +162,7 @@ let Form = memo(props => {
             <MyCheckboxSimple
                 className='col-12'
                 name='reporte_independiente'
-                nombre='En Reporte Independiente'
+                label='En Reporte Independiente'
             />
         </MyFormTagModal>
     )

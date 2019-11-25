@@ -68,12 +68,12 @@ let Form = memo((props) => {
         >
             <MyTextFieldSimple
                 className="col-12 col-md-9"
-                nombre='Nombre'
+                label='Nombre'
                 name='nombre'
                 case='U'/>
             <MyTextFieldSimple
                 className="col-12 col-md-3"
-                nombre='Precio de Venta'
+                label='Precio de Venta'
                 name='precio_venta'
                 InputProps={{
                     startAdornment: <InputAdornment position="start">$</InputAdornment>,
@@ -81,7 +81,7 @@ let Form = memo((props) => {
             />
             <MyTextFieldSimple
                 className="col-12 col-md-7"
-                nombre='Comisión'
+                label='Comisión'
                 name='comision'
                 InputProps={{
                     startAdornment: <InputAdornment position="start">$</InputAdornment>,

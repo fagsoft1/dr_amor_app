@@ -134,7 +134,7 @@ let Form = memo(props => {
             }
 
             <MyDateTimePickerField
-                nombre='Fecha'
+                label='Fecha'
                 className='col-12 col-md-6'
                 name='fecha'
             />
@@ -142,7 +142,7 @@ let Form = memo(props => {
             {
                 mostrar_observacions &&
                 <MyTextFieldSimple
-                    nombre='Observación'
+                    label='Observación'
                     className='col-12'
                     name='observacion'
                     multiline={true}

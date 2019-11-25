@@ -27,7 +27,7 @@ let BaseFormaPagoForm = memo(props => {
                             <MyTextFieldSimple
                                 type='number'
                                 name='valor_efectivo'
-                                nombre='Valor efectivo'
+                                label='Valor efectivo'
                                 className='col-md-3 col-lg-2'
                                 onChange={e => {
                                     const nuevo_valor_efectivo = e.target.value;
@@ -43,7 +43,7 @@ let BaseFormaPagoForm = memo(props => {
                                     <MyTextFieldSimple
                                         type='number'
                                         name='valor_tarjeta'
-                                        nombre='Valor Tarjeta'
+                                        label='Valor Tarjeta'
                                         className='col-md-3 col-lg-2'
                                         onChange={e => {
                                             const nuevo_valor_tarjeta = e.target.value;
@@ -73,7 +73,7 @@ let BaseFormaPagoForm = memo(props => {
                                             />
                                             <MyTextFieldSimple
                                                 name='nro_autorizacion'
-                                                nombre='Nro. Autorización'
+                                                label='Nro. Autorización'
                                                 className='col-md-3 col-lg-2'
                                             />
                                         </Fragment>
@@ -99,7 +99,7 @@ let BaseFormaPagoForm = memo(props => {
                         perdir_observacion_devolucion &&
                         <MyTextFieldSimple
                             name='observacion_devolucion'
-                            nombre='Razon de la devolución'
+                            label='Razon de la devolución'
                             multiline
                             rowsMax="4"
                             className='col-md-12'

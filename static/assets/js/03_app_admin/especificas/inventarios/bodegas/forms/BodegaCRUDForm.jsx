@@ -33,11 +33,11 @@ let Form = memo((props) => {
         >
             <MyTextFieldSimple
                 className="col-12"
-                nombre='Nombre'
+                label='Nombre'
                 name='nombre'
                 case='U'/>
             <MyCheckboxSimple
-                nombre='Principal'
+                label='Principal'
                 className='col-12'
                 name='es_principal'
             />

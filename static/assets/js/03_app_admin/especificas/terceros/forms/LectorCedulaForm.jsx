@@ -48,7 +48,7 @@ let LectorCedulaForm = memo((props) => {
                     <MyTextFieldSimple
                         className='col-12'
                         name="lector_barras"
-                        nombre='Lector Cédula'
+                        label='Lector Cédula'
                         floatinglabeltext="Escaner aquí"
                         onBlur={(e) => {
                             validarLector(e);

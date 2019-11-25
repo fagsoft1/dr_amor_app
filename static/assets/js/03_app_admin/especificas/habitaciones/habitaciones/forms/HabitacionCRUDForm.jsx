@@ -49,7 +49,7 @@ let Form = (props) => {
         >
             <MyTextFieldSimple
                 className="col-12 col-md-2"
-                nombre='Número'
+                label='Número'
                 name='numero'
             />
             <MyCombobox
@@ -85,7 +85,7 @@ let Form = (props) => {
                 filter='contains'
             />
             <MyCheckboxSimple
-                nombre='Activo'
+                label='Activo'
                 className="col-12"
                 name='activa'
             />

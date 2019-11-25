@@ -44,7 +44,7 @@ const renderInputFileField = (field) => {
                 {...field.input}
                 type="file"
                 accept={field.accept}
-                value={null}
+                value={undefined}
             />
             {field.meta.touched && field.meta.error &&
             <span className='form-field-error'>{field.meta.error}</span>}
@@ -91,7 +91,7 @@ export const MyTextFieldSimple = (props) => {
     return (
         <Field
             fullWidth={true}
-            label={props.nombre}
+            label={props.label}
             name={props.name}
             helperText={props.helperText}
             {...props}
@@ -104,7 +104,7 @@ export const MyTextFieldSimple = (props) => {
 MyTextFieldSimple.propTypes = {
     name: PropTypes.string,
     className: PropTypes.string,
-    nombre: PropTypes.string
+    label: PropTypes.string
 };
 
 const renderDropdownList = ({input, data, valueField, textField, placeholder, onSelect}) => {
@@ -155,7 +155,7 @@ MyDropdownList.propTypes = {
     placeholder: PropTypes.string
 };
 
-const renderCombobox = ({input, data, valueField, textField, placeholder, onSelect = null, meta: {touched, error, warning}, filter}) => {
+const renderCombobox = ({input, data, valueField, textField, placeholder, onSelect = null, readOnly, meta: {touched, error, warning}, filter}) => {
     return (
         <Fragment>
             <Combobox {...input}
@@ -164,6 +164,7 @@ const renderCombobox = ({input, data, valueField, textField, placeholder, onSele
                       placeholder={placeholder}
                       valueField={valueField}
                       textField={textField}
+                      readOnly={readOnly}
                       onChange={e => {
                           input.onChange(typeof (e) === 'string' ? e : e[valueField])
                       }}
@@ -178,7 +179,18 @@ const renderCombobox = ({input, data, valueField, textField, placeholder, onSele
 
 
 export const MyCombobox = (props) => {
-    const {busy = false, textField = 'name', valuesField = 'id', autoFocus = false, onSelect, className, placeholder = '', label = null, label_space_xs = 0} = props;
+    const {
+        busy = false,
+        textField = 'name',
+        valuesField = 'id',
+        autoFocus = false,
+        onSelect,
+        className,
+        placeholder = '',
+        label = null,
+        label_space_xs = 0,
+        readOnly = false
+    } = props;
     return (
         <div className={`${className} ${label ? 'mt-2' : 'mt-4'}`}>
             <Grid component="label" container alignItems="center" spacing={2}>
@@ -188,6 +200,7 @@ export const MyCombobox = (props) => {
                 <Grid item xs={label ? 12 - label_space_xs : 12}>
                     <Field
                         {...props}
+                        readOnly={readOnly}
                         component={renderCombobox}
                         valueField={valuesField}
                         textField={textField}
@@ -233,29 +246,41 @@ const renderCheckbox = ({input, label}) => {
 };
 
 export const MyCheckboxSimple = (props) => {
-    const {onClick} = props;
+    const {onClick, className = null, label, name} = props;
     return (
-        <Field
-            onClick={() => {
-                if (onClick) {
-                    onClick()
-                }
-            }}
-            {...props}
-            name={props.name}
-            component={renderCheckbox}
-            label={props.nombre}
-            normalize={v => !!v}
-        />
+        <div className={className}>
+            <Field
+                onClick={() => {
+                    if (onClick) {
+                        onClick()
+                    }
+                }}
+                {...props}
+                name={props.name}
+                component={renderCheckbox}
+                label={label ? label : name}
+                normalize={v => !!v}
+            />
+        </div>
     )
 };
 MyCheckboxSimple.propTypes = {
     name: PropTypes.string,
     className: PropTypes.string,
-    nombre: PropTypes.string
+    label: PropTypes.string
 };
 
-const renderDateTimePicker = ({input: {onChange, value}, meta: {touched, error}, show_edad}) => {
+const renderDateTimePicker = (
+    {
+        input: {onChange, value},
+        meta: {touched, error},
+        readOnly,
+        show_edad,
+        time = false,
+        max = new Date(),
+        min = new Date(1900, 0, 1)
+    }
+) => {
     const now = moment();
     const fechaHoy = moment(now, "YYYY MM DD", "es");
     const fecha_nacimiento = moment(value, "YYYY MM DD", "es").tz('America/Bogota');
@@ -264,11 +289,14 @@ const renderDateTimePicker = ({input: {onChange, value}, meta: {touched, error},
     return (
         <Fragment>
             <DateTimePicker
+                readOnly={readOnly}
                 onChange={onChange}
-                format="YYYY-MM-DD"
-                time={false}
-                max={new Date()}
-                value={!value ? null : new Date(value)}
+                format={time ? "YYYY-MM-DD HH:mm:ss" : "YYYY-MM-DD"}
+                time={time}
+                max={max}
+                min={min}
+                //value={!value ? null : new Date(value)}
+                value={!value ? null : moment(value).toDate()}
             />{show_edad && edad}
             {touched && (error && <span className='form-field-error'>{error}</span>)}
         </Fragment>
@@ -278,12 +306,12 @@ const renderDateTimePicker = ({input: {onChange, value}, meta: {touched, error},
 export const MyDateTimePickerField = (props) => {
     return (
         <div className={props.className}>
-            <label>{props.nombre}</label>
+            <label>{props.label}</label>
             <Field
                 name={props.name}
                 type="date"
                 fullWidth={true}
-                label={props.nombre}
+                label={props.label}
                 {...props}
                 component={renderDateTimePicker}
             />
@@ -294,16 +322,16 @@ export const MyDateTimePickerField = (props) => {
 MyDateTimePickerField.propTypes = {
     name: PropTypes.string,
     className: PropTypes.string,
-    nombre: PropTypes.string
+    label: PropTypes.string
 };
 
-const renderRadioGroup = ({input, nombre, meta, options, required = false, meta: {touched, error}, ...rest}) => {
+const renderRadioGroup = ({input, label, meta, options, required = false, meta: {touched, error}, ...rest}) => {
     return (
         <FormControl component="fieldset" error={error && touched} required={required}>
-            <FormLabel component="legend">{nombre}</FormLabel>
+            <FormLabel component="legend">{label}</FormLabel>
             <RadioGroup
                 aria-label="gender"
-                name={nombre}
+                name={label}
                 value={input.value}
                 onChange={(event, value) => input.onChange(value)}
             >
@@ -332,10 +360,9 @@ export const MyRadioButtonGroup = (props) => {
 MyRadioButtonGroup.propTypes = {
     name: PropTypes.string,
     className: PropTypes.string,
-    nombre: PropTypes.string,
+    label: PropTypes.string,
     options: PropTypes.any
 };
-
 
 const renderSelect = (props) => {
     const {

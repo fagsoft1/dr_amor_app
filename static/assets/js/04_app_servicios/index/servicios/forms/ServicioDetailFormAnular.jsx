@@ -30,7 +30,7 @@ let ServicioDetailFormAnular = memo(props => {
                 <div className='col-12'>
                     <MyTextFieldSimple
                         name='observacion_anulacion'
-                        nombre='Especifique claramente por qué va a anular...'
+                        label='Especifique claramente por qué va a anular...'
                         multiline
                         rowsMax="4"
                         className='col-md-12'

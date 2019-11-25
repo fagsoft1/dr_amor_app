@@ -33,7 +33,8 @@ let Login = (props) => {
     const esta_cargando = useSelector(state => state.esta_cargando);
     const auth = useSelector(state => state.auth);
     const dispatch = useDispatch();
-    const onSubmit = (e) => dispatch(actions.login(e.username, e.password));
+    const cargarConfiguracionAplicacion = () => dispatch(actions.fetchConfiguracionAplicacion());
+    const onSubmit = (e) => dispatch(actions.login(e.username, e.password, {callback: cargarConfiguracionAplicacion}));
     if (auth.isAuthenticated) {
         return <Redirect to="/"/>
     }
@@ -48,7 +49,7 @@ let Login = (props) => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <MyTextFieldSimple
                     name='username'
-                    nombre='Nombre de Usuario'
+                    label='Nombre de Usuario'
                     disabled={esta_cargando.cargando}
                     className='col-12'
                     onChange={() => {
@@ -58,7 +59,7 @@ let Login = (props) => {
                 <Fragment>
                     <MyTextFieldSimple
                         name='password'
-                        nombre='Contraseña'
+                        label='Contraseña'
                         className='col-12'
                         type='password'
                         disabled={esta_cargando.cargando}

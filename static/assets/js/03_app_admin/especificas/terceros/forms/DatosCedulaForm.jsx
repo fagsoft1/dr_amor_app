@@ -19,28 +19,28 @@ const DatosCedulaForm = () => {
 
             <MyTextFieldSimple
                 className='col-12 col-md-6 col-xl-3'
-                nombre='Nombre'
+                label='Nombre'
                 name='nombre'
                 case='U'
             />
 
             <MyTextFieldSimple
                 className='col-12 col-md-6 col-xl-3'
-                nombre='Segundo Nombre'
+                label='Segundo Nombre'
                 name='nombre_segundo'
                 case='U'
             />
 
             <MyTextFieldSimple
                 className='col-12 col-md-6 col-xl-3'
-                nombre='Apellido'
+                label='Apellido'
                 name='apellido'
                 case='U'
             />
 
             <MyTextFieldSimple
                 className='col-12 col-md-6 col-xl-3'
-                nombre='Segundo Apellido'
+                label='Segundo Apellido'
                 name='apellido_segundo'
                 case='U'
             />
@@ -62,7 +62,7 @@ const DatosCedulaForm = () => {
             />
             <MyTextFieldSimple
                 className='col-12 col-md-6 col-xl-3'
-                nombre='Nro. Identificación'
+                label='Nro. Identificación'
                 name='nro_identificacion'
             />
 
@@ -87,13 +87,13 @@ const DatosCedulaForm = () => {
                 <div className="row">
                     <MyDateTimePickerField
                         className="col-12 col-md-6"
-                        nombre='Fecha de Nacimiento'
+                        label='Fecha de Nacimiento'
                         name='fecha_nacimiento'
                         show_edad={true}
                     />
                     <MyRadioButtonGroup
                         className="col-12 col-md-6"
-                        nombre='Genero'
+                        label='Genero'
                         name='genero'
                         required={true}
                         options={[
