@@ -45,7 +45,7 @@ export const addGrupoUsuario = (id, grupo_id, options_action = {}) => {
 export const fetchUsuario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
 
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
@@ -61,7 +61,7 @@ export const clearUsuarios = (options_action = {}) => {
 export const createUsuario = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return createObject(current_url_api, values, options);
@@ -81,7 +81,7 @@ export const deleteUsuario = (id, options_action = {}) => {
 export const updateUsuario = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);
@@ -91,7 +91,7 @@ export const updateUsuario = (id, values, options_action = {}) => {
 export const fetchUsuarios = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {

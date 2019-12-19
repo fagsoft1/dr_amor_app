@@ -24,7 +24,7 @@ export const fetchMisPermisosxListado = (listados_permisos = [], options_action 
         const SUB_URL = '/tengo_permisos';
         const FULL_URL = `${current_url_api}${SUB_URL}/?listado_permisos=${permisos_listado_consulta}`;
         const dispatches = (response) => {
-            dispatch({type: TYPES.mis_permisos, payload: response})
+            dispatch({type: TYPES.mis_permisos, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -43,7 +43,7 @@ export function fetchMisPermisos(options_action = {}) {
         const SUB_URL = '/mis_permisos';
         const FULL_URL = `${current_url_api}${SUB_URL}`;
         const dispatches = (response) => {
-            dispatch({type: TYPES.mis_permisos, payload: response})
+            dispatch({type: TYPES.mis_permisos, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -61,7 +61,7 @@ export function fetchPermisosActivos(options_action = {}) {
         const SUB_URL = '/permisos_activos';
         const FULL_URL = `${current_url_api}${SUB_URL}`;
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -80,7 +80,7 @@ export function fetchPermisosPorGrupo(grupo_id, options_action = {}) {
         const SUB_URL = `/por_grupo/?grupo_id=${grupo_id}`;
         const FULL_URL = `${current_url_api}${SUB_URL}`;
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -98,7 +98,7 @@ export function fetchPermisosxUsuario(id, options_action = {}) {
         const SUB_URL = `/permiso_x_usuario/?user_id=${id}`;
         const FULL_URL = `${current_url_api}${SUB_URL}`;
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -114,7 +114,7 @@ export function fetchPermisosxUsuario(id, options_action = {}) {
 export const fetchPermisos = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -130,7 +130,7 @@ export const fetchPermisos = (options_action = {}) => {
 export const updatePermiso = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);
@@ -140,7 +140,7 @@ export const updatePermiso = (id, values, options_action = {}) => {
 export const fetchPermiso = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
 
         const options = {dispatches, ...options_action, dispatch_method: dispatch};

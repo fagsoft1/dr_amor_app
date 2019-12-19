@@ -11,7 +11,7 @@ const current_url_api = 'parqueadero_modalidades_fracciones_tiempos_detalles';
 export const createModalidadFraccionTiempoDetalle = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         createObject(current_url_api, values, options);
@@ -29,7 +29,7 @@ export const deleteModalidadFraccionTiempoDetalle = (id, options_action = {}) =>
 export const fetchModalidadesFraccionesTiemposDetalles = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -46,7 +46,7 @@ export function fetchModalidadesFraccionesTiemposDetalles_por_modalidad_fraccion
         const SUB_URL = `/por_modalidad_fraccion_tiempo/?modalidad_fraccion_tiempo_id=${modalidad_fraccion_tiempo_id}`;
         const FULL_URL = `${current_url_api}${SUB_URL}`;
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -62,7 +62,7 @@ export function fetchModalidadesFraccionesTiemposDetalles_por_modalidad_fraccion
 export const fetchModalidadFraccionTiempoDetalle = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
@@ -77,7 +77,7 @@ export const clearModalidadesFraccionesTiemposDetalles = (options_action = {}) =
 export const updateModalidadFraccionTiempoDetalle = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         updateObject(current_url_api, id, values, options);

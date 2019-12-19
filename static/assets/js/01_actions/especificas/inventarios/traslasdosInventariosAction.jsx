@@ -18,7 +18,7 @@ export const cambiarEstadoTrasladoInventario = (id, nuevo_estado, options_action
         let params = new URLSearchParams();
         params.append('nuevo_estado', nuevo_estado);
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return callApiMethodPostParameters(current_url_api, id, 'cambiar_estado', params, options)
@@ -28,7 +28,7 @@ export const cambiarEstadoTrasladoInventario = (id, nuevo_estado, options_action
 export const trasladarTrasladoInventario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {
             dispatches,
@@ -41,7 +41,7 @@ export const trasladarTrasladoInventario = (id, options_action = {}) => {
 export const createTrasladoInventario = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return createObject(current_url_api, values, options);
@@ -59,7 +59,7 @@ export const deleteTrasladoInventario = (id, options_action = {}) => {
 export const fetchTrasladosInventarios = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -74,7 +74,7 @@ export const fetchTrasladosInventarios = (options_action = {}) => {
 export const fetchTrasladosInventariosxBodegaDestino = (bodega_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -90,7 +90,7 @@ export const fetchTrasladosInventariosxBodegaDestino = (bodega_id, options_actio
 export const fetchTrasladoInventario = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return fetchObject(current_url_api, id, options);
@@ -105,7 +105,7 @@ export const clearTrasladosInventarios = (options_action = {}) => {
 export const updateTrasladoInventario = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);

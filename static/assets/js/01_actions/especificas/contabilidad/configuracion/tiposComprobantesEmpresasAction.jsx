@@ -11,7 +11,7 @@ const current_url_api = 'contabilidad_comprobantes_tipos_empresas';
 export const createTipoComprobanteContableEmpresa = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return createObject(current_url_api, values, options);
@@ -29,7 +29,7 @@ export const deleteTipoComprobanteContableEmpresa = (id, options_action = {}) =>
 export const fetchTiposComprobantesContablesEmpresas = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -43,7 +43,7 @@ export const fetchTiposComprobantesContablesEmpresas = (options_action = {}) => 
 export const fetchTipoComprobanteContableEmpresa = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return fetchObject(current_url_api, id, options);
@@ -58,7 +58,7 @@ export const clearTiposComprobantesContablesEmpresas = (options_action = {}) => 
 export const updateTipoComprobanteContableEmpresa = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);

@@ -24,7 +24,7 @@ export function refreshDeleteMovimientoInventarioDetalle(id) {
 export const createMovimientoInventarioDetalle = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return createObject(current_url_api, values, options);
@@ -42,7 +42,7 @@ export const deleteMovimientoInventarioDetalle = (id, options_action = {}) => {
 export const fetchMovimientosInventariosDetalles = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -58,7 +58,7 @@ export const fetchMovimientosInventariosDetalles = (options_action = {}) => {
 export const fetchMovimientosInventariosDetallesxMovimiento = (movimiento_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -73,7 +73,7 @@ export const fetchMovimientosInventariosDetallesxMovimiento = (movimiento_id, op
 export const fetchMovimientosInventariosDetallesSaldosxBodega = (bodega_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -88,7 +88,7 @@ export const fetchMovimientosInventariosDetallesSaldosxBodega = (bodega_id, opti
 // export const fetchMovimientoIntentariosDetalles_por_tercero_cuenta_abierta = (tercero_id, options_action = {}) => {
 //     return (dispatch) => {
 //         const dispatches = (response) => {
-//             dispatch({type: TYPES.fetch_all, payload: response})
+//             dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
 //         };
 //         const {limpiar_coleccion = true} = options_action;
 //         const options = {
@@ -103,7 +103,7 @@ export const fetchMovimientosInventariosDetallesSaldosxBodega = (bodega_id, opti
 export const fetchMovimientosInventariosDetallesSaldosxPDV = (punto_venta_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -118,7 +118,7 @@ export const fetchMovimientosInventariosDetallesSaldosxPDV = (punto_venta_id, op
 export const fetchMovimientosInventariosDetallesxBodegaxFecha = (bodega_id, fecha_inicial, fecha_final, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -133,7 +133,7 @@ export const fetchMovimientosInventariosDetallesxBodegaxFecha = (bodega_id, fech
 export const fetchMovimientosInventariosDetallesxBodegaxProducto = (bodega_id, producto_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -148,7 +148,7 @@ export const fetchMovimientosInventariosDetallesxBodegaxProducto = (bodega_id, p
 export const fetchMovimientoInventarioDetalle = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return fetchObject(current_url_api, id, options);
@@ -163,7 +163,7 @@ export const clearMovimientosInventariosDetalles = (options_action = {}) => {
 export const updateMovimientoInventarioDetalle = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);

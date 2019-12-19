@@ -11,7 +11,7 @@ const current_url_api = 'arqueos_cajas';
 export const createArqueoCaja = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return createObject(current_url_api, values, options);
@@ -29,7 +29,7 @@ export const deleteArqueoCaja = (id, options_action = {}) => {
 export const fetchArqueosCajas = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -44,7 +44,7 @@ export const fetchArqueosCajas = (options_action = {}) => {
 export const fetchMiUltimoArqueoCaja = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -60,7 +60,7 @@ export const fetchMiUltimoArqueoCaja = (options_action = {}) => {
 export const fetchArqueoCaja = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return fetchObject(current_url_api, id, options);
@@ -77,7 +77,7 @@ export const clearArqueosCajas = (options_action = {}) => {
 export const updateArqueoCaja = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);

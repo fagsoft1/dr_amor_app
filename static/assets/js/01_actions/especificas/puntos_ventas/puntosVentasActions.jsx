@@ -27,7 +27,7 @@ export const relacionarConceptoCajaPuntoVenta = (id, concepto_id, options_action
         params.append('concepto_id', concepto_id);
         params.append('tipo_accion', 'add');
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {...options_action, dispatches, dispatch_method: dispatch};
         return callApiMethodPostParameters(current_url_api, id, 'relacionar_concepto_caja', params, options)
@@ -40,7 +40,7 @@ export const setCierreConceptoCajaPuntoVenta = (id, concepto_id, en_cierre, opti
         params.append('concepto_id', concepto_id);
         params.append('en_cierre', en_cierre);
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {...options_action, dispatches, dispatch_method: dispatch};
         return callApiMethodPostParameters(current_url_api, id, 'set_cierre_concepto_operacion_caja', params, options)
@@ -53,7 +53,7 @@ export const setActivoMetodoPagoPuntoVenta = (id, metodo_pago_id, activo, option
         params.append('metodo_pago_id', metodo_pago_id);
         params.append('activo', activo);
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {...options_action, dispatches, dispatch_method: dispatch};
         return callApiMethodPostParameters(current_url_api, id, 'set_activo_metodo_pago', params, options)
@@ -66,7 +66,7 @@ export const quitarConceptoCajaPuntoVenta = (id, concepto_id, options_action = {
         params.append('concepto_id', concepto_id);
         params.append('tipo_accion', 'rem');
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {...options_action, dispatches, dispatch_method: dispatch};
         return callApiMethodPostParameters(current_url_api, id, 'relacionar_concepto_caja', params, options)
@@ -79,7 +79,7 @@ export const relacionarMetodoPagoPuntoVenta = (id, metodo_pago_id, options_actio
         params.append('metodo_pago_id', metodo_pago_id);
         params.append('tipo_accion', 'add');
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {...options_action, dispatches, dispatch_method: dispatch};
         return callApiMethodPostParameters(current_url_api, id, 'relacionar_metodo_pago', params, options)
@@ -92,7 +92,7 @@ export const quitarMetodoPagoPuntoVenta = (id, metodo_pago_id, options_action = 
         params.append('metodo_pago_id', metodo_pago_id);
         params.append('tipo_accion', 'rem');
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {...options_action, dispatches, dispatch_method: dispatch};
         return callApiMethodPostParameters(current_url_api, id, 'relacionar_metodo_pago', params, options)
@@ -135,7 +135,7 @@ export const hacerEntregaEfectivoCajaPuntoVenta = (id, cierre, options_action = 
 export const fetchPuntosVentas_por_usuario_username = (username, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -151,7 +151,7 @@ export const fetchPuntosVentas_por_usuario_username = (username, options_action 
 export const fetchPuntosVentas_por_colaborador = (colaborador_id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -167,7 +167,7 @@ export const fetchPuntosVentas_por_colaborador = (colaborador_id, options_action
 export const createPuntoVenta = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return createObject(current_url_api, values, options);
@@ -185,7 +185,7 @@ export const deletePuntoVenta = (id, options_action = {}) => {
 export const fetchPuntosVentas = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -201,7 +201,7 @@ export const fetchPuntosVentas = (options_action = {}) => {
 export const fetchPuntoVenta = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return fetchObject(current_url_api, id, options);
@@ -216,7 +216,7 @@ export const clearPuntosVentas = (options_action = {}) => {
 export const updatePuntoVenta = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);

@@ -5,7 +5,7 @@ const current_url_api = 'configuracion_aplicacion';
 export const fetchConfiguracionAplicacion = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_configuracion_aplicacion, payload: response})
+            dispatch({type: TYPES.fetch_configuracion_aplicacion, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {

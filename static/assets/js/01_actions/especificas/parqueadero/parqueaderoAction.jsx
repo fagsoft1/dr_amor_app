@@ -11,7 +11,7 @@ const current_url_api = 'parqueadero_tipos_vehiculos';
 export const createTipoVehiculo = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         createObject(current_url_api, values, options);
@@ -29,7 +29,7 @@ export const deleteTipoVehiculo = (id, options_action = {}) => {
 export const fetchTiposVehiculos = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -43,7 +43,7 @@ export const fetchTiposVehiculos = (options_action = {}) => {
 export const fetchTipoVehiculo = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
@@ -58,7 +58,7 @@ export const clearTiposVehiculos = (options_action = {}) => {
 export const updateTipoVehiculo = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         updateObject(current_url_api, id, values, options);

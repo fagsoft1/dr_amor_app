@@ -5,7 +5,7 @@ const current_url_api = 'configuracion_aplicacion_server_information';
 export const fetchServerInformation = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_server_data, payload: response})
+            dispatch({type: TYPES.fetch_server_data, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {

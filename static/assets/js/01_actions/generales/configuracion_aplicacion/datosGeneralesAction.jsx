@@ -8,7 +8,7 @@ const current_url_api = 'configuracion_aplicacion_datos_generales';
 export const fetchDatosGeneralesAplicacion = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_datos_generales, payload: response})
+            dispatch({type: TYPES.fetch_datos_generales, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -28,7 +28,7 @@ export const clearDatosGeneralesAplicacion = (options_action = {}) => {
 export const updateDatoGeneralAplicacion = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update_datos_generales, payload: response})
+            dispatch({type: TYPES.update_datos_generales, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);

@@ -12,7 +12,7 @@ const current_url_api = 'historico';
 export const fetchHistoricosRevisionsEmpresas = (id_object, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -28,7 +28,7 @@ export const fetchHistoricosRevisionsEmpresas = (id_object, options_action = {})
 export const fetchHistoricosRevisionsHabitaciones = (id_object, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -43,7 +43,7 @@ export const fetchHistoricosRevisionsHabitaciones = (id_object, options_action =
 export const fetchHistoricosRevisions = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -57,7 +57,7 @@ export const fetchHistoricosRevisions = (options_action = {}) => {
 export const fetchHistoricoRevision = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return fetchObject(current_url_api, id, options);

@@ -16,7 +16,7 @@ export const adicionarQuitarImpuestoModalidadFraccionTiempo = (id, impuesto_id, 
         params.append('impuesto_id', impuesto_id);
         params.append('tipo', tipo);
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {...options_action, dispatches, dispatch_method: dispatch};
         return callApiMethodPostParameters(current_url_api, id, 'adicionar_quitar_impuesto', params, options)
@@ -25,7 +25,7 @@ export const adicionarQuitarImpuestoModalidadFraccionTiempo = (id, impuesto_id, 
 export const createModalidadFraccionTiempo = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         createObject(current_url_api, values, options);
@@ -43,7 +43,7 @@ export const deleteModalidadFraccionTiempo = (id, options_action = {}) => {
 export const fetchModalidadesFraccionesTiempos = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -60,7 +60,7 @@ export function fetchModalidadesFraccionesTiempos_por_tipo_vehiculo(tipo_vehicul
         const SUB_URL = `/por_tipo_vehiculo/?tipo_vehiculo_id=${tipo_vehiculo_id}`;
         const FULL_URL = `${current_url_api}${SUB_URL}`;
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -76,7 +76,7 @@ export function fetchModalidadesFraccionesTiempos_por_tipo_vehiculo(tipo_vehicul
 export const fetchModalidadFraccionTiempo = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         fetchObject(current_url_api, id, options);
@@ -91,7 +91,7 @@ export const clearModalidadesFraccionesTiempos = (options_action = {}) => {
 export const updateModalidadFraccionTiempo = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         updateObject(current_url_api, id, values, options);

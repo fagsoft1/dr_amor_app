@@ -32,7 +32,7 @@ export const liquidarCuentaAcompananteTerceroCuenta = (id, valor_efectivo, optio
 export const createTerceroCuenta = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return createObject(current_url_api, values, options);
@@ -50,7 +50,7 @@ export const deleteTerceroCuenta = (id, options_action = {}) => {
 export const fetchTercerosCuentas = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -64,7 +64,7 @@ export const fetchTercerosCuentas = (options_action = {}) => {
 export const fetchTercerosCuentasAcompananteSinLiquidar = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -78,7 +78,7 @@ export const fetchTercerosCuentasAcompananteSinLiquidar = (options_action = {}) 
 export const fetchTercerosCuentasSinLiquidar = (options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -92,7 +92,7 @@ export const fetchTercerosCuentasSinLiquidar = (options_action = {}) => {
 export const fetchTerceroCuenta = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return fetchObject(current_url_api, id, options);
@@ -107,7 +107,7 @@ export const clearTercerosCuentas = (options_action = {}) => {
 export const updateTerceroCuenta = (id, values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);

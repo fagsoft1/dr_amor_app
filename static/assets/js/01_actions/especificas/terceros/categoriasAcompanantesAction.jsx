@@ -13,7 +13,7 @@ const current_url_api = 'categorias_acompanante';
 export const createCategoriaAcompanante = (values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.create, payload: response})
+            dispatch({type: TYPES.create, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return createObject(current_url_api, values, options);
@@ -31,7 +31,7 @@ export const deleteCategoriaAcompanante = (id, options_action={}) => {
 export const fetchCategoriasAcompanantes = (options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch_all, payload: response})
+            dispatch({type: TYPES.fetch_all, payload: {...response, ...options_action}})
         };
         const {limpiar_coleccion = true} = options_action;
         const options = {
@@ -47,7 +47,7 @@ export const fetchCategoriasAcompanantes = (options_action={}) => {
 export const fetchCategoriaAcompanante = (id, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.fetch, payload: response})
+            dispatch({type: TYPES.fetch, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return fetchObject(current_url_api, id, options);
@@ -62,7 +62,7 @@ export const clearCategoriasAcompanantes = (options_action = {}) => {
 export const updateCategoriaAcompanante = (id, values, options_action={}) => {
     return (dispatch) => {
         const dispatches = (response) => {
-            dispatch({type: TYPES.update, payload: response})
+            dispatch({type: TYPES.update, payload: {...response, ...options_action}})
         };
         const options = {dispatches, ...options_action, dispatch_method: dispatch};
         return updateObject(current_url_api, id, values, options);
