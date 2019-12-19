@@ -5,6 +5,7 @@ const validate = values => {
         'tipo',
         'grupo',
         'concepto',
+        'observacion',
         'tercero',
         'valor',
     ];

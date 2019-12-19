@@ -29,7 +29,12 @@ const ConfiguracionAplicacionDashboard = memo(() => {
             >
                 <Tab label="Datos Generales" value={0}/>
             </Tabs>
-            {slideIndex === 0 && <DatoGeneralAplicacionForm configuracion_aplicacion={configuracion_aplicacion}/>}
+            {slideIndex === 0 && <Fragment>
+                {configuracion_aplicacion &&
+                <DatoGeneralAplicacionForm initialValues={configuracion_aplicacion['datos_generales']}
+                                           logo={configuracion_aplicacion['datos_generales'].logo}/>}
+            </Fragment>
+            }
         </Fragment>
     )
 });

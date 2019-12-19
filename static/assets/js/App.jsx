@@ -1,6 +1,6 @@
 import React, {Fragment, memo, useEffect, Suspense, lazy} from 'react';
 import {hot} from 'react-hot-loader'
-import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
+import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import ReduxPromise from 'redux-promise';
@@ -28,7 +28,6 @@ import {createMuiTheme, makeStyles, MuiThemeProvider} from '@material-ui/core/st
 
 import indigo from '@material-ui/core/colors/indigo';
 import red from '@material-ui/core/colors/red';
-import green from '@material-ui/core/colors/green';
 import orange from '@material-ui/core/colors/orange';
 
 
@@ -88,6 +87,7 @@ const AppAcceso = lazy(() => import('./06_app_acceso/App'));
 const AppConsultas = lazy(() => import('./09_app_consultas/App'));
 const MiCuenta = lazy(() => import('./08_app_mi_cuenta/App'));
 import Login from './authentication/login/Login';
+import {ProvideAuth, useAuth} from "./00_utilities/hooks";
 
 const useStyles = makeStyles(theme => ({
         info_usuario: {
@@ -134,49 +134,54 @@ const InfoUsuario = memo(() => {
     )
 });
 
-const PrivateRoute = ({component: ChildComponent, ...rest}) => {
-    const auth = useSelector(state => state.auth);
-    return <Route {...rest} render={props => {
-        if (auth.isLoading) {
-            return <em>Loading...</em>;
-        } else if (!auth.isAuthenticated) {
-            return <Redirect to="/app/login"/>;
-        } else {
-            return <ChildComponent {...props} />
-        }
-    }}/>
-};
+import useRequireAuth from './00_utilities/hooks/useRequireAuth';
 
 let ContainerRoot = () => {
     const dispatch = useDispatch();
+    const authentication = useRequireAuth('/app/login');
+    const {auth: {isAuthenticated, isLoading}} = authentication;
     useEffect(() => {
-        dispatch(actions.loadUser());
-        dispatch(actions.fetchConfiguracionAplicacion())
-    },[]);
+        if (isAuthenticated) {
+            const cargarConfiguracionAplicacion = () => dispatch(actions.fetchConfiguracionAplicacion({
+                callback: (response) => {
+                    const {datos_generales} = response;
+                    document.title = datos_generales.nombre_aplicacion;
+                }
+            }));
+            dispatch(actions.fetchServerInformation({callback: cargarConfiguracionAplicacion}));
+        }
+    }, [isAuthenticated]);
+    if (isLoading) {
+        return <div>Esta cargando...</div>
+    }
+    if (!isAuthenticated) {
+        return (
+            <Switch>
+                <Route path='/app/login' component={Login}/>
+            </Switch>
+        )
+    }
     return (
-        <BrowserRouter>
-            <Fragment>
-                <Notification/>
-                <RouteLocationManager/>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <Switch>
-                        <PrivateRoute exact path="/" component={AppIndex}/>
-                        <PrivateRoute exact path='/app' component={AppIndex}/>
-                        <Route path='/app/login' component={Login}/>
-                        <PrivateRoute path='/app/mi_cuenta' component={MiCuenta}/>
-                        <PrivateRoute path='/app/admin' component={AppAdmin}/>
-                        <PrivateRoute path='/app/tienda' component={AppTienda}/>
-                        <PrivateRoute path='/app/parqueadero' component={AppParqueadero}/>
-                        <PrivateRoute path='/app/consultas' component={AppConsultas}/>
-                        <PrivateRoute path='/app/servicios' component={AppServicios}/>
-                        <PrivateRoute path='/app/cajas' component={AppCaja}/>
-                        <PrivateRoute path='/app/acceso' component={AppAcceso}/>
-                        <PrivateRoute component={NotFound}/>
-                    </Switch>
-                </Suspense>
-                <InfoUsuario/>
-            </Fragment>
-        </BrowserRouter>
+        <Fragment>
+            <Notification/>
+            <RouteLocationManager/>
+            <Suspense fallback={<div>Loading...</div>}>
+                <Switch>
+                    <Route path='/app/login' component={Login}/>
+                    <Route path='/app/mi_cuenta' component={MiCuenta}/>
+                    <Route path='/app/admin' component={AppAdmin}/>
+                    <Route path='/app/tienda' component={AppTienda}/>
+                    <Route path='/app/parqueadero' component={AppParqueadero}/>
+                    <Route path='/app/consultas' component={AppConsultas}/>
+                    <Route path='/app/servicios' component={AppServicios}/>
+                    <Route path='/app/cajas' component={AppCaja}/>
+                    <Route path='/app/acceso' component={AppAcceso}/>
+                    <Route path='/app' component={AppIndex}/>
+                    <Route path='/' component={AppIndex}/>
+                </Switch>
+            </Suspense>
+            <InfoUsuario/>
+        </Fragment>
     )
 };
 
@@ -185,11 +190,15 @@ ContainerRoot = hot(module)(ContainerRoot);
 const App = () => {
     return (
         <Provider store={store}>
-            <MuiThemeProvider theme={theme}>
-                <StylesContextProvider>
-                    <ContainerRoot/>
-                </StylesContextProvider>
-            </MuiThemeProvider>
+            <ProvideAuth>
+                <MuiThemeProvider theme={theme}>
+                    <StylesContextProvider>
+                        <BrowserRouter>
+                            <ContainerRoot/>
+                        </BrowserRouter>
+                    </StylesContextProvider>
+                </MuiThemeProvider>
+            </ProvideAuth>
         </Provider>
     )
 };

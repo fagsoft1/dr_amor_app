@@ -3,6 +3,7 @@ const validate = values => {
 
     const requiredFields = [
         'nombre',
+        'tipo_comprobante_contable_empresa',
         'tipo_vehiculo',
     ];
     requiredFields.map(field => {

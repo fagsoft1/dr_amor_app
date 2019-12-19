@@ -49,9 +49,9 @@ export const fetchMetodoPago = (id, options_action = {}) => {
         return fetchObject(current_url_api, id, options);
     }
 };
-export const clearMetodosPagos = () => {
+export const clearMetodosPagos = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

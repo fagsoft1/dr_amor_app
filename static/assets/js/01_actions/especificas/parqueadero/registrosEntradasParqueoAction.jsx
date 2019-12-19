@@ -95,9 +95,9 @@ export const fetchRegistroEntradaParqueo = (id, options_action = {}) => {
         fetchObject(current_url_api, id, options);
     }
 };
-export const clearRegistrosEntradasParqueos = () => {
+export const clearRegistrosEntradasParqueos = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

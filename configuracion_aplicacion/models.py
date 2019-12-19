@@ -6,6 +6,8 @@ from imagekit.models import ProcessedImageField, ImageSpecField
 
 
 class DatoGeneral(models.Model):
+    nombre_aplicacion = models.CharField(max_length=50,default='Nombre App.')
+
     def imagen_logo_upload_to(self, filename) -> str:  # pragma: no cover
         nro_random = random.randint(11111, 99999)
         return "img/logo/%s01j%sj10%s.%s" % (self.id, nro_random, self.id, filename.split('.')[-1])

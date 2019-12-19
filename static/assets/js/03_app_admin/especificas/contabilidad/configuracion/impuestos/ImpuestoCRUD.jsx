@@ -1,6 +1,6 @@
 import React, {memo, useEffect} from 'react';
 import CreateForm from './forms/ImpuestoForm';
-import Tabla from './ImpuestoTabla';
+import Tabla from './ImpuestoCRUDTabla';
 import crudHOC from '../../../../../00_utilities/components/HOCCrud';
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
 import * as actions from "../../../../../01_actions";

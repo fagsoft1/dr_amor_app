@@ -18,8 +18,8 @@ const selector = formValueSelector('tipoComprobanteContableEmpresaForm');
 let Form = memo(props => {
     const dispatch = useDispatch();
     const empresas = useSelector(state => state.empresas);
-    const form_values = useSelector(state => selector(state, 'tiene_vigencia', 'empresa'));
-    const {tiene_vigencia} = form_values;
+    const form_values = useSelector(state => selector(state, 'tiene_vigencia', 'empresa', 'fecha_inicial_vigencia'));
+    const {tiene_vigencia, fecha_inicial_vigencia} = form_values;
     useEffect(() => {
         dispatch(actions.fetchEmpresas());
     }, []);
@@ -107,6 +107,8 @@ let Form = memo(props => {
                             name='fecha_inicial_vigencia'
                         />
                         <MyDateTimePickerField
+                            max={new Date(2999, 0, 1)}
+                            min={new Date(fecha_inicial_vigencia)}
                             label='Fecha Final Vigencia'
                             className='col-12 col-md-4'
                             name='fecha_final_vigencia'

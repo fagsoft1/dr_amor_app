@@ -3,7 +3,7 @@ import ReactExport from "react-data-export";
 import Button from "@material-ui/core/Button";
 
 const ExcelDownload = (props) => {
-    const {data, name, file_name = 'DownloadedExcel'} = props;
+    let {data, name, file_name = 'DownloadedExcel'} = props;
     if (data.length === 0) {
         return <Fragment></Fragment>
     }
@@ -11,7 +11,7 @@ const ExcelDownload = (props) => {
     const ExcelFile = ReactExport.ExcelFile;
     const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
     const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-    const data_uno = data_descarga[0];
+    const data_uno = _.map(data)[0];
     let cabecera = [];
     _.mapKeys(data_uno, (value, key) => {
         cabecera = [...cabecera, key]

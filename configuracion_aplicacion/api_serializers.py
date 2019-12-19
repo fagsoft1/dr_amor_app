@@ -10,8 +10,9 @@ class DatoGeneralSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         logo = validated_data.get('logo', None)
+        nombre_aplicacion = validated_data.get('nombre_aplicacion', None)
         from .services import dato_general_crear_actualizar
-        configuracion = dato_general_crear_actualizar(logo=logo)
+        configuracion = dato_general_crear_actualizar(logo=logo, nombre_aplicacion=nombre_aplicacion)
         return configuracion
 
     class Meta:
@@ -20,6 +21,7 @@ class DatoGeneralSerializer(serializers.ModelSerializer):
             'url',
             'id',
             'logo',
+            'nombre_aplicacion',
             'icon_small',
             'icon_medium',
             'logo_small',

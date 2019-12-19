@@ -4,7 +4,7 @@ import Checkbox from '@material-ui/core/Checkbox/index';
 const PermisoActivoTablaItem = memo(props => {
     const [cambiar_nombre, setCambiarNombre] = useState(false);
     const [nombre_permiso, setNombrePermiso] = useState('');
-    const {item, item: {name, codename, activo, nombre}, updatePermiso, can_change} = props;
+    const {item, item: {name, codename, activo = false, nombre}, updatePermiso, can_change} = props;
     return (
         <tr>
             <td>{name}</td>
@@ -17,8 +17,8 @@ const PermisoActivoTablaItem = memo(props => {
                             style={{margin: 0, padding: 0}}
                             color='primary'
                             checked={activo}
-                            onClick={() => {
-                                updatePermiso({...item, activo: !activo});
+                            onChange={(event, value) => {
+                                updatePermiso({...item, activo: value});
                                 setCambiarNombre(false);
                             }}
                         />

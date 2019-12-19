@@ -57,9 +57,9 @@ export function printComprobanteLiquidacionCuenta(id, options_action) {
     }
 }
 
-export const clearLiquidacionesCuentas = () => {
+export const clearLiquidacionesCuentas = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

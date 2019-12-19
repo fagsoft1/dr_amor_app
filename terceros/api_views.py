@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.db.models import ProtectedError
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -166,7 +167,7 @@ class TerceroViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
 
 
 class AcompananteViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissionsFull]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Tercero.acompanantes.all()
     serializer_class = AcompananteSerializer
     search_fields = ['=nro_identificacion', 'nombre', 'nombre_segundo', 'apellido', 'apellido_segundo', 'alias_modelo']
@@ -213,10 +214,39 @@ class AcompananteViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
 
 
 class ColaboradorViewSet(TerceroViewSetMixin, viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissionsFull]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Tercero.colaboradores.select_related('usuario').filter(es_colaborador=True).all()
     serializer_class = ColaboradorSerializer
     search_fields = ['=nro_identificacion', 'nombre', 'nombre_segundo', 'apellido', 'apellido_segundo']
+
+    # def destroy(self, request, *args, **kwargs):
+    #     from django.db.utils import DEFAULT_DB_ALIAS
+    #     from django.contrib.admin.utils import NestedObjects
+    #     instancia = self.get_object()
+    #
+    #     collector = NestedObjects(using=DEFAULT_DB_ALIAS)
+    #     collector.collect([instancia])
+    #
+    #     protected = collector.protected
+    #
+    #     modelos_protegidos = {'protegidos': {}, 'eliminar': {}}
+    #     for x in protected:
+    #         if not modelos_protegidos['protegidos'].get(x._meta.verbose_name_plural, None):
+    #             modelos_protegidos['protegidos'][x._meta.verbose_name_plural] = 1
+    #         else:
+    #             modelos_protegidos['protegidos'][x._meta.verbose_name_plural] += 1
+    #
+    #     for model, objs in collector.model_objs.items():
+    #         if not modelos_protegidos['eliminar'].get(model._meta.verbose_name_plural, None):
+    #             modelos_protegidos['eliminar'][model._meta.verbose_name_plural] = len(objs)
+    #         else:
+    #             modelos_protegidos['eliminar'][model._meta.verbose_name_plural] += len(objs)
+    #
+    #     print(modelos_protegidos)
+    #     try:
+    #         return super().destroy(request, *args, **kwargs)
+    #     except ProtectedError as e:
+    #         raise serializers.ValidationError({'_error': 'Tiene elementos relacionados'})
 
     @action(detail=True, methods=['post'])
     def adicionar_punto_venta(self, request, pk=None):

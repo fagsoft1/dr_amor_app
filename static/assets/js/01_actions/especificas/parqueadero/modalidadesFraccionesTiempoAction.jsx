@@ -5,12 +5,23 @@ import {
     fetchObject,
     deleteObject,
     createObject,
-    fetchListGetURLParameters
+    fetchListGetURLParameters, callApiMethodPostParameters
 } from '../../00_general_fuctions'
 
-//por_tipo_vehiculo
-
 const current_url_api = 'parqueadero_modalidades_fracciones_tiempos';
+
+export const adicionarQuitarImpuestoModalidadFraccionTiempo = (id, impuesto_id, tipo, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        params.append('impuesto_id', impuesto_id);
+        params.append('tipo', tipo);
+        const dispatches = (response) => {
+            dispatch({type: TYPES.update, payload: response})
+        };
+        const options = {...options_action, dispatches, dispatch_method: dispatch};
+        return callApiMethodPostParameters(current_url_api, id, 'adicionar_quitar_impuesto', params, options)
+    }
+};
 export const createModalidadFraccionTiempo = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
@@ -71,9 +82,9 @@ export const fetchModalidadFraccionTiempo = (id, options_action = {}) => {
         fetchObject(current_url_api, id, options);
     }
 };
-export const clearModalidadesFraccionesTiempos = () => {
+export const clearModalidadesFraccionesTiempos = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

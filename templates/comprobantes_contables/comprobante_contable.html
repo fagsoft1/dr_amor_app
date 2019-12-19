@@ -1,0 +1,42 @@
+{% load static l10n humanize number_to_word mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="font-size: 9px">
+{% localize on %}
+    <div style="width: 100%">
+        <div style="border: dotted 1px black; text-align: center">
+            {{ descripcion_comprobante }} {{ codigo_comprobante }}-{{ nro_comprobante }}
+        </div>
+        <p>
+            <strong>Fecha:</strong> {{ fecha }}<br/>
+            <strong>Concepto:</strong> {{ concepto }}<br/>
+            {% if tercero_nombre %}<strong>Tercero:</strong> {{ tercero_nombre }}<br/>{% endif %}
+            {% if nota %}
+                <strong>Observación:</strong> {{ nota }}<br/>
+            {% endif %}
+        </p>
+        <div style="text-align: center">
+            <div style="font-size: 1.3rem"><strong>Valor: </strong>{{ valor }}</div>
+            <div>{% number_to_word valor|abs %}</div>
+            <p style="margin-top: 40px">
+                _______________________________<br/>
+                <strong>Firma</strong><br/>
+            </p>
+        </div>
+        <div style="text-align: center">
+            {% if pais %} {{ pais }} {% endif %}{% if ciudad and pais %} - {% endif %}{% if ciudad %}
+            {{ ciudad }} <br/>{% endif %}
+            {% if direccion %}{{ direccion }}<br/>{% endif %}
+            {% if telefono %}{{ telefono }}{% endif %}
+        </div>
+        <p style="font-size: 0.4rem; text-align: right">
+            <strong>Creado por:</strong> {{ usuario }}
+        </p>
+    </div>
+{% endlocalize %}
+</body>
+</html>

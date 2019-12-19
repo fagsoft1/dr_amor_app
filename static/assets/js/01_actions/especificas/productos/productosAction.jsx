@@ -78,9 +78,9 @@ export const fetchProducto = (id, options_action = {}) => {
         return fetchObject(current_url_api, id, options);
     }
 };
-export const clearProductos = () => {
+export const clearProductos = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

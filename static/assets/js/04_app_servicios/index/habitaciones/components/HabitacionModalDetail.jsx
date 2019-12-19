@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ServicioHabitacionList from './HabitacionServicioList'
-import SelectModeloServicio from '../../dashboard/components/forms/HabitacionModalDetailSelectAcompanante'
+import SelectModeloServicio from '../../dashboard/forms/HabitacionModalDetailSelectAcompanante'
 import Button from '@material-ui/core/Button';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import * as actions from '../../../../01_actions';

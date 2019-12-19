@@ -4,10 +4,36 @@ import {
     updateObject,
     fetchObject,
     deleteObject,
-    createObject, fetchListGetURLParameters,
+    createObject,
+    fetchListGetURLParameters,
+    fetchListPostURLParameters, callApiMethodPostParametersPDF,
 } from '../../../00_general_fuctions'
 
 const current_url_api = 'contabilidad_movimientos_asientos_contables';
+
+export const asentarOperacionContableAsientoContable = (values, options_action = {}) => {
+    return (dispatch) => {
+        let params = new URLSearchParams();
+        const dispatches = (response) => {
+            dispatch({type: TYPES.create, payload: response})
+        };
+        _.mapKeys(values, (v, k) => {
+            if (v) {
+                params.append(k, v);
+            }
+        });
+        const options = {dispatches, ...options_action, dispatch_method: dispatch};
+        return fetchListPostURLParameters(current_url_api, 'asentar_operacion_caja', params, options)
+    }
+};
+
+export function printComprobanteAsientoContable(id, options_action) {
+    return function (dispatch) {
+        const options = {...options_action, dispatch_method: dispatch};
+        return callApiMethodPostParametersPDF(current_url_api, id, 'imprimir_asiento_contable', null, options)
+    }
+}
+
 export const createAsientoContable = (values, options_action = {}) => {
     return (dispatch) => {
         const dispatches = (response) => {
@@ -64,9 +90,9 @@ export const fetchAsientoContable = (id, options_action = {}) => {
         return fetchObject(current_url_api, id, options);
     }
 };
-export const clearAsientosContables = () => {
+export const clearAsientosContables = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

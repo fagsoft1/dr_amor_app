@@ -16,13 +16,11 @@ import {useSelector} from "react-redux/es/hooks/useSelector";
 let Form = memo((props) => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(actions.fetchTiposHabitaciones({callback: () => dispatch(actions.fetchEmpresas())}));
+        dispatch(actions.fetchTiposHabitaciones());
         return () => {
-            dispatch(actions.clearEmpresas());
             dispatch(actions.clearTiposHabitaciones());
         }
     }, []);
-    const empresas = useSelector(state => state.empresas);
     const {
         pristine,
         submitting,
@@ -53,38 +51,6 @@ let Form = memo((props) => {
                 label='Nombre'
                 name='nombre'
                 case='U'
-            />
-            <MyTextFieldSimple
-                className="col-12 col-md-7"
-                label='Valor Impuesto Único'
-                name='valor_impuesto_unico'
-                InputProps={{
-                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                }}
-            />
-            <MyTextFieldSimple
-                className="col-12 col-md-3 pl-4"
-                label='% Iva'
-                name='porcentaje_iva'
-                InputProps={{
-                    startAdornment: <InputAdornment position="end">%</InputAdornment>,
-                }}
-            />
-            <MyCombobox
-                className="col-12"
-                label='Empresa'
-                label_space_xs={4}
-                name='empresa'
-                textField='nombre'
-                placeholder='Seleccionar Empresa...'
-                valuesField='id'
-                data={_.map(empresas, h => {
-                    return ({
-                        id: h.id,
-                        nombre: h.nombre
-                    })
-                })}
-                filter='contains'
             />
             <MyCheckboxSimple
                 label='Tiene Placa'

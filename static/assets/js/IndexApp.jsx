@@ -97,12 +97,15 @@ const IndexApp = memo((props) => {
     const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
     const {user: {username, punto_venta_actual}, user} = auth;
+    const server_information = useSelector(state => state.server_information);
     const mis_permisos = useSelector(state => state.mis_permisos);
     const puntos_ventas = useSelector(state => state.puntos_ventas);
     const arqueos_cajas = useSelector(state => state.arqueos_cajas);
     const permisos_modulo_acceso = permisosAdapter(mis_permisos, permisos_view);
     const configuracion_aplicacion = useSelector(state => state.configuracion_aplicacion);
     const {datos_generales} = configuracion_aplicacion;
+
+    console.log(puntos_ventas)
 
     useEffect(() => {
         const cargarPuntosVenta = () => dispatch(actions.fetchPuntosVentas_por_usuario_username(username));

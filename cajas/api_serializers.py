@@ -26,6 +26,7 @@ class ConceptoOperacionCajaPuntoVentaSerializer(serializers.ModelSerializer):
         )
 
 
+# todo BORRAR
 class OperacionCajaSerializer(serializers.ModelSerializer):
     usuario_cajero_username = serializers.CharField(
         source='punto_venta_turno.usuario.username',
@@ -63,20 +64,21 @@ class OperacionCajaSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         from .services import operacion_caja_crear
+        print(validated_data)
         concepto = validated_data.get('concepto', None)
         valor = validated_data.get('valor', None)
         tercero = validated_data.get('tercero', None)
         observacion = validated_data.get('observacion', None)
         usuario_pv = validated_data.get('usuario_pv')
 
-        operacion_caja = operacion_caja_crear(
-            concepto_id=concepto.id,
-            usuario_pdv_id=usuario_pv.id,
-            valor=valor,
-            tercero_id=tercero.id if tercero is not None else None,
-            observacion=observacion
-        )
-        return operacion_caja
+        # operacion_caja = operacion_caja_crear(
+        #     concepto_id=concepto.id,
+        #     usuario_pdv_id=usuario_pv.id,
+        #     valor=valor,
+        #     tercero_id=tercero.id if tercero is not None else None,
+        #     observacion=observacion
+        # )
+        return None
 
 
 class ConceptoOperacionCajaSerializer(serializers.ModelSerializer):

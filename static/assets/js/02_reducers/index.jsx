@@ -7,6 +7,7 @@ import usuariosReducer from './generales/usuariosReducer';
 import loadingReducer from './generales/loadingReducer';
 import menuReducer from './generales/menuReducer';
 import configuracionAplicacionReducer from './generales/configuracion_aplicacion/configuracionAplicacionReducer';
+import serverInformationReducer from './generales/configuracion_aplicacion/serverInformationReducer';
 import auth from './generales/authentication/authenticationReducer';
 
 
@@ -75,6 +76,7 @@ import {reducer as notificationsReducers} from 'react-notification-system-redux'
 const rootReducer = combineReducers({
     mis_permisos: misPermisosReducer,
     configuracion_aplicacion: configuracionAplicacionReducer,
+    server_information: serverInformationReducer,
     permisos: permisosReducer,
     grupos_permisos: gruposPermisosReducer,
     usuarios: usuariosReducer,

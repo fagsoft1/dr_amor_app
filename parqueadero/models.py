@@ -6,14 +6,12 @@ from empresas.models import Empresa
 from model_utils.models import TimeStampedModel
 from puntos_venta.models import PuntoVentaTurno
 from contabilidad_impuestos.models import Impuesto
+from contabilidad_comprobantes.models import TipoComprobanteContableEmpresa
 
 
 class TipoVehiculo(models.Model):
-    empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT)
     nombre = models.CharField(max_length=120, unique=True)
     impuestos = models.ManyToManyField(Impuesto, related_name='tipos_vehiculos')
-    porcentaje_iva = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    valor_impuesto_unico = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tiene_placa = models.BooleanField(default=False)
 
     class Meta:
@@ -34,6 +32,11 @@ class ModalidadFraccionTiempo(models.Model):
     viernes = models.BooleanField(default=True)
     sabado = models.BooleanField(default=True)
     domingo = models.BooleanField(default=True)
+    tipo_comprobante_contable_empresa = models.ForeignKey(
+        TipoComprobanteContableEmpresa,
+        on_delete=models.PROTECT
+    )
+    impuestos = models.ManyToManyField(Impuesto, related_name='modalidades_fracciones_tiempo')
 
     class Meta:
         permissions = [
@@ -49,24 +52,33 @@ class ModalidadFraccionTiempoDetalle(models.Model):
     minutos = models.PositiveIntegerField()
     valor = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
+    @property
+    def valor_antes_impuestos(self):
+        valor = self.valor
+        valor_impuestos_tipo_3 = 0
+        impuestos_tipo_3 = self.modalidad_fraccion_tiempo.impuestos.filter(tipo_calculo_impuesto=3)
+        if impuestos_tipo_3:
+            for impuesto in impuestos_tipo_3:
+                if impuesto.tipo_calculo_impuesto == 3:
+                    valor_impuestos_tipo_3 += impuesto.tasa_importe_venta
+                    valor -= impuesto.tasa_importe_venta
+
+        impuestos_tipo_1 = self.modalidad_fraccion_tiempo.impuestos.filter(tipo_calculo_impuesto=1)
+        if impuestos_tipo_1:
+            for impuesto in impuestos_tipo_1:
+                if impuesto.tipo_calculo_impuesto == 1:
+                    valor = valor / (1 + (impuesto.tasa_importe_venta / 100))
+        return valor
+
+    @property
+    def impuesto(self):
+        return self.valor - self.valor_antes_impuestos
+
     class Meta:
         unique_together = [('modalidad_fraccion_tiempo', 'minutos')]
         permissions = [
             ['list_modalidadfracciontiempodetalle', 'Puede listar modalidades fracciones tiempos detalles'],
         ]
-
-    @property
-    def valor_antes_impuestos(self) -> Decimal:
-        return self.valor / (1 + (
-                self.modalidad_fraccion_tiempo.tipo_vehiculo.porcentaje_iva / 100)) - self.modalidad_fraccion_tiempo.tipo_vehiculo.valor_impuesto_unico
-
-    @property
-    def valor_unico_impuesto(self) -> Decimal:
-        return self.modalidad_fraccion_tiempo.tipo_vehiculo.valor_impuesto_unico
-
-    @property
-    def impuesto_iva(self) -> Decimal:
-        return self.valor - self.valor_antes_impuestos - self.valor_unico_impuesto
 
     @property
     def tipo_vehiculo_nombre(self) -> str:

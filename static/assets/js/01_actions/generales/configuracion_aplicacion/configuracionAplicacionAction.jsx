@@ -16,9 +16,9 @@ export const fetchConfiguracionAplicacion = (options_action = {}) => {
         return fetchListGet(current_url_api, options);
     }
 };
-export const clearConfiguracionAplicacion = () => {
+export const clearConfiguracionAplicacion = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

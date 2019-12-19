@@ -1,3 +1,8 @@
+export const SERVER_INFORMATION_TYPES = {
+    fetch_server_data: 'fetch_server_information',
+    clear: 'clear_server_information'
+};
+
 export const CONFIGURACION_APLICACION_TYPES = {
     fetch_configuracion_aplicacion: 'fetch_configuracion_aplicacion',
     fetch_datos_generales: 'fetch_dato_general_aplicacion',
@@ -14,7 +19,8 @@ export const HISTORICO_REVISION_TYPES = {
 export const LOADING = {
     loading: 'is_loading',
     stop: 'in_not_loading',
-    error: 'error_loading'
+    error: 'error_loading',
+    reset: 'reset_loading',
 };
 
 export const PERMISO_TYPES = {

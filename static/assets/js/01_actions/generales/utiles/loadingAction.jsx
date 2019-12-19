@@ -14,6 +14,13 @@ export function noCargando() {
     }
 }
 
+
+export function resetLoading() {
+    return function (dispatch) {
+        dispatch({type: TYPES.reset})
+    }
+}
+
 export function mostrar_error_loading(mensaje = null, titulo = null) {
     return function (dispatch) {
         dispatch({type: TYPES.error, mensaje, titulo})

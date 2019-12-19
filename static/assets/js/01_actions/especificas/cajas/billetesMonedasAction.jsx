@@ -51,9 +51,9 @@ export const fetchBilleteMoneda = (id, options_action = {}) => {
         return fetchObject(current_url_api, id, options);
     }
 };
-export const clearBilletesMonedas = () => {
+export const clearBilletesMonedas = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

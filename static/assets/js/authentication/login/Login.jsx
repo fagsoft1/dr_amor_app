@@ -36,7 +36,7 @@ let Login = (props) => {
     const cargarConfiguracionAplicacion = () => dispatch(actions.fetchConfiguracionAplicacion());
     const onSubmit = (e) => dispatch(actions.login(e.username, e.password, {callback: cargarConfiguracionAplicacion}));
     if (auth.isAuthenticated) {
-        return <Redirect to="/"/>
+        return <Redirect to="/app"/>
     }
 
     return (

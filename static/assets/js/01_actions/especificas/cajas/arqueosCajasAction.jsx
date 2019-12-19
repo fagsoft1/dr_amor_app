@@ -68,9 +68,9 @@ export const fetchArqueoCaja = (id, options_action = {}) => {
 };
 
 
-export const clearArqueosCajas = () => {
+export const clearArqueosCajas = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

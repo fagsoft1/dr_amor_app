@@ -222,6 +222,7 @@ MyCombobox.propTypes = {
     label: PropTypes.string,
     className: PropTypes.string,
     busy: PropTypes.bool,
+    readOnly: PropTypes.bool,
     autoFocus: PropTypes.bool,
     onSelect: PropTypes.func,
     onChange: PropTypes.func,
@@ -295,7 +296,6 @@ const renderDateTimePicker = (
                 time={time}
                 max={max}
                 min={min}
-                //value={!value ? null : new Date(value)}
                 value={!value ? null : moment(value).toDate()}
             />{show_edad && edad}
             {touched && (error && <span className='form-field-error'>{error}</span>)}

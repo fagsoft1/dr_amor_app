@@ -85,10 +85,9 @@ const DialogSeleccionar = memo(props => {
     if (excluded_id) {
         listado = listado.filter(e => !excluded_id.includes(e[id_text]));
     }
-    console.log(excluded_id)
     useEffect(() => {
         if (onMount) {
-            onMount()
+            onMount();
         }
         return () => {
             if (onUnMount) {

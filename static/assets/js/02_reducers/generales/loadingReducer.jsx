@@ -2,13 +2,15 @@ import {
     LOADING as TYPES
 } from '../../01_actions/00_types';
 
-export default function (state = {
+const initial_values = {
     cargando: false,
-    mensajes: [],
+    mensajes: {},
     error: null,
     titulo: '',
     index: 0
-}, action) {
+};
+
+export default function (state = initial_values, action) {
     let new_index = state.index;
     switch (action.type) {
         case TYPES.loading:
@@ -16,7 +18,10 @@ export default function (state = {
             return {
                 index: new_index,
                 cargando: new_index > 0,
-                mensajes: new_index > 0 ? (action.mensaje ? [...state.mensajes, action.mensaje] : state.mensajes) : [],
+                mensajes: new_index > 0 ? (action.mensaje ? {
+                    ...state.mensajes,
+                    [action.mensaje]: action.mensaje
+                } : state.mensajes) : {},
                 error: false,
                 titulo: action.titulo ? action.titulo : 'Procesando...'
             };
@@ -32,11 +37,13 @@ export default function (state = {
         case TYPES.error:
             return {
                 index: 0,
-                cargando: false,
-                mensajes: action.mensaje ? [...state.mensajes, action.mensaje] : ['Ocurrió un Error'],
+                cargando: true,
+                mensajes: action.mensaje ? {...state.mensajes, [action.mensaje]: action.mensaje} : ['Ocurrió un Error'],
                 error: true,
-                titulo: action.titulo ? action.titulo : 'Error!!!'
+                titulo: `Error ${action.titulo}`
             };
+        case TYPES.reset:
+            return initial_values;
         default:
             return state;
     }

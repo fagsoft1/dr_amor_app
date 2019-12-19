@@ -3,17 +3,28 @@ from .services import acompanante_desencriptar
 from rest_framework import serializers
 
 from terceros.services import (
-    tercero_set_new_pin,
-    colaborador_update,
     acompanante_update,
     acompanante_crear,
-    colaborador_crear,
-    acompanante_encriptar
+    colaborador_create_update
 )
 from .models import Tercero, Cuenta
 from servicios.api_serializers import ServicioSerializer
 from cajas.api_serializers import OperacionCajaSerializer
 from ventas.api_serializers import VentaProductoConDetalleSerializer
+
+from django.contrib.auth.models import User
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+        ]
+        read_only_fields = fields
 
 
 class CuentaSerializer(serializers.ModelSerializer):
@@ -382,11 +393,11 @@ class ColaboradorSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        colaborador = colaborador_crear(validated_data)
+        colaborador = colaborador_create_update(validated_data=validated_data)
         return colaborador
 
     def update(self, instance, validated_data):
-        colaborador = colaborador_update(instance.id, validated_data)
+        colaborador = colaborador_create_update(tercero_id=instance.id, validated_data=validated_data)
         return colaborador
 
 

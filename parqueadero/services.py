@@ -12,6 +12,21 @@ from .models import (
 )
 
 
+def modalidad_fraccion_tiempo_adicionar_quitar_impuesto(
+        modalidad_fraccion_tiempo_id: int,
+        impuesto_id: int,
+        tipo: str
+) -> ModalidadFraccionTiempo:
+    modalidad_fraccion_tiempo = ModalidadFraccionTiempo.objects.get(pk=modalidad_fraccion_tiempo_id)
+    if tipo == 'del':
+        modalidad_fraccion_tiempo.impuestos.remove(impuesto_id)
+    if tipo == 'add':
+        if not modalidad_fraccion_tiempo.impuestos.filter(pk=impuesto_id).exists():
+            modalidad_fraccion_tiempo.impuestos.add(impuesto_id)
+    modalidad_fraccion_tiempo.refresh_from_db()
+    return modalidad_fraccion_tiempo
+
+
 def validar_tiempos_valores_por_modalidad_fraccion_tiempo(
         qs,
         minutos: int,

@@ -49,9 +49,9 @@ export const fetchTipoVehiculo = (id, options_action = {}) => {
         fetchObject(current_url_api, id, options);
     }
 };
-export const clearTiposVehiculos = () => {
+export const clearTiposVehiculos = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

@@ -10,6 +10,7 @@ import validate from './validate';
 import {useDispatch} from "react-redux/es/hooks/useDispatch";
 import * as actions from "../../../../../01_actions";
 import {useSelector} from "react-redux/es/hooks/useSelector";
+import ImpuestoTablaRelacion from "../../../contabilidad/configuracion/impuestos/ImpuestoTablaRelacion";
 
 
 let Form = memo((props) => {
@@ -27,15 +28,28 @@ let Form = memo((props) => {
     } = props;
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(actions.fetchTiposHabitaciones({callback: () => dispatch(actions.fetchTiposVehiculos())}));
+        const cargarTiposComprobantesContablesEmpresas = () => dispatch(actions.fetchTiposComprobantesContablesEmpresas());
+        const cargarTiposVehiculos = () => dispatch(actions.fetchTiposVehiculos({callback: cargarTiposComprobantesContablesEmpresas}));
+        dispatch(actions.fetchTiposHabitaciones({callback: cargarTiposVehiculos}));
         return () => {
             dispatch(actions.clearTiposVehiculos());
         }
     }, []);
+    let tipos_comprobantes_empresas = useSelector(state => state.contabilidad_tipos_comprobantes_empresas);
+    tipos_comprobantes_empresas = _.pickBy(tipos_comprobantes_empresas, e => e.activo || e.id === initialValues.tipo_comprobante_contable_empresa);
     const tipos_vehiculos = useSelector(state => state.parqueadero_tipos_vehiculos);
+
+
+    const adicionarImpuesto = (impuesto_id) => {
+        return dispatch(actions.adicionarQuitarImpuestoModalidadFraccionTiempo(initialValues.id, impuesto_id, 'add'));
+    };
+    const quitarImpuesto = (impuesto_id) => {
+        return dispatch(actions.adicionarQuitarImpuestoModalidadFraccionTiempo(initialValues.id, impuesto_id, 'del'))
+    };
+
     return (
         <MyFormTagModal
-            fullScreen={false}
+            fullScreen={true}
             onCancel={onCancel}
             onSubmit={handleSubmit(onSubmit)}
             reset={reset}
@@ -46,14 +60,8 @@ let Form = memo((props) => {
             element_type={singular_name}
             error={error}
         >
-            <MyTextFieldSimple
-                className="col-12"
-                label='Nombre'
-                name='nombre'
-                case='U'
-            />
             <MyCombobox
-                className="col-12"
+                className="col-12 col-md-6"
                 label='Tipo Vehículo'
                 label_space_xs={4}
                 name='tipo_vehiculo'
@@ -68,40 +76,68 @@ let Form = memo((props) => {
                 })}
                 filter='contains'
             />
+            <MyCombobox
+                label_space_xs={4}
+                label='Tipo Comprobante Contable'
+                className="col-12 col-md-6"
+                placeholder='Seleccionar Tipo Comprobante...'
+                name='tipo_comprobante_contable_empresa'
+                textField='nombre'
+                valuesField='id'
+                data={_.map(tipos_comprobantes_empresas, h => {
+                    return ({
+                        id: h.id,
+                        nombre: h.to_string
+                    })
+                })}
+                filter='contains'
+            />
             <div className="col-12">
                 <div className="row">
-                    <div className="col-12 col-md-4">
-                        <MyTextFieldSimple
-                            name='hora_inicio'
-                            label="Hora Inicio"
-                            type="time"
-                            defaultValue="07:30"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            inputProps={{
-                                step: 300, // 5 min
-                            }}
-                        />
-                    </div>
-                    <div className="col-12 col-md-4">
-                        <MyTextFieldSimple
-                            name="numero_horas"
-                            label="# Horas"
-                            type="number"
-                        />
-                    </div>
+                    <MyTextFieldSimple
+                        className="col-12 col-md-6"
+                        label='Nombre'
+                        name='nombre'
+                        case='U'
+                    />
+                    <MyTextFieldSimple
+                        className="col-12 col-md-3"
+                        name='hora_inicio'
+                        label="Hora Inicio"
+                        type="time"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        inputProps={{
+                            step: 300, // 5 min
+                        }}
+                    />
+                    <MyTextFieldSimple
+                        className="col-12 col-md-3"
+                        name="numero_horas"
+                        label="# Horas"
+                        type="number"
+                    />
                 </div>
             </div>
             <div className="col-12">
-                <MyCheckboxSimple label='Lunes' name='lunes'/>
-                <MyCheckboxSimple label='Martes' name='martes'/>
-                <MyCheckboxSimple label='Miércoles' name='miercoles'/>
-                <MyCheckboxSimple label='Jueves' name='jueves'/>
-                <MyCheckboxSimple label='Viernes' name='viernes'/>
-                <MyCheckboxSimple label='Sábado' name='sabado'/>
-                <MyCheckboxSimple label='Domingo' name='domingo'/>
+                <div className="row">
+                    <MyCheckboxSimple className='col-12 col-md-4 col-lg-3 col-xl-1' label='Lunes' name='lunes'/>
+                    <MyCheckboxSimple className='col-12 col-md-4 col-lg-3 col-xl-1' label='Martes' name='martes'/>
+                    <MyCheckboxSimple className='col-12 col-md-4 col-lg-3 col-xl-1' label='Miércoles' name='miercoles'/>
+                    <MyCheckboxSimple className='col-12 col-md-4 col-lg-3 col-xl-1' label='Jueves' name='jueves'/>
+                    <MyCheckboxSimple className='col-12 col-md-4 col-lg-3 col-xl-1' label='Viernes' name='viernes'/>
+                    <MyCheckboxSimple className='col-12 col-md-4 col-lg-3 col-xl-1' label='Sábado' name='sabado'/>
+                    <MyCheckboxSimple className='col-12 col-md-4 col-lg-3 col-xl-1' label='Domingo' name='domingo'/>
+                </div>
             </div>
+            {initialValues && <div className="col-12 mt-2">
+                <ImpuestoTablaRelacion
+                    impuestos_relacionados={initialValues.impuestos}
+                    onAdd={adicionarImpuesto}
+                    onDelete={quitarImpuesto}
+                />
+            </div>}
         </MyFormTagModal>
     )
 });

@@ -33,6 +33,7 @@ const Tabla = memo(props => {
         const callback = () => {
             dispatch(actions.notificarAction(`Se ha actualizado con éxito el permiso ${permiso.codename}`));
         };
+        console.log(permiso)
         dispatch(actions.updatePermiso(permiso.id, permiso, {callback}))
     };
 

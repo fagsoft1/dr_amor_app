@@ -4,6 +4,7 @@ import IconButtonTableEdit from '../../../../00_utilities/components/ui/icon/Tab
 
 import ReactTable from "react-table";
 import {pesosColombianos} from "../../../../00_utilities/common";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const areEqual = (prevProps, nextProps) => {
     return prevProps.list === nextProps.list;
@@ -36,25 +37,21 @@ const Tabla = memo((props) => {
                             }
                         },
                         {
-                            Header: "Empresa",
-                            accessor: "empresa_nombre",
-                            maxWidth: 250,
-                            filterable: true,
-                            filterMethod: (filter, row) => {
-                                return row[filter.id].includes(filter.value.toUpperCase())
+                            Header: "Con Placa",
+                            accessor: "tiene_placa",
+                            maxWidth: 100,
+                            Cell: row => {
+                                return (
+                                    <div className='text-center'>
+                                        {
+                                            row.value &&
+                                            <FontAwesomeIcon
+                                                icon={['far', 'check-circle']}
+                                            />
+                                        }
+                                    </div>
+                                )
                             }
-                        },
-                        {
-                            Header: "$ Imp. Único",
-                            accessor: "valor_impuesto_unico",
-                            maxWidth: 100,
-                            Cell: row => <div className='text-right'>{pesosColombianos(row.value)}</div>
-                        },
-                        {
-                            Header: "% Iva",
-                            accessor: "porcentaje_iva",
-                            maxWidth: 100,
-                            Cell: row => <div className='text-right'>{row.value}%</div>
                         },
                     ]
                 },

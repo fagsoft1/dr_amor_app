@@ -94,7 +94,10 @@ class LoginViewSet(viewsets.ModelViewSet):
             "token": token
         })
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated, ])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny, ])
     def cargar_usuario(self, request) -> Response:
+        if self.request.user.is_anonymous:
+            serializer = UsuarioConDetalleSerializer(None, context={'request': request})
+            return Response(serializer.data)
         serializer = UsuarioConDetalleSerializer(self.request.user, context={'request': request})
         return Response(serializer.data)

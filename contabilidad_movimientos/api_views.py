@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
+from io import BytesIO
 
+from django.http import HttpResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -81,20 +83,44 @@ class AsientoContableViewSet(viewsets.ModelViewSet):
             apuntes_contables=apuntes_contables
         )
         asiento = AsientoContable.objects.get(pk=asiento.id)
+
         serializer = self.get_serializer(asiento)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], permission_classes=[EsColaboradorPermission])
-    def por_fecha_empresa_diario(self, request):
-        empresa_id = int(request.GET.get('empresa_id'))
-        diario_id = int(request.GET.get('diario_id'))
-        fecha = datetime.strptime(request.GET.get('fecha'), "%d/%m/%Y").date()
-        qs = self.queryset.filter(
-            fecha__date=fecha,
-            diario_contable_id=diario_id,
-            empresa_id=empresa_id
+    @action(detail=True, methods=['post'], permission_classes=[EsColaboradorPermission])
+    def imprimir_asiento_contable(self, request, pk=None):
+        from .services import asiento_contable_con_comprobante_generar_tirilla
+        ultimo_asiento = AsientoContable.objects.last()
+        main_doc = asiento_contable_con_comprobante_generar_tirilla(asiento_contable_id=ultimo_asiento.pk)
+        output = BytesIO()
+        main_doc.write_pdf(
+            target=output
         )
-        serializer = self.get_serializer(qs, many=True)
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        response.write(output.getvalue())
+        output.close()
+        return response
+
+    @action(detail=False, methods=['post'], permission_classes=[EsColaboradorPermission])
+    def asentar_operacion_caja(self, request):
+        from .services import asiento_contable_asentar_operacion_caja
+
+        concepto = int(self.request.POST.get('concepto', None))
+        valor = float(self.request.POST.get('valor', None))
+        tercero = self.request.POST.get('tercero', None)
+        observacion = str(self.request.POST.get('observacion', None))
+
+        asiento_contable = asiento_contable_asentar_operacion_caja(
+            concepto_id=concepto,
+            valor=valor,
+            tercero_id=int(tercero) if tercero is not None else None,
+            observacion=observacion,
+            usuario_pdv_id=self.request.user.id
+        )
+
+        serializer = self.get_serializer(asiento_contable)
         return Response(serializer.data)
 
 

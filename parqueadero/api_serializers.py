@@ -6,6 +6,7 @@ from .models import (
     Vehiculo,
     RegistroEntradaParqueo
 )
+from contabilidad_impuestos.api_serializers import ImpuestoSerializer
 
 
 class RegistroEntradaParqueoSerializer(serializers.ModelSerializer):
@@ -56,7 +57,6 @@ class RegistroEntradaParqueoSerializer(serializers.ModelSerializer):
 
 
 class TipoVehiculoSerializer(serializers.ModelSerializer):
-    empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)
     to_string = serializers.SerializerMethodField()
 
     def get_to_string(self, instance):  # pragma: no cover
@@ -69,11 +69,7 @@ class TipoVehiculoSerializer(serializers.ModelSerializer):
             'id',
             'to_string',
             'nombre',
-            'empresa',
-            'valor_impuesto_unico',
-            'porcentaje_iva',
-            'tiene_placa',
-            'empresa_nombre'
+            'tiene_placa'
         ]
 
 
@@ -94,7 +90,10 @@ class ModalidadFraccionTiempoSerializer(serializers.ModelSerializer):
             'tipo_vehiculo',
             'tipo_vehiculo_nombre',
             'hora_inicio',
+            'tipo_comprobante_contable_empresa',
             'numero_horas',
+            'fracciones',
+            'impuestos',
             'lunes',
             'martes',
             'miercoles',
@@ -103,6 +102,7 @@ class ModalidadFraccionTiempoSerializer(serializers.ModelSerializer):
             'sabado',
             'domingo',
         ]
+        read_only_fields = ['fracciones', 'impuestos']
 
 
 class ModalidadFraccionTiempoDetalleSerializer(serializers.ModelSerializer):
@@ -150,10 +150,21 @@ class ModalidadFraccionTiempoDetalleSerializer(serializers.ModelSerializer):
             'to_string',
             'minutos',
             'valor',
+            'valor_antes_impuestos',
+            'impuesto',
             'modalidad_fraccion_tiempo',
             'modalidad_fraccion_tiempo_nombre',
             'tipo_vehiculo_nombre',
         ]
+        extra_kwargs = {
+            'valor_antes_impuestos': {'read_only': True},
+            'impuesto': {'read_only': True},
+        }
+
+
+class ModalidadFraccionTiempoConDetalleSerializer(ModalidadFraccionTiempoSerializer):
+    impuestos = ImpuestoSerializer(many=True, read_only=True)
+    fracciones = ModalidadFraccionTiempoDetalleSerializer(many=True, read_only=True)
 
 
 class VehiculoSerializer(serializers.ModelSerializer):

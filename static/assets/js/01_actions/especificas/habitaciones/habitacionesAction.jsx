@@ -71,9 +71,10 @@ export const fetchHabitacion = (id, options_action = {}) => {
     }
 };
 
-export const clearHabitaciones = () => {
+export const clearHabitaciones = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
+
     }
 };
 

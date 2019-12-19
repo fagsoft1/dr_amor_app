@@ -1,12 +1,12 @@
 import React, {memo, useState} from 'react';
-import * as actions from "../../../../01_actions";
-import HabitacionList from '../../habitaciones/containers/HabitacionList';
-import ServiciosList from '../../servicios/ServicioList';
-import HabitacionDetailModal from '../../habitaciones/components/HabitacionModalDetail';
-import ServicioDetailModal from '../../servicios/ServicioDetail';
-import RegistroOperacionContable
-    from '../../../../07_cajas/operaciones_caja/components/forms/registro_operacion_dos_form';
-import LiquidacionOpcionesDialog from '../../../../07_cajas/cuentas/ver_cuenta_abierta_listado';
+import * as actions from "../../../01_actions";
+import HabitacionList from '../habitaciones/containers/HabitacionList';
+import ServiciosList from '../servicios/ServicioList';
+import HabitacionDetailModal from '../habitaciones/components/HabitacionModalDetail';
+import ServicioDetailModal from '../servicios/ServicioDetail';
+import RegistroOperacionCajaModalForm
+    from '../../../07_cajas/operaciones_caja/components/forms/RegistroOperacionCajaModalForm';
+import LiquidacionOpcionesDialog from '../../../07_cajas/cuentas/ver_cuenta_abierta_listado';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import {useDispatch} from 'react-redux';
@@ -78,37 +78,29 @@ const ServiciosDashboar = memo(props => {
 
     return (
         <div className="row">
-            {
-                modal_operacion_caja_open &&
-                <RegistroOperacionContable
-                    cerrarModal={cerraModalRegistroOperacionCaja}
-                    modal_open={modal_operacion_caja_open}
-                />
-            }
-            {
-                modal_liquidacion_open &&
-                <LiquidacionOpcionesDialog
-                    onCancel={cerraModalLiquidaciones}
-                    is_open={modal_liquidacion_open}
-                    history={history}
-                />
-            }
-            {
-                modal_habitacion_open &&
-                <HabitacionDetailModal
-                    habitacion_id={habitacion_id}
-                    cerraModal={cerraModalHabitacion}
-                    modal_open={modal_habitacion_open}
-                />
-            }
-            {
-                modal_servicio_open &&
-                <ServicioDetailModal
-                    cerraModal={cerraModalServicio}
-                    servicio_id={servicio_id}
-                    modal_open={modal_servicio_open}
-                />
-            }
+            {modal_operacion_caja_open && <RegistroOperacionCajaModalForm
+                cerrarModal={cerraModalRegistroOperacionCaja}
+                modal_open={modal_operacion_caja_open}
+            />}
+            {/*{modal_operacion_caja_open && <RegistroOperacionContable*/}
+            {/*    cerrarModal={cerraModalRegistroOperacionCaja}*/}
+            {/*    modal_open={modal_operacion_caja_open}*/}
+            {/*/>}*/}
+            {modal_liquidacion_open && <LiquidacionOpcionesDialog
+                onCancel={cerraModalLiquidaciones}
+                is_open={modal_liquidacion_open}
+                history={history}
+            />}
+            {modal_habitacion_open && <HabitacionDetailModal
+                habitacion_id={habitacion_id}
+                cerraModal={cerraModalHabitacion}
+                modal_open={modal_habitacion_open}
+            />}
+            {modal_servicio_open && <ServicioDetailModal
+                cerraModal={cerraModalServicio}
+                servicio_id={servicio_id}
+                modal_open={modal_servicio_open}
+            />}
             <div className="col-md-3">
                 <div className="card">
                     <div className="card-body">

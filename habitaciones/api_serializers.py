@@ -18,14 +18,15 @@ class TipoHabitacionSerializer(serializers.ModelSerializer):
             'nombre',
             'to_string',
             'valor',
-            'valor_antes_impuestos',
-            'impuestos',
-            'impuesto',
             'valor_adicional_servicio',
+            'valor_antes_impuestos',
+            'impuesto',
+            'impuestos',
         )
         extra_kwargs = {
             'valor_antes_impuestos': {'read_only': True},
             'impuestos': {'read_only': True},
+            'impuesto': {'read_only': True},
         }
 
 

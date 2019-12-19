@@ -98,9 +98,9 @@ export const fetchTerceroCuenta = (id, options_action = {}) => {
         return fetchObject(current_url_api, id, options);
     }
 };
-export const clearTercerosCuentas = () => {
+export const clearTercerosCuentas = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

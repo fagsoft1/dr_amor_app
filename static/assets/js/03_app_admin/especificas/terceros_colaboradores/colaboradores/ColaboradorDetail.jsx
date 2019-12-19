@@ -5,11 +5,11 @@ import CargarDatos from "../../../../00_utilities/components/system/CargarDatos"
 import ValidarPermisos from "../../../../permisos/validar_permisos";
 import {permisosAdapter} from "../../../../00_utilities/common";
 import AddPuntoVenta from './ColaboradorDetailAddPuntoVenta';
-import IconButtonTableDelete from '../../../../00_utilities/components/ui/icon/TableIconButtonDelete';
 import {
     COLABORADORES as permisos_view
 } from "../../../../permisos";
 import Typography from '@material-ui/core/Typography/index';
+import MyDialogButtonDelete from "../../../../00_utilities/components/ui/dialog/DeleteDialog";
 
 const TablaPDV = (props) => {
     const {pdv_colaborador, quitarPuntoVenta} = props;
@@ -24,8 +24,12 @@ const TablaPDV = (props) => {
                             return <tr key={pdv.id}>
                                 <td>{pdv.nombre}</td>
                                 <td>
-                                    <IconButtonTableDelete
-                                        onClick={() => quitarPuntoVenta(pdv)}
+                                    <MyDialogButtonDelete
+                                        onDelete={() => {
+                                            quitarPuntoVenta(pdv)
+                                        }}
+                                        element_name={pdv.nombre}
+                                        element_type='Punto de Venta'
                                     />
                                 </td>
                             </tr>

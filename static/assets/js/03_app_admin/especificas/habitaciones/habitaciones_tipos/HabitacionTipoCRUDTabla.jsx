@@ -11,7 +11,6 @@ const areEqual = (prevProps, nextProps) => {
 const Tabla = memo((props) => {
     const data = _.map(props.list);
     const {
-        updateItem,
         singular_name,
         onDelete,
         onSelectItemEdit,

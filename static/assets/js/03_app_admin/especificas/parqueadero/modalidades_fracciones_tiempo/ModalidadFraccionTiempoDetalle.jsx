@@ -3,42 +3,36 @@ import {useDispatch, useSelector} from "react-redux";
 import * as actions from "../../../../01_actions";
 import CargarDatos from "../../../../00_utilities/components/system/CargarDatos";
 import ValidarPermisos from "../../../../permisos/validar_permisos";
-import {permisosAdapter} from "../../../../00_utilities/common";
 import Typography from '@material-ui/core/Typography/index';
 import {
-    MODALIDADES_FRACCIONES_TIEMPOS as permisos_view,
-    MODALIDADES_FRACCIONES_TIEMPOS_DETALLES as permisos_view_2
+    MODALIDADES_FRACCIONES_TIEMPOS,
+    MODALIDADES_FRACCIONES_TIEMPOS_DETALLES
 } from "../../../../permisos";
 
 import ModalidadTiempoDetalle from './detalles/ModalidadFraccionTiempoDetalleCRUD';
 import Button from "@material-ui/core/Button/index";
+import useTengoPermisos from "../../../../00_utilities/hooks/useTengoPermisos";
 
 const Detail = (props) => {
     const dispatch = useDispatch();
     const modalida_fraccion_tiempo_id = props.match.params.id;
     const modalidad_fraccion_tiempo = useSelector(state => state.parqueadero_modalidades_fracciones_tiempo[modalida_fraccion_tiempo_id]);
-    const mis_permisos = useSelector(state => state.mis_permisos);
-    const modalidades_fracciones_tiempo_detalles = useSelector(state => state.parqueadero_modalidades_fracciones_tiempo_detalles);
     const cargarDatos = () => {
-        const cargarModalidadDetalles = () => dispatch(actions.fetchModalidadesFraccionesTiemposDetalles_por_modalidad_fraccion_tiempo(modalida_fraccion_tiempo_id));
-        dispatch(actions.fetchModalidadFraccionTiempo(modalida_fraccion_tiempo_id, {callback: cargarModalidadDetalles}));
+        dispatch(actions.fetchModalidadFraccionTiempo(modalida_fraccion_tiempo_id));
     };
     useEffect(() => {
-        dispatch(actions.fetchMisPermisosxListado([
-            permisos_view,
-            permisos_view_2
-        ], {callback: cargarDatos}));
+        cargarDatos();
         return () => {
             dispatch(actions.clearModalidadesFraccionesTiempos());
-            dispatch(actions.clearModalidadesFraccionesTiemposDetalles());
         };
     }, []);
 
     const {
         history
     } = props;
-    const permisos = permisosAdapter(mis_permisos, permisos_view);
-    const permisos_detalles = permisosAdapter(mis_permisos, permisos_view_2);
+
+    const permisos = useTengoPermisos(MODALIDADES_FRACCIONES_TIEMPOS);
+    const permisos_detalles = useTengoPermisos(MODALIDADES_FRACCIONES_TIEMPOS_DETALLES);
     if (!modalidad_fraccion_tiempo) {
         return <Typography variant="overline" gutterBottom color="primary">
             Cargando...
@@ -54,7 +48,7 @@ const Detail = (props) => {
             </Typography>
             <ModalidadTiempoDetalle
                 modalidad_fraccion_tiempo={modalidad_fraccion_tiempo}
-                object_list={modalidades_fracciones_tiempo_detalles}
+                object_list={_.mapKeys(modalidad_fraccion_tiempo.fracciones, 'id')}
                 permisos_object={permisos_detalles}
             />
             <Button

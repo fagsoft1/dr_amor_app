@@ -19,6 +19,8 @@ const List = memo((props) => {
     const {object_list, permisos_object, modalidad_fraccion_tiempo} = props;
     return (
         <CRUD
+            posSummitMethod={() => dispatch(actions.fetchModalidadFraccionTiempo(modalidad_fraccion_tiempo.id))}
+            posDeleteMethod={() => dispatch(actions.fetchModalidadFraccionTiempo(modalidad_fraccion_tiempo.id))}
             modalidad_fraccion_tiempo={modalidad_fraccion_tiempo}
             method_pool={method_pool}
             list={object_list}

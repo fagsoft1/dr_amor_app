@@ -29,20 +29,40 @@ const Tabla = memo((props) => {
                             Header: "Minutos",
                             accessor: "minutos",
                             maxWidth: 100,
+                            minWidth: 100,
                             Cell: row => <div className='text-right'>{row.value} Minutos</div>
                         },
                         {
                             Header: "Horas",
                             accessor: "minutos",
                             maxWidth: 100,
-                            Cell: row => <div className='text-right'>{row.value / 60} Horas</div>
+                            minWidth: 100,
+                            Cell: row => <div className='text-right'>{(row.value / 60).toFixed(2)} Horas</div>
                         },
                         {
-                            Header: "Valor",
+                            Header: "$ Impuestos",
+                            accessor: "impuesto",
+                            maxWidth: 150,
+                            Cell: row => <div className='text-right'>
+                                {pesosColombianos(row.value)}
+                            </div>
+                        },
+                        {
+                            Header: "$ Ant. Impuesto",
+                            maxWidth: 150,
+                            accessor: "valor_antes_impuestos",
+                            Cell: row => <div className='text-right'>
+                                {pesosColombianos(row.value)}
+                            </div>
+                        },
+                        {
+                            Header: "$ Valor",
                             accessor: "valor",
-                            maxWidth: 100,
-                            Cell: row => <div className='text-right'>{pesosColombianos(row.value)}</div>
-                        }
+                            maxWidth: 150,
+                            Cell: row => <div className='text-right'>
+                                {pesosColombianos(row.value)}
+                            </div>
+                        },
                     ]
                 },
                 {

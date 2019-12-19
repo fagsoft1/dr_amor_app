@@ -152,88 +152,157 @@ def acompanante_crear(validated_data) -> Tercero:
     return acompanante
 
 
-def colaborador_update(
-        tercero_id,
-        validated_data
+def colaborador_create_update(
+        validated_data,
+        tercero_id: int = None
 ) -> Tercero:
-    colaborador = Tercero.objects.get(pk=tercero_id)
-    for attr, value in validated_data.items():
-        if hasattr(colaborador, attr):
-            setattr(colaborador, attr, value)
-
+    validaciones = {}
     nombre = validated_data.get('nombre', None)
     nombre_segundo = validated_data.get('nombre_segundo', None)
     apellido = validated_data.get('apellido', None)
     apellido_segundo = validated_data.get('apellido_segundo', None)
     nro_identificacion = validated_data.get('nro_identificacion', None)
 
-    validaciones = {}
+    qs_nro_identificacion = Tercero.objects.filter(nro_identificacion=nro_identificacion)
+    if tercero_id is not None:
+        qs_nro_identificacion = qs_nro_identificacion.exclude(
+            pk=tercero_id)
 
-    if Tercero.objects.filter(nro_identificacion=nro_identificacion).exclude(
-            pk=tercero_id).exists():
+    if qs_nro_identificacion.exists():
         validaciones[
-            'nro_identificacion'] = 'No se puede actualizar colaborador porque ya existe un numero de identidad %s.' % nro_identificacion
+            'nro_identificacion'] = 'No se puede %s colaborador porque ya existe un numero de identidad %s.' % (
+            'crear' if tercero_id is None else 'actualizar', nro_identificacion)
+
     if validaciones:
         raise serializers.ValidationError(validaciones)
 
-    first_name = '%s %s'.strip() % (nombre, nombre_segundo)
-    last_name = '%s %s'.strip() % (apellido, apellido_segundo)
-    colaborador.usuario.first_name = first_name
-    colaborador.usuario.last_name = last_name
-    colaborador.usuario.save()
-    colaborador.save()
-    return colaborador
+    first_name = '%s %s'.strip() % (nombre, nombre_segundo if nombre_segundo is not None else '')
+    last_name = '%s %s'.strip() % (apellido, apellido_segundo if apellido_segundo is not None else '')
 
+    if tercero_id is not None:
+        colaborador = Tercero.objects.get(pk=tercero_id)
+        for attr, value in validated_data.items():
+            if hasattr(colaborador, attr):
+                setattr(colaborador, attr, value)
 
-def colaborador_crear(
-        validated_data
-) -> Tercero:
-    nombre = validated_data.get('nombre', None)
-    nombre_segundo = validated_data.get('nombre_segundo', None)
-    apellido = validated_data.get('apellido', None)
-    apellido_segundo = validated_data.get('apellido_segundo', None)
-    nro_identificacion = validated_data.get('nro_identificacion', None)
-
-    validaciones = {}
-
-    if Tercero.objects.filter(nro_identificacion=nro_identificacion).exists():
-        validaciones[
-            'nro_identificacion'] = 'No se puede crear colaborador porque ya existe un numero de identidad %s.' % nro_identificacion
-
-    first_name = '%s %s'.strip() % (nombre, nombre_segundo)
-    last_name = '%s %s'.strip() % (apellido, apellido_segundo)
-
-    if apellido_segundo is not None:
-        username = ('co-%s%s%s' % (nombre[0:3], apellido[0:3], apellido_segundo[0:3])).lower()
+        colaborador.usuario.first_name = first_name
+        colaborador.usuario.last_name = last_name
+        colaborador.usuario.save()
+        colaborador.save()
     else:
-        username = ('co-%s%s' % (nombre[0:3], apellido[0:3])).lower()
+        if apellido_segundo is not None:
+            username = ('co-%s%s%s' % (nombre[0:3], apellido[0:3], apellido_segundo[0:3])).lower()
+        else:
+            username = ('co-%s%s' % (nombre[0:3], apellido[0:3])).lower()
 
-    if User.objects.filter(username=username).exists():
-        username = '%s%s' % (username, User.objects.filter(username__contains=username).count())
+        if User.objects.filter(username=username).exists():
+            username = '%s%s' % (username, User.objects.filter(username__contains=username).count())
 
-    if validaciones:
-        raise serializers.ValidationError(validaciones)
-
-    user = User.objects.create_user(
-        username=username.lower(),
-        first_name=first_name,
-        last_name=last_name,
-        password=nro_identificacion,
-        is_active=True
-    )
-
-    colaborador = Tercero.objects.create(
-        usuario=user,
-        **validated_data
-    )
-    colaborador.es_acompanante = False
-    colaborador.es_colaborador = True
-    colaborador.es_proveedor = False
-    colaborador.save()
-    tercero_set_new_pin(colaborador.id, '0000')
-    new_group, created = Group.objects.get_or_create(name='COLABORADORES')
-    user.groups.add(new_group)
+        user = User.objects.create_user(
+            username=username.lower(),
+            first_name=first_name,
+            last_name=last_name,
+            password=nro_identificacion,
+            is_active=True
+        )
+        colaborador = Tercero.objects.create(
+            usuario=user,
+            **validated_data
+        )
+        colaborador.es_acompanante = False
+        colaborador.es_colaborador = True
+        colaborador.es_proveedor = False
+        colaborador.save()
+        tercero_set_new_pin(colaborador.id, '0000')
+        new_group, created = Group.objects.get_or_create(name='COLABORADORES')
+        user.groups.add(new_group)
     return colaborador
+
+
+# def colaborador_update(
+#         tercero_id,
+#         validated_data
+# ) -> Tercero:
+# colaborador = Tercero.objects.get(pk=tercero_id)
+# for attr, value in validated_data.items():
+#     if hasattr(colaborador, attr):
+#         setattr(colaborador, attr, value)
+
+# nombre = validated_data.get('nombre', None)
+# nombre_segundo = validated_data.get('nombre_segundo', None)
+# apellido = validated_data.get('apellido', None)
+# apellido_segundo = validated_data.get('apellido_segundo', None)
+# nro_identificacion = validated_data.get('nro_identificacion', None)
+
+# validaciones = {}
+#
+# if Tercero.objects.filter(nro_identificacion=nro_identificacion).exclude(
+#         pk=tercero_id).exists():
+#     validaciones[
+#         'nro_identificacion'] = 'No se puede actualizar colaborador porque ya existe un numero de identidad %s.' % nro_identificacion
+# if validaciones:
+#     raise serializers.ValidationError(validaciones)
+
+# first_name = '%s %s'.strip() % (nombre, nombre_segundo)
+# last_name = '%s %s'.strip() % (apellido, apellido_segundo)
+# colaborador.usuario.first_name = first_name
+# colaborador.usuario.last_name = last_name
+# colaborador.usuario.save()
+# colaborador.save()
+# return colaborador
+
+
+# def colaborador_crear(
+#         validated_data
+# ) -> Tercero:
+#
+
+# nombre = validated_data.get('nombre', None)
+# nombre_segundo = validated_data.get('nombre_segundo', None)
+# apellido = validated_data.get('apellido', None)
+# apellido_segundo = validated_data.get('apellido_segundo', None)
+# nro_identificacion = validated_data.get('nro_identificacion', None)
+
+# validaciones = {}
+#
+# if Tercero.objects.filter(nro_identificacion=nro_identificacion).exists():
+#     validaciones[
+#         'nro_identificacion'] = 'No se puede crear colaborador porque ya existe un numero de identidad %s.' % nro_identificacion
+
+# first_name = '%s %s'.strip() % (nombre, nombre_segundo)
+# last_name = '%s %s'.strip() % (apellido, apellido_segundo)
+#
+# if apellido_segundo is not None:
+#     username = ('co-%s%s%s' % (nombre[0:3], apellido[0:3], apellido_segundo[0:3])).lower()
+# else:
+#     username = ('co-%s%s' % (nombre[0:3], apellido[0:3])).lower()
+#
+# if User.objects.filter(username=username).exists():
+#     username = '%s%s' % (username, User.objects.filter(username__contains=username).count())
+
+# if validaciones:
+#     raise serializers.ValidationError(validaciones)
+
+# user = User.objects.create_user(
+#     username=username.lower(),
+#     first_name=first_name,
+#     last_name=last_name,
+#     password=nro_identificacion,
+#     is_active=True
+# )
+
+# colaborador = Tercero.objects.create(
+#     usuario=user,
+#     **validated_data
+# )
+# colaborador.es_acompanante = False
+# colaborador.es_colaborador = True
+# colaborador.es_proveedor = False
+# colaborador.save()
+# tercero_set_new_pin(colaborador.id, '0000')
+# new_group, created = Group.objects.get_or_create(name='COLABORADORES')
+# user.groups.add(new_group)
+# return colaborador
 
 
 def tercero_existe_documento(nro_identificacion: str) -> bool:

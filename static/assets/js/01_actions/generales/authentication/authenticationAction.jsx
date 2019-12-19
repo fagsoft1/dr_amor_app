@@ -43,7 +43,12 @@ export const loadUser = (options_action = {}) => {
             }
         };
         const dispatches = (response) => {
-            dispatch({type: 'USER_LOADED', user: response.data})
+            const {username = ''} = response.data;
+            if (username === '') {
+                dispatch({type: 'NOT_USER_LOADED', user: response.data})
+            } else {
+                dispatch({type: 'USER_LOADED', user: response.data})
+            }
         };
         const options = {
             dispatches,

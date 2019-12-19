@@ -20,9 +20,9 @@ export const fetchConsultaVentasEmpresas = (options_action = {}) => {
     }
 };
 
-export const clearConsultaVentasEmpresas = () => {
+export const clearConsultaVentasEmpresas = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

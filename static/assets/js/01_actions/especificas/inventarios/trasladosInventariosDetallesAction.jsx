@@ -68,9 +68,9 @@ export const fetchTrasladoInventarioDetalle = (id, options_action = {}) => {
         return fetchObject(current_url_api, id, options);
     }
 };
-export const clearTrasladosInventariosDetalles = () => {
+export const clearTrasladosInventariosDetalles = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

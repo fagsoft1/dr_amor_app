@@ -56,9 +56,9 @@ export const fetchEmpresa = (id, options_action = {}) => {
     }
 };
 
-export const clearEmpresas = () => {
+export const clearEmpresas = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

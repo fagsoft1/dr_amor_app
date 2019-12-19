@@ -13,8 +13,8 @@ from .api_serializers import (
     TipoVehiculoSerializer,
     ModalidadFraccionTiempoSerializer,
     ModalidadFraccionTiempoDetalleSerializer,
-    RegistroEntradaParqueoSerializer
-)
+    RegistroEntradaParqueoSerializer,
+    ModalidadFraccionTiempoConDetalleSerializer)
 from .models import (
     Vehiculo,
     TipoVehiculo,
@@ -124,9 +124,7 @@ class VehiculoViewSet(viewsets.ModelViewSet):
 
 class TipoVehiculoViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissionsFull]
-    queryset = TipoVehiculo.objects.select_related(
-        'empresa'
-    ).all()
+    queryset = TipoVehiculo.objects.all()
     serializer_class = TipoVehiculoSerializer
 
 
@@ -136,6 +134,18 @@ class ModalidadFraccionTiempoViewSet(viewsets.ModelViewSet):
         'tipo_vehiculo'
     ).all()
     serializer_class = ModalidadFraccionTiempoSerializer
+
+    def update(self, request, *args, **kwargs):
+        self.serializer_class = ModalidadFraccionTiempoConDetalleSerializer
+        return super().update(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = ModalidadFraccionTiempoConDetalleSerializer
+        return super().create(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = ModalidadFraccionTiempoConDetalleSerializer
+        return super().retrieve(request, *args, **kwargs)
 
     def aplica_dia(self, fecha, obj: ModalidadFraccionTiempo) -> bool:
         dia_semana = fecha.weekday()
@@ -222,6 +232,20 @@ class ModalidadFraccionTiempoViewSet(viewsets.ModelViewSet):
         qs = qs.filter(id__in=id_habilitados_de_modalidades)
 
         serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def adicionar_quitar_impuesto(self, request, pk=None):
+        from .services import modalidad_fraccion_tiempo_adicionar_quitar_impuesto
+        impuesto_id = self.request.POST.get('impuesto_id', None)
+        tipo = self.request.POST.get('tipo', None)
+        modalida_fraccion_tiempo = modalidad_fraccion_tiempo_adicionar_quitar_impuesto(
+            modalidad_fraccion_tiempo_id=pk,
+            impuesto_id=impuesto_id,
+            tipo=tipo,
+        )
+        self.serializer_class = ModalidadFraccionTiempoConDetalleSerializer
+        serializer = self.get_serializer(modalida_fraccion_tiempo)
         return Response(serializer.data)
 
 

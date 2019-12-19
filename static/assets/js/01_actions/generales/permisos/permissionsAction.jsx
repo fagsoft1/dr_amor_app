@@ -148,9 +148,9 @@ export const fetchPermiso = (id, options_action = {}) => {
     }
 };
 
-export const clearPermisos = () => {
+export const clearPermisos = (options_action = {}) => {
     return (dispatch) => {
-        dispatch({type: TYPES.clear});
+        dispatch({type: TYPES.clear, payload: options_action});
 
     }
 };

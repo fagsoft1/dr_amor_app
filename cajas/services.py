@@ -571,6 +571,7 @@ def transaccion_caja_registrar_cambio_habitacion_menor_valor(
 
 # region Operaciones Caja
 
+# todo borrar
 def operacion_caja_crear(
         concepto_id: int,
         usuario_pdv_id: int,
@@ -663,6 +664,7 @@ def operacion_caja_crear(
     return operacion_caja
 
 
+# todo borrar
 def operacion_caja_generar_recibo(operacion_caja_id):
     operacion_caja = OperacionCaja.objects.get(pk=operacion_caja_id)
     context = {
