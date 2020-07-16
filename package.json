@@ -16,7 +16,7 @@
     "deep-freeze": "0.0.1",
     "django-channels": "^1.1.8",
     "expect": "^24.8.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.19.1",
     "moment-timezone": "^0.5.23",
     "npm": "^5.6.0",
