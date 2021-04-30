@@ -73,7 +73,7 @@ text-unidecode==1.2
 tinycss2==1.0.2
 Twisted==17.9.0
 txaio==18.8.1
-urllib3==1.25.2
+urllib3==1.25.8
 WeasyPrint==47
 webencodings==0.5.1
 zope.interface==4.4.3
